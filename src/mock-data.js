@@ -155,6 +155,88 @@ window.SCENARIOS = {
   }
 };
 
+// Persona voice packs — each persona shifts the 3 voice tags + content + the
+// question being asked, demonstrating that the same engine deploys different
+// expertise per role. Falls back to default scenario voices if a persona has
+// no override for a given scenario.
+window.PERSONAS = {
+  compliance: {
+    label: "🛡 Compliance Officer",
+    tags: { junior: "Junior loan analyst", senior: "Senior VP", third: "Compliance officer" },
+    scenarios: {
+      lbo: {
+        question: "Senior Leverage Ratio 4.2x — does this pass Stifel underwriting policy 4.3 for a B-rated borrower?",
+        voices: {
+          junior: "Senior debt / EBITDA = $950M / $226M = 4.2x. Policy 4.3.1 caps senior leverage at 4.5x for B-rated borrowers. We are 30bps below the limit.",
+          senior: "Don't just ship it because we're under the cap. Look at the QoE adjustment — if Adjusted EBITDA was lifted by >12%, the unadjusted ratio probably breaks 4.5x. Pull the QoE report from the data room before approving.",
+          third: "Document this explicitly in the credit memo. CFPB adverse-action standards apply if we deny later: 'leveraged borrowers' is not a sufficient reason. Use 'senior leverage exceeded our underwriting threshold for B-rated risk profile' or similar specific language."
+        },
+        followup: "What is the QoE provider's EBITDA adjustment, and where does that put the unadjusted senior leverage ratio?"
+      }
+    }
+  },
+  quant: {
+    label: "🧮 Quant / Data Scientist",
+    tags: { junior: "Junior data scientist", senior: "Senior quant", third: "Model risk reviewer" },
+    scenarios: {
+      lbo: {
+        question: "Our LBO default-probability model just flagged this deal at 8% PD. PSI on our credit features tripped last week. Is this PD prediction trustworthy?",
+        voices: {
+          junior: "PSI tripped on 3 features: borrower industry sector (rolled from healthcare-heavy to consumer-discretionary), 12-month EBITDA volatility, and senior-leverage-to-peer-median. Drift attribution shows the consumer-discretionary shift is doing 60% of the work.",
+          senior: "Run SHAP on this specific borrower against the pre-drift baseline. If the PD goes from 8% to <5% under the old feature distribution, the model is mis-extrapolating to the new regime, not detecting real risk. Pre-drift validation set is in `/data/baseline_2025Q4_validation.parquet`.",
+          third: "SR 11-7 effective challenge: this PD must be defensible to the model risk committee. If drift-corrected PD diverges by >2pp, file a model performance issue per Policy 11.4 and force-tier the deal to senior credit committee independently of the auto-decision."
+        },
+        followup: "What does the pre-drift validation set predict for this borrower? And what's our override-rate on model PD this quarter?"
+      }
+    }
+  },
+  engineer: {
+    label: "💻 Software Engineer",
+    tags: { junior: "Junior developer", senior: "Senior engineer", third: "Security review" },
+    scenarios: {
+      lbo: {
+        question: "I'm refactoring the credit-decision pipeline to call this LBO model. What's the right service boundary, and where do I worry about regulated data?",
+        voices: {
+          junior: "Looks like the LBO model is at `risk-models-svc:8443/lbo/score`. Returns a JSON with PD, LGD, and EAD fields. Pure Bayesian regression under the hood, no external dependencies. Should be a clean integration.",
+          senior: "Don't call it synchronously from the loan-decisioning critical path. PD calc is 200-800ms p99. Use the async pattern: enqueue scoring job, return decision_pending, callback via webhook. Look at how the credit-card limit-increase pipeline does it (`apps/clip/orchestrator.go:124`).",
+          third: "The PD includes the borrower's industry sector — that's a covered attribute under our Fair Lending policy 4.5. Log the prediction and feature inputs to the Reg B explainability store before returning the decision. PII redaction: only the loan_id leaves the service boundary, never the applicant name or SSN."
+        },
+        followup: "What's the rate-limit posture on `risk-models-svc` at peak hours, and do we have circuit-breaker on the async pipeline?"
+      }
+    }
+  },
+  trader: {
+    label: "📈 Trader / PM",
+    tags: { junior: "Junior trader", senior: "Senior PM (Druckenmiller-style)", third: "Risk officer" },
+    scenarios: {
+      lbo: {
+        question: "We're being offered the syndication of this Term Loan B at SOFR + 425. Is this priced appropriately and what's the risk-budget hit?",
+        voices: {
+          junior: "Comparable B-rated TLBs in the last 90 days clear at SOFR + 380-450. We're mid-range. Liquidity: average daily volume on issuer's existing bonds is $4M, so we shouldn't take more than $40M without market impact.",
+          senior: "Think regime, not snapshot. If consumer-discretionary is rolling over and Fed cuts get pushed to 2027, this debt's mark-to-market is going to be ugly in 6 months. I would not be a buyer at SOFR + 425 unless we can syndicate down to <$20M hold. Ask: what's the secondary bid look like on similar paper from the last 30 days?",
+          third: "Our credit-portfolio concentration limit is $250M total in B-rated consumer discretionary. Current exposure is $215M. A $40M hold takes us to $255M — over the cap. Either size down or sell something into syndication."
+        },
+        followup: "What is the secondary bid on similar B-rated consumer-discretionary TLB issued in the last 30 days, and what's our roll-off schedule?"
+      }
+    }
+  },
+  advisor: {
+    label: "💼 Wealth Advisor",
+    tags: { junior: "Junior advisor", senior: "Senior advisor", third: "Reg BI / Fiduciary" },
+    scenarios: {
+      lbo: {
+        question: "My HNW client is asking if we can put $2M of his portfolio into this LBO debt. He likes the SOFR + 425 yield. Is this a suitable recommendation?",
+        voices: {
+          junior: "TLB structure means floating rate, B-rated borrower, 7-year maturity. Yield is attractive but the credit risk is real — recovery in default is typically 60-80 cents on the dollar for senior secured TLBs.",
+          senior: "$2M is 8% of his $25M portfolio. For an HNW client with 12% high-yield allocation already, adding more leveraged credit exposure pushes him past prudent diversification. Even if he wants it, the right answer is 'we can do $500K, not $2M, and here's why.'",
+          third: "Reg BI suitability: this product is illiquid and the client's stated time horizon is <5 years per his most recent IPS. Recommending the full $2M without an explicit IPS update and a documented suitability override violates our fiduciary standard. Either get the IPS revised or size to $500K with a written rationale."
+        },
+        followup: "When did we last update this client's IPS, and what's his stated liquidity need over the next 24 months?"
+      }
+    }
+  }
+};
+
 window.MODES = {
   cloud: {
     latency: "cloud · last query 1.2s",

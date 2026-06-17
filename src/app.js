@@ -4,6 +4,7 @@
   let currentScenario = "lbo";
   let currentMode = "cloud";
   let currentDevice = "desktop";
+  let currentPersona = "compliance";
   let wifiOn = true;
   let auditCount = 0;
   let auditHash = "0000000000000000";
@@ -33,11 +34,31 @@
     $("screen-title").textContent = s.title;
     $("screen-canvas").innerHTML = s.canvas;
     $("recognized-context").textContent = s.recognized;
-    $("hud-question-text").textContent = s.question;
-    $("voice-junior").textContent = s.voices.junior;
-    $("voice-senior").textContent = s.voices.senior;
-    $("voice-compliance").textContent = s.voices.compliance;
-    $("followup-text").textContent = s.followup;
+
+    // Persona override path: if the current persona has voice content for this
+    // scenario, use that. Otherwise fall back to the scenario's default voices.
+    const personaOverride =
+      window.PERSONAS[currentPersona] &&
+      window.PERSONAS[currentPersona].scenarios &&
+      window.PERSONAS[currentPersona].scenarios[key];
+
+    const voices = personaOverride ? personaOverride.voices : s.voices;
+    const question = personaOverride ? personaOverride.question : s.question;
+    const followup = personaOverride ? personaOverride.followup : s.followup;
+    const tags = window.PERSONAS[currentPersona] && window.PERSONAS[currentPersona].tags;
+
+    $("hud-question-text").textContent = question;
+    $("voice-junior").textContent = voices.junior;
+    $("voice-senior").textContent = voices.senior;
+    $("voice-compliance").textContent = voices.compliance || voices.third || "";
+    $("followup-text").textContent = followup;
+
+    // update voice tag labels to match persona vocabulary
+    if (tags) {
+      document.querySelector(".voice-junior .voice-tag").textContent = tags.junior;
+      document.querySelector(".voice-senior .voice-tag").textContent = tags.senior;
+      document.querySelector(".voice-compliance .voice-tag").textContent = tags.third;
+    }
   }
 
   function renderMode(mode) {
@@ -89,6 +110,19 @@
     document.body.classList.toggle("device-xreal-active", device === "xreal");
     $("device-badge").textContent = info.label;
   }
+
+  // wire persona picker
+  document.querySelectorAll(".persona-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".persona-btn").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentPersona = btn.dataset.persona;
+      renderScenario(currentScenario);
+      renderMode(currentMode);
+      const p = window.PERSONAS[currentPersona];
+      toast(`Persona pack switched: ${p.label}. Same engine, different voices, different recommended device.`);
+    });
+  });
 
   // wire device picker
   document.querySelectorAll(".dev-btn").forEach((btn) => {

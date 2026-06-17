@@ -87,7 +87,7 @@ body {
   color: #6b7280;
 }
 
-.scenario-btn {
+.scenario-btn, .persona-btn {
   background: #11151c;
   color: #d8dee9;
   border: 1px solid #1f2937;
@@ -101,6 +101,12 @@ body {
   background: rgba(52, 211, 153, 0.12);
   border-color: #34d399;
   color: #ecf0f5;
+}
+.persona-btn.active {
+  background: rgba(168, 85, 247, 0.16);
+  border-color: #a855f7;
+  color: #f0abfc;
+  font-weight: 700;
 }
 
 .user-card, .audit-card {
