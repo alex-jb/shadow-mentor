@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shadow — Intern Mentor Demo</title>
+<link rel="stylesheet" href="src/style.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">◐</span>
+    <span class="brand-name">Shadow</span>
+    <span class="brand-sub">intern mentor · demo build 2026-06-17</span>
+  </div>
+  <div class="mode-toggle">
+    <span class="mode-label">Mode:</span>
+    <button id="mode-cloud" class="mode-btn active">Cloud</button>
+    <button id="mode-local" class="mode-btn">Local (on-device)</button>
+    <button id="wifi-off" class="wifi-btn" title="Toggle WiFi to prove local mode keeps working">📡 WiFi: on</button>
+  </div>
+</header>
+
+<main class="stage">
+  <!-- Left: scenario picker -->
+  <aside class="scenario-picker">
+    <h3>Scenario</h3>
+    <button class="scenario-btn active" data-scenario="lbo">📊 LBO Model in Excel</button>
+    <button class="scenario-btn" data-scenario="bloomberg">📈 Bloomberg Terminal</button>
+    <button class="scenario-btn" data-scenario="cds">📉 CDS Spread Chart</button>
+    <button class="scenario-btn" data-scenario="policy">📄 Internal Underwriting Policy</button>
+
+    <div class="user-card">
+      <h4>👤 Maya Chen</h4>
+      <p>1st-year analyst<br/>Stifel Wealth Mgmt<br/>Day 4 of 90-day onboarding</p>
+    </div>
+
+    <div class="audit-card">
+      <h4>🔒 Q&A audit chain</h4>
+      <p id="audit-count">0 Q&A pairs recorded</p>
+      <p class="hash" id="audit-hash">SHA-256: (waiting...)</p>
+    </div>
+  </aside>
+
+  <!-- Center: the analyst's screen -->
+  <section class="screen-frame">
+    <div class="screen-header">
+      <span id="screen-title">analyst-desktop.maya</span>
+      <span class="latency-tag" id="latency-tag">cloud · last query 1.2s</span>
+    </div>
+    <div class="screen-canvas" id="screen-canvas">
+      <!-- scenario content injected here -->
+    </div>
+  </section>
+
+  <!-- Right: the Shadow HUD overlay -->
+  <aside class="shadow-hud" id="shadow-hud">
+    <div class="hud-strip">
+      <div class="hud-dot"></div>
+      <span class="hud-strip-label">Shadow is watching · <em id="recognized-context">recognizing screen…</em></span>
+    </div>
+
+    <div class="hud-section">
+      <div class="hud-question" id="hud-question">
+        <span class="quote-mark">"</span><span id="hud-question-text">What is "Senior Leverage Ratio" actually measuring?</span><span class="quote-mark">"</span>
+      </div>
+    </div>
+
+    <div class="hud-voices">
+      <div class="voice voice-junior">
+        <span class="voice-tag">Junior analyst</span>
+        <span class="voice-text" id="voice-junior"></span>
+      </div>
+      <div class="voice voice-senior">
+        <span class="voice-tag">Senior / VP</span>
+        <span class="voice-text" id="voice-senior"></span>
+      </div>
+      <div class="voice voice-compliance">
+        <span class="voice-tag">Compliance</span>
+        <span class="voice-text" id="voice-compliance"></span>
+      </div>
+    </div>
+
+    <div class="hud-followup">
+      <p class="followup-prompt"><em>What your VP would ask next:</em></p>
+      <p class="followup-text" id="followup-text">—</p>
+    </div>
+
+    <div class="hud-buttons">
+      <button id="ask-btn" class="hud-btn primary">Ask Shadow</button>
+      <button id="logged-btn" class="hud-btn">Mark "logged" for audit</button>
+    </div>
+  </aside>
+</main>
+
+<footer class="bottombar">
+  <span>This is a desktop overlay mock. Production = native macOS overlay + ScreenCaptureKit + on-device Gemma 3 9B / Phi-4-mini / AFM 3 Core Advanced.</span>
+  <a href="docs/shadow-onepager.md">one-pager →</a>
+  <a href="docs/2026-06-17-market-research-memo.md">research memo →</a>
+</footer>
+
+<script src="src/mock-data.js"></script>
+<script src="src/app.js"></script>
+</body>
+</html>
