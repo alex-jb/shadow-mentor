@@ -14,9 +14,15 @@
     <span class="brand-sub">intern mentor · demo build 2026-06-17</span>
   </div>
   <div class="mode-toggle">
+    <span class="mode-label">Device:</span>
+    <button id="dev-desktop" class="dev-btn active" data-device="desktop">🖥 Desktop</button>
+    <button id="dev-g2" class="dev-btn" data-device="g2">👓 Even G2</button>
+    <button id="dev-frame" class="dev-btn" data-device="frame">🕶 Brilliant Frame</button>
+    <button id="dev-xreal" class="dev-btn" data-device="xreal">✨ XReal Air 2 Ultra</button>
+    <span class="mode-divider"></span>
     <span class="mode-label">Mode:</span>
     <button id="mode-cloud" class="mode-btn active">Cloud</button>
-    <button id="mode-local" class="mode-btn">Local (on-device)</button>
+    <button id="mode-local" class="mode-btn">Local</button>
     <button id="wifi-off" class="wifi-btn" title="Toggle WiFi to prove local mode keeps working">📡 WiFi: on</button>
   </div>
 </header>
@@ -53,8 +59,9 @@
     </div>
   </section>
 
-  <!-- Right: the Shadow HUD overlay -->
-  <aside class="shadow-hud" id="shadow-hud">
+  <!-- Right: the Shadow HUD overlay (changes per device) -->
+  <aside class="shadow-hud device-desktop" id="shadow-hud">
+    <div class="device-badge" id="device-badge">🖥 Desktop overlay · ScreenCaptureKit + on-device Phi-4-mini</div>
     <div class="hud-strip">
       <div class="hud-dot"></div>
       <span class="hud-strip-label">Shadow is watching · <em id="recognized-context">recognizing screen…</em></span>
@@ -98,6 +105,37 @@
   <a href="docs/shadow-onepager.md">one-pager →</a>
   <a href="docs/2026-06-17-market-research-memo.md">research memo →</a>
 </footer>
+
+<!-- XReal "spatial AR" overlay — visible only when xreal device is selected -->
+<div class="spatial-panels" id="spatial-panels">
+  <div class="spatial-panel sp-risk">
+    <div class="panel-title">⌖ 3D Risk Surface</div>
+    VaR(99%) 1d: $4.2M<br/>
+    ES tail: $5.8M<br/>
+    Concentration HHI: 1,840<br/>
+    <span style="color:#fbbf24;">▲ vol regime shift</span>
+  </div>
+  <div class="spatial-panel sp-bias">
+    <div class="panel-title">⌖ Bias Constellation</div>
+    n=30 prior calls<br/>
+    approve cluster: 18 (high agree)<br/>
+    block scatter: 7 (split council)<br/>
+    <span style="color:#34d399;">✓ calibration healthy</span>
+  </div>
+  <div class="spatial-panel sp-network">
+    <div class="panel-title">⌖ Counterparty Network</div>
+    52,418 nodes loaded<br/>
+    you are 2-hops from<br/>
+    flagged sub-cluster<br/>
+    <span style="color:#ef4444;">⚠ walk to inspect</span>
+  </div>
+  <div class="spatial-panel sp-jarvis-hint">
+    <div class="panel-title">⌖ JARVIS mode active</div>
+    Same brain. 3 floating panels anchored<br/>
+    in your real workspace. Only you can see them.<br/>
+    Bone-conduction audio whispers council verdicts.
+  </div>
+</div>
 
 <script src="src/mock-data.js"></script>
 <script src="src/app.js"></script>

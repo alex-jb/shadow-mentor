@@ -33,16 +33,29 @@ body {
   color: #6b7280;
 }
 
-.mode-toggle { display: flex; gap: 8px; align-items: center; font-size: 13px; }
+.mode-toggle { display: flex; gap: 6px; align-items: center; font-size: 13px; flex-wrap: wrap; }
 .mode-label { color: #94a3b8; }
-.mode-btn, .wifi-btn {
+.mode-divider {
+  width: 1px;
+  height: 20px;
+  background: #2b3645;
+  margin: 0 6px;
+}
+.dev-btn, .mode-btn, .wifi-btn {
   background: #1f2937;
   color: #d8dee9;
   border: 1px solid #2b3645;
-  padding: 6px 12px;
+  padding: 6px 10px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 11.5px;
+}
+.dev-btn.active {
+  background: #0a3d62;
+  color: #ecf0f5;
+  border-color: #34d399;
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(52, 211, 153, 0.35);
 }
 .mode-btn.active {
   background: #34d399;
@@ -200,7 +213,7 @@ body {
   cursor: help;
 }
 
-/* Shadow HUD */
+/* Shadow HUD — base */
 .shadow-hud {
   background: #0e1218;
   border: 1px solid #34d399;
@@ -213,6 +226,152 @@ body {
   top: 16px;
   height: fit-content;
   box-shadow: 0 0 30px rgba(52, 211, 153, 0.08);
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.device-badge {
+  font-size: 10px;
+  color: #34d399;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  padding: 4px 8px;
+  background: rgba(52, 211, 153, 0.08);
+  border-radius: 4px;
+  border-left: 3px solid #34d399;
+  margin-bottom: 4px;
+}
+
+/* ───────────────────────────────────────────────
+   Device-specific HUD treatments
+   Same backend brain → different presentation
+   ─────────────────────────────────────────────── */
+
+/* Even G2: monocular green, text-only, single contrarian only */
+.shadow-hud.device-g2 {
+  background: #050a05;
+  border: 2px solid #16a34a;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  box-shadow: 0 0 30px rgba(22, 163, 74, 0.45);
+}
+.device-g2 .hud-question { color: #4ade80; font-style: normal; font-family: ui-monospace, monospace; font-size: 12.5px; }
+.device-g2 .voice { background: rgba(74, 222, 128, 0.05); border-left-color: #16a34a !important; color: #4ade80; }
+.device-g2 .voice .voice-tag { color: #4ade80 !important; }
+.device-g2 .voice-text { color: #4ade80; font-family: ui-monospace, monospace; font-size: 11.5px; }
+.device-g2 .voice-junior, .device-g2 .voice-compliance { display: none; }
+.device-g2 .hud-followup { background: rgba(74, 222, 128, 0.03); border-color: #16a34a; }
+.device-g2 .hud-followup .followup-prompt, .device-g2 .hud-followup .followup-text { color: #4ade80; font-family: ui-monospace, monospace; }
+.device-g2 .quote-mark { color: #16a34a; }
+.device-g2 .device-badge { color: #4ade80; background: rgba(74, 222, 128, 0.06); border-left-color: #16a34a; }
+.device-g2 .hud-strip-label, .device-g2 .hud-strip-label em { color: #4ade80; font-family: ui-monospace, monospace; }
+.device-g2 .hud-dot { background: #16a34a; box-shadow: 0 0 8px #16a34a; }
+.device-g2 .hud-buttons .hud-btn { background: #050a05; color: #4ade80; border-color: #16a34a; font-family: ui-monospace, monospace; }
+.device-g2 .hud-buttons .hud-btn.primary { background: #16a34a; color: #050a05; }
+
+/* Brilliant Frame: small color HUD, 2 voices visible, no senior verbose */
+.shadow-hud.device-frame {
+  background: #0b0f17;
+  border: 1px solid #60a5fa;
+  box-shadow: 0 0 30px rgba(96, 165, 250, 0.18);
+}
+.device-frame .device-badge { color: #60a5fa; background: rgba(96, 165, 250, 0.08); border-left-color: #60a5fa; }
+.device-frame .voice-senior { display: none; }
+.device-frame .voice-junior, .device-frame .voice-compliance { font-size: 11.5px; }
+.device-frame .hud-followup { background: rgba(96, 165, 250, 0.05); border-color: #60a5fa; }
+.device-frame .hud-followup .followup-prompt { color: #60a5fa; }
+.device-frame .hud-strip-label em { color: #60a5fa; }
+.device-frame .hud-question { color: #ecf0f5; font-size: 13px; }
+.device-frame .hud-dot { background: #60a5fa; box-shadow: 0 0 8px #60a5fa; }
+
+/* XReal Air 2 Ultra: JARVIS-style floating panels with depth + spatial anchors */
+.shadow-hud.device-xreal {
+  background: linear-gradient(135deg, rgba(14, 18, 24, 0.95), rgba(52, 211, 153, 0.04));
+  border: 1px solid #a855f7;
+  box-shadow:
+    0 0 30px rgba(168, 85, 247, 0.35),
+    0 12px 36px rgba(52, 211, 153, 0.22),
+    inset 0 0 20px rgba(168, 85, 247, 0.08);
+}
+.device-xreal .device-badge {
+  color: #c084fc;
+  background: rgba(168, 85, 247, 0.1);
+  border-left-color: #a855f7;
+}
+.device-xreal .hud-strip-label em { color: #c084fc; }
+.device-xreal .hud-question { color: #f0abfc; font-family: -apple-system, sans-serif; }
+.device-xreal .voice {
+  background: linear-gradient(180deg, #11151c, #0a0e15);
+  box-shadow:
+    0 4px 12px rgba(168, 85, 247, 0.15),
+    0 1px 3px rgba(0, 0, 0, 0.5);
+  transform: translateZ(0);
+  position: relative;
+}
+.device-xreal .voice::before {
+  content: "⌖ anchored at +30cm above laptop screen";
+  position: absolute;
+  top: -14px;
+  right: 8px;
+  font-size: 9px;
+  color: #c084fc;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.device-xreal .voice-junior::before { content: "⌖ anchored 30° left, +20cm depth"; }
+.device-xreal .voice-senior::before { content: "⌖ anchored center, +30cm depth"; }
+.device-xreal .voice-compliance::before { content: "⌖ anchored 30° right, +25cm depth"; }
+.device-xreal .hud-followup {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(52, 211, 153, 0.08));
+  border: 1px solid #c084fc;
+  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.2);
+}
+.device-xreal .hud-followup .followup-prompt { color: #c084fc; }
+.device-xreal .hud-dot { background: #a855f7; box-shadow: 0 0 12px #a855f7; }
+
+/* XReal extra: spatial floating data panels (only visible in xreal mode) */
+.spatial-panels {
+  display: none;
+  position: fixed;
+  pointer-events: none;
+  inset: 0;
+  z-index: 5;
+}
+.device-xreal-active .spatial-panels { display: block; }
+.spatial-panel {
+  position: absolute;
+  background: linear-gradient(180deg, rgba(11, 13, 18, 0.92), rgba(11, 13, 18, 0.6));
+  border: 1px solid rgba(168, 85, 247, 0.55);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: #f0abfc;
+  font-family: ui-monospace, monospace;
+  font-size: 11px;
+  box-shadow:
+    0 0 24px rgba(168, 85, 247, 0.45),
+    0 8px 30px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  pointer-events: auto;
+  animation: floatPanel 6s ease-in-out infinite;
+}
+.spatial-panel .panel-title {
+  font-size: 9px;
+  color: #c084fc;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 4px;
+}
+.spatial-panel.sp-risk      { top: 18%;   left: 38%;  width: 220px; transform: rotate(-2deg); }
+.spatial-panel.sp-bias      { top: 52%;   right: 33%; width: 200px; transform: rotate(1.5deg); animation-delay: 1.5s; }
+.spatial-panel.sp-network   { top: 32%;   left: 12%;  width: 180px; transform: rotate(-3deg); animation-delay: 3s; }
+.spatial-panel.sp-jarvis-hint { bottom: 110px; right: 32%; width: 240px; font-size: 10px; color: #c084fc; transform: rotate(0.5deg); animation-delay: 4.5s; }
+@keyframes floatPanel {
+  0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+  50%      { transform: translateY(-6px) rotate(var(--r, 0deg)); }
+}
+
+/* Desktop: default state (no override) */
+.shadow-hud.device-desktop .device-badge {
+  color: #34d399;
 }
 
 .hud-strip {
