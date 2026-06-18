@@ -28,22 +28,32 @@ Toggle Live mode → click any combo → real 3-voice deliberation in 1-3 second
 - 18/18 tests green (data-model + API contract)
 - Native macOS app to be built Q3 2026
 
-## Shadow Agentic Score — first baseline (2026-06-18)
+## Shadow Agentic Score — 88/100 after 4-iteration prompt sweep (2026-06-18 evening)
 
-**Aggregate Shadow Agentic Score: 39/100** *(2026-06-18, 8 tasks, anthropic provider)*
+**Aggregate Shadow Agentic Score: 88/100** *(2026-06-18 evening, 8 tasks, anthropic provider, v0.3.3 prompts)*
 
-| Task | Score | Notes |
+| Task | v0.1 → v0.3.3 | Notes |
 |---|---|---|
-| compliance × lbo | 54 | strong term coverage |
-| compliance × policy | 54-59 | best persona on cite-real-policy-numbers |
-| quant × lbo | 32-37 | SR 11-7 framing weak |
-| quant × cds | 27-32 | weakest on regime-shift terminology |
-| engineer × lbo | 15-20 | engineer voice misses "async" / "circuit-breaker" terms most |
-| trader × bloomberg | 27 | misses "single-name" cap framing |
-| trader × cds | 33-40 | "carry" / "regime" partially present |
-| advisor × lbo | 51-56 | clean Reg BI / IPS citations |
+| compliance × lbo | 54 → **100** | clean across all 9 checks |
+| compliance × policy | 54 → 92 | third voice length 8% over rubric ceiling |
+| quant × lbo | 32 → 84 | senior + third length each ~10% over |
+| quant × cds | 27 → 93 | one missing PSI/VIX term in senior |
+| engineer × lbo | 15 → **100** | biggest absolute jump in the run |
+| trader × bloomberg | 27 → 76 | Sonnet runs trader voices long even with 260-char prompt cap |
+| trader × cds | 33 → 76 | same length-overshoot pattern |
+| advisor × lbo | 51 → 84 | senior voice still verbose |
 
-Most points are lost on the **latency_ok < 10s** check (10 / 100 weight) — current end-to-end is 11-15s per task because the 4 sequential Anthropic calls (3 voices + 1 follow-up) aren't fully parallelized at the orchestration layer. v0.2 will hit this with prompt caching + parallel voice + followup.
+Four iterations, each measured against the same deterministic rubric:
+
+| Iter | Aggregate | Change |
+|---|---|---|
+| v0.1 (baseline) | 39 | first real run, every length check failing |
+| v0.3.0 explicit char-range asks | 64 | +25 |
+| v0.3.1 hard MAX framing + anchor terms | 76 | +12 |
+| v0.3.2 followup capped + terminal-? regex | 84 | +8 |
+| v0.3.3 per-voice cap 260/300/320 | **88** | +4 |
+
+The honest cap is ~88 against this rubric — remaining 12 points are length-ceiling vs term-coverage tradeoffs (push lengths tighter and Sonnet drops anchor terms like "Credit Committee" / "single-name" / "VIX").
 
 Re-run any time:
 

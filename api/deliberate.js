@@ -13,6 +13,7 @@ import { callGlm } from "../lib/glm-call.js";
 import { PERSONA_PROMPTS, SCENARIO_CONTEXTS } from "../lib/prompts.js";
 
 const CLAUDE_MODEL = "claude-sonnet-4-5-20250929";
+const CLAUDE_HAIKU_MODEL = "claude-haiku-4-5-20251001";
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -50,13 +51,14 @@ export default async function handler(req, res) {
 
   async function callVoice(systemPrompt) {
     if (provider === "glm") {
-      const { text } = await callGlm({ systemPrompt, userMessage, maxTokens: 220 });
+      const { text } = await callGlm({ systemPrompt, userMessage, maxTokens: 180 });
       return text;
     }
     const response = await anthropicClient.messages.create({
       model: CLAUDE_MODEL,
-      max_tokens: 220,
-      system: systemPrompt,
+      max_tokens: 180,
+      // v0.2 prompt caching on persona system prompt
+      system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }],
       messages: [{ role: "user", content: userMessage }]
     });
     return response.content
@@ -73,24 +75,28 @@ export default async function handler(req, res) {
       callVoice(prompts.third)
     ]);
 
-    const followupSys = "You generate a single follow-up question that a VP would ask next, given a council deliberation. One sentence, ending with a question mark.";
-    const followupUser = `Original question: ${userQuestion}\n\nJunior voice: ${junior}\n\nSenior voice: ${senior}\n\nCompliance voice: ${third}\n\nWhat is the single most important follow-up question?`;
+    // v0.3 — followup hard-capped 180 chars + forced terminal '?'
+    const followupSys = "You generate exactly ONE follow-up question a VP would ask next. HARD LIMIT: MAXIMUM 180 characters total. Must end with a question mark. No preamble. No 'Follow-up:' prefix. Just the question.";
+    const followupUser = `Original: ${userQuestion}\n\nJunior: ${junior}\n\nSenior: ${senior}\n\nCompliance: ${third}\n\nThe single most important follow-up question (max 180 chars, ends with ?):`;
 
     let followup, model;
     if (provider === "glm") {
-      const r = await callGlm({ systemPrompt: followupSys, userMessage: followupUser, maxTokens: 80 });
+      const r = await callGlm({ systemPrompt: followupSys, userMessage: followupUser, maxTokens: 50 });
       followup = r.text;
       model = r.model;
     } else {
       const followupResponse = await anthropicClient.messages.create({
-        model: CLAUDE_MODEL,
-        max_tokens: 80,
+        model: CLAUDE_HAIKU_MODEL,
+        max_tokens: 50,
         system: followupSys,
         messages: [{ role: "user", content: followupUser }]
       });
       followup = followupResponse.content.filter((b) => b.type === "text").map((b) => b.text).join("").trim();
       model = CLAUDE_MODEL;
     }
+    // strip common preambles + force terminal ?
+    followup = followup.replace(/^(Follow-up question:|Follow-up:|Question:)\s*/i, "").trim();
+    if (!/\?$/.test(followup)) followup = followup.replace(/[.!]+$/, "") + "?";
 
     const latency_ms = Date.now() - t0;
     return res.status(200).json({

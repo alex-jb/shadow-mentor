@@ -1,10 +1,10 @@
 {
   "version": "0.1",
-  "run_at": "2026-06-18T17:21:36.213Z",
+  "run_at": "2026-06-18T17:41:37.831Z",
   "benchmark_name": "Shadow Agentic Capability Benchmark (HF Is-it-agentic-enough-inspired)",
   "n_tasks": 8,
   "n_completed": 8,
-  "aggregate_score": 39,
+  "aggregate_score": 88,
   "rubric": {
     "per_task_max_score": 100,
     "checks": [
@@ -33,21 +33,21 @@
         ]
       },
       "result_meta": {
-        "latency_ms": 11575,
+        "latency_ms": 6223,
         "model": "claude-sonnet-4-5-20250929"
       },
       "checks": {
-        "junior_length": false,
-        "senior_length": false,
-        "third_length": false,
+        "junior_length": true,
+        "senior_length": true,
+        "third_length": true,
         "followup_is_question": true,
         "followup_length": true,
         "junior_term_coverage": 1,
-        "senior_term_coverage": 0.6666666666666666,
-        "third_term_coverage": 0.6666666666666666,
-        "latency_ok": false
+        "senior_term_coverage": 1,
+        "third_term_coverage": 1,
+        "latency_ok": true
       },
-      "score": 54
+      "score": 100
     },
     {
       "task": {
@@ -61,21 +61,21 @@
         ]
       },
       "result_meta": {
-        "latency_ms": 11210,
+        "latency_ms": 7249,
         "model": "claude-sonnet-4-5-20250929"
       },
       "checks": {
-        "junior_length": false,
-        "senior_length": false,
+        "junior_length": true,
+        "senior_length": true,
         "third_length": false,
         "followup_is_question": true,
         "followup_length": true,
         "junior_term_coverage": 1,
-        "senior_term_coverage": 0.6666666666666666,
+        "senior_term_coverage": 1,
         "third_term_coverage": 1,
-        "latency_ok": false
+        "latency_ok": true
       },
-      "score": 59
+      "score": 92
     },
     {
       "task": {
@@ -89,21 +89,21 @@
         ]
       },
       "result_meta": {
-        "latency_ms": 11900,
+        "latency_ms": 8289,
         "model": "claude-sonnet-4-5-20250929"
       },
       "checks": {
-        "junior_length": false,
+        "junior_length": true,
         "senior_length": false,
         "third_length": false,
         "followup_is_question": true,
-        "followup_length": false,
-        "junior_term_coverage": 0.3333333333333333,
-        "senior_term_coverage": 0.3333333333333333,
+        "followup_length": true,
+        "junior_term_coverage": 1,
+        "senior_term_coverage": 1,
         "third_term_coverage": 1,
-        "latency_ok": false
+        "latency_ok": true
       },
-      "score": 37
+      "score": 84
     },
     {
       "task": {
@@ -117,21 +117,21 @@
         ]
       },
       "result_meta": {
-        "latency_ms": 13455,
+        "latency_ms": 9104,
         "model": "claude-sonnet-4-5-20250929"
       },
       "checks": {
-        "junior_length": false,
-        "senior_length": false,
-        "third_length": false,
+        "junior_length": true,
+        "senior_length": true,
+        "third_length": true,
         "followup_is_question": true,
-        "followup_length": false,
-        "junior_term_coverage": 0.3333333333333333,
-        "senior_term_coverage": 0.3333333333333333,
-        "third_term_coverage": 0.3333333333333333,
-        "latency_ok": false
+        "followup_length": true,
+        "junior_term_coverage": 1,
+        "senior_term_coverage": 0.6666666666666666,
+        "third_term_coverage": 1,
+        "latency_ok": true
       },
-      "score": 27
+      "score": 93
     },
     {
       "task": {
@@ -145,21 +145,21 @@
         ]
       },
       "result_meta": {
-        "latency_ms": 14051,
+        "latency_ms": 7447,
         "model": "claude-sonnet-4-5-20250929"
       },
       "checks": {
-        "junior_length": false,
-        "senior_length": false,
-        "third_length": false,
+        "junior_length": true,
+        "senior_length": true,
+        "third_length": true,
         "followup_is_question": true,
-        "followup_length": false,
-        "junior_term_coverage": 0.3333333333333333,
-        "senior_term_coverage": 0,
-        "third_term_coverage": 0,
-        "latency_ok": false
+        "followup_length": true,
+        "junior_term_coverage": 1,
+        "senior_term_coverage": 1,
+        "third_term_coverage": 1,
+        "latency_ok": true
       },
-      "score": 15
+      "score": 100
     },
     {
       "task": {
@@ -173,7 +173,7 @@
         ]
       },
       "result_meta": {
-        "latency_ms": 12374,
+        "latency_ms": 9022,
         "model": "claude-sonnet-4-5-20250929"
       },
       "checks": {
@@ -181,13 +181,13 @@
         "senior_length": false,
         "third_length": false,
         "followup_is_question": true,
-        "followup_length": false,
-        "junior_term_coverage": 0,
-        "senior_term_coverage": 0.3333333333333333,
-        "third_term_coverage": 0.6666666666666666,
-        "latency_ok": false
+        "followup_length": true,
+        "junior_term_coverage": 1,
+        "senior_term_coverage": 1,
+        "third_term_coverage": 1,
+        "latency_ok": true
       },
-      "score": 27
+      "score": 76
     },
     {
       "task": {
@@ -201,7 +201,7 @@
         ]
       },
       "result_meta": {
-        "latency_ms": 12256,
+        "latency_ms": 8997,
         "model": "claude-sonnet-4-5-20250929"
       },
       "checks": {
@@ -209,13 +209,13 @@
         "senior_length": false,
         "third_length": false,
         "followup_is_question": true,
-        "followup_length": false,
-        "junior_term_coverage": 0,
-        "senior_term_coverage": 0.6666666666666666,
-        "third_term_coverage": 0.6666666666666666,
-        "latency_ok": false
+        "followup_length": true,
+        "junior_term_coverage": 1,
+        "senior_term_coverage": 1,
+        "third_term_coverage": 1,
+        "latency_ok": true
       },
-      "score": 33
+      "score": 76
     },
     {
       "task": {
@@ -229,21 +229,21 @@
         ]
       },
       "result_meta": {
-        "latency_ms": 11243,
+        "latency_ms": 6754,
         "model": "claude-sonnet-4-5-20250929"
       },
       "checks": {
         "junior_length": false,
         "senior_length": false,
-        "third_length": false,
+        "third_length": true,
         "followup_is_question": true,
         "followup_length": true,
-        "junior_term_coverage": 0.6666666666666666,
+        "junior_term_coverage": 1,
         "senior_term_coverage": 1,
-        "third_term_coverage": 0.6666666666666666,
-        "latency_ok": false
+        "third_term_coverage": 1,
+        "latency_ok": true
       },
-      "score": 56
+      "score": 84
     }
   ]
 }

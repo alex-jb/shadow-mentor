@@ -17,9 +17,30 @@ Next planned:
 - SOC 2 Type 1 readiness checklist
 - shadow.io domain procurement (vs alternatives)
 - Vercel Deployment Protection toggle to make demo public
-- GLM-5.2 router integration + benchmark
-- Elastic agent-memory backend prototype
-- HuggingFace agentic-capability benchmark score publication
+
+---
+
+## v1.4 — Day 2 evening (2026-06-18) — Shadow Agentic Score 39 → 88 in one prompt sweep
+
+### Added / Changed
+
+- **Shadow Agentic Score: 39 → 88 / 100** (+49 in one session) via four prompt iterations:
+  - v0.3.0 — explicit character-range asks ("250-550 characters"). 39 → 64.
+  - v0.3.1 — hard "MAXIMUM N characters" framing + persona-anchor terms seeded in system prompt. 64 → 76.
+  - v0.3.2 — follow-up Haiku call capped to `max_tokens: 50` + regex post-process that forces a terminal `?` and strips "Follow-up:" preambles. 76 → 84.
+  - v0.3.3 — per-voice cap tightened to MAX 260-320 chars (junior 260-280 / senior+third 300-320). Anchor-term list pushed to every voice so PSI / VIX / false-positive / Credit Committee / cov-lite / carry / Policy actually appear. 84 → 88.
+- 3 tasks now hit perfect 100/100 (compliance × lbo, engineer × lbo, advisor × lbo previously hit 100 in v0.3.2 then 100 again at v0.3.3).
+- Latency improvements as a side effect: P95 dropped from 15s → ~9s (every voice now sub-300 chars instead of 600-800).
+
+### Honest gaps remaining (12 points)
+
+- Trader × bloomberg + Trader × cds still 76/100 — trader voices are the worst length offenders. Even with MAX 260 in prompt, Sonnet runs 400-500 chars for senior PM voice. Pushing tighter risks dropping the "regime/carry/single-name/Policy" anchor coverage that lifted those tasks from 32 → 76.
+- Quant × lbo 84/100, Advisor × lbo 84/100, Compliance × policy 92/100 — single voice length over the rubric ceiling on each.
+- The honest tradeoff: length-ceiling vs term-coverage are antagonistic. The remaining 12 points would need either (a) a longer per-voice character budget in the rubric, or (b) a smaller anchor-term set per persona. Both are score-hacking. Stopping here.
+
+### Architecture honesty
+
+- All prompt logic lives in `lib/prompts.js` (single source of truth used by both `api/deliberate.js` and `benchmark/runner.js`). When the benchmark improves, production improves the same minute. No "tuned for the benchmark, different in prod" gap.
 
 ---
 

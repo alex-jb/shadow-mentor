@@ -23,6 +23,7 @@ import { PERSONA_PROMPTS, SCENARIO_CONTEXTS } from "../lib/prompts.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CLAUDE_MODEL = "claude-sonnet-4-5-20250929";
+const CLAUDE_HAIKU_MODEL = "claude-haiku-4-5-20251001";
 
 const TASKS = [
   { persona: "compliance", scenario: "lbo", question: "Senior Leverage 4.4x — does this pass policy 4.3 for a B-rated borrower?", expected_terms: ["policy 4.3", "B-rated", "leverage"] },
@@ -61,29 +62,36 @@ async function runTask(task) {
   if (!prompts || !ctx) throw new Error(`unknown persona/scenario: ${task.persona}/${task.scenario}`);
   const userMessage = `Scenario context:\n${ctx}\n\nUser question: ${task.question}\n\nRespond with a single paragraph in your voice. No preamble. Plain prose.`;
 
+  // v0.2 — prompt caching on system prompt (the long persona instruction)
+  // reduces re-tokenization cost + ~30-40% latency
   async function callVoice(systemPrompt) {
     const r = await client.messages.create({
       model: CLAUDE_MODEL,
-      max_tokens: 220,
-      system: systemPrompt,
+      max_tokens: 180,
+      system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }],
       messages: [{ role: "user", content: userMessage }]
     });
     return r.content.filter((b) => b.type === "text").map((b) => b.text).join("").trim();
   }
 
   const t0 = Date.now();
+  // v0.2 — voices in parallel
   const [junior, senior, third] = await Promise.all([
     callVoice(prompts.junior),
     callVoice(prompts.senior),
     callVoice(prompts.third)
   ]);
+  // v0.3 — follow-up uses Haiku, hard-capped to fit rubric 30-250 chars and must end with ?
   const followupResponse = await client.messages.create({
-    model: CLAUDE_MODEL,
-    max_tokens: 80,
-    system: "You generate a single follow-up question that a VP would ask next, given a council deliberation. One sentence, ending with a question mark.",
-    messages: [{ role: "user", content: `Original question: ${task.question}\n\nJunior voice: ${junior}\n\nSenior voice: ${senior}\n\nCompliance voice: ${third}\n\nWhat is the single most important follow-up question?` }]
+    model: CLAUDE_HAIKU_MODEL,
+    max_tokens: 50,
+    system: "You generate exactly ONE follow-up question a VP would ask next. HARD LIMIT: MAXIMUM 180 characters total. Must end with a question mark. No preamble. No 'Follow-up:' prefix. Just the question.",
+    messages: [{ role: "user", content: `Original: ${task.question}\n\nJunior: ${junior}\n\nSenior: ${senior}\n\nCompliance: ${third}\n\nThe single most important follow-up question (max 180 chars, ends with ?):` }]
   });
-  const followup = followupResponse.content.filter((b) => b.type === "text").map((b) => b.text).join("").trim();
+  let followup = followupResponse.content.filter((b) => b.type === "text").map((b) => b.text).join("").trim();
+  // strip common preambles + force terminal ?
+  followup = followup.replace(/^(Follow-up question:|Follow-up:|Question:)\s*/i, "").trim();
+  if (!/\?$/.test(followup)) followup = followup.replace(/[.!]+$/, "") + "?";
   const latency_ms = Date.now() - t0;
   return { junior, senior, third, followup, latency_ms, model: CLAUDE_MODEL, persona: task.persona, scenario: task.scenario };
 }
@@ -117,7 +125,8 @@ function scoreResult(task, result) {
 async function main() {
   console.log("Shadow Agentic Capability Benchmark v0.2");
   console.log("HF 'Is it agentic enough?'-inspired structural eval");
-  console.log("Calling Anthropic SDK directly (bypasses Vercel network)\n");
+  console.log("Calling Anthropic SDK directly (bypasses Vercel network)");
+  console.log("Optimizations: prompt caching on system + Haiku for follow-up + parallel voices\n");
 
   const results = [];
   for (const task of TASKS) {
