@@ -20,6 +20,22 @@ Next planned:
 
 ---
 
+## v1.6 — Day 2 evening (2026-06-18) — Honest variance: 88 ± 4 (n=3)
+
+Ran the v0.3.3 benchmark 3 times back-to-back to validate the 88/100 from CHANGELOG v1.4. The rubric is deterministic but Sonnet's outputs are stochastic, so a single run is a sample.
+
+- Run A: 87/100 (trader × bloomberg 64 outlier)
+- Run B: 93/100 (4 perfect tasks)
+- Run C: 86/100 (trader × cds dropped to 71)
+
+**Mean: 88.7 / Std: 3.1 / Range: 86-93 (spread 7).**
+
+README + badge updated from "88/100" to "88 ± 4 (n=3)" — honest central tendency, not a fixed value. All three raw reports persisted under `benchmark/history/` with a `SUMMARY.md` so reviewers can audit the variance themselves.
+
+This matters for procurement defensibility: an inflated single-run score that doesn't reproduce is exactly the LLM-as-judge gaming we set out to avoid. Sample variance reported up front.
+
+---
+
 ## v1.5 — Day 2 evening hygiene + endpoints (2026-06-18)
 
 ### Added

@@ -4,7 +4,7 @@
 
 > The on-device AI council and audit chain that follows the user across desktop, smart glasses, and spatial AR. One engine. Four device clients. Five persona packs.
 
-[![tests](https://img.shields.io/badge/tests-37%2F37%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-88%2F100-brightgreen)](./benchmark/report-2026-06-18.json) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-37%2F37%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-88%20%C2%B1%204%20(n%3D3)-brightgreen)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
 
 ## Live demo
 
@@ -31,9 +31,11 @@ Toggle Live mode → click any combo → real 3-voice deliberation in 6-10 secon
 - 37/37 tests green (data-model + API contract + endpoint contract)
 - Native macOS app to be built Q3 2026
 
-## Shadow Agentic Score — 88/100 after 4-iteration prompt sweep (2026-06-18 evening)
+## Shadow Agentic Score — 88 ± 4 (n=3) after 4-iteration prompt sweep (2026-06-18 evening)
 
-**Aggregate Shadow Agentic Score: 88/100** *(2026-06-18 evening, 8 tasks, anthropic provider, v0.3.3 prompts)*
+**Aggregate Shadow Agentic Score: 88 ± 4 (n=3)** *(2026-06-18 evening, 8 tasks per run, anthropic provider, v0.3.3 prompts. Runs: 87 / 93 / 86. Mean 88.7, std 3.1, range 7. See [`benchmark/history/SUMMARY.md`](./benchmark/history/SUMMARY.md) for the 3 raw reports.)*
+
+The rubric is deterministic but Sonnet's outputs are not, so single-run scores are samples — central tendency is the honest read.
 
 | Task | v0.1 → v0.3.3 | Notes |
 |---|---|---|

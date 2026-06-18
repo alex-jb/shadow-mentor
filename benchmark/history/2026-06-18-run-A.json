@@ -1,10 +1,10 @@
 {
   "version": "0.1",
-  "run_at": "2026-06-18T18:46:39.409Z",
+  "run_at": "2026-06-18T18:44:36.433Z",
   "benchmark_name": "Shadow Agentic Capability Benchmark (HF Is-it-agentic-enough-inspired)",
   "n_tasks": 8,
   "n_completed": 8,
-  "aggregate_score": 86,
+  "aggregate_score": 87,
   "rubric": {
     "per_task_max_score": 100,
     "checks": [
@@ -33,21 +33,21 @@
         ]
       },
       "result_meta": {
-        "latency_ms": 11049,
+        "latency_ms": 7788,
         "model": "claude-sonnet-4-5-20250929"
       },
       "checks": {
         "junior_length": true,
         "senior_length": true,
-        "third_length": true,
+        "third_length": false,
         "followup_is_question": true,
         "followup_length": true,
         "junior_term_coverage": 1,
         "senior_term_coverage": 1,
         "third_term_coverage": 1,
-        "latency_ok": false
+        "latency_ok": true
       },
-      "score": 90
+      "score": 92
     },
     {
       "task": {
@@ -61,7 +61,7 @@
         ]
       },
       "result_meta": {
-        "latency_ms": 6816,
+        "latency_ms": 6845,
         "model": "claude-sonnet-4-5-20250929"
       },
       "checks": {
@@ -89,19 +89,19 @@
         ]
       },
       "result_meta": {
-        "latency_ms": 10183,
+        "latency_ms": 8890,
         "model": "claude-sonnet-4-5-20250929"
       },
       "checks": {
         "junior_length": true,
         "senior_length": false,
-        "third_length": true,
+        "third_length": false,
         "followup_is_question": true,
         "followup_length": true,
-        "junior_term_coverage": 0.6666666666666666,
-        "senior_term_coverage": 1,
+        "junior_term_coverage": 1,
+        "senior_term_coverage": 0.6666666666666666,
         "third_term_coverage": 1,
-        "latency_ok": false
+        "latency_ok": true
       },
       "score": 77
     },
@@ -117,21 +117,21 @@
         ]
       },
       "result_meta": {
-        "latency_ms": 7606,
+        "latency_ms": 9042,
         "model": "claude-sonnet-4-5-20250929"
       },
       "checks": {
         "junior_length": true,
         "senior_length": true,
-        "third_length": false,
+        "third_length": true,
         "followup_is_question": true,
         "followup_length": true,
         "junior_term_coverage": 0.6666666666666666,
-        "senior_term_coverage": 1,
+        "senior_term_coverage": 0.6666666666666666,
         "third_term_coverage": 1,
         "latency_ok": true
       },
-      "score": 87
+      "score": 88
     },
     {
       "task": {
@@ -145,7 +145,63 @@
         ]
       },
       "result_meta": {
-        "latency_ms": 7110,
+        "latency_ms": 8374,
+        "model": "claude-sonnet-4-5-20250929"
+      },
+      "checks": {
+        "junior_length": true,
+        "senior_length": false,
+        "third_length": true,
+        "followup_is_question": true,
+        "followup_length": true,
+        "junior_term_coverage": 1,
+        "senior_term_coverage": 1,
+        "third_term_coverage": 1,
+        "latency_ok": true
+      },
+      "score": 92
+    },
+    {
+      "task": {
+        "persona": "trader",
+        "scenario": "bloomberg",
+        "question": "AAPL setup for long entry — trapped by mean-reversion?",
+        "expected_terms": [
+          "regime",
+          "concentration",
+          "single-name"
+        ]
+      },
+      "result_meta": {
+        "latency_ms": 9487,
+        "model": "claude-sonnet-4-5-20250929"
+      },
+      "checks": {
+        "junior_length": false,
+        "senior_length": false,
+        "third_length": false,
+        "followup_is_question": true,
+        "followup_length": true,
+        "junior_term_coverage": 0.6666666666666666,
+        "senior_term_coverage": 0.6666666666666666,
+        "third_term_coverage": 1,
+        "latency_ok": true
+      },
+      "score": 64
+    },
+    {
+      "task": {
+        "persona": "trader",
+        "scenario": "cds",
+        "question": "CDX widened 34bps WoW — rotate to credit protection?",
+        "expected_terms": [
+          "carry",
+          "regime",
+          "Policy"
+        ]
+      },
+      "result_meta": {
+        "latency_ms": 6842,
         "model": "claude-sonnet-4-5-20250929"
       },
       "checks": {
@@ -163,62 +219,6 @@
     },
     {
       "task": {
-        "persona": "trader",
-        "scenario": "bloomberg",
-        "question": "AAPL setup for long entry — trapped by mean-reversion?",
-        "expected_terms": [
-          "regime",
-          "concentration",
-          "single-name"
-        ]
-      },
-      "result_meta": {
-        "latency_ms": 9141,
-        "model": "claude-sonnet-4-5-20250929"
-      },
-      "checks": {
-        "junior_length": false,
-        "senior_length": false,
-        "third_length": false,
-        "followup_is_question": true,
-        "followup_length": true,
-        "junior_term_coverage": 1,
-        "senior_term_coverage": 1,
-        "third_term_coverage": 1,
-        "latency_ok": true
-      },
-      "score": 76
-    },
-    {
-      "task": {
-        "persona": "trader",
-        "scenario": "cds",
-        "question": "CDX widened 34bps WoW — rotate to credit protection?",
-        "expected_terms": [
-          "carry",
-          "regime",
-          "Policy"
-        ]
-      },
-      "result_meta": {
-        "latency_ms": 9410,
-        "model": "claude-sonnet-4-5-20250929"
-      },
-      "checks": {
-        "junior_length": false,
-        "senior_length": false,
-        "third_length": false,
-        "followup_is_question": true,
-        "followup_length": true,
-        "junior_term_coverage": 0.6666666666666666,
-        "senior_term_coverage": 1,
-        "third_term_coverage": 1,
-        "latency_ok": true
-      },
-      "score": 71
-    },
-    {
-      "task": {
         "persona": "advisor",
         "scenario": "lbo",
         "question": "HNW client $2M into TLB — Reg BI suitable?",
@@ -229,13 +229,13 @@
         ]
       },
       "result_meta": {
-        "latency_ms": 6872,
+        "latency_ms": 7407,
         "model": "claude-sonnet-4-5-20250929"
       },
       "checks": {
-        "junior_length": false,
+        "junior_length": true,
         "senior_length": true,
-        "third_length": true,
+        "third_length": false,
         "followup_is_question": true,
         "followup_length": true,
         "junior_term_coverage": 1,

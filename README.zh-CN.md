@@ -4,7 +4,7 @@
 
 > 跟随分析师跨桌面、智能眼镜、空间 AR 的端侧 AI 议会 + 审计链。一个引擎,四个设备端,五套人格包。面向受监管的银行工作流。
 
-[![tests](https://img.shields.io/badge/tests-37%2F37%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-88%2F100-brightgreen)](./benchmark/report-2026-06-18.json) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-37%2F37%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-88%20%C2%B1%204%20(n%3D3)-brightgreen)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
 
 ## 现场演示
 
@@ -31,9 +31,11 @@
 - 37/37 测试绿 (data-model + API contract + endpoint contract)
 - 原生 macOS app 计划 2026 Q3 上线
 
-## Shadow Agentic Score — 单 session 4 轮迭代 39 → 88 (2026-06-18 晚)
+## Shadow Agentic Score — 88 ± 4 (n=3, 2026-06-18 晚)
 
-**综合 Shadow Agentic Score: 88/100** *(2026-06-18 晚,8 任务,anthropic provider,v0.3.3 prompts)*
+**综合 Shadow Agentic Score: 88 ± 4 (n=3)** *(2026-06-18 晚,每轮 8 任务,anthropic provider,v0.3.3 prompts。三次跑分: 87 / 93 / 86,均值 88.7,std 3.1,极差 7。3 份原始 report 在 [`benchmark/history/SUMMARY.md`](./benchmark/history/SUMMARY.md))*
+
+Rubric 是确定性的,但 Sonnet 输出是随机的 — 单跑分是一个样本,中心趋势才是诚实读数。
 
 | 任务 | v0.1 → v0.3.3 | 备注 |
 |---|---|---|
