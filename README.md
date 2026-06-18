@@ -28,14 +28,31 @@ Toggle Live mode → click any combo → real 3-voice deliberation in 1-3 second
 - 18/18 tests green (data-model + API contract)
 - Native macOS app to be built Q3 2026
 
-## Run the benchmark
+## Shadow Agentic Score — first baseline (2026-06-18)
+
+**Aggregate Shadow Agentic Score: 39/100** *(2026-06-18, 8 tasks, anthropic provider)*
+
+| Task | Score | Notes |
+|---|---|---|
+| compliance × lbo | 54 | strong term coverage |
+| compliance × policy | 54-59 | best persona on cite-real-policy-numbers |
+| quant × lbo | 32-37 | SR 11-7 framing weak |
+| quant × cds | 27-32 | weakest on regime-shift terminology |
+| engineer × lbo | 15-20 | engineer voice misses "async" / "circuit-breaker" terms most |
+| trader × bloomberg | 27 | misses "single-name" cap framing |
+| trader × cds | 33-40 | "carry" / "regime" partially present |
+| advisor × lbo | 51-56 | clean Reg BI / IPS citations |
+
+Most points are lost on the **latency_ok < 10s** check (10 / 100 weight) — current end-to-end is 11-15s per task because the 4 sequential Anthropic calls (3 voices + 1 follow-up) aren't fully parallelized at the orchestration layer. v0.2 will hit this with prompt caching + parallel voice + followup.
+
+Re-run any time:
 
 ```bash
 export ANTHROPIC_API_KEY=$(cat ~/.config/anthropic_key)
 node benchmark/runner.js
 ```
 
-Outputs `benchmark/report-YYYY-MM-DD.json` — 8 tasks × 5 personas, per-task 0-100 score, aggregate Shadow Agentic Score. Requires Vercel Deployment Protection disabled.
+Outputs `benchmark/report-YYYY-MM-DD.json`. Cost: ~$0.05 per run. **Calls Anthropic SDK directly — does NOT require Vercel Deployment Protection toggle**.
 
 ## What is this
 

@@ -23,6 +23,23 @@ Next planned:
 
 ---
 
+## v1.3 — Day 2 afternoon hotfix (2026-06-18) — first real Shadow Agentic Score
+
+### Added
+
+- **First real Shadow Agentic Score: 39/100**. `benchmark/report-2026-06-18.json` recorded. 8 tasks across 5 personas. Anthropic provider. Two independent runs both produced 39/100 (deterministic structural rubric). Cost per run ~$0.05.
+- Per-task scores documented in README. Latency check (under 10s, weight 10) is where most points are lost — orchestration is currently 11-15s for the 4-call council pattern. v0.2 will hit this with prompt caching + parallel voice + followup.
+- `lib/prompts.js` — extracted PERSONA_PROMPTS + SCENARIO_CONTEXTS to a single source of truth. Used by both `api/deliberate.js` (production) and `benchmark/runner.js` (capability eval).
+- Benchmark runner v0.2 — calls Anthropic SDK directly instead of going through the Vercel `/api/deliberate` endpoint. Bypasses Vercel Deployment Protection auth wall entirely. **Score can be re-measured locally without Alex's dashboard toggle.**
+- LICENSE — MIT, copyright Alex Xiaoyu Ji 2026.
+- `.github/workflows/test.yml` — GitHub Actions CI runs `node --test test/*.test.js` on push/PR to main.
+
+### Changed
+
+- `README.md` adds Shadow Agentic Score section with per-task table + interpretation note + re-run command.
+
+---
+
 ## v1.2 — Day 2 afternoon (2026-06-18) — GLM-5.2 provider + Elastic memory mock + Agentic benchmark
 
 ### Added — real code presence for all 3 daily-brief signals

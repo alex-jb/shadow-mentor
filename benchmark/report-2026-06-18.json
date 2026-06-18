@@ -1,10 +1,10 @@
 {
   "version": "0.1",
-  "run_at": "2026-06-18T17:17:28.380Z",
+  "run_at": "2026-06-18T17:21:36.213Z",
   "benchmark_name": "Shadow Agentic Capability Benchmark (HF Is-it-agentic-enough-inspired)",
   "n_tasks": 8,
-  "n_completed": 0,
-  "aggregate_score": 0,
+  "n_completed": 8,
+  "aggregate_score": 39,
   "rubric": {
     "per_task_max_score": 100,
     "checks": [
@@ -32,7 +32,22 @@
           "leverage"
         ]
       },
-      "error": "task compliance/lbo HTTP 401: <!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><title>Authentication Required</title><script type=text/llms.txt>\n## Note to agents ac"
+      "result_meta": {
+        "latency_ms": 11575,
+        "model": "claude-sonnet-4-5-20250929"
+      },
+      "checks": {
+        "junior_length": false,
+        "senior_length": false,
+        "third_length": false,
+        "followup_is_question": true,
+        "followup_length": true,
+        "junior_term_coverage": 1,
+        "senior_term_coverage": 0.6666666666666666,
+        "third_term_coverage": 0.6666666666666666,
+        "latency_ok": false
+      },
+      "score": 54
     },
     {
       "task": {
@@ -45,7 +60,22 @@
           "Policy"
         ]
       },
-      "error": "task compliance/policy HTTP 401: <!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><title>Authentication Required</title><script type=text/llms.txt>\n## Note to agents ac"
+      "result_meta": {
+        "latency_ms": 11210,
+        "model": "claude-sonnet-4-5-20250929"
+      },
+      "checks": {
+        "junior_length": false,
+        "senior_length": false,
+        "third_length": false,
+        "followup_is_question": true,
+        "followup_length": true,
+        "junior_term_coverage": 1,
+        "senior_term_coverage": 0.6666666666666666,
+        "third_term_coverage": 1,
+        "latency_ok": false
+      },
+      "score": 59
     },
     {
       "task": {
@@ -58,7 +88,22 @@
           "model risk"
         ]
       },
-      "error": "task quant/lbo HTTP 401: <!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><title>Authentication Required</title><script type=text/llms.txt>\n## Note to agents ac"
+      "result_meta": {
+        "latency_ms": 11900,
+        "model": "claude-sonnet-4-5-20250929"
+      },
+      "checks": {
+        "junior_length": false,
+        "senior_length": false,
+        "third_length": false,
+        "followup_is_question": true,
+        "followup_length": false,
+        "junior_term_coverage": 0.3333333333333333,
+        "senior_term_coverage": 0.3333333333333333,
+        "third_term_coverage": 1,
+        "latency_ok": false
+      },
+      "score": 37
     },
     {
       "task": {
@@ -71,7 +116,22 @@
           "false-positive"
         ]
       },
-      "error": "task quant/cds HTTP 401: <!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><title>Authentication Required</title><script type=text/llms.txt>\n## Note to agents ac"
+      "result_meta": {
+        "latency_ms": 13455,
+        "model": "claude-sonnet-4-5-20250929"
+      },
+      "checks": {
+        "junior_length": false,
+        "senior_length": false,
+        "third_length": false,
+        "followup_is_question": true,
+        "followup_length": false,
+        "junior_term_coverage": 0.3333333333333333,
+        "senior_term_coverage": 0.3333333333333333,
+        "third_term_coverage": 0.3333333333333333,
+        "latency_ok": false
+      },
+      "score": 27
     },
     {
       "task": {
@@ -84,7 +144,22 @@
           "Fair Lending"
         ]
       },
-      "error": "task engineer/lbo HTTP 401: <!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><title>Authentication Required</title><script type=text/llms.txt>\n## Note to agents ac"
+      "result_meta": {
+        "latency_ms": 14051,
+        "model": "claude-sonnet-4-5-20250929"
+      },
+      "checks": {
+        "junior_length": false,
+        "senior_length": false,
+        "third_length": false,
+        "followup_is_question": true,
+        "followup_length": false,
+        "junior_term_coverage": 0.3333333333333333,
+        "senior_term_coverage": 0,
+        "third_term_coverage": 0,
+        "latency_ok": false
+      },
+      "score": 15
     },
     {
       "task": {
@@ -97,7 +172,22 @@
           "single-name"
         ]
       },
-      "error": "task trader/bloomberg HTTP 401: <!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><title>Authentication Required</title><script type=text/llms.txt>\n## Note to agents ac"
+      "result_meta": {
+        "latency_ms": 12374,
+        "model": "claude-sonnet-4-5-20250929"
+      },
+      "checks": {
+        "junior_length": false,
+        "senior_length": false,
+        "third_length": false,
+        "followup_is_question": true,
+        "followup_length": false,
+        "junior_term_coverage": 0,
+        "senior_term_coverage": 0.3333333333333333,
+        "third_term_coverage": 0.6666666666666666,
+        "latency_ok": false
+      },
+      "score": 27
     },
     {
       "task": {
@@ -110,7 +200,22 @@
           "Policy"
         ]
       },
-      "error": "task trader/cds HTTP 401: <!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><title>Authentication Required</title><script type=text/llms.txt>\n## Note to agents ac"
+      "result_meta": {
+        "latency_ms": 12256,
+        "model": "claude-sonnet-4-5-20250929"
+      },
+      "checks": {
+        "junior_length": false,
+        "senior_length": false,
+        "third_length": false,
+        "followup_is_question": true,
+        "followup_length": false,
+        "junior_term_coverage": 0,
+        "senior_term_coverage": 0.6666666666666666,
+        "third_term_coverage": 0.6666666666666666,
+        "latency_ok": false
+      },
+      "score": 33
     },
     {
       "task": {
@@ -123,7 +228,22 @@
           "suitability"
         ]
       },
-      "error": "task advisor/lbo HTTP 401: <!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><title>Authentication Required</title><script type=text/llms.txt>\n## Note to agents ac"
+      "result_meta": {
+        "latency_ms": 11243,
+        "model": "claude-sonnet-4-5-20250929"
+      },
+      "checks": {
+        "junior_length": false,
+        "senior_length": false,
+        "third_length": false,
+        "followup_is_question": true,
+        "followup_length": true,
+        "junior_term_coverage": 0.6666666666666666,
+        "senior_term_coverage": 1,
+        "third_term_coverage": 0.6666666666666666,
+        "latency_ok": false
+      },
+      "score": 56
     }
   ]
 }
