@@ -1,0 +1,129 @@
+{
+  "version": "0.1",
+  "run_at": "2026-06-18T17:17:28.380Z",
+  "benchmark_name": "Shadow Agentic Capability Benchmark (HF Is-it-agentic-enough-inspired)",
+  "n_tasks": 8,
+  "n_completed": 0,
+  "aggregate_score": 0,
+  "rubric": {
+    "per_task_max_score": 100,
+    "checks": [
+      "junior_length 80-500",
+      "senior_length 100-600",
+      "third_length 100-600",
+      "followup_is_question",
+      "followup_length 30-250",
+      "junior_term_coverage of 3 expected terms",
+      "senior_term_coverage",
+      "third_term_coverage",
+      "latency under 10s"
+    ],
+    "weights": "junior_len:8 senior_len:8 third_len:8 followup_q:10 followup_len:6 junior_terms:15 senior_terms:20 third_terms:15 latency:10"
+  },
+  "results": [
+    {
+      "task": {
+        "persona": "compliance",
+        "scenario": "lbo",
+        "question": "Senior Leverage 4.4x — does this pass policy 4.3 for a B-rated borrower?",
+        "expected_terms": [
+          "policy 4.3",
+          "B-rated",
+          "leverage"
+        ]
+      },
+      "error": "task compliance/lbo HTTP 401: <!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><title>Authentication Required</title><script type=text/llms.txt>\n## Note to agents ac"
+    },
+    {
+      "task": {
+        "persona": "compliance",
+        "scenario": "policy",
+        "question": "Cov-lite request — what documentation do I need before Credit Committee?",
+        "expected_terms": [
+          "Credit Committee",
+          "cov-lite",
+          "Policy"
+        ]
+      },
+      "error": "task compliance/policy HTTP 401: <!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><title>Authentication Required</title><script type=text/llms.txt>\n## Note to agents ac"
+    },
+    {
+      "task": {
+        "persona": "quant",
+        "scenario": "lbo",
+        "question": "PSI tripped on credit features — is this PD trustworthy?",
+        "expected_terms": [
+          "SR 11",
+          "PSI",
+          "model risk"
+        ]
+      },
+      "error": "task quant/lbo HTTP 401: <!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><title>Authentication Required</title><script type=text/llms.txt>\n## Note to agents ac"
+    },
+    {
+      "task": {
+        "persona": "quant",
+        "scenario": "cds",
+        "question": "Regime-shift HMM at 0.74 — alert credit desk?",
+        "expected_terms": [
+          "regime",
+          "VIX",
+          "false-positive"
+        ]
+      },
+      "error": "task quant/cds HTTP 401: <!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><title>Authentication Required</title><script type=text/llms.txt>\n## Note to agents ac"
+    },
+    {
+      "task": {
+        "persona": "engineer",
+        "scenario": "lbo",
+        "question": "Refactor credit-decision pipeline — service boundary?",
+        "expected_terms": [
+          "async",
+          "circuit-breaker",
+          "Fair Lending"
+        ]
+      },
+      "error": "task engineer/lbo HTTP 401: <!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><title>Authentication Required</title><script type=text/llms.txt>\n## Note to agents ac"
+    },
+    {
+      "task": {
+        "persona": "trader",
+        "scenario": "bloomberg",
+        "question": "AAPL setup for long entry — trapped by mean-reversion?",
+        "expected_terms": [
+          "regime",
+          "concentration",
+          "single-name"
+        ]
+      },
+      "error": "task trader/bloomberg HTTP 401: <!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><title>Authentication Required</title><script type=text/llms.txt>\n## Note to agents ac"
+    },
+    {
+      "task": {
+        "persona": "trader",
+        "scenario": "cds",
+        "question": "CDX widened 34bps WoW — rotate to credit protection?",
+        "expected_terms": [
+          "carry",
+          "regime",
+          "Policy"
+        ]
+      },
+      "error": "task trader/cds HTTP 401: <!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><title>Authentication Required</title><script type=text/llms.txt>\n## Note to agents ac"
+    },
+    {
+      "task": {
+        "persona": "advisor",
+        "scenario": "lbo",
+        "question": "HNW client $2M into TLB — Reg BI suitable?",
+        "expected_terms": [
+          "Reg BI",
+          "IPS",
+          "suitability"
+        ]
+      },
+      "error": "task advisor/lbo HTTP 401: <!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content=\"width=device-width,initial-scale=1\"><title>Authentication Required</title><script type=text/llms.txt>\n## Note to agents ac"
+    }
+  ]
+}

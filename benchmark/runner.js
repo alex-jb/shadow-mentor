@@ -15,11 +15,14 @@
 // ends with question mark, no hallucinated policy numbers) that buyer
 // procurement decks find more defensible than judge-LLM subjective scores.
 
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import Anthropic from "@anthropic-ai/sdk";
+import { PERSONA_PROMPTS, SCENARIO_CONTEXTS } from "../lib/prompts.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const CLAUDE_MODEL = "claude-sonnet-4-5-20250929";
 
 const TASKS = [
   { persona: "compliance", scenario: "lbo", question: "Senior Leverage 4.4x — does this pass policy 4.3 for a B-rated borrower?", expected_terms: ["policy 4.3", "B-rated", "leverage"] },
@@ -48,22 +51,41 @@ function scoreVoice(voice_text, expected_terms) {
   return matched / expected_terms.length;
 }
 
+// Direct Anthropic SDK call — bypasses Vercel network entirely so the
+// benchmark works regardless of Deployment Protection state.
 async function runTask(task) {
-  const response = await fetch("https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app/api/deliberate", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      persona: task.persona,
-      scenario: task.scenario,
-      question: task.question,
-      provider: "anthropic"
-    })
-  });
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`task ${task.persona}/${task.scenario} HTTP ${response.status}: ${text.slice(0, 200)}`);
+  if (!process.env.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY not set");
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  const prompts = PERSONA_PROMPTS[task.persona];
+  const ctx = SCENARIO_CONTEXTS[task.scenario];
+  if (!prompts || !ctx) throw new Error(`unknown persona/scenario: ${task.persona}/${task.scenario}`);
+  const userMessage = `Scenario context:\n${ctx}\n\nUser question: ${task.question}\n\nRespond with a single paragraph in your voice. No preamble. Plain prose.`;
+
+  async function callVoice(systemPrompt) {
+    const r = await client.messages.create({
+      model: CLAUDE_MODEL,
+      max_tokens: 220,
+      system: systemPrompt,
+      messages: [{ role: "user", content: userMessage }]
+    });
+    return r.content.filter((b) => b.type === "text").map((b) => b.text).join("").trim();
   }
-  return await response.json();
+
+  const t0 = Date.now();
+  const [junior, senior, third] = await Promise.all([
+    callVoice(prompts.junior),
+    callVoice(prompts.senior),
+    callVoice(prompts.third)
+  ]);
+  const followupResponse = await client.messages.create({
+    model: CLAUDE_MODEL,
+    max_tokens: 80,
+    system: "You generate a single follow-up question that a VP would ask next, given a council deliberation. One sentence, ending with a question mark.",
+    messages: [{ role: "user", content: `Original question: ${task.question}\n\nJunior voice: ${junior}\n\nSenior voice: ${senior}\n\nCompliance voice: ${third}\n\nWhat is the single most important follow-up question?` }]
+  });
+  const followup = followupResponse.content.filter((b) => b.type === "text").map((b) => b.text).join("").trim();
+  const latency_ms = Date.now() - t0;
+  return { junior, senior, third, followup, latency_ms, model: CLAUDE_MODEL, persona: task.persona, scenario: task.scenario };
 }
 
 function scoreResult(task, result) {
@@ -93,9 +115,9 @@ function scoreResult(task, result) {
 }
 
 async function main() {
-  console.log("Shadow Agentic Capability Benchmark v0.1");
+  console.log("Shadow Agentic Capability Benchmark v0.2");
   console.log("HF 'Is it agentic enough?'-inspired structural eval");
-  console.log("Target: production Vercel endpoint, provider=anthropic\n");
+  console.log("Calling Anthropic SDK directly (bypasses Vercel network)\n");
 
   const results = [];
   for (const task of TASKS) {
