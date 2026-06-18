@@ -36,7 +36,8 @@ export default async function handler(req, res) {
       { id: "glm", model: "glm-4.5-air", region_focus: "Mainland China" }
     ],
     endpoints: [
-      { path: "/api/deliberate", method: "POST", purpose: "3-voice council deliberation + Haiku follow-up" },
+      { path: "/api/deliberate", method: "POST", purpose: "3-voice council deliberation + Haiku follow-up (LBO+loan body adds deterministic verdict)" },
+      { path: "/api/loan-council", method: "POST", purpose: "Pure-compute 5-voice loan council + verdict (no LLM; Lora Mode A)" },
       { path: "/api/recall", method: "GET", purpose: "Cross-session memory recall with Brier calibration" },
       { path: "/api/calibration", method: "GET", purpose: "Per-persona Brier calibration stats (SR 11-7 dashboard)" },
       { path: "/api/health", method: "GET", purpose: "Liveness + provider-key presence + current score" },

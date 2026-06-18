@@ -67,12 +67,12 @@ test("scenarios endpoint shows both providers", async () => {
   assert.ok(ids.includes("glm"));
 });
 
-test("scenarios endpoint advertises 7 endpoints", async () => {
+test("scenarios endpoint advertises 8 endpoints", async () => {
   const res = mockRes();
   await scenariosHandler({ method: "GET" }, res);
-  assert.equal(res.body.endpoints.length, 7);
+  assert.equal(res.body.endpoints.length, 8);
   const paths = res.body.endpoints.map((e) => e.path);
-  for (const expected of ["/api/deliberate", "/api/recall", "/api/calibration", "/api/health", "/api/badge", "/api/version", "/api/scenarios"]) {
+  for (const expected of ["/api/deliberate", "/api/loan-council", "/api/recall", "/api/calibration", "/api/health", "/api/badge", "/api/version", "/api/scenarios"]) {
     assert.ok(paths.includes(expected), `missing endpoint ${expected}`);
   }
 });

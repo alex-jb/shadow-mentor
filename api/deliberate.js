@@ -11,6 +11,8 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { callGlm } from "../lib/glm-call.js";
 import { PERSONA_PROMPTS, SCENARIO_CONTEXTS } from "../lib/prompts.js";
+import { runLoanCouncil } from "../lib/run-loan-council.js";
+import { validateLoan } from "../lib/schemas/loan.js";
 
 const CLAUDE_MODEL = "claude-sonnet-4-5-20250929";
 const CLAUDE_HAIKU_MODEL = "claude-haiku-4-5-20251001";
@@ -22,7 +24,7 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
 
-  const { persona = "compliance", scenario = "lbo", question, context, provider = "anthropic" } = req.body || {};
+  const { persona = "compliance", scenario = "lbo", question, context, provider = "anthropic", loan } = req.body || {};
 
   if (provider !== "anthropic" && provider !== "glm") {
     return res.status(400).json({ error: `unknown provider: ${provider}. Use "anthropic" or "glm".` });
@@ -99,7 +101,7 @@ export default async function handler(req, res) {
     if (!/\?$/.test(followup)) followup = followup.replace(/[.!]+$/, "") + "?";
 
     const latency_ms = Date.now() - t0;
-    return res.status(200).json({
+    const response = {
       junior,
       senior,
       third,
@@ -109,7 +111,23 @@ export default async function handler(req, res) {
       provider,
       persona,
       scenario
-    });
+    };
+
+    // LBO scenario + loan dict → augment with deterministic verdict layer
+    // (Loredana's 5-voice rule resolver from Mode A package). Gated to LBO
+    // so other scenarios keep advisory tone without a rule verdict.
+    if (scenario === "lbo" && loan) {
+      const v = validateLoan(loan);
+      if (v.valid) {
+        const council = runLoanCouncil(loan);
+        response.verdict = council.final_verdict;
+        response.loan_council = council;
+      } else {
+        response.verdict_validation_errors = v.errors;
+      }
+    }
+
+    return res.status(200).json(response);
   } catch (err) {
     const latency_ms = Date.now() - t0;
     return res.status(500).json({
