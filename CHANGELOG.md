@@ -20,6 +20,32 @@ Next planned:
 
 ---
 
+## v1.5 — Day 2 evening hygiene + endpoints (2026-06-18)
+
+### Added
+
+- **/api/health** — procurement-deck table-stakes liveness probe. Returns service name + version + provider-key booleans + current Shadow Agentic Score + rubric version. 4 contract tests.
+- **/api/badge** — shields.io endpoint serving the live Shadow Agentic Score. README badge can swap from static to live endpoint once Vercel Deployment Protection lifts. 3 contract tests.
+- **llms.txt** at repo root — canonical AI-crawler-friendly product description (architecture / pricing / beachhead / current 88/100 score / repository links) so any agentic search lands on current numbers, not stale README caches.
+- **README.zh-CN.md** — full Chinese mirror of README with 88/100 score table + 4 device clients + 5 persona packs + EU AI Act framing. Language switcher added to top of `README.md`. Satisfies cross-project global rule "All public READMEs bilingual EN+CN".
+- **CONTRIBUTING.md** — pre-PR checklist (test green + benchmark non-regression), single-source-of-truth rule for `lib/prompts.js`, accept/reject list.
+- **SECURITY.md** — in/out of scope (regulated banking + prompt injection + memory contamination + hash chain forgery + key leak channels), 72h ack SLA, private security advisory channel.
+- **CODE_OF_CONDUCT.md** — Contributor Covenant v2.1 with banking-domain framing.
+- **`npm run benchmark`** + **`npm run health`** convenience scripts.
+
+### Changed
+
+- README `tests-XX/XX` badge: 18/18 → 37/37 (now reflects real test count after the endpoint contract suite landed).
+- README "Status" block synced to v0.3.3 / 88-100 / 37 tests. No more stale numbers.
+- README "1-3 second" latency claim corrected to "6-10 second" (honest measurement).
+
+### Confirmed in production
+
+- Both new endpoints deploy clean (HTTP 401 from Vercel = endpoint exists, gated behind Deployment Protection — the previously-documented Alex-only blocker).
+- GitHub Actions CI green across 5 consecutive commits (12-14s per run).
+
+---
+
 ## v1.4 — Day 2 evening (2026-06-18) — Shadow Agentic Score 39 → 88 in one prompt sweep
 
 ### Added / Changed
