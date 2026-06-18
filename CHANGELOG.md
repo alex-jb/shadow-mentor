@@ -23,7 +23,39 @@ Next planned:
 
 ---
 
-## v1.1 — Day 2 (2026-06-18) — Real backend + Vercel deploy + 20/20 content + 18/18 tests
+## v1.2 — Day 2 afternoon (2026-06-18) — GLM-5.2 provider + Elastic memory mock + Agentic benchmark
+
+### Added — real code presence for all 3 daily-brief signals
+
+**A) GLM-5.2 provider integration**
+- `lib/glm-call.js` — OpenAI-compatible fetch to `open.bigmodel.cn/api/paas/v4`, model `glm-5-plus`, env var `GLM_API_KEY`
+- `api/deliberate.js` accepts `{provider: "anthropic"|"glm"}` body param; defaults to anthropic; surfaces clear 500 error when GLM_API_KEY missing on the Vercel project
+- Browser UI: provider picker (Claude / GLM-5.2) next to the 🟢 Live button, yellow active highlight
+- Mainland-China bank pitch demos now work without changing the engine — only the provider button
+
+**B) Cross-session memory backend (mock)**
+- `lib/memory.js` — `InMemoryMemory` class + 30 seed entries (5 personas × 4 scenarios)
+- Entry schema: `{entry_id, timestamp_iso, analyst_id, persona, scenario, question, voices, outcome, brier_score, hash_chain_link}`. 30 seeds grounded in real persona+scenario language (Senior Leverage 4.4x B-rated WidgetCo, cov-lite Credit Committee, CDX widening, AAPL coverage initiation, etc.) for believable demos
+- `api/recall.js` — GET `/api/recall?persona=X&scenario=Y&max_results=N` returns past entries + `calibration_stats` (n, mean Brier, outcome distribution)
+- Browser UI: 📚 Cross-session memory card under audit panel with "Recall past 5" button → renders past entries with outcome badge (approved/blocked/escalated) + Brier score
+- Production swap: replace `InMemoryMemory` with `ElasticMemory` hitting `@elastic/elasticsearch` with the same Entry schema
+
+**C) Shadow Agentic Capability Benchmark v0.1**
+- `benchmark/runner.js` — 8 representative agentic decision tasks across 5 persona packs
+- HF *Is it agentic enough?*-inspired structural eval: voice length ranges, follow-up-is-question check, expected-term coverage per voice, latency under 10s
+- Per-task max 100 points; weights: 8/8/8 voice length + 10 question check + 6 length range + 15/20/15 term coverage + 10 latency
+- Aggregate Shadow Agentic Score = mean of per-task scores
+- Output: `benchmark/report-YYYY-MM-DD.json` with full result trace
+- Hits production Vercel endpoint; requires Deployment Protection disabled
+- Cost: ~$0.05 per full benchmark run (Anthropic Sonnet 4.6)
+
+### Changed
+
+- `README.md` adds Run the benchmark section + GLM-5.2 provider + cross-session memory recall + agentic benchmark in feature list
+
+---
+
+## v1.1 — Day 2 morning (2026-06-18) — Real backend + Vercel deploy + 20/20 content + 18/18 tests
 
 ### Added
 

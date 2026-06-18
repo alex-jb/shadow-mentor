@@ -13,15 +13,29 @@ Click any of:
 - **4 device clients**: 🖥 Desktop · 👓 Even G2 · 🕶 Brilliant Frame · ✨ XReal Air 2 Ultra (JARVIS spatial AR mode)
 - **5 persona packs**: 🛡 Compliance · 🧮 Quant / Data Scientist · 💻 Engineer · 📈 Trader · 💼 Wealth Advisor
 - **4 scenarios**: 📊 LBO Model · 📈 Bloomberg DES · 📉 CDS Spread · 📄 Internal Policy
-- **3 backend modes**: Cloud (mock) · Local (mock) · 🟢 Live (real Anthropic Claude Sonnet 4.6 council)
+- **3 backend modes**: Cloud (mock) · Local (mock) · 🟢 Live
+- **2 LLM providers (Live mode)**: Claude Sonnet 4.6 · GLM-5.2 (Zhipu, Mainland-China bank pitches)
+- **📚 Cross-session memory recall**: click "Recall past 5" in the memory card to fetch past decisions by persona — 30 seed entries seeded with Brier-calibrated outcomes, Elastic agent-memory backend swap-ready
 
 Toggle Live mode → click any combo → real 3-voice deliberation in 1-3 seconds.
 
 **Status**: project initialized 2026-06-17. As of 2026-06-18:
 - 20/20 persona × scenario cells populated with grounded content
 - Real Anthropic Sonnet 4.6 backend deployed to Vercel
+- GLM-5.2 (Zhipu) provider integration (toggle in Live mode)
+- Cross-session memory backend (`api/recall`) with 30 seed entries
+- Shadow Agentic Capability Benchmark v0.1 runner (HF "Is it agentic enough?"-inspired)
 - 18/18 tests green (data-model + API contract)
 - Native macOS app to be built Q3 2026
+
+## Run the benchmark
+
+```bash
+export ANTHROPIC_API_KEY=$(cat ~/.config/anthropic_key)
+node benchmark/runner.js
+```
+
+Outputs `benchmark/report-YYYY-MM-DD.json` — 8 tasks × 5 personas, per-task 0-100 score, aggregate Shadow Agentic Score. Requires Vercel Deployment Protection disabled.
 
 ## What is this
 
