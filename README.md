@@ -17,15 +17,16 @@ Click any of:
 - **2 LLM providers (Live mode)**: Claude Sonnet 4.6 · GLM-5.2 (Zhipu, Mainland-China bank pitches)
 - **📚 Cross-session memory recall**: click "Recall past 5" in the memory card to fetch past decisions by persona — 30 seed entries seeded with Brier-calibrated outcomes, Elastic agent-memory backend swap-ready
 
-Toggle Live mode → click any combo → real 3-voice deliberation in 1-3 seconds.
+Toggle Live mode → click any combo → real 3-voice deliberation in 6-10 seconds (measured 2026-06-18, 3 parallel Anthropic calls + 1 Haiku follow-up).
 
-**Status**: project initialized 2026-06-17. As of 2026-06-18:
+**Status**: project initialized 2026-06-17. As of 2026-06-18 evening:
 - 20/20 persona × scenario cells populated with grounded content
 - Real Anthropic Sonnet 4.6 backend deployed to Vercel
 - GLM-5.2 (Zhipu) provider integration (toggle in Live mode)
-- Cross-session memory backend (`api/recall`) with 30 seed entries
-- Shadow Agentic Capability Benchmark v0.1 runner (HF "Is it agentic enough?"-inspired)
-- 18/18 tests green (data-model + API contract)
+- Cross-session memory backend (`api/recall`) with 30 seed entries + Brier calibration stats endpoint
+- Shadow Agentic Capability Benchmark **v0.3.3** runner — **88/100 aggregate** (HF "Is it agentic enough?"-inspired)
+- `/api/health` + `/api/badge` liveness + shields.io endpoints
+- 37/37 tests green (data-model + API contract + endpoint contract)
 - Native macOS app to be built Q3 2026
 
 ## Shadow Agentic Score — 88/100 after 4-iteration prompt sweep (2026-06-18 evening)

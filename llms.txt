@@ -1,0 +1,52 @@
+# Shadow
+
+> On-device AI council and audit chain that follows the analyst across desktop, smart glasses, and spatial AR. One engine, four device clients, five persona packs. For regulated banking workflows.
+
+## What it is
+
+Shadow watches the analyst's screen on-device (never uploaded by default), recognizes which document or terminal they are looking at, and surfaces three persona voices — Junior analyst (jargon translator), Senior / VP (what your boss cares about), Compliance (what NOT to share or send) — with an auditable hash chain so the bank can answer the OCC / EU AI Act question "why did your analyst make this decision."
+
+## Architecture
+
+- 1 engine: council-runner + on-device LLM router (Phi-4-mini / Gemma 3 9B / Apple Foundation Model 3 Core Advanced) + Perception Layer (YOLO-World + SAM2 + Depth Anything V2) + WebCrypto SHA-256 hash chain
+- 4 device clients: Desktop overlay · Even G2 (monocular green HUD, no camera, customer-facing safe) · Brilliant Frame (color mini HUD, camera + local-only) · XReal Air 2 Ultra (6DoF spatial AR, JARVIS frame with 3 floating panels only the wearer sees)
+- 5 persona packs: Compliance ($1,800/seat/yr) · Quant / Data Scientist ($2,400) · Engineer ($1,500) · Trader ($2,400) · Wealth Advisor ($2,000)
+- Base engine $120K/yr per bank + persona seats. Mid-tier bank ACV ~$982K. 3-year SOM $4.9M ARR across 5 mid-tier banks.
+
+## Why now
+
+- EU AI Act Article 14 high-risk obligations start August 2026 — regulatory deadline driver for compliance-paranoid local-mode
+- Local LLMs cross usable threshold mid-2026 — Gemma 3 9B / Phi-4-mini / Apple Foundation Model 3 Core Advanced
+- Big 4 cut grad hires 6-29% YoY — surviving analysts need leverage faster
+- $1,097-$1,331 per-employee L&D budget in financial services — Shadow at $1,500-$2,400/seat/yr fits the line item
+
+## Two modes
+
+- Cloud mode ($50/seat/mo): screen → Anthropic / OpenAI / GLM-5.2 → response. For non-confidential training data, public market signals, educational explanations.
+- Local mode ($1,500-$2,400/analyst/year per persona): screen → on-device Gemma 3 9B / Phi-4-mini / AFM 3 Core Advanced → response. No data leaves the laptop. Use for client PII, M&A docs, internal models, anything covered by Reg B / Reg BI / EU AI Act high-risk obligations.
+
+## Beachhead
+
+First-year analyst at a $5B-$50B AUM regional wealth-mgmt or boutique IB firm, in their first 90 days, on a firm-issued MacBook Pro, working with Excel + CRM + research portal. Mid-tier target firms in order: Raymond James, Edward Jones, Stifel, LPL Financial, Houlihan Lokey, Lazard MM, William Blair, Jefferies, Alvarez & Marsal, FTI, regional banks $5B-$50B AUM.
+
+## Shadow Agentic Capability Benchmark
+
+Public, deterministic structural evaluation inspired by HuggingFace's June 2026 "Is it agentic enough?" framework. 8 representative agentic decision tasks across the 5 persona packs. Scoring rubric: voice length compliance + follow-up question structure + expected regulatory-term coverage + latency under 10s. Aggregate score reproducible with `node benchmark/runner.js` against your own ANTHROPIC_API_KEY.
+
+Current aggregate: 88/100 (v0.3.3 prompts, 2026-06-18 evening). 3 of 8 tasks score perfect 100/100. Honest ceiling against this rubric without score-hacking.
+
+## Repository
+
+- Source: https://github.com/alex-jb/shadow-mentor
+- License: MIT
+- Live demo: https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app
+- Tests: 37/37 passing (Node --test framework, CI via GitHub Actions)
+
+## Key documents
+
+- [/README.md](/README.md): full product overview
+- [/CHANGELOG.md](/CHANGELOG.md): execution velocity record for bank procurement due diligence
+- [/docs/shadow-product-proposal-v1.2.md](/docs/shadow-product-proposal-v1.2.md): 15-page canonical product proposal
+- [/docs/eu-ai-act-self-attestation-shadow.md](/docs/eu-ai-act-self-attestation-shadow.md): EU AI Act Article 14 self-attestation
+- [/docs/sales-30-target-banks.md](/docs/sales-30-target-banks.md): 30 mid-tier banks first cold-email round
+- [/benchmark/report-2026-06-18.json](/benchmark/report-2026-06-18.json): latest Shadow Agentic Score evidence
