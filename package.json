@@ -10,7 +10,9 @@
   "scripts": {
     "dev": "vercel dev",
     "deploy": "vercel --prod",
-    "test": "node --test test/"
+    "test": "node --test test/*.test.js",
+    "benchmark": "node benchmark/runner.js",
+    "health": "curl -s http://localhost:3000/api/health"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.40.0"
