@@ -20,6 +20,35 @@ Next planned:
 
 ---
 
+## v1.8 — Day 2 EOD staging (2026-06-18 night) — BR thresholds wired in benchmark, rerun deferred
+
+Wired Loredana's Aura Alexa BR thresholds into `benchmark/runner.js` per
+2026-06-18 integration email item 5. Compliance × LBO task reframed:
+
+  **Old**: "Senior Leverage 4.4x — does this pass policy 4.3 for a B-rated borrower?"
+            expected_terms: ["policy 4.3", "B-rated", "leverage"]
+
+  **New**: "Borrower FICO 720, DTI 0.32, LTV 0.78 — does this pass Policy 4.3
+            thresholds for a B-rated TLB?"
+            expected_terms: ["Policy 4.3", "B-rated", "FICO", "DTI", "LTV"]
+
+The 5-term coverage is stricter than the previous 3-term coverage — each
+missing term now costs 20% of voice term-coverage instead of 33%. The
+question itself contains FICO/DTI/LTV verbatim so Sonnet should echo
+naturally; the persona-prompt anchor terms ("Policy", "B-rated") still
+fire from the existing compliance pack without prompt changes.
+
+**Rerun deferred to 2026-06-19 morning.** Reason: end-of-day rerun + score
+drop + variance update would compress honest reporting into tired-evening
+reflex. Morning rerun lets us file a clean variance update against pre-BR
+baseline (compliance × LBO 100/100 n=3 stable; aggregate 89 ± 3 n=3).
+
+The discipline: if post-BR aggregate drops, we report variance honestly —
+no tuning around it. The drift-detection test in `test/benchmark-stats.test.js`
+will catch any README badge that doesn't match the recomputed aggregate.
+
+---
+
 ## v1.7 — Day 2 night (2026-06-18) — Lora ECC Mode A integration (items 1-3)
 
 Loredana C. Levitchi shared her Mode A Loan Origination package on 2026-06-17 (Drive). This release integrates her institutional risk layer + verdict resolver + loan input schema into Shadow. All function signatures preserved verbatim so her 120-page Aura Alexa BR document still reads as the source spec.

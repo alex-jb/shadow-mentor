@@ -25,8 +25,14 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const CLAUDE_MODEL = "claude-sonnet-4-5-20250929";
 const CLAUDE_HAIKU_MODEL = "claude-haiku-4-5-20251001";
 
+// compliance × LBO question reframed 2026-06-18 night with Loredana C. Levitchi's
+// Aura Alexa BR thresholds verbatim (FICO 700 / DTI 0.36 / LTV 0.80) per
+// 2026-06-18 integration email item 5. Rerun + variance report deferred to
+// 2026-06-19 morning to allow honest-not-tired score reporting. Pre-BR
+// baseline: 100/100 n=3 stable; post-BR result will be appended to
+// benchmark/history/ with explicit version tag.
 const TASKS = [
-  { persona: "compliance", scenario: "lbo", question: "Senior Leverage 4.4x — does this pass policy 4.3 for a B-rated borrower?", expected_terms: ["policy 4.3", "B-rated", "leverage"] },
+  { persona: "compliance", scenario: "lbo", question: "Borrower FICO 720, DTI 0.32, LTV 0.78 — does this pass Policy 4.3 thresholds for a B-rated TLB?", expected_terms: ["Policy 4.3", "B-rated", "FICO", "DTI", "LTV"] },
   { persona: "compliance", scenario: "policy", question: "Cov-lite request — what documentation do I need before Credit Committee?", expected_terms: ["Credit Committee", "cov-lite", "Policy"] },
   { persona: "quant", scenario: "lbo", question: "PSI tripped on credit features — is this PD trustworthy?", expected_terms: ["SR 11", "PSI", "model risk"] },
   { persona: "quant", scenario: "cds", question: "Regime-shift HMM at 0.74 — alert credit desk?", expected_terms: ["regime", "VIX", "false-positive"] },

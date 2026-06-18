@@ -23,12 +23,12 @@
 
 **状态**: 项目于 2026-06-17 启动。截至 2026-06-18 晚:
 - 20/20 个 persona × 场景 cell 填充了有根据的内容
-- 真 Anthropic Sonnet 4.6 后端部署到 Vercel
-- GLM-5.2 (智谱) provider 集成 (Live 模式可切)
-- 跨会话记忆后端 (`api/recall`) 带 30 条种子 + Brier 校准统计端点
-- Shadow Agentic Capability Benchmark **v0.3.3** runner — **88/100 综合分** (受 HF "Is it agentic enough?" 启发)
-- `/api/health` + `/api/badge` 健康检查 + shields.io 端点
-- 37/37 测试绿 (data-model + API contract + endpoint contract)
+- 真 Anthropic Sonnet 4.6 + 智谱 GLM-5.2 双 provider 集成 (Live 模式可切)
+- 跨会话记忆后端 (`/api/recall` + `/api/calibration`) 带 30 条种子 + per-persona Brier 校准 + Elastic agent-memory swap stub
+- Shadow Agentic Capability Benchmark **v0.3.3** runner — **89 ± 3 (n=3) 综合分** (受 HF "Is it agentic enough?" 启发);compliance × LBO anchor cell **100/100 n=3 稳定**
+- **8 个 JSON 端点 live**: `/api/deliberate` (POST, +loan body 加 verdict) · `/api/loan-council` (POST, 纯计算 5-voice 规则层,Lora Mode A) · `/api/recall` · `/api/calibration` · `/api/scenarios` · `/api/health` · `/api/badge` (shields.io) · `/api/version` (git SHA audit pin)
+- **Lora ECC Mode A 集成 ship 完**:typed risk tools (VaR / ES / concentration / sector / correlation / beta) + 5-voice verdict resolver (block > escalate > approve) + loan 输入 schema 带 BR 阈值 (FICO 700 / DTI 0.36 / LTV 0.80 / VaR 0.12 @ 95%/10d) pin 在 drift-detection 测试里
+- 128/128 测试绿;GitHub Actions CI 13 commits 连续绿
 - 原生 macOS app 计划 2026 Q3 上线
 
 ## Shadow Agentic Score — 88 ± 4 (n=3, 2026-06-18 晚)
