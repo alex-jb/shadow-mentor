@@ -5,9 +5,40 @@
   let currentMode = "cloud";
   let currentDevice = "desktop";
   let currentPersona = "compliance";
+  let liveMode = false;
   let wifiOn = true;
   let auditCount = 0;
   let auditHash = "0000000000000000";
+
+  async function fetchLiveDeliberation() {
+    const s = window.SCENARIOS[currentScenario];
+    const personaOverride =
+      window.PERSONAS[currentPersona] &&
+      window.PERSONAS[currentPersona].scenarios &&
+      window.PERSONAS[currentPersona].scenarios[currentScenario];
+    const question = personaOverride ? personaOverride.question : s.question;
+
+    try {
+      const response = await fetch("/api/deliberate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          persona: currentPersona,
+          scenario: currentScenario,
+          question
+        })
+      });
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`HTTP ${response.status} ${errText.slice(0, 200)}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (err) {
+      console.error("live deliberation failed", err);
+      return { error: err.message };
+    }
+  }
 
   const DEVICE_INFO = {
     desktop: {
@@ -149,17 +180,47 @@
   // wire mode toggle
   $("mode-cloud").addEventListener("click", () => {
     currentMode = "cloud";
+    liveMode = false;
     $("mode-cloud").classList.add("active");
     $("mode-local").classList.remove("active");
+    $("mode-live").classList.remove("active");
     renderMode(currentMode);
     toast(window.MODES.cloud.description);
   });
   $("mode-local").addEventListener("click", () => {
     currentMode = "local";
+    liveMode = false;
     $("mode-local").classList.add("active");
     $("mode-cloud").classList.remove("active");
+    $("mode-live").classList.remove("active");
     renderMode(currentMode);
     toast(window.MODES.local.description);
+  });
+  $("mode-live").addEventListener("click", async () => {
+    if ($("mode-live").classList.contains("thinking")) return;
+    liveMode = true;
+    $("mode-live").classList.add("active", "thinking");
+    $("mode-cloud").classList.remove("active");
+    $("mode-local").classList.remove("active");
+    toast("Live mode — calling Anthropic Claude Sonnet 4.6 with the 3 persona voice prompts...");
+    $("latency-tag").textContent = "live · calling Sonnet 4.6…";
+    const data = await fetchLiveDeliberation();
+    $("mode-live").classList.remove("thinking");
+    if (data.error) {
+      toast(`Live mode error: ${data.error}`);
+      $("latency-tag").textContent = "live · error · falling back to mock";
+      liveMode = false;
+      $("mode-live").classList.remove("active");
+      $("mode-cloud").classList.add("active");
+      renderMode("cloud");
+      return;
+    }
+    $("voice-junior").textContent = data.junior;
+    $("voice-senior").textContent = data.senior;
+    $("voice-compliance").textContent = data.third;
+    $("followup-text").textContent = data.followup;
+    $("latency-tag").textContent = `live · ${data.model} · ${data.latency_ms}ms`;
+    toast(`Live deliberation in ${data.latency_ms}ms via ${data.model}`);
   });
 
   // wire WiFi toggle — proves local mode is the moat

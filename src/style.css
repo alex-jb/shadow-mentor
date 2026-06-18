@@ -63,6 +63,14 @@ body {
   border-color: #34d399;
   font-weight: 700;
 }
+.live-btn.active {
+  background: #a855f7;
+  color: #fff;
+  border-color: #a855f7;
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.55);
+}
+.live-btn.thinking { opacity: 0.6; cursor: wait; }
 .wifi-btn.off { background: #ef4444; border-color: #ef4444; color: #fff; }
 
 .stage {
