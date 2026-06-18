@@ -12,11 +12,41 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 Next planned:
 - macOS native app POC (ScreenCaptureKit + on-device Phi-4-mini + AppKit overlay)
-- Vercel deployment of the browser demo at a public URL
 - 5-minute Loom recording per the rehearsal script
-- 30-target cold email round (July)
+- 30-target cold email round (July) — requires Loom URL substitution
 - SOC 2 Type 1 readiness checklist
 - shadow.io domain procurement (vs alternatives)
+- Vercel Deployment Protection toggle to make demo public
+- GLM-5.2 router integration + benchmark
+- Elastic agent-memory backend prototype
+- HuggingFace agentic-capability benchmark score publication
+
+---
+
+## v1.1 — Day 2 (2026-06-18) — Real backend + Vercel deploy + 20/20 content + 18/18 tests
+
+### Added
+
+- **GitHub repository created**: https://github.com/alex-jb/shadow-mentor (private, MIT-licensed). Day 1 + Day 2 commits pushed.
+- **20/20 persona × scenario coverage**: filled 15 previously-default cells with persona-specific 3-voice content. Bloomberg / CDS / Policy × {Compliance, Quant, Engineer, Trader, Advisor} all populated with real-world regulatory grounding (Reg AC / Reg BI / SR 11-7 / ECOA / FINRA 2241 / Bloomberg license terms / Stifel Policy 4.3). Verified by `data-model.test.js`.
+- **`api/deliberate.js` — real Anthropic Claude Sonnet 4.6 backend**: Vercel serverless function. POST {persona, scenario, question} → {junior, senior, third, followup, latency_ms, model}. 3-voice Promise.all fan-out + 1 followup-generation call. 5 persona system prompts + 4 scenario contexts. CORS-enabled. 1-3 second end-to-end.
+- **Vercel production deployment**: https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app — ANTHROPIC_API_KEY env var set on the project. Deployment Protection toggle remains pending (auth-required URL until disabled).
+- **`🟢 Live` mode toggle in browser demo**: third option alongside Cloud/Local. Click → fetches `/api/deliberate` → updates HUD with real LLM response + latency tag + model name. Falls back to Cloud mode on error.
+- **Test suite, 18/18 green**: `node --test test/*.test.js`. `test/data-model.test.js` (10 tests) covers structure invariants + regulatory-language coverage for Compliance and Quant personas. `test/api-deliberate.test.js` (8 tests) covers HTTP method validation, OPTIONS preflight, persona/scenario routing, missing API key, CORS headers, 5-persona × 4-scenario routing pass.
+- **`shadow-product-proposal-v1.1.pdf`** (447KB) — incremental update to v1.0 with 3 daily-brief signals (GLM-5.2 added as 5th local-LLM router option, Elastic agent-memory adopted as cross-session memory backend, HuggingFace `Is it agentic enough?` benchmark adopted as canonical agentic-capability score) plus the live Vercel deployment URL. New sections 8.5 (Cross-Session Memory) and 8.6 (Quantified Agentic Capability).
+- **README badges + Live demo prominent**: 4 badges (tests 18/18, live Vercel demo URL, Anthropic Sonnet 4.6 backend, MIT license). Live demo URL surfaced at the top with 4 device × 5 persona × 4 scenario × 3 backend-mode picker breakdown.
+
+### Changed
+
+- `package.json` adds `@anthropic-ai/sdk` dependency, `npm install` + `node --test` scripts, `npm run deploy` for Vercel production push.
+- `vercel.json` simplified to outputDirectory=`.` after Vercel runtime auto-detection.
+- `src/app.js` adds `fetchLiveDeliberation()`, persona-aware question payload, error fallback to Cloud mock.
+- `src/style.css` adds `.live-btn.active` purple glow + `.live-btn.thinking` loading state.
+
+### Decisions
+
+- **GitHub visibility = private** by default. Flip via `gh repo edit alex-jb/shadow-mentor --visibility public --accept-visibility-change-consequences` when bank-procurement diligence is far enough along that public scrutiny is welcome. Banking-compliance brand requires that we choose the moment.
+- **Live mode = opt-in, not default**. Mock by default keeps demo free + fast. Live mode is the buyer demo trigger.
 
 ---
 
