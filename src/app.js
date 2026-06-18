@@ -6,6 +6,7 @@
   let currentDevice = "desktop";
   let currentPersona = "compliance";
   let liveMode = false;
+  let currentProvider = "anthropic";
   let wifiOn = true;
   let auditCount = 0;
   let auditHash = "0000000000000000";
@@ -25,7 +26,8 @@
         body: JSON.stringify({
           persona: currentPersona,
           scenario: currentScenario,
-          question
+          question,
+          provider: currentProvider
         })
       });
       if (!response.ok) {
@@ -141,6 +143,46 @@
     document.body.classList.toggle("device-xreal-active", device === "xreal");
     $("device-badge").textContent = info.label;
   }
+
+  // wire cross-session memory recall
+  async function recallMemory() {
+    const url = `/api/recall?persona=${currentPersona}&scenario=${currentScenario}&max_results=5`;
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      const summary = data.calibration_stats
+        ? `${currentPersona}: n=${data.calibration_stats.n} past decisions · mean Brier ${data.calibration_stats.mean_brier} · ${Object.entries(data.calibration_stats.outcome_dist).map(([k, v]) => `${k}:${v}`).join(" ")}`
+        : "no calibration history yet";
+      $("memory-summary").textContent = summary;
+      const list = $("memory-list");
+      list.innerHTML = "";
+      for (const entry of data.entries) {
+        const li = document.createElement("li");
+        const daysAgo = Math.round((Date.now() - new Date(entry.timestamp_iso).getTime()) / (24 * 3600 * 1000));
+        li.innerHTML = `
+          <div>${entry.scenario.toUpperCase()} · ${daysAgo}d ago · <span class="memory-outcome ${entry.outcome}">${entry.outcome}</span> · <span class="memory-brier">Brier ${entry.brier_score}</span></div>
+          <div style="opacity:0.7;margin-top:2px;">${entry.question}</div>
+        `;
+        list.appendChild(li);
+      }
+      toast(`Recalled ${data.entries.length} past decisions for ${currentPersona} via ${data.backend}`);
+    } catch (err) {
+      toast(`Memory recall failed: ${err.message}`);
+    }
+  }
+  $("memory-recall-btn").addEventListener("click", recallMemory);
+
+  // wire provider picker (Claude / GLM-5.2)
+  document.querySelectorAll(".provider-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".provider-btn").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentProvider = btn.dataset.provider;
+      const provLabel = currentProvider === "glm" ? "GLM-5.2 (Zhipu)" : "Claude Sonnet 4.6";
+      toast(`Provider switched to ${provLabel}. Click 🟢 Live to call it.`);
+    });
+  });
 
   // wire persona picker
   document.querySelectorAll(".persona-btn").forEach((btn) => {

@@ -24,6 +24,9 @@
     <button id="mode-cloud" class="mode-btn active">Cloud (mock)</button>
     <button id="mode-local" class="mode-btn">Local (mock)</button>
     <button id="mode-live" class="mode-btn live-btn" title="Live council via Anthropic Claude Sonnet (uses the configured Vercel API key, NOT for production PII)">🟢 Live</button>
+    <span class="mode-sub-label" style="font-size:11px;color:#94a3b8;margin-left:4px;">provider:</span>
+    <button id="provider-anthropic" class="provider-btn active" data-provider="anthropic" title="Claude Sonnet 4.6 — default for English bank pitches">Claude</button>
+    <button id="provider-glm" class="provider-btn" data-provider="glm" title="GLM-5.2 (Zhipu) — Mainland-China bank pitch, AA #1 open-weight">GLM-5.2</button>
     <button id="wifi-off" class="wifi-btn" title="Toggle WiFi to prove local mode keeps working">📡 WiFi: on</button>
   </div>
 </header>
@@ -53,6 +56,13 @@
       <h4>🔒 Q&A audit chain</h4>
       <p id="audit-count">0 Q&A pairs recorded</p>
       <p class="hash" id="audit-hash">SHA-256: (waiting...)</p>
+    </div>
+
+    <div class="memory-card">
+      <h4>📚 Cross-session memory</h4>
+      <p id="memory-summary">Past 90 days · awaiting persona selection</p>
+      <button id="memory-recall-btn" class="memory-btn" title="Fetch from /api/recall (Elastic agent-memory backend, mock in demo)">Recall past 5</button>
+      <ul id="memory-list" class="memory-list"></ul>
     </div>
   </aside>
 
