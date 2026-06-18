@@ -12,7 +12,9 @@
     "deploy": "vercel --prod",
     "test": "node --test test/*.test.js",
     "benchmark": "node benchmark/runner.js",
-    "health": "curl -s http://localhost:3000/api/health"
+    "benchmark:csv": "node scripts/benchmark-csv.mjs",
+    "health": "curl -s http://localhost:3000/api/health",
+    "calibration": "curl -s 'http://localhost:3000/api/calibration?persona=compliance'"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.40.0"
