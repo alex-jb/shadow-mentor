@@ -1,8 +1,27 @@
 # Shadow
 
-> The on-device mentor for the first 90 days of an investment-banking or wealth-management analyst class.
+> The on-device AI council and audit chain that follows the user across desktop, smart glasses, and spatial AR. One engine. Four device clients. Five persona packs.
 
-**Status**: brand-new repo, just-scaffolded 2026-06-17. Browser demo runnable today; native macOS app to be built in 4 weeks.
+[![tests](https://img.shields.io/badge/tests-18%2F18%20passing-brightgreen)](./test) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+
+## Live demo
+
+**Public URL**: https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app *(Vercel Deployment Protection toggle pending — see `CHANGELOG.md`)*
+
+Click any of:
+
+- **4 device clients**: 🖥 Desktop · 👓 Even G2 · 🕶 Brilliant Frame · ✨ XReal Air 2 Ultra (JARVIS spatial AR mode)
+- **5 persona packs**: 🛡 Compliance · 🧮 Quant / Data Scientist · 💻 Engineer · 📈 Trader · 💼 Wealth Advisor
+- **4 scenarios**: 📊 LBO Model · 📈 Bloomberg DES · 📉 CDS Spread · 📄 Internal Policy
+- **3 backend modes**: Cloud (mock) · Local (mock) · 🟢 Live (real Anthropic Claude Sonnet 4.6 council)
+
+Toggle Live mode → click any combo → real 3-voice deliberation in 1-3 seconds.
+
+**Status**: project initialized 2026-06-17. As of 2026-06-18:
+- 20/20 persona × scenario cells populated with grounded content
+- Real Anthropic Sonnet 4.6 backend deployed to Vercel
+- 18/18 tests green (data-model + API contract)
+- Native macOS app to be built Q3 2026
 
 ## What is this
 
