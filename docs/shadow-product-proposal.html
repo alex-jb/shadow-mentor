@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Alex Xiaoyu Ji" />
+  <title>Shadow Product Proposal v1.0</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="-" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Shadow Product Proposal v1.0</h1>
+<p class="subtitle">Local-only AI Mentor and Compliance Council for
+Regulated Knowledge Work</p>
+<p class="author">Alex Xiaoyu Ji</p>
+<p class="date">2026-06-17 (v1.0 — canonical product proposal)</p>
+</header>
+<h1 id="shadow">Shadow</h1>
+<h2 id="one-engine-three-smart-glass-clients-five-persona-packs">One
+Engine, Three Smart-Glass Clients, Five Persona Packs</h2>
+<p><strong>Canonical product proposal v1.0</strong> — supersedes all
+prior framing of council-diff, ECC banking-quest, ECC trading-quest as
+separate products. Going forward, <em>all four projects share one
+product narrative and one architectural diagram</em>.</p>
+<hr />
+<h2 id="executive-summary">1. Executive Summary</h2>
+<p>Shadow is the <strong>on-device AI council</strong> that runs locally
+on the user’s laptop and three classes of smart glasses. The engine is
+the same for every user. The smart-glass client adapts to <em>what the
+user is doing right now</em>, and the persona pack adapts to <em>who the
+user is</em>.</p>
+<p>The result is a <strong>regulator-grade, local-only,
+hardware-flexible</strong> AI mentor and compliance second-opinion layer
+that no Cloud-only competitor (Glean, Microsoft Copilot, Goldman GS-AI,
+JPM LLM Suite) can match, because the moat is the <em>on-device +
+smart-glass + persona-aware</em> composition, not any single one of
+these.</p>
+<p>Same engine. Three glass clients. Five persona packs. Fifteen
+recognized scenarios. One regulated-grade contract per bank.</p>
+<hr />
+<h2 id="the-problem-regulated-knowledge-work-has-five-stuck-personas">2.
+The Problem — Regulated Knowledge Work Has Five Stuck Personas</h2>
+<p>Across mid-tier US banks ($5B-$50B AUM), five distinct roles each
+face a stuck workflow:</p>
+<ul>
+<li><strong>Compliance officers</strong> rubber-stamp by 3pm because
+every loan file feels template-identical, and OCC examiners demand
+contemporaneous evidence of contrarian challenge that 2D Word memos
+cannot produce.</li>
+<li><strong>Quantitative analysts and data scientists</strong> know
+their model PSI tripped on a feature drift, but the next question —
+<em>which feature, on which sub-population, contributed how much</em> —
+requires writing a SHAP-attribution notebook from scratch, every
+time.</li>
+<li><strong>Software engineers</strong> integrate ML services into the
+credit-decisioning critical path without spatial awareness of where Fair
+Lending data needs to be redacted, where service boundaries should be
+async, or where covered attributes need explicit Reg B logging.</li>
+<li><strong>Traders and portfolio managers</strong> watch a 2D
+correlation heatmap that hides the time-varying regime shift behavior —
+the very thing that wipes out portfolios in stress.</li>
+<li><strong>Wealth advisors</strong> sit across a table from HNW clients
+while pulling out a laptop or a tablet to look up Reg BI suitability
+data, breaking eye contact and customer trust precisely when the trust
+matters most.</li>
+</ul>
+<p>A single 2D dashboard cannot serve all five. Neither can a single XR
+form factor. Neither can a generic LLM chat box behind a compliance
+gateway.</p>
+<p>What can serve all five is <strong>one engine</strong> that emits the
+same JSON verdict, <strong>three glass clients</strong> that render the
+verdict at the right cognitive density for the moment, and <strong>five
+persona packs</strong> that load role-specific voices, jargon,
+regulations, and historical Brier audits.</p>
+<hr />
+<h2 id="the-architecture-one-engine-three-clients-five-packs">3. The
+Architecture — One Engine, Three Clients, Five Packs</h2>
+<pre><code>              ┌─────────────────────────────────────────────┐
+              │           Shadow Engine (shared)            │
+              │                                             │
+              │  council-runner: Promise.all fan-out        │
+              │  ├ junior voice (LLM A)                    │
+              │  ├ senior voice (LLM B)                    │
+              │  └ third voice  (LLM C — compliance /      │
+              │                  model-risk / fiduciary)    │
+              │                                             │
+              │  Local LLM router:                          │
+              │  ├ Apple Foundation Model 3 Core Advanced  │
+              │  ├ Phi-4-mini (3.8B, MMLU 68)              │
+              │  ├ Gemma 3 9B (MMLU-Pro 82.5)              │
+              │  └ Cloud fallback (Claude / GPT)           │
+              │                                             │
+              │  Hash-chain audit: SHA-256 WebCrypto        │
+              │  Perception Layer: YOLO-World + SAM2 +     │
+              │                    Depth Anything V2        │
+              └─────────────────────────────────────────────┘
+                              │
+              ┌───────────────┼───────────────┐
+              ▼               ▼               ▼
+       ┌──────────┐   ┌───────────────┐   ┌──────────────────┐
+       │ 🖥 Desktop│   │ 👓 Even G2    │   │ ✨ XReal Air 2 U │
+       │ macOS app│   │ + 🕶 Frame    │   │ JARVIS spatial AR│
+       │ overlay  │   │ flat HUD      │   │ 3D floating panels│
+       │ full     │   │ glasses       │   │ + bone conduction│
+       │ 3-voice  │   │ 1-2 voice    │   │ + full 3-voice   │
+       └──────────┘   └───────────────┘   └──────────────────┘
+                              │
+              ┌────────┬──────┼──────┬────────┐
+              ▼        ▼      ▼      ▼        ▼
+           🛡 Compl.  🧮 Quant 💻 Eng 📈 Trader 💼 Advisor
+           pack       pack    pack   pack      pack
+           $1,800/y   $2,400  $1,500 $2,400    $2,000
+           per seat   /seat   /seat  /seat     /seat</code></pre>
+<p><strong>Same JSON verdict</strong>. The engine emits the same data: 3
+voice verdicts with rationale, a follow-up question, a
+recognized-context tag, and a hash-chain entry. What changes is
+<em>which client renders it</em> (desktop vs glasses vs XReal AR) and
+<em>which persona pack supplies the voices and the domain
+knowledge</em>.</p>
+<hr />
+<h2 id="the-persona-device-matrix-what-each-combination-produces">4. The
+Persona × Device Matrix — What Each Combination Produces</h2>
+<p>This is the heart of the product. Each cell describes the
+<strong>concrete output the user sees</strong> in that combination.</p>
+<h3 id="compliance-officer">🛡 Compliance Officer</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>🖥 Desktop</th>
+<th>👓 Even G2 (no camera)</th>
+<th>🕶 Brilliant Frame (camera, local)</th>
+<th>✨ XReal Air 2 Ultra (spatial AR, camera, local)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Best fit?</td>
+<td>✅ Daily review of 30-50 loans</td>
+<td>✅ <strong>Primary</strong> during customer meetings</td>
+<td>⚠ Camera = customer trust issue</td>
+<td>⚠ Overkill for paperwork</td>
+</tr>
+<tr>
+<td>What user sees</td>
+<td>Right-side panel: 3-voice rationale, follow-up question,
+fair-lending flag table</td>
+<td>Single contrarian whisper: <em>“DTI 47% &gt; Policy 4.3 ceiling. Why
+approve?”</em> in green monocular HUD</td>
+<td>Color HUD with 2 voices + flag icons on borrower attributes</td>
+<td>Not the primary device; reserved for quarterly exam-prep deep dives
+where compliance officer walks past 30 past denials in a calibration
+corridor</td>
+</tr>
+<tr>
+<td>Audit output</td>
+<td>Full hash-chained transcript: text response logged + timestamp</td>
+<td>Bone-conduction whisper response transcribed to chain</td>
+<td>Same as G2 but with screen-region tag</td>
+<td>Gaze-dwell timeline added to chain (eye tracking proves the officer
+actually viewed the disparate-impact flag)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="quant-data-scientist">🧮 Quant / Data Scientist</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>🖥 Desktop</th>
+<th>👓 Even G2</th>
+<th>🕶 Brilliant Frame</th>
+<th>✨ XReal Air 2 Ultra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Best fit?</td>
+<td>✅ IDE work, notebook attribution</td>
+<td>⚠ Too low-bandwidth for SHAP / drift</td>
+<td>✅ Reviewing internal model docs</td>
+<td>✅ <strong>Primary</strong> for AML graph + fraud manifold</td>
+</tr>
+<tr>
+<td>What user sees</td>
+<td>Drift attribution panel: feature × sub-population × contribution
+table next to the Jupyter notebook</td>
+<td>Single whisper if PSI tripped: <em>“3 features drifted.
+Sub-population: consumer-discretionary.”</em></td>
+<td>Color HUD: 2 voices on top of a model-card PDF + “run SHAP”
+suggestion</td>
+<td><strong>JARVIS mode:</strong> 3 floating panels anchored to physical
+desk. (1) 3D fraud feature-space UMAP — walk around to find
+misclassified cluster. (2) Counterparty network 5K-node walk-through.
+(3) Drift attribution timeline. Bone-conduction whispers model-risk
+reviewer’s challenge.</td>
+</tr>
+<tr>
+<td>Audit output</td>
+<td>Notebook cell + SHAP output hash-chained</td>
+<td>Voice transcript</td>
+<td>Same</td>
+<td>Gaze + walking trajectory + which floating panel was inspected — all
+hash-chained for SR 11-7 effective challenge evidence</td>
+</tr>
+</tbody>
+</table>
+<h3 id="software-engineer">💻 Software Engineer</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>🖥 Desktop</th>
+<th>👓 Even G2</th>
+<th>🕶 Brilliant Frame</th>
+<th>✨ XReal Air 2 Ultra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Best fit?</td>
+<td>✅ <strong>Primary</strong> in IDE</td>
+<td>⚠ Too low-bandwidth</td>
+<td>✅ Internal doc / runbook reading</td>
+<td>⚠ Overkill</td>
+</tr>
+<tr>
+<td>What user sees</td>
+<td>Right-side panel + inline code annotations: “this endpoint takes
+regulated PII, log to Reg B store before returning”</td>
+<td>Single whisper for emergency Slack alerts: <em>“deploy on hold —
+security scan flagged your PR”</em></td>
+<td>Color HUD on top of a Confluence runbook, highlights the section the
+engineer is reading + suggests adjacent runbooks</td>
+<td>Not primary; XReal is for visual data work, not IDE work</td>
+</tr>
+<tr>
+<td>Audit output</td>
+<td>Code-change-to-decision link in hash chain</td>
+<td>n/a</td>
+<td>Doc-section-viewed timeline</td>
+<td>n/a</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trader-portfolio-manager">📈 Trader / Portfolio Manager</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>🖥 Desktop</th>
+<th>👓 Even G2</th>
+<th>🕶 Brilliant Frame</th>
+<th>✨ XReal Air 2 Ultra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Best fit?</td>
+<td>✅ Daily Bloomberg work</td>
+<td>✅ During client / desk-team meetings</td>
+<td>⚠ Camera in IB = MNPI risk</td>
+<td>✅ <strong>Primary</strong> at own desk for risk-surface +
+tail-risk</td>
+</tr>
+<tr>
+<td>What user sees</td>
+<td>Right-side panel: 3 trader voices (Buffett value / Druckenmiller
+macro / Taleb tail) + bias constellation snapshot</td>
+<td>Single whisper during desk meetings: <em>“counterparty 17 is on
+watchlist”</em></td>
+<td>Not the primary use case</td>
+<td><strong>JARVIS mode:</strong> 3 floating panels — (1) 3D risk
+surface (VaR + ES + concentration on 3 axes) — walk around to find the
+cliff. (2) Bias constellation: 30 past trades clustered, walk to inspect
+biases. (3) Correlation surface across regimes — drag time slider, watch
+2007→2009 deformation. Bone-conduction council whispers.</td>
+</tr>
+<tr>
+<td>Audit output</td>
+<td>Brier-audited trade thesis log</td>
+<td>Voice transcript</td>
+<td>n/a</td>
+<td>Gaze + walking + decision-time log — full forensic replay for
+post-mortem</td>
+</tr>
+</tbody>
+</table>
+<h3 id="wealth-advisor">💼 Wealth Advisor</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>🖥 Desktop</th>
+<th>👓 Even G2</th>
+<th>🕶 Brilliant Frame</th>
+<th>✨ XReal Air 2 Ultra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Best fit?</td>
+<td>✅ Portfolio review at desk</td>
+<td>✅ <strong>Primary</strong> in client meetings</td>
+<td>⚠ Camera kills client trust</td>
+<td>⚠ Overkill</td>
+</tr>
+<tr>
+<td>What user sees</td>
+<td>Right-side panel: 3 advisor voices + Reg BI suitability flag + IPS
+gap analysis</td>
+<td>Single whisper: <em>“client mentioned 401k rollover — Reg BI
+suitability checklist surfacing”</em> + adverse-action-safe phrasing for
+the IPS conflict</td>
+<td>n/a</td>
+<td>Not primary; could be used for quarterly book review</td>
+</tr>
+<tr>
+<td>Audit output</td>
+<td>IPS-aligned recommendation log</td>
+<td>Conversation transcript with timestamped Reg BI checks</td>
+<td>n/a</td>
+<td>n/a</td>
+</tr>
+</tbody>
+</table>
+<h3 id="summary-what-each-cell-produces">Summary — what each cell
+<em>produces</em></h3>
+<p><strong>Desktop = full bandwidth, every voice, every detail</strong>.
+The universal fallback. Where heavy review work actually gets done.</p>
+<p><strong>Even G2 = single contrarian whisper + transcription</strong>.
+The customer-facing primary. Where adverse-action evidence is captured
+during conversation without breaking trust.</p>
+<p><strong>Brilliant Frame = color HUD + 2 voices + camera
+context</strong>. The internal-doc reading and runbook-walk-through
+device. Where junior staff get explainer-style HUD prompts on real-world
+documents.</p>
+<p><strong>XReal Air 2 Ultra = JARVIS spatial AR + 3 floating panels +
+bone conduction</strong>. The power-user device. Where 3D data work (AML
+graph, fraud manifold, risk surface, bias constellation, correlation
+regime) becomes physically inspectable.</p>
+<hr />
+<h2 id="local-only-mode-the-moat">5. Local-only Mode — The Moat</h2>
+<p>Every glass client + the desktop overlay has two modes:</p>
+<ul>
+<li><strong>Cloud mode</strong>: screen capture → Anthropic / OpenAI /
+Gemini → response. For non-confidential training data, public market
+signals, educational content. $50/seat/month consumer SKU.</li>
+<li><strong>Local mode</strong> (the moat): screen capture → on-device
+Apple Foundation Model 3 Core Advanced, Phi-4-mini, Gemma 3 9B, or
+Mistral Small 3 → response. <strong>No data leaves the device.</strong>
+Frame discarded in 200ms. Voice transcripts redacted of PII before
+hash-chain commit. Hash chain entry only includes the <em>response</em>,
+never the source frame.</li>
+</ul>
+<h3 id="what-local-mode-solves">What local mode solves</h3>
+<ul>
+<li>✅ Data residency (GLBA / HIPAA / GDPR Article 25 data
+minimization)</li>
+<li>✅ Data upload (no packet inspection, no third-party DPA chain)</li>
+<li>✅ Vendor concentration risk (no Anthropic / OpenAI dependency)</li>
+</ul>
+<h3 id="what-local-mode-does-not-solve">What local mode does NOT
+solve</h3>
+<ul>
+<li>❌ “Camera exists” liability under 2-party consent state law
+(California, Illinois, Massachusetts, Pennsylvania) — solved by
+selecting <strong>Even G2 (no camera)</strong> for the customer-facing
+cells of the matrix</li>
+<li>❌ Customer trust during meetings — solved by Even G2 device
+choice</li>
+<li>❌ E&amp;O insurance and HR policy — solved by Even G2 + Desktop,
+and by limiting camera-equipped glasses to no-customer-present
+scenarios</li>
+</ul>
+<h3 id="the-cross-tier-audit-chain-works-in-local-mode">The cross-tier
+audit chain works in local mode</h3>
+<p>Every persona × device combination contributes to the same SHA-256
+hash chain. The chain stores:</p>
+<ul>
+<li>Recognized context (screen / scene tag)</li>
+<li>Question surfaced by the council</li>
+<li>Voice transcript (challenge text + user verbal or gestural
+response)</li>
+<li>Gaze-dwell timeline (Vision Pro / XReal eye tracking)</li>
+<li>Hand-gesture confirmation (approve / block / escalate)</li>
+</ul>
+<p>Exportable to OCC, CFPB, FINRA, SEC, EU AI Act Article 14 audit
+submission formats. All generated on-device. Zero cloud dependency.</p>
+<hr />
+<h2 id="pricing-model">6. Pricing Model</h2>
+<pre><code>Shadow Banking · Enterprise License
+─────────────────────────────────────
+Base engine                            $120,000/year (no seat cap)
+─── Persona Packs (per seat per year) ──
+🛡 Compliance                          $1,800/seat
+🧮 Quant / Data Scientist              $2,400/seat
+💻 Engineering                         $1,500/seat
+📈 Trader                              $2,400/seat
+💼 Wealth Advisor                      $2,000/seat
+─── Hardware (sold separately) ──────────
+👓 Even G2                             $599  one-time per user
+🕶 Brilliant Frame                     $349  one-time per user
+✨ XReal Air 2 Ultra                   $699  one-time per user
+─────────────────────────────────────</code></pre>
+<p>Sample mid-tier bank deployment (1,000 employees):</p>
+<table>
+<thead>
+<tr>
+<th>Persona</th>
+<th>Seats</th>
+<th>Pack $/yr</th>
+<th>Subtotal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Compliance</td>
+<td>200</td>
+<td>$1,800</td>
+<td>$360K</td>
+</tr>
+<tr>
+<td>Quant + Data Scientist</td>
+<td>50</td>
+<td>$2,400</td>
+<td>$120K</td>
+</tr>
+<tr>
+<td>Software Engineering</td>
+<td>100</td>
+<td>$1,500</td>
+<td>$150K</td>
+</tr>
+<tr>
+<td>Trader</td>
+<td>30</td>
+<td>$2,400</td>
+<td>$72K</td>
+</tr>
+<tr>
+<td>Wealth Advisor</td>
+<td>80</td>
+<td>$2,000</td>
+<td>$160K</td>
+</tr>
+<tr>
+<td>Base engine</td>
+<td>—</td>
+<td>—</td>
+<td>$120K</td>
+</tr>
+<tr>
+<td><strong>Total annual contract value</strong></td>
+<td><strong>460 seats</strong></td>
+<td>—</td>
+<td><strong>$982,000</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>3-year SOM target</strong>: 5 mid-tier banks × $982K/yr =
+$4.9M ARR. Series A scale.</p>
+<hr />
+<h2 id="hardware-procurement-tiers-employer-paid">7. Hardware
+Procurement Tiers (employer-paid)</h2>
+<ul>
+<li><strong>Tier 0 — no glasses</strong>: Desktop only, every employee.
+$0 hardware cost.</li>
+<li><strong>Tier 1 — G2 for customer-facing roles</strong>: 280 G2 units
+× $599 = <strong>$168K one-time</strong>. Covers all Compliance + Wealth
+Advisor.</li>
+<li><strong>Tier 2 — XReal Air 2 Ultra for power users</strong>: 80
+XReal units × $699 = <strong>$56K one-time</strong>. Covers all Quant +
+Trader.</li>
+<li><strong>Tier 3 — Brilliant Frame for engineers</strong>: 100 Frame
+units × $349 = <strong>$35K one-time</strong>. Optional, only if
+engineering team requests.</li>
+</ul>
+<p><strong>Total Tier 1+2+3 hardware</strong>: ~$260K one-time. Inside
+the typical mid-tier bank discretionary tech budget.</p>
+<hr />
+<h2 id="roadmap">8. Roadmap</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Quarter</th>
+<th>Milestone</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>2026 Q3</strong></td>
+<td>macOS Desktop app (native ScreenCaptureKit + local Phi-4-mini, Gemma
+3 9B). First 3 persona packs (Compliance / Quant / Trader). Hash-chain
+audit export. Browser demo (live now).</td>
+</tr>
+<tr>
+<td><strong>2026 Q4</strong></td>
+<td>Even G2 SDK integration (Conversate audio + bone conduction). 5
+persona packs complete. SOC 2 Type 1 in progress. 5 mid-tier wealth-mgmt
+firm cold-email round.</td>
+</tr>
+<tr>
+<td><strong>2027 Q1</strong></td>
+<td>First paid pilot — 1 mid-tier bank, Compliance pack, Desktop + Even
+G2. SOC 2 Type 1 issued.</td>
+</tr>
+<tr>
+<td><strong>2027 Q2</strong></td>
+<td>Brilliant Frame integration (color HUD). EU AI Act high-risk
+obligations live (2026-08-01 entry-into-force) — Shadow’s local-only
+audit positioning aligns with the August deadline.</td>
+</tr>
+<tr>
+<td><strong>2027 Q3</strong></td>
+<td>XReal Air 2 Ultra NRSDK integration (JARVIS spatial AR mode). First
+Quant + Trader pilots. ICAIF 2027 paper submission.</td>
+</tr>
+<tr>
+<td><strong>2027 Q4</strong></td>
+<td>Series A fundraise. 5 paying mid-tier bank contracts. $4-5M
+ARR.</td>
+</tr>
+<tr>
+<td><strong>2028</strong></td>
+<td>Apple Vision Pro 2 (rumored binocular + cheaper) — add as Tier 4
+device. Mainstream consumer-grade glasses. Expand from mid-tier to
+top-tier banks.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="defensibility">9. Defensibility</h2>
+<p><strong>Against Glean / Microsoft Copilot / Notion AI</strong>: they
+are cloud + corpus-search; we are local + screen-aware +
+persona-aware.</p>
+<p><strong>Against Goldman GS-AI / JPM LLM Suite / Citi Stylus / Morgan
+Stanley AI@Morgan</strong>: they are top-10 internal builds; we sell to
+mid-tier banks that lack the engineering bench.</p>
+<p><strong>Against Cluely</strong> ($5.3M raised, “cheat on everything”
+consumer overlay): closest UX competitor but consumer-positioned, brand
+cannot enter compliance-sensitive enterprises, ARR claims inflated and
+disputed March 2026.</p>
+<p><strong>Against future Meta / Apple glasses</strong>:
+hardware-neutral architecture means we add new device clients as they
+ship. Hardware refresh ≠ product reset.</p>
+<p><strong>Against academic-only competitors (ECC research repo,
+university spin-offs)</strong>: founder has shipped 41 tests green
+across the council-runner stack + 18 tests on retry primitives +
+production cron + 30-day Brier audit. Engineering credibility, not just
+thesis.</p>
+<hr />
+<h2 id="founder-credibility-wedge">10. Founder Credibility Wedge</h2>
+<ul>
+<li><strong>Embodied Compliance Council</strong> research with Dr. Henry
+Ngo (Yeshiva, banking compliance vertical) — EU AI Act + ECOA / Reg B
+framing locked through accepted academic deliverable</li>
+<li><strong>Phase 4 EU AI Act + ECOA evaluation design</strong> doc
+(<code>docs/phase-4-eu-ai-act-evaluation-design.md</code>)</li>
+<li><strong>council-runner v0.1.0</strong> shipped 2026-06-17, 41 tests
+green, Vercel-deployable, Apache 2.0</li>
+<li><strong>Bilingual EN/中文</strong> ship discipline opens secondary
+China-side market (CITIC, Haitong, HuaTai analyst classes)
+post-2027</li>
+<li><strong>Solo Founder OS</strong> 11-agent open-source stack — public
+proof of operating discipline</li>
+</ul>
+<hr />
+<h2 id="the-one-sentence-pitch">11. The One-Sentence Pitch</h2>
+<p><strong>Shadow is the on-device AI council and audit chain that
+follows the user across desktop, smart glasses, and spatial AR,
+deploying role-specific voices for compliance officers, quants,
+engineers, traders, and wealth advisors at mid-tier US banks — never
+uploading data, never breaking customer trust, and producing the
+contemporaneous evidence that regulators are about to
+demand.</strong></p>
+<hr />
+<h2 id="appendix-tech-stack-snapshot-2026-06-17">Appendix — Tech Stack
+Snapshot (2026-06-17)</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Stack</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Council orchestration</td>
+<td><code>council-runner</code> (TypeScript, Promise.all, weighted
+aggregation)</td>
+<td>Live, 23 tests green</td>
+</tr>
+<tr>
+<td>Voice prompts</td>
+<td><code>council-voices</code> (10 banking + trading personas, YAML
+frontmatter, strict-JSON output)</td>
+<td>Live</td>
+</tr>
+<tr>
+<td>Risk math</td>
+<td><code>orallexa-risk</code> (VaR, ES, factor exposures, beta,
+concentration, sector, correlation)</td>
+<td>Live, 11 tests green</td>
+</tr>
+<tr>
+<td>Perception (screen-region)</td>
+<td><code>embodied-perception</code> (YOLO-World, SAM2, Depth Anything
+V2 protocols + Mocks + SceneGrounder)</td>
+<td>Live, 7 tests green</td>
+</tr>
+<tr>
+<td>Audit</td>
+<td>WebCrypto SHA-256 hash chain</td>
+<td>Live, 4 tests green</td>
+</tr>
+<tr>
+<td>Local LLM</td>
+<td>Phi-4-mini, Gemma 3 9B, Apple Foundation Model 3 Core Advanced,
+Mistral Small 3</td>
+<td>All available 2026</td>
+</tr>
+<tr>
+<td>Cloud LLM</td>
+<td>Anthropic Claude Opus 4.7 (1M context), GPT-5, Gemini 3 Pro</td>
+<td>All available</td>
+</tr>
+<tr>
+<td>Desktop client</td>
+<td>Native macOS ScreenCaptureKit + AppKit overlay</td>
+<td>In design, Q3 2026 ship</td>
+</tr>
+<tr>
+<td>Glasses client (G2)</td>
+<td>Even Realities Companion SDK + Conversate</td>
+<td>Q4 2026</td>
+</tr>
+<tr>
+<td>Glasses client (Frame)</td>
+<td>Brilliant Labs Open SDK</td>
+<td>Q2 2027</td>
+</tr>
+<tr>
+<td>Glasses client (XReal)</td>
+<td>NRSDK + WebXR + Three.js</td>
+<td>Q3 2027</td>
+</tr>
+<tr>
+<td>Bone-conduction audio</td>
+<td>Built-in to G2 + AirPods Pro 2 fallback for Frame and XReal</td>
+<td>n/a</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>Canonical product proposal v1.0 — 2026-06-17. All prior project
+framing (council-diff as standalone OSS, ECC banking-quest as separate
+WebXR app, ECC trading-quest as separate app, Shadow as separate Phase
+3) is hereby reconciled under this single product narrative. Going
+forward, every external communication uses this matrix.</em></p>
+</body>
+</html>
