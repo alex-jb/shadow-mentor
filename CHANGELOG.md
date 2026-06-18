@@ -20,6 +20,46 @@ Next planned:
 
 ---
 
+## v1.7 — Day 2 night (2026-06-18) — Lora ECC Mode A integration (items 1-3)
+
+Loredana C. Levitchi shared her Mode A Loan Origination package on 2026-06-17 (Drive). This release integrates her institutional risk layer + verdict resolver + loan input schema into Shadow. All function signatures preserved verbatim so her 120-page Aura Alexa BR document still reads as the source spec.
+
+### Added — lib/
+
+- **`lib/risk-tools/index.js`** — JS port of Lora's `orallexa.risk` Python module:
+  - `historical_var(prices, confidence, horizon_days)` — verbatim numpy port
+  - `expected_shortfall(prices, confidence, horizon_days)` — verbatim numpy port
+  - `concentration_limits(weights, max_single)` — single-name cap check
+  - `sector_exposure(positions)` — group-by + sum
+  - `correlation_matrix(return_series)` — pairwise Pearson
+  - `beta_decomposition(asset_returns, market_returns)` — cov/var with alpha + residual_std
+  - `RISK_TOOL_DEFINITIONS` — Anthropic tool-use input_schema for all 6
+  - `RISK_TOOL_DISPATCH` — name → callable map for tool-use loop
+- **`lib/schemas/loan.js`** — JS validator for Lora's loan dict. `LOAN_DEFAULTS` pins BR thresholds (FICO 700 / DTI 0.36 / LTV 0.80 / VaR 0.12 @ 95%/10d).
+- **`lib/run-loan-council.js`** — JS port of Lora's `run_loan_council` resolver. 5 voices (Credit Fundamentals / Risk Officer / Fair Lending Compliance / Customer Advocate / Macro Contrarian) with verbatim `block > escalate > approve` resolution.
+
+### Added — api/
+
+- **`POST /api/loan-council`** — pure-compute endpoint, no LLM calls. Body `{ loan: {...} }` → response with `final_verdict`, `voices[5]`, `risk_packet`, `thresholds_applied`, `schema_version`. Latency ~1-5ms. Cost: $0.
+- **`POST /api/deliberate` augmented** — body now accepts optional `loan` field. When `scenario==="lbo"` AND `loan` present, response adds `verdict` + `loan_council` fields alongside the existing 3 LLM voice paragraphs. **Two independent reasoning chains shown to procurement reviewer**: LLM advisory + deterministic rule layer. Backward-compatible — existing requests without `loan` get unchanged response.
+- **`/api/scenarios`** endpoints list 7 → 8 (loan-council added).
+
+### Tests
+
+- `test/risk-tools.test.js` (19): VaR scales sqrt(horizon), ES ≥ VaR, correlation_matrix = ±1 on perfectly (anti)correlated series, beta=1 for asset mirroring market, RISK_TOOL_DISPATCH covers every definition.
+- `test/loan-schema.test.js` (12): BR threshold values pinned in assertions (drift-detection), rejection of out-of-range inputs.
+- `test/run-loan-council.test.js` (15): block-veto resolution, escalate overrides approve, 5-voice order pinned, schema_version frozen.
+- `test/loan-council-endpoint.test.js` (9): clean approve, fair-lending block, validation 400s, OPTIONS preflight, Cache-Control discipline.
+
+**Total: 73 → 128 tests (+55), all green. CI 12 commits consecutive green.**
+
+### Honest gap (item 4 + 5 of Lora reply, next iteration)
+
+- Quest 3S DROPPED from Shadow device matrix (4 production clients remain: Desktop / Even G2 / Brilliant Frame / XReal Air 2 Ultra). Mid-July executive demo to Y.U. Dean / Vice-Provost will pair XReal Air 2 Ultra + Flow Immersive as presentation layer rendering `/api/deliberate` JSON. Call with Jason Marsh (Flow CEO) scheduled next Monday.
+- BR threshold expected_terms wiring into `benchmark/runner.js` deferred to next benchmark rerun. Will report aggregate variance honestly when rerun — if score drops vs current 89 ± 3, will not tune around it.
+
+---
+
 ## v1.6 — Day 2 evening (2026-06-18) — Honest variance: 88 ± 4 (n=3)
 
 Ran the v0.3.3 benchmark 3 times back-to-back to validate the 88/100 from CHANGELOG v1.4. The rubric is deterministic but Sonnet's outputs are stochastic, so a single run is a sample.

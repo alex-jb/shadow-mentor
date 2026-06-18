@@ -21,14 +21,14 @@ Click any of:
 
 Toggle Live mode → click any combo → real 3-voice deliberation in 6-10 seconds (measured 2026-06-18, 3 parallel Anthropic calls + 1 Haiku follow-up).
 
-**Status**: project initialized 2026-06-17. As of 2026-06-18 evening:
+**Status**: project initialized 2026-06-17. As of 2026-06-18 night:
 - 20/20 persona × scenario cells populated with grounded content
-- Real Anthropic Sonnet 4.6 backend deployed to Vercel
-- GLM-5.2 (Zhipu) provider integration (toggle in Live mode)
-- Cross-session memory backend (`api/recall`) with 30 seed entries + Brier calibration stats endpoint
-- Shadow Agentic Capability Benchmark **v0.3.3** runner — **88/100 aggregate** (HF "Is it agentic enough?"-inspired)
-- `/api/health` + `/api/badge` liveness + shields.io endpoints
-- 37/37 tests green (data-model + API contract + endpoint contract)
+- Real Anthropic Sonnet 4.6 + Zhipu GLM-5.2 provider integration (toggle in Live mode)
+- Cross-session memory backend (`/api/recall` + `/api/calibration`) with 30 seed entries + per-persona Brier stats + Elastic agent-memory swap stub
+- Shadow Agentic Capability Benchmark **v0.3.3** runner — **89 ± 3 (n=3)** aggregate (HF "Is it agentic enough?"-inspired); compliance × LBO anchor cell at **100/100 n=3 stable**
+- **8 JSON endpoints live**: `/api/deliberate` (POST, +loan body adds verdict) · `/api/loan-council` (POST, pure-compute 5-voice rule layer, Lora Mode A) · `/api/recall` · `/api/calibration` · `/api/scenarios` · `/api/health` · `/api/badge` (shields.io) · `/api/version` (git SHA audit pin)
+- **Lora ECC Mode A integration shipped**: typed risk tools (VaR / ES / concentration / sector / correlation / beta) + 5-voice verdict resolver (block > escalate > approve) + loan input schema with BR thresholds (FICO 700 / DTI 0.36 / LTV 0.80 / VaR 0.12 @ 95%/10d) pinned in drift-detection tests
+- 128/128 tests green; GitHub Actions CI 12 consecutive commits green
 - Native macOS app to be built Q3 2026
 
 ## Shadow Agentic Score — 89 ± 3 (n=3) after 4-iteration prompt sweep (2026-06-18 evening)
