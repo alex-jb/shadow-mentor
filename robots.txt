@@ -1,0 +1,29 @@
+# Shadow — public demo and OSS docs
+#
+# AI crawlers welcome — see llms.txt for the canonical product description.
+# Human + traditional search welcome on the docs and the demo landing.
+# /api/* endpoints are JSON; rate-limited at the Vercel platform layer.
+
+User-agent: *
+Allow: /
+Disallow: /api/deliberate
+# The deliberate endpoint costs real money per call. Crawl the landing,
+# read llms.txt, but don't fan out hundreds of free 3-voice deliberations.
+
+# Explicit AI crawler welcome
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+Sitemap: https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app/llms.txt
