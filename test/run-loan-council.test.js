@@ -95,7 +95,7 @@ test("thresholds_applied field exposes Lora's BR defaults for audit", () => {
 
 test("schema_version field pinned for downstream audit chain", () => {
   const r = runLoanCouncil(cleanLoan);
-  assert.equal(r.schema_version, "1.0.0-mode-a");
+  assert.equal(r.schema_version, "1.1.0-mode-a");
 });
 
 test("loan_id assigned when not provided", () => {

@@ -94,5 +94,5 @@ test("loan-council sets no-store cache (always fresh)", async () => {
 test("loan-council schema_version pinned to mode-a", async () => {
   const res = mockRes();
   await loanCouncilHandler(mockReq({ loan: cleanLoan }), res);
-  assert.equal(res.body.schema_version, "1.0.0-mode-a");
+  assert.equal(res.body.schema_version, "1.1.0-mode-a");
 });

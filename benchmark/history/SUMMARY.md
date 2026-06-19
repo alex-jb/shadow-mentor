@@ -2,6 +2,25 @@
 
 > The rubric is deterministic. The LLM calls are not. So the aggregate score is a sample, not a fixed value. This folder keeps every run so reviewers can audit the central tendency themselves.
 
+## Source provenance (2026-06-19 — per Loredana C. Levitchi's BRD vs Addenda guidance)
+
+Every benchmark expected term is attributed to one of three governance layers. Mis-attributing a term to a higher layer than it belongs (e.g. citing BRD for an underwriting cutoff that is actually a product-line policy) is the classic procurement-audit failure mode. This split was formalized by Lora on 2026-06-19 and is now enforced inline by Shadow's `/api/deliberate` response (`traceability` field) and by the `test/traceability-and-guardrail.test.js` contract suite.
+
+| Benchmark term | Source | Layer | Implementation |
+|---|---|---|---|
+| `FICO >= 700` | Addendum A — Loan Origination Credit Policy | Product-line policy | `lib/run-loan-council.js` + AA01 |
+| `DTI <= 0.36` | Addendum B — DTI Eligibility Policy | Product-line policy | `lib/run-loan-council.js` + AA02 |
+| `LTV <= 0.80` | Addendum C — Collateral / LTV Policy | Product-line policy | `lib/run-loan-council.js` + AA03 |
+| `VaR <= 0.12` | Addendum C — Risk Appetite Note | Benchmark calibration | `lib/traceability.js::classifyVarStatus` + AA04 |
+| VaR / ES math framework | BRD Risk Core Specification | Institutional risk framework | `lib/risk-tools/index.js` |
+| 10-day horizon | BRD Risk Packet Methodology | Institutional risk framework | `LOAN_DEFAULTS.var_horizon_days` |
+| 95% confidence | BRD Risk Packet Methodology | Institutional risk framework | `LOAN_DEFAULTS.var_confidence` |
+| Analysis-only / no-trade invariant | BRD Governance Controls | Institutional risk framework | `lib/audit-guardrail.js::enforceAnalysisOnly` |
+| ECOA / Reg B integration | CFPB Bulletin 2024-09 + BRD Governance | Regulatory | Fair Lending Compliance voice + AA05 |
+| SR 11-7 effective challenge | Federal Reserve Model Risk Mgmt | Regulatory | benchmark rubric + Risk Officer voice |
+
+This is the source separation that makes the Shadow benchmark procurement-defensible. Examiners can audit any cited rule back to the correct depth — institutional / product-line / calibration / regulatory — without conflation.
+
 ## Pre-BR (v0.3.3 rubric — compliance × LBO terms ["policy 4.3", "B-rated", "leverage"])
 
 2026-06-18 evening, anthropic provider:
