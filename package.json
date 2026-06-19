@@ -14,9 +14,11 @@
     "benchmark": "node benchmark/runner.js",
     "benchmark:csv": "node scripts/benchmark-csv.mjs",
     "health": "curl -s http://localhost:3000/api/health",
-    "calibration": "curl -s 'http://localhost:3000/api/calibration?persona=compliance'"
+    "calibration": "curl -s 'http://localhost:3000/api/calibration?persona=compliance'",
+    "mcp": "node mcp/server.js"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.40.0"
+    "@anthropic-ai/sdk": "^0.40.0",
+    "@modelcontextprotocol/sdk": "^1.29.0"
   }
 }
