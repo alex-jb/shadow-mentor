@@ -4,7 +4,17 @@
 
 > 跟随分析师跨桌面、智能眼镜、空间 AR 的端侧 AI 议会 + 审计链。一个引擎,四个设备端,五套人格包。面向受监管的银行工作流。
 
-[![tests](https://img.shields.io/badge/tests-140%2F140%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-green)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-154%2F154%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-86%20%C2%B1%201%20(n%3D3)%20post--BR-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+
+## 协作与许可
+
+Shadow v1.1.1 集成了 **Loredana C. Levitchi**(叶史瓦大学 + William Paterson University 教师,14 年全球银行金融软件经验)撰写的 **Orallexa Shadow Mode A** 包。根据她 2026-06-19 的明确授权,以 MIT 许可证合并。她是以下模块的主要作者:
+
+- 风险 + 信贷政策 + 阈值 + adverse-action + traceability 模块
+- **BRD vs. Addenda 来源分离原则** —— 在她的 *Orallexa Shadow Mode A* 包中形式化的、为采购可辩护性服务的治理模式,通过 `lib/traceability.js` 在 API 响应级别 inline 体现
+- Aura Alexa BRD + Addenda A/B/C + Risk Appetite Note(收录于 `docs/external/`)
+
+正在准备共同第一作者的 IEEE VR / VIS 2027 摘要(投稿截止 2026-08-24),命名贡献即 BRD vs. Addenda 来源分离原则。JS port 和 spatial XR 层的集成维护者:Alex Xiaoyu Ji。
 
 ## 现场演示
 
@@ -27,8 +37,9 @@
 - 跨会话记忆后端 (`/api/recall` + `/api/calibration`) 带 30 条种子 + per-persona Brier 校准 + Elastic agent-memory swap stub
 - Shadow Agentic Capability Benchmark **v0.3.3** runner — **87 ± 3 (n=6) 综合分** (受 HF "Is it agentic enough?" 启发);compliance × LBO anchor cell **100/100 n=3 稳定**
 - **8 个 JSON 端点 live**: `/api/deliberate` (POST, +loan body 加 verdict) · `/api/loan-council` (POST, 纯计算 5-voice 规则层,Lora Mode A) · `/api/recall` · `/api/calibration` · `/api/scenarios` · `/api/health` · `/api/badge` (shields.io) · `/api/version` (git SHA audit pin)
-- **Lora ECC Mode A 集成 ship 完**:typed risk tools (VaR / ES / concentration / sector / correlation / beta) + 5-voice verdict resolver (block > escalate > approve) + loan 输入 schema 带 BR 阈值 (FICO 700 / DTI 0.36 / LTV 0.80 / VaR 0.12 @ 95%/10d) pin 在 drift-detection 测试里
-- 128/128 测试绿;GitHub Actions CI 13 commits 连续绿
+- **Levitchi Mode A 集成 ship 完 + 收紧 (v1.1.1)**:typed risk tools (VaR / ES / concentration / sector / correlation / beta) + 5-voice verdict resolver (block > escalate > approve) + loan 输入 schema 带 BR 阈值 (FICO 700 / DTI 0.36 / LTV 0.80 / VaR 0.12 @ 95%/10d) pin 在 drift-detection 测试里。**v1.1.1: FICO < 700 是 hard block**(不是 escalate)per Levitchi 政策澄清 —— 信用资格底线不可让步。
+- **采购级 citation chain (v1.1+)**:每个 `/api/deliberate` 响应都 inline 返回 `traceability` dict,把每个阈值映射回 BRD vs Addendum vs Risk Appetite Note 来源。AA01-05 adverse-action codes 对齐 CFPB Bulletin 2024-09 model-traceability 要求。`enforceAnalysisOnly()` regex guardrail 在 council 输出边界 catch LLM 幻觉的交易执行词。14 个契约测试守 provenance。
+- 154/154 测试绿;GitHub Actions CI 连续 15+ commits 绿
 - 原生 macOS app 计划 2026 Q3 上线
 
 ## Shadow Agentic Score — 88 ± 4 (n=3, 2026-06-18 晚)
