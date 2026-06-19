@@ -182,7 +182,15 @@ async function main() {
 
   const outdir = join(__dirname);
   mkdirSync(outdir, { recursive: true });
-  const outpath = join(outdir, `report-${new Date().toISOString().slice(0, 10)}.json`);
+  // Use LOCAL date for filename, not UTC. Otherwise a late-evening run
+  // (e.g. 21:30 NY EDT = 01:30 UTC next day) silently writes to a different
+  // filename than humans expect — caught 2026-06-18 night when 3 BR
+  // benchmark runs were almost copied from a stale pre-BR report file.
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
+  const outpath = join(outdir, `report-${yyyy}-${mm}-${dd}.json`);
   writeFileSync(outpath, JSON.stringify(report, null, 2));
   console.log(`\nAggregate Shadow Agentic Score: ${aggregate}/100`);
   console.log(`Report written: ${outpath}`);

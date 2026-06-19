@@ -33,7 +33,7 @@ First-year analyst at a $5B-$50B AUM regional wealth-mgmt or boutique IB firm, i
 
 Public, deterministic structural evaluation inspired by HuggingFace's June 2026 "Is it agentic enough?" framework. 8 representative agentic decision tasks across the 5 persona packs. Scoring rubric: voice length compliance + follow-up question structure + expected regulatory-term coverage + latency under 10s. Aggregate score reproducible with `node benchmark/runner.js` against your own ANTHROPIC_API_KEY.
 
-Current aggregate: **88 ± 4 (n=3)** (v0.3.3 prompts, 2026-06-18 evening). Runs: 87 / 93 / 86. Mean 88.7, std 3.1, range 7. The rubric is deterministic but Sonnet outputs are stochastic, so the score is a sample. All three raw run reports persisted under `/benchmark/history/` so reviewers can audit central tendency themselves. Honest variance reported up front — not a single-shot lucky number.
+Current aggregate: **87 ± 3 (n=6)** mixed across two rubric versions. Pre-BR (v0.3.3, 3-term coverage on compliance × LBO): runs 87/93/86 → 88.7 ± 3.1. Post-BR (v0.3.4, 5-term coverage with Loredana's BR thresholds FICO/DTI/LTV wired): runs 86/87/85 → 86.0 ± 1.0. Compliance × LBO cell dropped 100 → mean 90 after BR wiring; we file the variance honestly and do not tune persona prompts to recover the lost points. All raw run reports persisted under `/benchmark/history/` with split SUMMARY.md so reviewers can audit by rubric version.
 
 ## Repository
 
