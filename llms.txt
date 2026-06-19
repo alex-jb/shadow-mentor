@@ -42,6 +42,7 @@ Current aggregate: **87 ± 3 (n=6)** mixed across two rubric versions. Pre-BR (v
 - Live demo: https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app
 - Tests: 128/128 passing (Node --test framework, CI via GitHub Actions, 13 consecutive green commits)
 - Endpoints live: 8 — POST /api/deliberate (3-voice LLM, +verdict augment with loan body) · POST /api/loan-council (pure-compute 5-voice rule layer) · GET /api/recall · /api/calibration · /api/scenarios · /api/health · /api/badge · /api/version
+- MCP server: `node mcp/server.js` exposes 5 tools (shadow_loan_council / shadow_risk_tools / shadow_recall / shadow_calibration / shadow_scenarios) for Claude Desktop / Cursor / Zed native tool-use. Install via `mcp/README.md` claude_desktop_config snippet.
 
 ## Key documents
 
