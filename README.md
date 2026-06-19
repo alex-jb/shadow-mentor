@@ -4,7 +4,17 @@
 
 > The on-device AI council and audit chain that follows the user across desktop, smart glasses, and spatial AR. One engine. Four device clients. Five persona packs.
 
-[![tests](https://img.shields.io/badge/tests-140%2F140%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-green)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-154%2F154%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-86%20%C2%B1%201%20(n%3D3)%20post--BR-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+
+## Collaboration and license
+
+Shadow v1.1.1 vendors the **Orallexa Shadow Mode A** package authored by **Loredana C. Levitchi** (Yeshiva University + William Paterson University faculty, 14 years global banking software). Under MIT license, per her explicit grant 2026-06-19, she is the primary author of:
+
+- The risk + credit-policy + threshold + adverse-action + traceability modules
+- The **BRD vs. Addenda Source Separation Principle** — a procurement-defensibility governance pattern formalized in her *Orallexa Shadow Mode A* package and shipped inline at the API response level via `lib/traceability.js`
+- The Aura Alexa BRD + Addenda A/B/C + Risk Appetite Note (vendored under `docs/external/`)
+
+A co-first-author IEEE VR / VIS 2027 abstract (deadline 2026-08-24) is in flight, with the BRD vs. Addenda Source Separation Principle as the named contribution. Integration maintainer for the JS port + spatial XR layer: Alex Xiaoyu Ji.
 
 ## Live demo
 
@@ -28,8 +38,9 @@ Toggle Live mode → click any combo → real 3-voice deliberation in 6-10 secon
 - Shadow Agentic Capability Benchmark **v0.3.3** runner — **87 ± 3 (n=6)** aggregate (HF "Is it agentic enough?"-inspired); compliance × LBO anchor cell at **100/100 n=3 stable**
 - **8 JSON endpoints live**: `/api/deliberate` (POST, +loan body adds verdict) · `/api/loan-council` (POST, pure-compute 5-voice rule layer, Lora Mode A) · `/api/recall` · `/api/calibration` · `/api/scenarios` · `/api/health` · `/api/badge` (shields.io) · `/api/version` (git SHA audit pin)
 - **MCP server**: `node mcp/server.js` exposes 5 tools (`shadow_loan_council`, `shadow_risk_tools`, `shadow_recall`, `shadow_calibration`, `shadow_scenarios`) for Claude Desktop / Cursor / Zed / OpenCode native tool-use. See `mcp/README.md` for `claude_desktop_config.json` snippet.
-- **Lora ECC Mode A integration shipped**: typed risk tools (VaR / ES / concentration / sector / correlation / beta) + 5-voice verdict resolver (block > escalate > approve) + loan input schema with BR thresholds (FICO 700 / DTI 0.36 / LTV 0.80 / VaR 0.12 @ 95%/10d) pinned in drift-detection tests
-- 128/128 tests green; GitHub Actions CI 12 consecutive commits green
+- **Levitchi Mode A integration shipped + tightened (v1.1.1)**: typed risk tools (VaR / ES / concentration / sector / correlation / beta) + 5-voice verdict resolver (block > escalate > approve) + loan input schema with BR thresholds (FICO 700 / DTI 0.36 / LTV 0.80 / VaR 0.12 @ 95%/10d) pinned in drift-detection tests. **v1.1.1: FICO < 700 is a hard block** (not escalate) per Levitchi's policy clarification — credit-eligibility floor is not negotiable.
+- **Procurement-grade citation chain (v1.1+)**: inline `traceability` dict in every `/api/deliberate` response mapping each threshold to BRD vs Addendum vs Risk Appetite Note source. AA01-05 adverse-action codes match CFPB Bulletin 2024-09 model-traceability requirement. `enforceAnalysisOnly()` regex guardrail catches LLM hallucination of trade-execution verbs at council output boundary. 14 contract tests enforce provenance.
+- 154/154 tests green; GitHub Actions CI 15+ consecutive commits green
 - Native macOS app to be built Q3 2026
 
 ## Shadow Agentic Score — 87 ± 3 (n=6) after 4-iteration prompt sweep (2026-06-18 evening)
