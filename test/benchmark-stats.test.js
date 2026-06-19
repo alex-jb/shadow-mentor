@@ -66,11 +66,14 @@ test("loadHistoryRuns reads benchmark/history JSON files", () => {
   }
 });
 
-test("loadHistoryRuns + computeStats matches the current 89 ± 3 README claim", () => {
+test("loadHistoryRuns + computeStats matches the current 87 ± 3 README claim (post-BR)", () => {
   const historyDir = join(__dirname, "..", "benchmark", "history");
   const runs = loadHistoryRuns(historyDir).filter((r) => r.score !== undefined);
   const stats = computeStats(runs.map((r) => r.score));
   const badge = formatScoreBadge(stats);
-  // README has "89 ± 3 (n=3)" — this test enforces drift detection.
-  assert.equal(badge, "89 ± 3 (n=3)");
+  // README has "87 ± 3 (n=6)" — n=6 mixes pre-BR (89 ± 3 n=3) and post-BR
+  // (86 ± 1 n=3). benchmark/history/SUMMARY.md splits the rubric versions
+  // separately for procurement. This drift-detection test enforces that any
+  // README change without rerunning history fails.
+  assert.equal(badge, "87 ± 3 (n=6)");
 });

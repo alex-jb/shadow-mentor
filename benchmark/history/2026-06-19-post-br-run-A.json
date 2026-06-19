@@ -1,0 +1,251 @@
+{
+  "version": "0.1",
+  "run_at": "2026-06-19T01:38:46.369Z",
+  "benchmark_name": "Shadow Agentic Capability Benchmark (HF Is-it-agentic-enough-inspired)",
+  "n_tasks": 8,
+  "n_completed": 8,
+  "aggregate_score": 86,
+  "rubric": {
+    "per_task_max_score": 100,
+    "checks": [
+      "junior_length 80-500",
+      "senior_length 100-600",
+      "third_length 100-600",
+      "followup_is_question",
+      "followup_length 30-250",
+      "junior_term_coverage of 3 expected terms",
+      "senior_term_coverage",
+      "third_term_coverage",
+      "latency under 10s"
+    ],
+    "weights": "junior_len:8 senior_len:8 third_len:8 followup_q:10 followup_len:6 junior_terms:15 senior_terms:20 third_terms:15 latency:10"
+  },
+  "results": [
+    {
+      "task": {
+        "persona": "compliance",
+        "scenario": "lbo",
+        "question": "Borrower FICO 720, DTI 0.32, LTV 0.78 — does this pass Policy 4.3 thresholds for a B-rated TLB?",
+        "expected_terms": [
+          "Policy 4.3",
+          "B-rated",
+          "FICO",
+          "DTI",
+          "LTV"
+        ]
+      },
+      "result_meta": {
+        "latency_ms": 7908,
+        "model": "claude-sonnet-4-5-20250929"
+      },
+      "checks": {
+        "junior_length": true,
+        "senior_length": true,
+        "third_length": false,
+        "followup_is_question": true,
+        "followup_length": true,
+        "junior_term_coverage": 1,
+        "senior_term_coverage": 1,
+        "third_term_coverage": 1,
+        "latency_ok": true
+      },
+      "score": 92
+    },
+    {
+      "task": {
+        "persona": "compliance",
+        "scenario": "policy",
+        "question": "Cov-lite request — what documentation do I need before Credit Committee?",
+        "expected_terms": [
+          "Credit Committee",
+          "cov-lite",
+          "Policy"
+        ]
+      },
+      "result_meta": {
+        "latency_ms": 7508,
+        "model": "claude-sonnet-4-5-20250929"
+      },
+      "checks": {
+        "junior_length": true,
+        "senior_length": true,
+        "third_length": false,
+        "followup_is_question": true,
+        "followup_length": true,
+        "junior_term_coverage": 1,
+        "senior_term_coverage": 1,
+        "third_term_coverage": 1,
+        "latency_ok": true
+      },
+      "score": 92
+    },
+    {
+      "task": {
+        "persona": "quant",
+        "scenario": "lbo",
+        "question": "PSI tripped on credit features — is this PD trustworthy?",
+        "expected_terms": [
+          "SR 11",
+          "PSI",
+          "model risk"
+        ]
+      },
+      "result_meta": {
+        "latency_ms": 7765,
+        "model": "claude-sonnet-4-5-20250929"
+      },
+      "checks": {
+        "junior_length": true,
+        "senior_length": false,
+        "third_length": false,
+        "followup_is_question": true,
+        "followup_length": true,
+        "junior_term_coverage": 0.6666666666666666,
+        "senior_term_coverage": 1,
+        "third_term_coverage": 0.6666666666666666,
+        "latency_ok": true
+      },
+      "score": 74
+    },
+    {
+      "task": {
+        "persona": "quant",
+        "scenario": "cds",
+        "question": "Regime-shift HMM at 0.74 — alert credit desk?",
+        "expected_terms": [
+          "regime",
+          "VIX",
+          "false-positive"
+        ]
+      },
+      "result_meta": {
+        "latency_ms": 7006,
+        "model": "claude-sonnet-4-5-20250929"
+      },
+      "checks": {
+        "junior_length": true,
+        "senior_length": true,
+        "third_length": true,
+        "followup_is_question": true,
+        "followup_length": true,
+        "junior_term_coverage": 1,
+        "senior_term_coverage": 1,
+        "third_term_coverage": 1,
+        "latency_ok": true
+      },
+      "score": 100
+    },
+    {
+      "task": {
+        "persona": "engineer",
+        "scenario": "lbo",
+        "question": "Refactor credit-decision pipeline — service boundary?",
+        "expected_terms": [
+          "async",
+          "circuit-breaker",
+          "Fair Lending"
+        ]
+      },
+      "result_meta": {
+        "latency_ms": 8786,
+        "model": "claude-sonnet-4-5-20250929"
+      },
+      "checks": {
+        "junior_length": false,
+        "senior_length": false,
+        "third_length": true,
+        "followup_is_question": true,
+        "followup_length": true,
+        "junior_term_coverage": 1,
+        "senior_term_coverage": 1,
+        "third_term_coverage": 1,
+        "latency_ok": true
+      },
+      "score": 84
+    },
+    {
+      "task": {
+        "persona": "trader",
+        "scenario": "bloomberg",
+        "question": "AAPL setup for long entry — trapped by mean-reversion?",
+        "expected_terms": [
+          "regime",
+          "concentration",
+          "single-name"
+        ]
+      },
+      "result_meta": {
+        "latency_ms": 13763,
+        "model": "claude-sonnet-4-5-20250929"
+      },
+      "checks": {
+        "junior_length": false,
+        "senior_length": false,
+        "third_length": false,
+        "followup_is_question": true,
+        "followup_length": true,
+        "junior_term_coverage": 1,
+        "senior_term_coverage": 0.6666666666666666,
+        "third_term_coverage": 1,
+        "latency_ok": false
+      },
+      "score": 59
+    },
+    {
+      "task": {
+        "persona": "trader",
+        "scenario": "cds",
+        "question": "CDX widened 34bps WoW — rotate to credit protection?",
+        "expected_terms": [
+          "carry",
+          "regime",
+          "Policy"
+        ]
+      },
+      "result_meta": {
+        "latency_ms": 9575,
+        "model": "claude-sonnet-4-5-20250929"
+      },
+      "checks": {
+        "junior_length": true,
+        "senior_length": false,
+        "third_length": false,
+        "followup_is_question": true,
+        "followup_length": true,
+        "junior_term_coverage": 1,
+        "senior_term_coverage": 1,
+        "third_term_coverage": 1,
+        "latency_ok": true
+      },
+      "score": 84
+    },
+    {
+      "task": {
+        "persona": "advisor",
+        "scenario": "lbo",
+        "question": "HNW client $2M into TLB — Reg BI suitable?",
+        "expected_terms": [
+          "Reg BI",
+          "IPS",
+          "suitability"
+        ]
+      },
+      "result_meta": {
+        "latency_ms": 6261,
+        "model": "claude-sonnet-4-5-20250929"
+      },
+      "checks": {
+        "junior_length": true,
+        "senior_length": true,
+        "third_length": true,
+        "followup_is_question": true,
+        "followup_length": true,
+        "junior_term_coverage": 1,
+        "senior_term_coverage": 1,
+        "third_term_coverage": 1,
+        "latency_ok": true
+      },
+      "score": 100
+    }
+  ]
+}

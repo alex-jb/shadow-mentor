@@ -20,6 +20,50 @@ Next planned:
 
 ---
 
+## v1.9 — Day 2 → 3 transition (2026-06-18 night NY / 2026-06-19 UTC) — Post-BR variance: 89 ± 3 → 86 ± 1, honest report
+
+Ran the BR-threshold-wired benchmark n=3 right after staging the rubric change (didn't actually defer to morning — Alex chose to ship before sleeping rather than wait). Results filed honestly without tuning.
+
+### Results
+
+| Metric | Pre-BR (v0.3.3) | Post-BR (v0.3.4) | Δ |
+|---|---|---|---|
+| Aggregate mean | 88.7 | 86.0 | **-2.7** |
+| Aggregate std | 3.1 | 1.0 | **-2.1 (tighter)** |
+| compliance × LBO cell | 100 stable | 92 / 86 / 92 (mean ~90) | **-10 on modified cell** |
+| Term coverage | 3 terms/voice | 5 terms/voice | +2 (+67% bar) |
+
+Pre-BR runs: 87 / 93 / 86 (filed earlier today as `2026-06-18-run-{A,B,C}.json`)
+Post-BR runs: 86 / 87 / 85 (`2026-06-19-post-br-run-{A,B,C}.json`)
+
+### What happened on compliance × LBO
+
+The cell was scoring perfect 100/100 on n=3 because the old expected_terms `["policy 4.3", "B-rated", "leverage"]` were already in every persona prompt anchor. Adding `["FICO", "DTI"]` to the required list forced Sonnet to echo question-specific numbers in *every* voice's response — including the Compliance Officer voice which by training tends toward general regulatory framing ("Reg B disclosure requirements") rather than borrower-specific numeric thresholds ("FICO 720").
+
+In run B specifically, the junior voice scored 0.80 term coverage (4 of 5 terms hit) — likely missing "DTI" because junior compliance voices in our prompt tend to anchor on policy section + leverage figure, not debt ratios. The third voice also dropped to 0.80.
+
+### Why this matters
+
+The pre-BR 100/100 was, in retrospect, a comfortable rubric — the expected_terms aligned exactly with what our persona prompts already pushed. The post-BR rubric is genuinely harder: it asks whether the council can *integrate Loredana's BR thresholds* into its reasoning, not just whether it echoes the policy number. That's a more honest test of the integration story we tell Loredana and bank procurement.
+
+### Honest accounting
+
+- **README badge** updated `89 ± 3 (n=3)` → `87 ± 3 (n=6)` reflecting all 6 runs ever observed. Color downgraded from `brightgreen` (≥90) to `green` (≥75) — the threshold table in `/api/badge` does this automatically based on the score.
+- **`benchmark/history/SUMMARY.md`** split into pre-BR and post-BR sections so procurement readers see both rubric versions separately. Mixed n=6 aggregate documented as continuity reference.
+- **`/api/health`** and **`/api/badge`** automatically reflect the new score (they read `benchmark/report-YYYY-MM-DD.json`).
+- **`test/benchmark-stats.test.js`** drift-detection assertion updated to `"87 ± 3 (n=6)"`. Future README changes without rerunning history will still fail CI.
+- **No persona prompts changed**. No expected_terms relaxed. Score dropped because the rubric is harder. We accept the result.
+
+### Cost
+
+3 benchmark runs × ~$0.05 = ~$0.15.
+
+### Reproducibility note (subtle bug found)
+
+`benchmark/runner.js` writes to `benchmark/report-YYYY-MM-DD.json` where the date is **UTC**, not local. The first BR rerun attempt at 21:30 NY EDT (01:30 UTC the next day) wrote to `report-2026-06-19.json`, not `report-2026-06-18.json`. I almost missed this and accidentally copied stale pre-BR data into post-BR history files. Caught it via file modtime check before committing. Future midnight-UTC runs need similar care or the runner should use local time.
+
+---
+
 ## v1.8 — Day 2 EOD staging (2026-06-18 night) — BR thresholds wired in benchmark, rerun deferred
 
 Wired Loredana's Aura Alexa BR thresholds into `benchmark/runner.js` per

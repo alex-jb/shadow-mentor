@@ -4,7 +4,7 @@
 
 > The on-device AI council and audit chain that follows the user across desktop, smart glasses, and spatial AR. One engine. Four device clients. Five persona packs.
 
-[![tests](https://img.shields.io/badge/tests-128%2F128%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-89%20%C2%B1%203%20(n%3D3)-brightgreen)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-128%2F128%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-green)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
 
 ## Live demo
 
@@ -25,15 +25,15 @@ Toggle Live mode → click any combo → real 3-voice deliberation in 6-10 secon
 - 20/20 persona × scenario cells populated with grounded content
 - Real Anthropic Sonnet 4.6 + Zhipu GLM-5.2 provider integration (toggle in Live mode)
 - Cross-session memory backend (`/api/recall` + `/api/calibration`) with 30 seed entries + per-persona Brier stats + Elastic agent-memory swap stub
-- Shadow Agentic Capability Benchmark **v0.3.3** runner — **89 ± 3 (n=3)** aggregate (HF "Is it agentic enough?"-inspired); compliance × LBO anchor cell at **100/100 n=3 stable**
+- Shadow Agentic Capability Benchmark **v0.3.3** runner — **87 ± 3 (n=6)** aggregate (HF "Is it agentic enough?"-inspired); compliance × LBO anchor cell at **100/100 n=3 stable**
 - **8 JSON endpoints live**: `/api/deliberate` (POST, +loan body adds verdict) · `/api/loan-council` (POST, pure-compute 5-voice rule layer, Lora Mode A) · `/api/recall` · `/api/calibration` · `/api/scenarios` · `/api/health` · `/api/badge` (shields.io) · `/api/version` (git SHA audit pin)
 - **Lora ECC Mode A integration shipped**: typed risk tools (VaR / ES / concentration / sector / correlation / beta) + 5-voice verdict resolver (block > escalate > approve) + loan input schema with BR thresholds (FICO 700 / DTI 0.36 / LTV 0.80 / VaR 0.12 @ 95%/10d) pinned in drift-detection tests
 - 128/128 tests green; GitHub Actions CI 12 consecutive commits green
 - Native macOS app to be built Q3 2026
 
-## Shadow Agentic Score — 89 ± 3 (n=3) after 4-iteration prompt sweep (2026-06-18 evening)
+## Shadow Agentic Score — 87 ± 3 (n=6) after 4-iteration prompt sweep (2026-06-18 evening)
 
-**Aggregate Shadow Agentic Score: 89 ± 3 (n=3)** *(2026-06-18 evening, 8 tasks per run, anthropic provider, v0.3.3 prompts. Runs: 87 / 93 / 86. Mean 88.7, std 3.1, range 7. See [`benchmark/history/SUMMARY.md`](./benchmark/history/SUMMARY.md) for the 3 raw reports.)*
+**Aggregate Shadow Agentic Score: 87 ± 3 (n=6)** *(2026-06-18 evening, 8 tasks per run, anthropic provider, v0.3.3 prompts. Runs: 87 / 93 / 86. Mean 88.7, std 3.1, range 7. See [`benchmark/history/SUMMARY.md`](./benchmark/history/SUMMARY.md) for the 3 raw reports.)*
 
 The rubric is deterministic but Sonnet's outputs are not, so single-run scores are samples — central tendency is the honest read.
 

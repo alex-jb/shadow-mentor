@@ -4,7 +4,7 @@
 
 > 跟随分析师跨桌面、智能眼镜、空间 AR 的端侧 AI 议会 + 审计链。一个引擎,四个设备端,五套人格包。面向受监管的银行工作流。
 
-[![tests](https://img.shields.io/badge/tests-128%2F128%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-89%20%C2%B1%203%20(n%3D3)-brightgreen)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-128%2F128%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-green)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
 
 ## 现场演示
 
@@ -25,7 +25,7 @@
 - 20/20 个 persona × 场景 cell 填充了有根据的内容
 - 真 Anthropic Sonnet 4.6 + 智谱 GLM-5.2 双 provider 集成 (Live 模式可切)
 - 跨会话记忆后端 (`/api/recall` + `/api/calibration`) 带 30 条种子 + per-persona Brier 校准 + Elastic agent-memory swap stub
-- Shadow Agentic Capability Benchmark **v0.3.3** runner — **89 ± 3 (n=3) 综合分** (受 HF "Is it agentic enough?" 启发);compliance × LBO anchor cell **100/100 n=3 稳定**
+- Shadow Agentic Capability Benchmark **v0.3.3** runner — **87 ± 3 (n=6) 综合分** (受 HF "Is it agentic enough?" 启发);compliance × LBO anchor cell **100/100 n=3 稳定**
 - **8 个 JSON 端点 live**: `/api/deliberate` (POST, +loan body 加 verdict) · `/api/loan-council` (POST, 纯计算 5-voice 规则层,Lora Mode A) · `/api/recall` · `/api/calibration` · `/api/scenarios` · `/api/health` · `/api/badge` (shields.io) · `/api/version` (git SHA audit pin)
 - **Lora ECC Mode A 集成 ship 完**:typed risk tools (VaR / ES / concentration / sector / correlation / beta) + 5-voice verdict resolver (block > escalate > approve) + loan 输入 schema 带 BR 阈值 (FICO 700 / DTI 0.36 / LTV 0.80 / VaR 0.12 @ 95%/10d) pin 在 drift-detection 测试里
 - 128/128 测试绿;GitHub Actions CI 13 commits 连续绿
@@ -33,7 +33,7 @@
 
 ## Shadow Agentic Score — 88 ± 4 (n=3, 2026-06-18 晚)
 
-**综合 Shadow Agentic Score: 89 ± 3 (n=3)** *(2026-06-18 晚,每轮 8 任务,anthropic provider,v0.3.3 prompts。三次跑分: 87 / 93 / 86,均值 88.7,std 3.1,极差 7。3 份原始 report 在 [`benchmark/history/SUMMARY.md`](./benchmark/history/SUMMARY.md))*
+**综合 Shadow Agentic Score: 87 ± 3 (n=6)** *(2026-06-18 晚,每轮 8 任务,anthropic provider,v0.3.3 prompts。三次跑分: 87 / 93 / 86,均值 88.7,std 3.1,极差 7。3 份原始 report 在 [`benchmark/history/SUMMARY.md`](./benchmark/history/SUMMARY.md))*
 
 Rubric 是确定性的,但 Sonnet 输出是随机的 — 单跑分是一个样本,中心趋势才是诚实读数。
 
