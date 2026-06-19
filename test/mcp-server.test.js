@@ -6,10 +6,17 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { handleToolCall, TOOLS } from "../mcp/server.js";
 
-test("MCP server exposes 5 tools", () => {
-  assert.equal(TOOLS.length, 5);
+test("MCP server exposes 6 tools (v1.1.1+ adds shadow_traceability)", () => {
+  assert.equal(TOOLS.length, 6);
   const names = TOOLS.map((t) => t.name);
-  for (const expected of ["shadow_loan_council", "shadow_risk_tools", "shadow_recall", "shadow_calibration", "shadow_scenarios"]) {
+  for (const expected of [
+    "shadow_loan_council",
+    "shadow_risk_tools",
+    "shadow_recall",
+    "shadow_calibration",
+    "shadow_scenarios",
+    "shadow_traceability"
+  ]) {
     assert.ok(names.includes(expected), `missing tool ${expected}`);
   }
 });
