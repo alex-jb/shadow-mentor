@@ -29,6 +29,8 @@ import {
   beta_decomposition
 } from "../lib/risk-tools/index.js";
 import { PERSONA_PROMPTS, SCENARIO_CONTEXTS } from "../lib/prompts.js";
+import { TRACEABILITY } from "../lib/traceability.js";
+import { ADVERSE_ACTION_CODES, AA_SOURCES } from "../lib/schemas/adverse-action.js";
 
 const TOOLS = [
   {
@@ -89,6 +91,24 @@ const TOOLS = [
     name: "shadow_scenarios",
     description: "List Shadow's full surface: 5 persona packs (each with 3 voice prompts), 4 scenario contexts, 4 device clients (Desktop / Even G2 / Brilliant Frame / XReal Air 2 Ultra), and 2 providers (Anthropic Claude + Zhipu GLM-5.2). Returns the catalog for discovery.",
     inputSchema: { type: "object", properties: {} }
+  },
+  {
+    name: "shadow_traceability",
+    description: "Look up the source attribution for any Shadow Mode A benchmark rule. Returns the governance layer (institutional risk framework / product-line policy / benchmark calibration parameter / regulatory) and the authoritative source document. Use this when a user wants to verify procurement-audit citation chain — e.g. \"what justifies FICO >= 700\" or \"is VaR <= 0.12 from the BRD?\" Returns the full traceability dict if no specific rule is requested, plus the 5 AA01-05 adverse-action codes with their source attribution.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        rule: {
+          type: "string",
+          description: "Optional. Specific benchmark rule to look up (e.g. 'FICO >= 700', 'DTI <= 0.36', 'LTV <= 0.80', 'VaR <= 0.12', 'VaR/ES Framework', '10-Day Horizon', 'Confidence 95%', 'Analysis Only', 'ECOA / Reg B', 'SR 11-7'). Omit to return all rules."
+        },
+        include_adverse_action_codes: {
+          type: "boolean",
+          default: true,
+          description: "Include the AA01-05 adverse-action code mappings in the response."
+        }
+      }
+    }
   }
 ];
 
@@ -145,6 +165,55 @@ export function handleToolCall(name, args) {
       all[p] = memorySingleton.recallCalibrationStats({ persona: p });
     }
     return { personas: all };
+  }
+
+  if (name === "shadow_traceability") {
+    const include_aa = args.include_adverse_action_codes !== false;
+    const aa_codes = include_aa
+      ? Object.fromEntries(
+          Object.keys(ADVERSE_ACTION_CODES).map((code) => [
+            code,
+            { label: ADVERSE_ACTION_CODES[code], source: AA_SOURCES[code] }
+          ])
+        )
+      : undefined;
+
+    if (args.rule) {
+      const source = TRACEABILITY[args.rule];
+      if (!source) {
+        return {
+          error: "rule not found in traceability dict",
+          requested_rule: args.rule,
+          available_rules: Object.keys(TRACEABILITY)
+        };
+      }
+      // Classify the governance layer from the source string
+      const layer =
+        source.startsWith("BRD") ? "institutional risk framework" :
+        source.startsWith("Addendum") && source.includes("Risk Appetite Note") ? "benchmark calibration parameter" :
+        source.startsWith("Addendum") ? "product-line policy" :
+        source.startsWith("CFPB") || source.startsWith("Federal Reserve") ? "regulatory" :
+        "unclassified";
+      return {
+        rule: args.rule,
+        source,
+        governance_layer: layer,
+        attribution_note: "Authored by Loredana C. Levitchi; MIT-licensed merge into shadow-mentor per 2026-06-19 grant.",
+        ...(aa_codes ? { adverse_action_codes: aa_codes } : {})
+      };
+    }
+    return {
+      traceability: TRACEABILITY,
+      governance_layers: {
+        institutional_risk_framework: "BRD — board-approved, version-controlled, rarely changes",
+        product_line_policy: "Addenda A/B/C — product-team owned, quarterly revisable",
+        benchmark_calibration_parameter: "Addendum C Risk Appetite Note — model-team owned, validation-cycle revisable",
+        regulatory: "CFPB / ECOA / Reg B / SR 11-7 / EU AI Act Article 14 — external"
+      },
+      attribution: "Primary author of risk, credit-policy, threshold, adverse-action, and traceability modules: Loredana C. Levitchi. Integration maintainer: Alex Xiaoyu Ji. License: MIT (per 2026-06-19 explicit grant).",
+      source_documents: "docs/external/ — BRD_ALIGNMENT, ADDENDUM_A/B/C, TRACEABILITY_MATRIX, IMPLEMENTATION_GUIDE, TECHNICAL_REPORT",
+      ...(aa_codes ? { adverse_action_codes: aa_codes } : {})
+    };
   }
 
   if (name === "shadow_scenarios") {
