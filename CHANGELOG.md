@@ -17,6 +17,31 @@ Next planned:
 - SOC 2 Type 1 readiness checklist
 - shadow.io domain procurement (vs alternatives)
 - Vercel Deployment Protection toggle to make demo public
+- IEEE VR 2027 abstract v1 (co-first-author with Loredana C. Levitchi)
+
+---
+
+## v1.1.1 — License clarification + FICO hard-block policy + author attribution (2026-06-19 NY)
+
+Two-part update closing out Loredana C. Levitchi's June 18 policy + license response.
+
+**License (Option A — MIT merge per author's explicit grant 2026-06-19)**
+- `package.json` now declares `"license": "MIT"` and adds Loredana Levitchi as primary-author contributor for risk, credit-policy, threshold, adverse-action, and traceability modules. Source basis: Orallexa Mode A BRD + Addenda A/B/C + Risk Appetite Note.
+- `docs/external/` ships her authoritative source documents alongside the integrated code, so any audit can verify Shadow's policy semantics against the source without separate retrieval. Contents: `BRD_ALIGNMENT.md`, `ADDENDUM_A/B/C`, `TRACEABILITY_MATRIX.md`, `IMPLEMENTATION_GUIDE.md`, `TECHNICAL_REPORT.docx` + `.pdf`, plus `README.md` documenting attribution and the policy semantics verbatim.
+
+**Policy semantics (FICO becomes hard block, DTI/LTV stay escalate)**
+- Per Levitchi's policy clarification, FICO is the **credit-eligibility floor**, not a soft signal — failing it is a hard `block`, not `escalate`. DTI and LTV remain `escalate` because they're repayment/collateral signals where human review may resolve via compensating factors.
+- `lib/run-loan-council.js` Credit Fundamentals voice tightened:
+  - `FICO < 700` → `block`
+  - `DTI > 0.36` → `escalate`
+  - All-pass → `approve`
+- Voice rationale text updated to cite Levitchi's policy semantics inline so the audit chain reads the reasoning at the response level.
+- Existing test `low FICO escalates Credit Fundamentals...` renamed and updated to assert `block` (and final `block`). New rationale documented in test comment.
+- LTV escalation in Risk Officer voice unchanged (already `escalate`).
+
+**Test count**: 154/154 pass (no new tests, two existing tests updated to reflect tightened policy).
+
+**Compatibility note**: this is a behaviorally-breaking change for any caller that pinned `cf.verdict === "escalate"` on FICO < 700 input. The intended downstream behavior is that examiner-grade reviewers see a `block` final verdict on credit-floor failure rather than queueing the file for further human escalation review.
 
 ---
 

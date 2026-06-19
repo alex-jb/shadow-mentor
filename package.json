@@ -1,7 +1,12 @@
 {
   "name": "shadow-mentor",
-  "version": "1.0.0",
+  "version": "1.1.1",
   "description": "Shadow — on-device AI council and audit chain for regulated banking workflows",
+  "license": "MIT",
+  "author": "Alex Xiaoyu Ji <xji1@mail.yu.edu>",
+  "contributors": [
+    "Loredana C. Levitchi <lcl2138@columbia.edu> (Primary author of risk, credit-policy, threshold, adverse-action, and traceability modules. Source basis: Orallexa Mode A BRD + Addenda A/B/C + Risk Appetite Note. MIT-licensed merge per author's 2026-06-19 explicit grant.)"
+  ],
   "private": true,
   "type": "module",
   "engines": {

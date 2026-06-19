@@ -31,11 +31,15 @@ test("fair_lending_review_flag triggers hard block (overrides everything)", () =
   assert.equal(flcVoice.verdict, "block");
 });
 
-test("low FICO escalates Credit Fundamentals voice but not whole council", () => {
+test("low FICO is a HARD BLOCK on Credit Fundamentals (Levitchi 2026-06-19 policy)", () => {
+  // Per Loredana's June 18 policy clarification — FICO is the credit-
+  // eligibility floor, not a soft signal. Below 700 returns block, not
+  // escalate. DTI/LTV remain escalate because they're repayment/collateral
+  // signals where human review may resolve via compensating factors.
   const r = runLoanCouncil({ ...cleanLoan, credit_score: 620 });
   const cf = r.voices.find((v) => v.voice === "Credit Fundamentals");
-  assert.equal(cf.verdict, "escalate");
-  assert.equal(r.final_verdict, "escalate");
+  assert.equal(cf.verdict, "block");
+  assert.equal(r.final_verdict, "block");
 });
 
 test("high DTI escalates Credit Fundamentals", () => {
@@ -71,7 +75,10 @@ test("adverse_action_reasons present escalates Customer Advocate", () => {
   assert.equal(ca.verdict, "escalate");
 });
 
-test("block > escalate > approve resolution: flagged FL beats escalate signals", () => {
+test("block > escalate > approve resolution: flagged FL produces block (parallel with FICO block)", () => {
+  // Note: under Levitchi 2026-06-19 policy, FICO=620 alone already produces
+  // a Credit Fundamentals block. With Fair Lending also flagged, two voices
+  // independently return block — final verdict is still block.
   const r = runLoanCouncil({
     ...cleanLoan,
     credit_score: 620,
