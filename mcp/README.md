@@ -6,15 +6,16 @@
 
 Shadow already ships 8 HTTP endpoints on Vercel. The MCP server lets you skip the curl and call Shadow directly from your LLM chat — same way you'd call `read_file` or `git_status`. Procurement-grade banking workflows are easier to demo when an analyst can type "what would the compliance council say about a B-rated TLB with FICO 740 and DTI 0.28?" and get the verdict back inline.
 
-The 5 tools exposed:
+The 6 tools exposed:
 
 | Tool | Purpose | Backed by |
 |---|---|---|
-| `shadow_loan_council` | Run the 5-voice deterministic loan-origination council on a structured loan dict. Returns verdict (block / escalate / approve) + voice rationales + risk packet + BR thresholds applied. | `lib/run-loan-council.js` |
+| `shadow_loan_council` | Run the 5-voice deterministic loan-origination council on a structured loan dict. Returns verdict (block / escalate / approve) + voice rationales + risk packet + BR thresholds applied. **v1.1.1**: FICO < 700 is a hard block. | `lib/run-loan-council.js` |
 | `shadow_risk_tools` | Run one of Loredana's typed institutional risk primitives (VaR, ES, factor exposures, beta, concentration, sector exposure, correlation). | `lib/risk-tools/index.js` |
 | `shadow_recall` | Pull past Shadow deliberation entries for a persona + scenario from cross-session memory. | `lib/memory.js` |
 | `shadow_calibration` | Brier calibration stats per persona — useful for SR 11-7 model risk monitoring. | `lib/memory.js` |
 | `shadow_scenarios` | List the full surface (5 personas × 4 scenarios × 4 device clients × 2 providers) for discovery. | `lib/prompts.js` + `lib/schemas/loan.js` |
+| `shadow_traceability` | **New v1.1.1**: Look up the source attribution for any benchmark rule. Returns the governance layer (institutional risk framework / product-line policy / benchmark calibration parameter / regulatory) and the authoritative source. Use to verify procurement-audit citation chain — e.g. *"where does FICO ≥ 700 come from?"* → Addendum A; *"is VaR ≤ 0.12 from the BRD?"* → No, it's Addendum C Risk Appetite Note (benchmark calibration parameter). | `lib/traceability.js` + `lib/schemas/adverse-action.js` |
 
 All tools run locally — no network call, no LLM cost. Built on top of the same `lib/` modules that back `/api/loan-council` and `/api/scenarios` on Vercel.
 
@@ -43,7 +44,7 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) o
 }
 ```
 
-Restart Claude Desktop. The 5 `shadow_*` tools become available.
+Restart Claude Desktop. The 6 `shadow_*` tools become available.
 
 ### Cursor
 
