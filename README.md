@@ -2,9 +2,18 @@
 
 [English](./README.md) · [中文](./README.zh-CN.md)
 
-> The on-device AI council and audit chain that follows the user across desktop, smart glasses, and spatial AR. One engine. Four device clients. Five persona packs.
+> **A 5-voice AI compliance council for regulated lending.** Encode your bank's loan policy in 5 past decisions. Get a verdict in milliseconds. Runs in your VPC. 5-minute install into Claude Desktop, Cursor, or OpenCode via MCP.
 
 [![tests](https://img.shields.io/badge/tests-154%2F154%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-86%20%C2%B1%201%20(n%3D3)%20post--BR-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+
+## For risk and compliance teams
+
+- **5-minute install.** Drop Shadow's MCP server into Claude Desktop, Cursor, or OpenCode; the 5-voice council becomes callable from the model in under five minutes. See [`mcp/README.md`](./mcp/README.md).
+- **5 past loan decisions encode your policy.** Show Shadow five of your bank's prior verdicts and the council mirrors your specific FICO / DTI / LTV / VaR thresholds — no million-row training set required.
+- **Runs in your VPC. No data leaves.** The 5-voice deliberation is pure compute (no LLM call inside the tool body). Loan applicants' data never leaves your servers.
+- **Augments your compliance officer, doesn't replace them.** Every verdict carries a `requires_human: true` flag and AA01–AA05 adverse-action codes per CFPB Bulletin 2024-09 — designed for the human reviewer's signature, not to skip it.
+
+The rest of this README covers collaboration, the 87 ± 3 agentic benchmark, the live demo, MCP integration, and the full architecture. The four bullets above are the buyer-facing summary.
 
 ## Collaboration and license
 
