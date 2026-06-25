@@ -7,7 +7,7 @@
 | Persona | What they do | Device | Voice pack | Seat $/year |
 |---|---|---|---|---|
 | 🛡 **Compliance Officer / Loan Reviewer** | Loan origination review, OCC exam prep, ECOA adverse action notices, AML | Even G2 (customer-facing safe) + Desktop fallback | Junior analyst, Senior VP, Compliance officer trained on OCC / CFPB / ECOA | $1,800 |
-| 🧮 **Quant / Data Scientist / Data Engineer** | SR 11-7 model drift monitoring, fraud anomaly detection, AML graph analytics, counterparty network analysis | **XReal Air 2 Ultra (JARVIS mode)** + Desktop | Junior data scientist, Senior quant, Model risk reviewer | $2,400 |
+| 🧮 **Quant / Data Scientist / Data Engineer** | SR 26-2 (formerly SR 11-7) model drift monitoring, fraud anomaly detection, AML graph analytics, counterparty network analysis | **XReal Air 2 Ultra (JARVIS mode)** + Desktop | Junior data scientist, Senior quant, Model risk reviewer | $2,400 |
 | 💻 **Software Engineer / Platform Engineer** | Internal LLM platform, risk system codebase, integration work | Desktop primary, Brilliant Frame for internal docs | Junior dev, Senior eng, Security review | $1,500 |
 | 📈 **Trader / Portfolio Manager** | Position sizing, correlation regime, tail risk, factor exposure decomposition | **XReal Air 2 Ultra (JARVIS mode)** + Desktop | 5-voice trader council (Buffett value / Soros reflexivity / Druckenmiller macro / Kelly geometric / Taleb tail) | $2,400 |
 | 💼 **Wealth Advisor / Customer-Facing Banker** | HNW client meetings, portfolio review, Reg BI suitability | Even G2 (customer-facing safe) + Desktop | Junior advisor, Senior advisor, Reg BI / Fiduciary | $2,000 |

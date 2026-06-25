@@ -6,7 +6,7 @@
 
 ## Why now
 
-- **EU AI Act high-risk obligations start August 2026** → regulatory deadline for compliance-paranoid local-mode
+- **EU AI Act high-risk obligations** start 2027-12-02 (deferred from 2026-08-02 per EU Digital Omnibus 2026-05-07) → 18-month runway, build-now-compliant-by-2027 framing
 - **Local LLMs cross the usable-quality threshold mid-2026** (Phi-4-mini, Gemma 3 9B, Apple Foundation Model 3 Core Advanced)
 - **Big 4 cut grad hiring 6-29% YoY** because AI ate the entry-level workload → surviving analysts need more leverage faster
 - **First-year analysts cost $75K-$95K loaded and take 12 months to full productivity** (Gallup)

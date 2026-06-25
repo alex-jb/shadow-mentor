@@ -106,7 +106,7 @@ This is the heart of the product. Each cell describes the **concrete output the 
 |---|---|---|---|---|
 | Best fit? | ✅ IDE work, notebook attribution | ⚠ Too low-bandwidth for SHAP / drift | ✅ Reviewing internal model docs | ✅ **Primary** for AML graph + fraud manifold |
 | What user sees | Drift attribution panel: feature × sub-population × contribution table next to the Jupyter notebook | Single whisper if PSI tripped: *"3 features drifted. Sub-population: consumer-discretionary."* | Color HUD: 2 voices on top of a model-card PDF + "run SHAP" suggestion | **JARVIS mode:** 3 floating panels anchored to physical desk. (1) 3D fraud feature-space UMAP — walk around to find misclassified cluster. (2) Counterparty network 5K-node walk-through. (3) Drift attribution timeline. Bone-conduction whispers model-risk reviewer's challenge. |
-| Audit output | Notebook cell + SHAP output hash-chained | Voice transcript | Same | Gaze + walking trajectory + which floating panel was inspected — all hash-chained for SR 11-7 effective challenge evidence |
+| Audit output | Notebook cell + SHAP output hash-chained | Voice transcript | Same | Gaze + walking trajectory + which floating panel was inspected — all hash-chained for SR 26-2 (formerly SR 11-7) effective challenge evidence |
 
 ### 💻 Software Engineer
 

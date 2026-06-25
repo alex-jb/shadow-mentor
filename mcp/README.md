@@ -13,7 +13,7 @@ The 6 tools exposed:
 | `shadow_loan_council` | Run the 5-voice deterministic loan-origination council on a structured loan dict. Returns verdict (block / escalate / approve) + voice rationales + risk packet + BR thresholds applied. **v1.1.1**: FICO < 700 is a hard block. | `lib/run-loan-council.js` |
 | `shadow_risk_tools` | Run one of Loredana's typed institutional risk primitives (VaR, ES, factor exposures, beta, concentration, sector exposure, correlation). | `lib/risk-tools/index.js` |
 | `shadow_recall` | Pull past Shadow deliberation entries for a persona + scenario from cross-session memory. | `lib/memory.js` |
-| `shadow_calibration` | Brier calibration stats per persona — useful for SR 11-7 model risk monitoring. | `lib/memory.js` |
+| `shadow_calibration` | Brier calibration stats per persona — useful for SR 26-2 (formerly SR 11-7) model risk monitoring. | `lib/memory.js` |
 | `shadow_scenarios` | List the full surface (5 personas × 4 scenarios × 4 device clients × 2 providers) for discovery. | `lib/prompts.js` + `lib/schemas/loan.js` |
 | `shadow_traceability` | **New v1.1.1**: Look up the source attribution for any benchmark rule. Returns the governance layer (institutional risk framework / product-line policy / benchmark calibration parameter / regulatory) and the authoritative source. Use to verify procurement-audit citation chain — e.g. *"where does FICO ≥ 700 come from?"* → Addendum A; *"is VaR ≤ 0.12 from the BRD?"* → No, it's Addendum C Risk Appetite Note (benchmark calibration parameter). | `lib/traceability.js` + `lib/schemas/adverse-action.js` |
 

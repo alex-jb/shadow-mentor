@@ -51,7 +51,7 @@ Roy Lee was publicly caught inflating ARR claims. He claimed $7M ARR which he la
 
 ### 3. Cloud-only architecture
 
-Cluely is cloud LLM by design. There is no documented local-only mode. For Shadow's target buyer (mid-tier US bank under EU AI Act + GLBA + SR 11-7), cloud-by-default is a non-starter for client PII screens.
+Cluely is cloud LLM by design. There is no documented local-only mode. For Shadow's target buyer (mid-tier US bank under EU AI Act + GLBA + SR 26-2 (formerly SR 11-7)), cloud-by-default is a non-starter for client PII screens.
 
 ### 4. 2025 data breach (~83,000 users)
 

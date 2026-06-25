@@ -13,7 +13,9 @@
 - **Runs in your VPC. No data leaves.** The 5-voice deliberation is pure compute (no LLM call inside the tool body). Loan applicants' data never leaves your servers.
 - **Augments your compliance officer, doesn't replace them.** Every verdict carries a `requires_human: true` flag and AA01–AA05 adverse-action codes per CFPB Bulletin 2024-09 — designed for the human reviewer's signature, not to skip it.
 
-The rest of this README covers collaboration, the 87 ± 3 agentic benchmark, the live demo, MCP integration, and the full architecture. The four bullets above are the buyer-facing summary.
+The four bullets above are the buyer-facing summary. The defensibility patterns behind them — **Schema-Layer Safety** ([`docs/principles/schema-layer-safety.md`](./docs/principles/schema-layer-safety.md)) and the **Determinism Floor** ([`docs/principles/determinism-floor.md`](./docs/principles/determinism-floor.md)) — are read by procurement reviewers, not just analysts. Anthropic FS / Hebbia / Zest comparison: [`docs/positioning-vs-anthropic-fs.md`](./docs/positioning-vs-anthropic-fs.md).
+
+The rest of this README covers collaboration, the 87 ± 3 agentic benchmark, the live demo, MCP integration, and the full architecture.
 
 ## Collaboration and license
 

@@ -97,7 +97,7 @@ Pull the analyst's last N council deliberations for this persona + scenario, plu
 
 ## GET /api/calibration
 
-Standalone Brier calibration. Bank model-risk reviewers asked for this dedicated endpoint to feed SR 11-7 dashboards without pulling full session histories.
+Standalone Brier calibration. Bank model-risk reviewers asked for this dedicated endpoint to feed SR 26-2 (formerly SR 11-7) dashboards without pulling full session histories.
 
 **Query:** `persona` (optional)
 
