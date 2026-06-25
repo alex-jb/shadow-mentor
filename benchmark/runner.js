@@ -20,6 +20,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import Anthropic from "@anthropic-ai/sdk";
 import { PERSONA_PROMPTS, SCENARIO_CONTEXTS } from "../lib/prompts.js";
+import { checkCellRegression } from "../lib/benchmark-stats.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CLAUDE_MODEL = "claude-sonnet-4-5-20250929";
@@ -194,6 +195,26 @@ async function main() {
   writeFileSync(outpath, JSON.stringify(report, null, 2));
   console.log(`\nAggregate Shadow Agentic Score: ${aggregate}/100`);
   console.log(`Report written: ${outpath}`);
+
+  // Per-cell regression gate — fails non-zero exit if any persona × scenario
+  // cell drops more than 5 points below its historical n=6 minimum. Catches
+  // prompt-edit regressions that the aggregate badge would hide.
+  const gate = checkCellRegression(report);
+  if (gate.passed) {
+    console.log(`Per-cell regression gate: PASS (all 8 cells within tolerance)`);
+  } else {
+    console.error(`\n⚠️  Per-cell regression gate: FAIL — ${gate.violations.length} cell(s) regressed`);
+    for (const v of gate.violations) {
+      if (v.kind === "regression") {
+        console.error(`  - ${v.cell}: scored ${v.score}, floor ${v.floor}, min allowed ${v.min_allowed} (delta ${v.delta})`);
+      } else if (v.kind === "unknown-cell") {
+        console.error(`  - ${v.cell}: not in CELL_HISTORICAL_FLOORS (extend lib/benchmark-stats.js)`);
+      }
+    }
+    // Non-fatal in standalone runs (we want the report file written), but
+    // CI scripts that pipe to grep "FAIL" can hard-fail their job step.
+    process.exitCode = 2;
+  }
 }
 
 main().catch((err) => {
