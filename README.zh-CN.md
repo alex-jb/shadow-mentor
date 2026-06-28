@@ -15,6 +15,8 @@
 
 两条缓解都可以直接 grep 源码读出来:采购评审在 5 分钟内可以验证。不需要 prompt-engineering 的信仰。
 
+MCPTox 缓解是**机械证明**的,不是声明 — 见 [`test/mcptox-canary.test.js`](./test/mcptox-canary.test.js):28 条 contract 测试覆盖 MCPTox §3 的 6 类攻击(指令注入 / 交易动词注入 / echo-back 探针 / 超大 buffer / HTML 注入 / 嵌套 JSON 绕过)+ 4 条工具描述反注毒断言。同一套测试也覆盖 **MosaicLeaks 多轮信息渗漏类**攻击 — category-C echo-back + category-F 嵌套 JSON 锁死"攻击者无法跨工具边界提取 canary token"这条不变量。
+
 ## 协作与许可
 
 Shadow v1.1.1 集成了 **Loredana C. Levitchi**(叶史瓦大学 + William Paterson University 教师,14 年全球银行金融软件经验)撰写的 **Orallexa Shadow Mode A** 包。根据她 2026-06-19 的明确授权,以 MIT 许可证合并。她是以下模块的主要作者:

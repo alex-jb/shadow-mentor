@@ -24,6 +24,8 @@ Two 2026 disclosures concretely named the failure modes Shadow's architecture mi
 
 Either patch reads cleanly off the source: a procurement reviewer can grep `lib/audit-guardrail.js` and `lib/schemas/loan.js` to verify both controls in under five minutes. No prompt-engineering belief required.
 
+The MCPTox mitigation is **mechanically demonstrated**, not asserted — see [`test/mcptox-canary.test.js`](./test/mcptox-canary.test.js): 28 contract tests covering 6 MCPTox §3 attack categories (instruction injection, trade-execution verb injection, echo-back probe, oversize buffer, HTML / script injection, nested-JSON auth bypass) plus 4 tool-description anti-poisoning assertions. The same suite covers **MosaicLeaks-class multi-turn information-leak** vectors — category-C echo-back + category-F nested-JSON pin the invariant that an attacker cannot exfiltrate a canary token across the tool boundary.
+
 The rest of this README covers collaboration, the 87 ± 3 agentic benchmark, the live demo, MCP integration, and the full architecture.
 
 ## Collaboration and license
