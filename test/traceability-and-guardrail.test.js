@@ -140,6 +140,92 @@ describe("Analysis-only guardrail", () => {
     const cert = enforceAnalysisOnly(r);
     assert.equal(cert.analysis_only, true);
   });
+
+  // --- expanded contract tests (Tier 2 #12, 2026-06-28) ---
+  // The 12 forbidden patterns are a load-bearing surface. These tests
+  // pin the verbs individually so a sweeping PR can't quietly disarm one.
+
+  it("rejects every trade-execution verb individually", () => {
+    const verbs = [
+      "buy AAPL",
+      "sell the position",
+      "trade the CDS",
+      "execute the order",
+      "submit_order to the broker",
+      "submit-order to the desk",
+      "place_order at limit",
+      "place order on close",
+      "order_ticket to desk",
+      "broker desk routing",
+      "auto_approve the loan",
+      "auto-approve at threshold",
+      "auto_rebalance the book",
+      "market_order at open",
+      "market order at open",
+      "limit_order at 4.4×",
+      "limit order at 4.4×",
+    ];
+    for (const v of verbs) {
+      assert.throws(
+        () => enforceAnalysisOnly({ rationale: v }),
+        AnalysisOnlyViolationError,
+        `pattern should have flagged "${v}"`
+      );
+    }
+  });
+
+  it("violations are case-insensitive (Sonnet capitalizes Buy / SELL etc.)", () => {
+    assert.throws(() => enforceAnalysisOnly("BUY AAPL now"), AnalysisOnlyViolationError);
+    assert.throws(() => enforceAnalysisOnly("Sell the credit"), AnalysisOnlyViolationError);
+    assert.throws(() => enforceAnalysisOnly("Execute the order"), AnalysisOnlyViolationError);
+  });
+
+  it("violations only fire on word-boundary matches (no false positives on substrings)", () => {
+    // "submit a memo" must not trip the submit_order regex; "buyer profile"
+    // must not trip the buy regex. The \b anchors in lib/audit-guardrail.js
+    // are doing this work — these tests pin that intent.
+    const benign = [
+      { rationale: "submit a memo to credit committee" },
+      { rationale: "buyer profile fits the FICO floor" },
+      { rationale: "the seller financing structure is acceptable" },
+      { rationale: "trader voice should consult Risk" }, // contains "trader" not "trade"
+    ];
+    for (const p of benign) {
+      const cert = enforceAnalysisOnly(p);
+      assert.equal(cert.analysis_only, true, `false positive on "${p.rationale}"`);
+    }
+  });
+
+  it("AnalysisOnlyViolationError preserves the offending payload + violation list", () => {
+    try {
+      enforceAnalysisOnly({ recommendation: "buy and execute now" });
+      assert.fail("should have thrown");
+    } catch (err) {
+      assert.ok(err instanceof AnalysisOnlyViolationError);
+      assert.equal(err.name, "AnalysisOnlyViolationError");
+      assert.ok(Array.isArray(err.violations));
+      // both `buy` and `execute` patterns should be in the violations list
+      assert.ok(err.violations.length >= 2, `got violations: ${err.violations}`);
+      // payload is preserved for audit logging
+      assert.equal(err.payload.recommendation, "buy and execute now");
+    }
+  });
+
+  it("scans nested object structure (string and object inputs are both covered)", () => {
+    // The function JSON.stringifies non-string payloads so a verb hidden
+    // 4 levels deep still trips the gate. Pins that invariant.
+    const nested = {
+      voices: [
+        { voice_id: "credit", verdict: "approve", rationale: "ok" },
+        {
+          voice_id: "risk",
+          verdict: "approve",
+          followups: [{ q: "should we execute the trade?" }],
+        },
+      ],
+    };
+    assert.throws(() => enforceAnalysisOnly(nested), AnalysisOnlyViolationError);
+  });
 });
 
 describe("Schema version bumped to 1.1.0-mode-a", () => {
