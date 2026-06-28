@@ -4,7 +4,16 @@
 
 > 跟随分析师跨桌面、智能眼镜、空间 AR 的端侧 AI 议会 + 审计链。一个引擎,四个设备端,五套人格包。面向受监管的银行工作流。
 
-[![tests](https://img.shields.io/badge/tests-154%2F154%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-86%20%C2%B1%201%20(n%3D3)%20post--BR-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-208%2F208%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+
+### 直接对应 2026 已命名的 MCP 威胁(MCPTox / OX Security)
+
+2026 年两份独立披露具体命名了 Shadow 在架构层默认就缓解的失效模式:
+
+- **OX Security MCP 供应链公告**(2026-05)— MCP STDIO transport 允许任意 OS 命令启动服务端;Anthropic 确认是 by-design,sanitization 是开发者责任。影响超过 1.5 亿 SDK 下载。*Shadow 的缓解*:`shadow_*` 工具仅调用冻结的 `lib/` 模块;响应在议会输出边界经过 `enforceAnalysisOnly()`。没有不受信任的 shell 输入会到达工具体。([公告](https://www.ox.security/blog/mcp-supply-chain-advisory-rce-vulnerabilities-across-the-ai-ecosystem/))
+- **MCPTox benchmark**(arXiv 2508.14925)— 测试 45 个 server / 353 个工具,Claude-3.7-Sonnet 拒绝被注毒的工具描述的比例不到 3%。*Shadow 的缓解*:工具返回严格 JSON 枚举判决(block / escalate / approve),不是自由叙事文本。被注毒的描述无法扩大响应表面超过 schema,`lib/audit-guardrail.js` 上 12 条正则在每个 voice 理由到达用户之前再过一次。
+
+两条缓解都可以直接 grep 源码读出来:采购评审在 5 分钟内可以验证。不需要 prompt-engineering 的信仰。
 
 ## 协作与许可
 

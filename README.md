@@ -4,7 +4,7 @@
 
 > **A 5-voice AI compliance council for regulated lending.** Encode your bank's loan policy in 5 past decisions. Get a verdict in milliseconds. Runs in your VPC. 5-minute install into Claude Desktop, Cursor, or OpenCode via MCP.
 
-[![tests](https://img.shields.io/badge/tests-154%2F154%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-86%20%C2%B1%201%20(n%3D3)%20post--BR-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-208%2F208%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
 
 ## For risk and compliance teams
 
@@ -14,6 +14,15 @@
 - **Augments your compliance officer, doesn't replace them.** Every verdict carries a `requires_human: true` flag and AA01–AA05 adverse-action codes per CFPB Bulletin 2024-09 — designed for the human reviewer's signature, not to skip it.
 
 The four bullets above are the buyer-facing summary. The defensibility patterns behind them — **Schema-Layer Safety** ([`docs/principles/schema-layer-safety.md`](./docs/principles/schema-layer-safety.md)) and the **Determinism Floor** ([`docs/principles/determinism-floor.md`](./docs/principles/determinism-floor.md)) — are read by procurement reviewers, not just analysts. Anthropic FS / Hebbia / Zest comparison: [`docs/positioning-vs-anthropic-fs.md`](./docs/positioning-vs-anthropic-fs.md).
+
+### Defends against named MCP threats (MCPTox / OX Security 2026)
+
+Two 2026 disclosures concretely named the failure modes Shadow's architecture mitigates by construction:
+
+- **OX Security MCP supply-chain advisory** (May 2026) — MCP STDIO transport executes any OS command to launch a server; Anthropic confirmed by-design, so input sanitization is the developer's responsibility. Affects 150M+ SDK downloads. *Shadow mitigation*: the `shadow_*` tools call only frozen `lib/` modules; the response goes through `enforceAnalysisOnly()` at the council output boundary. No untrusted shell input reaches a tool body. ([advisory](https://www.ox.security/blog/mcp-supply-chain-advisory-rce-vulnerabilities-across-the-ai-ecosystem/))
+- **MCPTox benchmark** (arXiv 2508.14925) — 45 servers, 353 tools tested; Claude-3.7-Sonnet refused poisoned tool-description payloads less than 3% of the time. *Shadow mitigation*: tools return strict-JSON enum verdicts (block / escalate / approve), not free narrative. A poisoned description cannot widen the response surface beyond the schema, and `lib/audit-guardrail.js` runs a 12-pattern regex over every voice rationale before it reaches the user.
+
+Either patch reads cleanly off the source: a procurement reviewer can grep `lib/audit-guardrail.js` and `lib/schemas/loan.js` to verify both controls in under five minutes. No prompt-engineering belief required.
 
 The rest of this README covers collaboration, the 87 ± 3 agentic benchmark, the live demo, MCP integration, and the full architecture.
 
