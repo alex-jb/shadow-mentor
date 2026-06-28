@@ -25,6 +25,17 @@
 3. **Multi-provider, mainland-friendly** — Shadow routes Anthropic / OpenAI / GLM (Zhipu, for Mainland China mid-tier banks where Anthropic is unavailable). Anthropic FS templates are Anthropic-only.
 4. **Procurement-defensible cost** — Anthropic enterprise contracts price in 6 figures. Shadow seat target is **$1,800 / year per compliance officer**. The wedge for mid-tier banks (Raymond James, Stifel, LPL) that can't afford Hebbia / Anthropic at scale.
 
+### Multi-provider isn't sales copy — own-dogfood evidence (2026-06-28)
+
+On 2026-06-28 we hit our own Anthropic monthly usage cap mid-day. Two production systems immediately surfaced the failure:
+
+- **Shadow's OCR live-smoke suite** failed on a `400 invalid_request_error: You have reached your specified API usage limits. You will regain access on 2026-07-01 at 00:00 UTC.` ([commit `beb5602`](https://github.com/alex-jb/shadow-mentor/commit/beb5602)).
+- **Our internal daily-brief distill cron** produced an `[ERROR] anthropic call failed (non-billing)` stub because its envelope matcher only knew the older "credit balance too low" wording, not the new "usage limits" wording ([alex-brain commit `2d12937`](https://github.com/alex-jb/alex-brain/commit/2d12937)).
+
+Both were patched within hours by treating envelope errors as graceful fallbacks. The point for procurement: a single-provider deployment hits the same wall on the same day, but a bank running on Shadow's multi-provider router with the GLM-5.2 fallback ([`lib/glm-call.js`](../lib/glm-call.js) + [`test/glm-call.test.js`](../test/glm-call.test.js) 12 contract tests) keeps approving loans while Anthropic resets. This is not "we believe multi-provider matters" — this is "we got the bill on 6/28, and the bank wouldn't have."
+
+Anthropic FS templates are Anthropic-only by construction. Shadow is provider-agnostic by construction. The difference shows up on the day you actually need it.
+
 ## The buyer's mental model
 
 Anthropic FS Agents and Hebbia own the **research seat** at $10K+ / year. Shadow owns the **compliance officer seat at $1,800 / year**. Pitch is *complementary*, not replacement:
