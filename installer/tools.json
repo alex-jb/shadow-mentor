@@ -1,0 +1,91 @@
+{
+  "$schema_version": "1.0.0",
+  "$comment": "Canonical install-target catalog for Shadow's MCP server. Pattern adapted from msitarzewski/agency-agents 117k-star registry. Procurement reviewer can grep this single file to verify Shadow's MCP install path for any supported host. CI gate at scripts/check-tools.mjs fails the build if this file disagrees with the actual server / docs.",
+  "tools": [
+    {
+      "id": "claude-desktop",
+      "label": "Claude Desktop",
+      "detect_dirs": [
+        "~/Library/Application Support/Claude",
+        "%APPDATA%/Claude"
+      ],
+      "dest_path": "~/Library/Application Support/Claude/claude_desktop_config.json",
+      "format": "json-merge",
+      "install_kind": "per-server",
+      "config_key_path": "mcpServers.shadow-mentor",
+      "platform_support": ["darwin", "win32", "linux"],
+      "docs": "mcp/README.md#claude-desktop"
+    },
+    {
+      "id": "cursor",
+      "label": "Cursor",
+      "detect_dirs": [
+        "~/.cursor",
+        "~/Library/Application Support/Cursor"
+      ],
+      "dest_path": "~/.cursor/mcp.json",
+      "format": "json-merge",
+      "install_kind": "per-server",
+      "config_key_path": "mcpServers.shadow-mentor",
+      "platform_support": ["darwin", "win32", "linux"],
+      "docs": "mcp/README.md#cursor"
+    },
+    {
+      "id": "zed",
+      "label": "Zed",
+      "detect_dirs": [
+        "~/.config/zed",
+        "~/Library/Application Support/Zed"
+      ],
+      "dest_path": "~/.config/zed/settings.json",
+      "format": "json-merge",
+      "install_kind": "per-server",
+      "config_key_path": "context_servers.shadow-mentor",
+      "platform_support": ["darwin", "linux"],
+      "docs": "mcp/README.md#zed"
+    },
+    {
+      "id": "opencode",
+      "label": "OpenCode (Anthropic Sky)",
+      "detect_dirs": [
+        "~/.opencode"
+      ],
+      "dest_path": "~/.opencode/mcp.json",
+      "format": "json-merge",
+      "install_kind": "per-server",
+      "config_key_path": "mcpServers.shadow-mentor",
+      "platform_support": ["darwin", "linux"],
+      "docs": "mcp/README.md#opencode"
+    },
+    {
+      "id": "openclaw",
+      "label": "OpenClaw",
+      "detect_dirs": [
+        "~/.openclaw"
+      ],
+      "dest_path": "~/.openclaw/mcp.json",
+      "format": "json-merge",
+      "install_kind": "per-server",
+      "config_key_path": "mcpServers.shadow-mentor",
+      "platform_support": ["darwin", "linux"],
+      "docs": "mcp/README.md#openclaw"
+    }
+  ],
+  "$server_contract": {
+    "comment": "What every entry above ships as the MCP server command + args. Single source of truth — if mcp/server.js entry point changes, this contract changes too and CI catches the drift.",
+    "command": "node",
+    "args_template": ["{repo_root}/mcp/server.js"],
+    "env_passthrough": ["ANTHROPIC_API_KEY", "GLM_API_KEY"]
+  },
+  "$tool_surface": {
+    "comment": "Pinned list of MCP tools exposed by mcp/server.js. CI verifies this matches TOOLS exported by mcp/server.js.",
+    "tools": [
+      "shadow_loan_council",
+      "shadow_risk_tools",
+      "shadow_recall",
+      "shadow_calibration",
+      "shadow_scenarios",
+      "shadow_traceability"
+    ]
+  }
+}
