@@ -27,7 +27,20 @@ cd shadow-mentor
 npm install
 ```
 
-Then add Shadow to your MCP host config.
+### One-line install (recommended, v1.2+)
+
+```bash
+node bin/install.mjs                         # list detected MCP hosts
+node bin/install.mjs --host cursor --dry-run # preview the merged config
+node bin/install.mjs --host cursor           # write it
+node bin/install.mjs --all                   # install for every detected host
+```
+
+`bin/install.mjs` reads `installer/tools.json` (the canonical install-target catalog — 5 MCP hosts as of v1.2: Claude Desktop / Cursor / Zed / OpenCode / OpenClaw) and writes the correct JSON config. JSON-merge preserves existing MCP servers; only the `shadow-mentor` key is added or updated. Dry-run shows the exact bytes before any file is touched.
+
+### Manual install (always works)
+
+Add Shadow to your MCP host config by hand:
 
 ### Claude Desktop
 

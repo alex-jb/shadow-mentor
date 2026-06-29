@@ -19,6 +19,7 @@
     "benchmark": "node benchmark/runner.js",
     "benchmark:csv": "node scripts/benchmark-csv.mjs",
     "check:tools": "node scripts/check-tools.mjs",
+    "install:mcp": "node bin/install.mjs",
     "health": "curl -s http://localhost:3000/api/health",
     "calibration": "curl -s 'http://localhost:3000/api/calibration?persona=compliance'",
     "mcp": "node mcp/server.js"
