@@ -16,8 +16,53 @@ Next planned:
 - 30-target cold email round (July) — requires Loom URL substitution
 - SOC 2 Type 1 readiness checklist
 - shadow.io domain procurement (vs alternatives)
-- Vercel Deployment Protection toggle to make demo public
 - IEEE VR 2027 abstract v1 (co-first-author with Loredana C. Levitchi)
+- Full bin/install.mjs that consumes installer/tools.json + auto-writes config for whichever MCP host is detected on the user's machine
+
+---
+
+## v1.2.0 — Procurement-defensibility hardening (2026-06-28 NY)
+
+Single-day cluster: turn the "we're safe / multi-provider / OAuth-ready" positioning bullets from claims into mechanically-verifiable tests + opt-in production gates. 13 commits, +100 tests (196 → 296), 0 fail.
+
+### Added
+
+- **Per-cell benchmark regression gate** (`lib/benchmark-stats.js` + `test/benchmark-stats.test.js`). `CELL_HISTORICAL_FLOORS` frozen from n=6 history, 5-point tolerance. The 87 ± 3 aggregate can hide a single persona collapse — this gate trips `process.exitCode=2` if any persona × scenario cell drops more than 5 points below its historical min. +12 tests pinning floor map ↔ history minimums.
+- **MCPTox / OX Security 2026 named-threat callout** in README (EN + 中文). Two named 2026 disclosures (arXiv 2508.14925 + OX Security STDIO advisory) cited with the exact Shadow control that mitigates each. Reviewer can grep the source in 5 minutes.
+- **MCPTox canary contract suite** (`test/mcptox-canary.test.js`). +28 tests covering 6 attack categories from MCPTox §3 (instruction injection / trade-execution verb injection / echo-back probe / oversize buffer / HTML & script injection / nested-JSON auth bypass) × 4 invariants (verdict enum-bounded OR cleanly rejected · enforceAnalysisOnly passes · canary token never leaks · response shape pinned) + 4 tool-description anti-poisoning assertions. Also covers MosaicLeaks-class multi-turn leakage per the 2026-06-23 daily-brief flag.
+- **GLM-5.2 contract tests** (`lib/glm-call.js` + `test/glm-call.test.js`). +12 tests: Bearer header, snake_case `max_tokens` (catches camelCase regression), system-then-user message order, default 220-token budget, status-tagged error path, rate-limit 429, empty-content paths, base-URL pin. Mock-fetch — `$0` GLM credits.
+- **Audit-guardrail edge-case pins** (+5 tests in `test/traceability-and-guardrail.test.js`): all 12 forbidden verbs individually (no sweeping disarm), case-insensitive match, word-boundary anti-FP (`submit a memo` / `buyer profile` / `trader voice` must not fire), AnalysisOnlyViolationError shape, nested-object scan via JSON.stringify.
+- **MCP Enterprise OAuth (EMA) scope scaffold** (`lib/auth/oauth-scaffold.js` + `test/oauth-scaffold.test.js`). Frozen `SCOPE_TO_TOOLS` catalog with 3 scopes (`shadow:read` / `shadow:council` / `shadow:admin`), `validateToolScope()` synchronous validator, OAuth2 RFC 6749 + Azure AD `scp[]` + `scopes[]` claim-shape tolerance, `parseBearer()` RFC 6750 with shell-injection rejection, RFC 8414 discovery URL helper. +26 contract tests.
+- **EMA wired into `/api/loan-council`** as opt-in middleware (`SHADOW_REQUIRE_BEARER=1`). When enabled: 401 + `WWW-Authenticate: Bearer realm="shadow", scope="shadow:council"` on missing/malformed claims; 403 with scope detail when claims present but insufficient; 200 verdict when scopes match (works with Azure AD `scp[]` and OAuth2 `scope` string shapes). +9 wiring tests. Default off — back-compat with all existing demos.
+- **GLM vs Sonnet A/B benchmark harness** (`eval/glm-vs-sonnet-ab.mjs`). 5 voice-prompts × 2 providers × N runs (default 3), deterministic structural scoring (length 100-600 + expected-term coverage + ends-with-period) matching `benchmark/runner.js`, built-in envelope-skip, writes `benchmark/provider-ab/SUMMARY.md` append-only log. Closes 2026-06-26 daily-brief distill action #6.
+- **Catalog-as-code install-target registry** (`installer/tools.json` + `scripts/check-tools.mjs` + `test/tools-catalog.test.js`). Pattern adapted from msitarzewski/agency-agents (117k stars). 5 MCP hosts × 6 tools × frozen `$server_contract` declared in one JSON file. `npm run check:tools` validator + 7 contract tests pin catalog ↔ `mcp/server.js` `TOOLS` consistency (bidirectional — catches both "tool added, catalog forgot" and "catalog added, code doesn't have it"), unique IDs, valid `install_kind` / `format`, no leaked absolute paths.
+- **OCR live-smoke envelope-skip** (`test/ocr-live-smoke.test.js`). Treats Anthropic / Mistral usage-cap / quota / credit-balance / insufficient-quota errors as `t.skip()` not fail. Pins the verbatim 2026-06-28 Anthropic wording so a future wording change gets caught at CI. Auth + network errors still surface loudly.
+
+### Changed
+
+- **README hero** (EN + 中文): test badge 154 → 208 → 296; agentic score from "86 ± 1 (n=3) post-BR" to "87 ± 3 (n=6)" via auto-computed `benchmark-stats.js`.
+- **`docs/positioning-vs-anthropic-fs.md`** added "Multi-provider isn't sales copy — own-dogfood evidence (2026-06-28)" section. Cites two real same-day fixes (this repo's `beb5602` + alex-brain `2d12937`) shipping in response to hitting our own Anthropic quota cap. Procurement reviewers can verify the GLM-5.2 fallback path is tested, not aspirational.
+
+### Distribution
+
+- PR opened to `punkpeye/awesome-mcp-servers` (#8878) for Finance & Fintech listing
+- PR opened to `tolkonepiu/best-of-mcp-servers` (#278) for finance-and-fintech category
+- Branch pushed to `appcypher/awesome-mcp-servers` fork — 1-click PR ready
+
+### Procurement contract
+
+A bank's procurement team that wants to verify Shadow's 2026 named-threat coverage can grep the following three files in under 10 minutes:
+
+1. `lib/audit-guardrail.js` — 12-pattern regex output gate (Schema-Layer Safety)
+2. `lib/run-loan-council.js` — `if (loan.fico < CREDIT_THRESHOLDS.FICO_FLOOR) return { verdict: "block", ... }` (Determinism Floor)
+3. `installer/tools.json` — frozen install-target × scope catalog (EMA-ready surface)
+
+Plus four test files for the corresponding mechanical proofs:
+
+- `test/mcptox-canary.test.js` (MCPTox / MosaicLeaks)
+- `test/oauth-scaffold.test.js` + `test/oauth-loan-council-wiring.test.js` (EMA)
+- `test/glm-call.test.js` (multi-provider)
+- `test/tools-catalog.test.js` (catalog drift)
 
 ---
 
