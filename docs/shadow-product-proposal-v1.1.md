@@ -23,7 +23,7 @@ urlcolor: blue
 
 3. **HuggingFace `Is it agentic enough?` benchmark** — adopted as Shadow's first quantified agentic-capability score. Replaces the prior "41 tests green" framing (which measured unit-test coverage, not agentic capability). Plan to publish Shadow's score in v1.2 post-IRB.
 
-4. **Live demo deployed**: https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app — real Anthropic Claude Sonnet 4.6 council backend on Vercel, 4-device × 5-persona × 4-scenario matrix browser-runnable. Deployment Protection toggle pending; URL fully public after toggle.
+4. **Live demo deployed**: https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app — real Anthropic Claude Sonnet 4.6 council backend on Vercel, 4-device × 5-persona × 4-scenario matrix browser-runnable. Deployment Protection toggle pending; URL fully public after toggle.
 
 Architecture unchanged. v1.1 supersedes v1.0 in all customer-procurement and VC-pitch contexts.
 
