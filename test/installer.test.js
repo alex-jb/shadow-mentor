@@ -64,7 +64,11 @@ describe("bin/install.mjs CLI contract", () => {
   test("--dry-run server entry references mcp/server.js with absolute repo path", () => {
     const r = runInstaller(["--host", "cursor", "--dry-run"]);
     assert.match(r.stdout, /"command": "node"/);
-    assert.match(r.stdout, /\/Users\/.+mcp\/server\.js/);
+    // Match any absolute path ending in mcp/server.js. macOS gives
+    // /Users/..., Ubuntu CI gives /home/runner/work/..., Windows gives
+    // C:\\Users\\... — the platform-agnostic invariant is "the path
+    // ends in /mcp/server.js" (or \\mcp\\server.js on Win).
+    assert.match(r.stdout, /[\\/]mcp[\\/]server\.js/);
   });
 
   test("--dry-run server entry includes ANTHROPIC_API_KEY + GLM_API_KEY env vars", () => {
