@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<title>Shadow × XReal Air 2 Ultra — JARVIS spatial council</title>
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden;
+    background: #05060a; color: #e6e8f0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; }
+  #xr-button { position: fixed; bottom: 24px; right: 24px; z-index: 10;
+    padding: 14px 22px; border: 1px solid #2a2f3d; background: #11131a;
+    color: #e6e8f0; border-radius: 12px; cursor: pointer; font-size: 14px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+  #xr-button:hover { background: #1a1d27; border-color: #3a4050; }
+  #xr-button:disabled { opacity: 0.4; cursor: not-allowed; }
+  #status { position: fixed; top: 12px; left: 12px; z-index: 10;
+    font-size: 12px; padding: 8px 12px; background: rgba(20,20,30,0.7);
+    border-radius: 8px; max-width: 60ch; line-height: 1.4;
+    border: 1px solid #2a2f3d; }
+  #status .ok { color: #6fdc8c; }
+  #status .warn { color: #ffb55a; }
+  #status .err { color: #ff6470; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<div id="status">Initializing scene…</div>
+<button id="xr-button" disabled>Enter XR (loading…)</button>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.166.1/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.166.1/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+// ═══════════════════════════════════════════════════════════════════
+// Shadow × XReal Air 2 Ultra — JARVIS spatial council
+// ═══════════════════════════════════════════════════════════════════
+// SCAFFOLD shipped 2026-06-30. Targets the Y.U. Dean + Vice-Provost
+// mid-July 2026 demo cell where Shadow's 5-voice council renders as
+// 5 floating panels in spatial AR.
+//
+// What this is
+//   - Pure HTML + Three.js + WebXR, no bundler. Single file, runs from
+//     `python3 -m http.server` or any static host.
+//   - Fetches /api/deliberate from the local Shadow backend (or falls
+//     back to a baked-in mock loan packet if backend unreachable).
+//   - Renders 5 podium panels in a half-circle arc 1.5m from origin,
+//     each labelled with one of the 5 voices + tagged with the JSON
+//     verdict / rationale snippet from the response.
+//   - WebXR session toggle button. On XReal Air 2 Ultra (Chrome / Edge
+//     with WebXR enabled) hits immersive-ar; on desktop falls back to
+//     a non-XR scene the developer can orbit-rotate.
+//
+// What this is NOT (yet — open work for the next iteration)
+//   - No gesture input. Verdict-submission via MediaPipe Hands is the
+//     v0.2 ship — needs camera permission + hand-landmark loop.
+//   - No 3D Gaussian Splatting ambient background — Section 4.6 of the
+//     IEEE VR 2027 paper draft. Add when we have a captured 3DGS asset
+//     of an actual analyst desk.
+//   - No traceability dict surfacing inside the panels (just verdict +
+//     1-line rationale today). Wire the BRD-vs-Addenda Source
+//     Separation cite chain into the panel UI for the Sept full-paper
+//     submission cell.
+//   - No Brilliant Frame / Even G2 device-specific render paths.
+//     Those have different fov/binocular geometries; this is the
+//     XReal-first cell only.
+// ═══════════════════════════════════════════════════════════════════
+
+import * as THREE from "three";
+
+const statusEl = document.getElementById("status");
+const xrButton = document.getElementById("xr-button");
+
+function setStatus(html, level = "ok") {
+  statusEl.innerHTML = `<span class="${level}">${html}</span>`;
+}
+
+// ─── Mock loan packet — used if Shadow backend is unreachable ───────
+// Same shape as the LBO scenario in test/loan-policy.test.js.
+const MOCK_LOAN = {
+  fico: 740, dti: 0.28, ltv: 0.72,
+  loan_amount_usd: 285000, scenario: "lbo",
+  question: "Mid-cap LBO leverage 4.4× — Policy 4.3 applicable?"
+};
+
+const MOCK_RESPONSE = {
+  voices: [
+    { name: "Credit Fundamentals", verdict: "approve",
+      rationale: "FICO 740 clears Addendum A floor 700; DTI 0.28 well under 0.36." },
+    { name: "Risk Officer", verdict: "escalate",
+      rationale: "4.4× leverage at LBO ceiling; recommend Risk Appetite Note check." },
+    { name: "Fair Lending Compliance", verdict: "approve",
+      rationale: "No disparate-impact flag; protected-class neutral." },
+    { name: "Customer Advocate", verdict: "approve",
+      rationale: "Repayment capacity sound under compensating factors." },
+    { name: "Macro Contrarian", verdict: "escalate",
+      rationale: "Sector concentration cap 22% — current allocation 19%." }
+  ],
+  traceability: { /* from lib/traceability.js */ }
+};
+
+const VERDICT_COLOR = {
+  approve:  0x6fdc8c,   // green
+  escalate: 0xffb55a,   // amber
+  block:    0xff6470,   // red
+};
+
+// ─── Try to fetch live council; fallback to mock on any failure ─────
+async function fetchCouncil() {
+  try {
+    const r = await fetch("/api/deliberate", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ scenario: "lbo", loan: MOCK_LOAN }),
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data = await r.json();
+    setStatus(`✓ Live /api/deliberate (${data.voices?.length ?? 0} voices)`, "ok");
+    return data;
+  } catch (err) {
+    setStatus(`⚠ Backend unreachable (${err.message}) — using mock council`, "warn");
+    return MOCK_RESPONSE;
+  }
+}
+
+// ─── Three.js scene scaffold ────────────────────────────────────────
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x05060a);
+
+const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 100);
+camera.position.set(0, 1.6, 0);   // standing analyst eye height
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.xr.enabled = true;
+document.body.appendChild(renderer.domElement);
+
+window.addEventListener("resize", () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// Ambient + key light so panels read without harsh edges
+scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+const keyLight = new THREE.DirectionalLight(0xffffff, 0.8);
+keyLight.position.set(2, 4, 2);
+scene.add(keyLight);
+
+// ─── Build 5 floating podium panels in half-circle arc ──────────────
+function makePanel({ name, verdict, rationale, index, total }) {
+  const group = new THREE.Group();
+
+  // Angle the podiums in a half-circle facing the analyst. Range
+  // -60deg to +60deg over `total` panels — JARVIS-style fan.
+  const arcSpan = (Math.PI * 2) / 3;          // 120 degrees total
+  const t = total === 1 ? 0 : index / (total - 1);  // 0..1
+  const angle = -arcSpan / 2 + t * arcSpan;
+  const radius = 1.5;
+  group.position.set(
+    Math.sin(angle) * radius,
+    1.5,                    // eye-height
+    -Math.cos(angle) * radius
+  );
+  group.rotation.y = angle;
+
+  // Background plate
+  const plate = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.5, 0.6),
+    new THREE.MeshBasicMaterial({
+      color: 0x11131a,
+      transparent: true,
+      opacity: 0.85,
+      side: THREE.DoubleSide
+    })
+  );
+  group.add(plate);
+
+  // Verdict color stripe at top
+  const stripe = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.5, 0.04),
+    new THREE.MeshBasicMaterial({
+      color: VERDICT_COLOR[verdict] ?? 0x888899,
+      side: THREE.DoubleSide
+    })
+  );
+  stripe.position.set(0, 0.28, 0.001);
+  group.add(stripe);
+
+  // Text label as a canvas-textured plane (cheap, no font loader)
+  const canvas = document.createElement("canvas");
+  canvas.width = 512; canvas.height = 600;
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "rgba(0,0,0,0)";
+  ctx.fillRect(0, 0, 512, 600);
+  ctx.fillStyle = "#e6e8f0";
+  ctx.font = "bold 30px -apple-system, system-ui";
+  ctx.fillText(name, 24, 80);
+  ctx.font = "bold 22px -apple-system";
+  const verdictColor = verdict === "approve" ? "#6fdc8c"
+    : verdict === "escalate" ? "#ffb55a"
+    : "#ff6470";
+  ctx.fillStyle = verdictColor;
+  ctx.fillText(verdict.toUpperCase(), 24, 130);
+  // Wrap rationale across multiple lines, ~36 chars per
+  ctx.fillStyle = "#a0a4b0";
+  ctx.font = "20px -apple-system";
+  const words = (rationale || "").split(" ");
+  let line = "", y = 190;
+  for (const w of words) {
+    if ((line + w).length > 36) { ctx.fillText(line, 24, y); line = w + " "; y += 26; }
+    else line += w + " ";
+  }
+  ctx.fillText(line, 24, y);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  const textPlane = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.45, 0.53),
+    new THREE.MeshBasicMaterial({ map: texture, transparent: true, side: THREE.DoubleSide })
+  );
+  textPlane.position.set(0, -0.01, 0.002);
+  group.add(textPlane);
+
+  return group;
+}
+
+async function buildScene() {
+  const council = await fetchCouncil();
+  const voices = council.voices ?? MOCK_RESPONSE.voices;
+  for (let i = 0; i < voices.length; i++) {
+    const v = voices[i];
+    scene.add(makePanel({
+      name: v.name,
+      verdict: v.verdict ?? "approve",
+      rationale: v.rationale ?? "",
+      index: i, total: voices.length,
+    }));
+  }
+}
+
+// ─── WebXR session bootstrap ────────────────────────────────────────
+if (navigator.xr) {
+  navigator.xr.isSessionSupported("immersive-ar").then((supported) => {
+    if (supported) {
+      xrButton.disabled = false;
+      xrButton.textContent = "Enter spatial AR (XReal)";
+      xrButton.onclick = async () => {
+        try {
+          const session = await navigator.xr.requestSession("immersive-ar", {
+            optionalFeatures: ["local-floor", "hand-tracking"],
+          });
+          renderer.xr.setSession(session);
+          xrButton.textContent = "In spatial mode";
+          xrButton.disabled = true;
+        } catch (err) {
+          setStatus(`✗ XR session refused: ${err.message}`, "err");
+        }
+      };
+    } else {
+      xrButton.textContent = "Spatial AR unavailable (use XReal in Chrome)";
+      xrButton.disabled = true;
+    }
+  });
+} else {
+  xrButton.textContent = "WebXR not supported (open in Chrome / Edge)";
+  xrButton.disabled = true;
+}
+
+// ─── Render loop ────────────────────────────────────────────────────
+renderer.setAnimationLoop(() => {
+  // Subtle panel breathing — 4% scale oscillation, 4s period
+  const t = performance.now() * 0.0006;
+  scene.traverse((obj) => {
+    if (obj.isGroup && obj.children.length >= 3) {
+      const s = 1 + Math.sin(t + obj.position.x) * 0.02;
+      obj.scale.set(s, s, s);
+    }
+  });
+  renderer.render(scene, camera);
+});
+
+buildScene();
+</script>
+</body>
+</html>
