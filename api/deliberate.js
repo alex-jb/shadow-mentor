@@ -10,6 +10,7 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 import { callGlm } from "../lib/glm-call.js";
+import { callLocalLlm } from "../lib/local-llm-call.js";
 import { PERSONA_PROMPTS, SCENARIO_CONTEXTS } from "../lib/prompts.js";
 import { runLoanCouncil } from "../lib/run-loan-council.js";
 import { validateLoan } from "../lib/schemas/loan.js";
@@ -26,8 +27,14 @@ export default async function handler(req, res) {
 
   const { persona = "compliance", scenario = "lbo", question, context, provider = "anthropic", loan } = req.body || {};
 
-  if (provider !== "anthropic" && provider !== "glm") {
-    return res.status(400).json({ error: `unknown provider: ${provider}. Use "anthropic" or "glm".` });
+  // 2026-06-30 wire-in: provider="local" routes to Ollama / llama.cpp
+  // OpenAI-compat endpoint (default phi4-mini @ http://127.0.0.1:11434/v1).
+  // Enables the cold-email "Runs on your laptop, zero data egress" demo
+  // cell from the IEEE VR 2027 paper Section 7.2 and the mid-July Y.U.
+  // Dean + VP demo. No API key required — caller's local Ollama install
+  // is the auth boundary.
+  if (provider !== "anthropic" && provider !== "glm" && provider !== "local") {
+    return res.status(400).json({ error: `unknown provider: ${provider}. Use "anthropic", "glm", or "local".` });
   }
   if (provider === "anthropic" && !process.env.ANTHROPIC_API_KEY) {
     return res.status(500).json({ error: "ANTHROPIC_API_KEY not configured" });
@@ -35,6 +42,10 @@ export default async function handler(req, res) {
   if (provider === "glm" && !process.env.GLM_API_KEY) {
     return res.status(500).json({ error: "GLM_API_KEY not configured. Set in Vercel project env." });
   }
+  // local provider has no key check — it's an offline endpoint reachable
+  // only when the caller has Ollama running. callLocalLlm() throws an
+  // actionable "Is Ollama running? Try: ollama serve" message on connect
+  // refusal, surfaced to the caller below in the catch block.
   if (!PERSONA_PROMPTS[persona]) {
     return res.status(400).json({ error: `unknown persona: ${persona}` });
   }
@@ -54,6 +65,10 @@ export default async function handler(req, res) {
   async function callVoice(systemPrompt) {
     if (provider === "glm") {
       const { text } = await callGlm({ systemPrompt, userMessage, maxTokens: 180 });
+      return text;
+    }
+    if (provider === "local") {
+      const { text } = await callLocalLlm({ systemPrompt, userMessage, maxTokens: 180 });
       return text;
     }
     const response = await anthropicClient.messages.create({
@@ -84,6 +99,10 @@ export default async function handler(req, res) {
     let followup, model;
     if (provider === "glm") {
       const r = await callGlm({ systemPrompt: followupSys, userMessage: followupUser, maxTokens: 50 });
+      followup = r.text;
+      model = r.model;
+    } else if (provider === "local") {
+      const r = await callLocalLlm({ systemPrompt: followupSys, userMessage: followupUser, maxTokens: 50 });
       followup = r.text;
       model = r.model;
     } else {
