@@ -25,6 +25,7 @@
 import { runLoanCouncil } from "../lib/run-loan-council.js";
 import { validateLoan } from "../lib/schemas/loan.js";
 import { parseBearer, validateToolScope } from "../lib/auth/oauth-scaffold.js";
+import { buildAttestation } from "../lib/attestation.js";
 
 // Opt-in MCP EMA scope enforcement. When SHADOW_REQUIRE_BEARER is set,
 // every call to /api/loan-council must carry an Authorization: Bearer
@@ -114,9 +115,27 @@ export default async function handler(req, res) {
   const result = runLoanCouncil(loan);
   const latency_ms = Date.now() - t0;
 
-  return res.status(200).json({
+  const responseBody = {
     ...result,
     latency_ms,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+  };
+
+  // AEX-style attestation binding request → output → model.
+  // 2026-07-02 upgrade. See lib/attestation.js docstring for refs.
+  // model_id is "runLoanCouncil/pure-compute" because this endpoint
+  // does no LLM call — it's deterministic 5-voice policy math. The
+  // attestation still matters because it lets auditors verify the
+  // response wasn't tampered in transit + it's linked to the exact
+  // input that produced it.
+  const attestation = buildAttestation({
+    request: { loan },
+    response: responseBody,
+    modelId: "runLoanCouncil/pure-compute",
+  });
+
+  return res.status(200).json({
+    ...responseBody,
+    attestation,
   });
 }

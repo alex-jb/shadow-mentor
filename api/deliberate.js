@@ -14,6 +14,7 @@ import { callLocalLlm } from "../lib/local-llm-call.js";
 import { PERSONA_PROMPTS, SCENARIO_CONTEXTS } from "../lib/prompts.js";
 import { runLoanCouncil } from "../lib/run-loan-council.js";
 import { validateLoan } from "../lib/schemas/loan.js";
+import { buildAttestation } from "../lib/attestation.js";
 
 const CLAUDE_MODEL = "claude-sonnet-4-5-20250929";
 const CLAUDE_HAIKU_MODEL = "claude-haiku-4-5-20251001";
@@ -145,6 +146,17 @@ export default async function handler(req, res) {
         response.verdict_validation_errors = v.errors;
       }
     }
+
+    // AEX-style attestation binding request → output → model.
+    // 2026-07-02 upgrade. See lib/attestation.js docstring for refs.
+    // Unlike /api/loan-council which is pure-compute, /api/deliberate
+    // fires actual LLM calls — the model_id here reflects the actual
+    // provider/model used so an auditor can detect silent substitution.
+    response.attestation = buildAttestation({
+      request: req.body ?? {},
+      response,
+      modelId: `${provider ?? "unknown"}/${model ?? "unknown"}`,
+    });
 
     return res.status(200).json(response);
   } catch (err) {
