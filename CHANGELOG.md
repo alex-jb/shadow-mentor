@@ -18,6 +18,69 @@ Next planned:
 - shadow.io domain procurement (vs alternatives)
 - IEEE VR 2027 abstract v1 (co-first-author with Loredana C. Levitchi)
 - Full bin/install.mjs that consumes installer/tools.json + auto-writes config for whichever MCP host is detected on the user's machine
+- **CNFinBench score publication** (arxiv 2512.09506) — natural procurement benchmark for financial LLMs, 15-subtask v1 (or 29 v2) Compliance-Safety triad
+- **Ed25519 public-key signature** — upgrade attestation from HMAC-SHA256 (symmetric) to Ed25519 (asymmetric) so banks verify without holding the server secret. Aegis (Justin0504) v0.2.0 as reference pattern.
+- **Anthropic Constitution v2 layered persona schema** — restructure the 5 voices' YAML into L1 universal / L2 voice-role principles / L3 Lora BRD+Addenda thresholds. Retire "SR 11-7" copy, replace with "SR 26-2 Tier 3 companion" positioning per 2026-07-02 regulatory research.
+- **AML/KYC persona pack** — ACAMS 2026 signals fastest procurement lane; add persona #6+#7 to the council with prompt anchors on FinCEN + BSA
+- **5 SKILL.md persona files on skills.sh** — Anthropic Skills marketplace distribution surface; every bank on Claude for Work becomes reachable
+
+---
+
+## v1.3.0 — Cognitive-defensibility upgrades: confidence weighting + reason-code dictionary + AEX attestation + anchor mitigation (2026-07-02 NY)
+
+Single-session cluster shipping the highest-ratio deltas from a 3-agent 2026-07-02 deep research pass (SR 26-2 rescission of SR 11-7 + Digital Omnibus deferral of EU AI Act credit-scoring + academic multi-agent-debate research + GitHub 2026 landscape). 4 new library modules, +61 tests (335 → 396), 0 fail.
+
+### Added
+
+- **`lib/confidence-weighted-verdict.js` + 12 tests** (`44f86b2`). Roundtable Policy (arxiv:2509.16839) confidence-weighted aggregation shipped ALONGSIDE the existing simple resolver — both verdicts emitted, back-compat preserved. Persona weights: Compliance 1.20, Credit 1.10, Risk 1.00, Advocate/Contrarian 0.85. Safety-in-depth: any voice with `block` short-circuits to block regardless of confidence (policy floors are not negotiable via confidence math). Adds `confidence_weighted_verdict`, `aggregated_score`, `voice_contributions`, `aggregation_method` to response.
+
+- **`lib/schemas/reason-code-dictionary.json` + `lib/enforce-reason-code-dictionary.js` + 17 tests** (`db0c206`). Signed feature→AA→Reg B mapping closes the post-2026-07-21 CFPB rule-narrowing gap. Bank counsel signs the JSON file (not the LLM output). 5 mapping rows + 15-item ECOA protected-class proxy blocklist. `enforceReasonCodesInDictionary()` + `enforceNoProtectedClassProxies()` guardrails wired into `run-loan-council.js` output; results emitted as `reason_code_dictionary_check` + `protected_class_proxy_check`. Cites CFPB Circular 2022-03 in reject reasons.
+
+- **`lib/attestation.js` + 20 tests** (`86b86b9`). AEX-style (arxiv:2603.14283) signed attestation on both `/api/deliberate` and `/api/loan-council`. SHA-256 canonicalized commitments on request + response, HMAC-SHA-256 signature over `{version, request_commitment, output_commitment, model_id, completed_at_utc, previous_hash, key_id}`. Catches silent model substitution (arxiv:2504.04715) — if the provider silently swaps Sonnet for Haiku, the model_id in the signing payload won't match. Hash-chain support via `previous_hash` for multi-decision provenance. Server secret via `SHADOW_ATTESTATION_SECRET` env var + rotation via `SHADOW_ATTESTATION_KEY_ID`.
+
+- **`lib/presentation-order.js` + 12 tests** (`dd79688`). Hidden-anchor mitigation (arxiv:2606.19494). The `voices[]` array stays in canonical order for hash-chain + attestation determinism; a NEW `presentation_order: number[]` field tells UIs how to shuffle voices for HUMAN display. SHA-256-seeded xorshift64* PRNG so equivalent decisions produce the same order (auditable + reproducible). Empirical anti-anchor test: 50 different seeds spread first-position across ≥ 3 distinct indices.
+
+### Response shape additions (all opt-in via presence check)
+
+Every `/api/loan-council` and LBO-scenario `/api/deliberate` response now includes:
+- `confidence_weighted_verdict: 'approve'|'escalate'|'block'`
+- `aggregated_score: number` (in [-1, 1])
+- `voice_contributions: {voice, weight, confidence, score}[]`
+- `aggregation_method: 'confidence_weighted_v1'`
+- `reason_code_dictionary_check: {ok, invalid[], reason}`
+- `protected_class_proxy_check: {ok, prohibited[], reason}`
+- `presentation_order: number[]`
+- `attestation: {version, request_commitment, output_commitment, model_id, completed_at_utc, previous_hash, key_id, signature}`
+
+The pre-existing `final_verdict`, `voices[]`, `risk_packet`, `traceability`, `thresholds_applied` fields are unchanged. Callers keyed on those keep working.
+
+### Regulatory positioning shift (baked into every commit message)
+
+- **SR 11-7 REPLACED by SR 26-2 on 2026-04-17.** Fed/OCC/FDIC jointly rescinded SR 11-7 + OCC 2011-12. SR 26-2 explicitly carves GenAI/agentic AI out of Tier 3. Shadow's positioning: "SR 26-2 Tier 3 companion control" — governance for the class Fed won't govern.
+- **EU AI Act credit-scoring deadline pushed from 2026-08-02 → 2027-12-02** via Digital Omnibus (May 2026). Retire "AI Act 2026-ready" copy. New EU frame: GDPR Art. 22 + Schufa (C-634/21) — enforceable today.
+- **CFPB final rule effective 2026-07-21** narrowed disparate-impact under Reg B but adverse-action notice requirements + Fair Housing Act + state AGs still apply. The reason-code dictionary is the defensive posture.
+
+### Testing
+
+- Test surface: **396 tests, 395 pass, 1 skip (OCR quota-cap envelope), 0 fail** (up from 335 pre-ship).
+- No pre-existing tests broken — all 4 upgrades are additive.
+- Full Shadow suite runs in ~7.5s via `node --test test/*.test.js`.
+
+### Refs
+
+- arXiv:2509.16839 Roundtable Policy — confidence-weighted aggregation
+- arXiv:2601.19921 Demystifying Multi-Agent Debate (Zhu et al.)
+- arXiv:2508.02994 FinCon — agent-as-a-judge for investment firms
+- arXiv:2603.14283 AEX — Non-Intrusive Multi-Hop Attestation for LLM APIs
+- arXiv:2504.04715 Auditing Model Substitution in LLM APIs
+- arXiv:2606.19494 Hidden Anchors in Multi-Agent LLM Deliberation
+- arXiv:2512.09506 CNFinBench (deferred, on radar)
+- CFPB Circular 2022-03 (still binding; cited in reason-code dict guardrail rejects)
+- CFPB final rule effective 2026-07-21 (Ballard Spahr 2026-05)
+- SR 26-2 (Federal Reserve 2026-04-17 PDF) + OCC Bulletin 2026-13
+- Digital Omnibus Council agreement 2026-05-13 (Gibson Dunn analysis)
+- Anthropic 10 financial-services agents launch 2026-05-06 (LPL / Raymond James / Schwab)
+- Alex-brain 2026-07-02 EVENING entry (Shadow sprint + regulatory landscape reset)
 
 ---
 
