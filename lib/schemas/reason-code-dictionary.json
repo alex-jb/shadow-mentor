@@ -1,0 +1,72 @@
+{
+  "$comment_1": "Signed reason-code dictionary for post-2026-07-21 Reg B compliance.",
+  "$comment_2": "This JSON file is the AUTHORITATIVE mapping from loan features to adverse-action codes to Reg B categories. Bank counsel signs THIS FILE, not the LLM output. Refs: CFPB Circular 2022-03, CFPB final rule effective 2026-07-21, Freddie Mac Bulletin 2025-16 effective 2026-03-03, Decomposing Discrimination arxiv:2603.27510.",
+  "schema_version": "reason-code-dictionary/v1.0.0",
+  "generated_at_utc": "2026-07-02T00:00:00Z",
+  "authority": "Loredana C. Levitchi, primary-author contributor to Shadow (2026-06-19)",
+  "mappings": [
+    {
+      "feature": "credit_score",
+      "threshold_field": "fico_approve_floor",
+      "aa_code": "AA01",
+      "reg_b_category": "Credit history",
+      "borrower_readable": "Credit score below the eligibility floor required for standard approval. This includes both new borrower scores and any recent updates to the primary credit reference.",
+      "source_document": "Addendum A - Credit Policy"
+    },
+    {
+      "feature": "debt_to_income",
+      "threshold_field": "dti_approve_ceiling",
+      "aa_code": "AA02",
+      "reg_b_category": "Income + debts",
+      "borrower_readable": "Ratio of monthly debt payments to monthly income exceeds the standard threshold. This reflects repayment capacity relative to existing obligations.",
+      "source_document": "Addendum B - DTI Policy"
+    },
+    {
+      "feature": "loan_to_value",
+      "threshold_field": "ltv_approve_ceiling",
+      "aa_code": "AA03",
+      "reg_b_category": "Collateral",
+      "borrower_readable": "Loan amount is high relative to the appraised value of the collateral. Standard threshold prevents high-leverage exposure in adverse market conditions.",
+      "source_document": "Addendum C - LTV Policy"
+    },
+    {
+      "feature": "var_95_10d",
+      "threshold_field": "var_approve_ceiling",
+      "aa_code": "AA04",
+      "reg_b_category": "Portfolio-level risk",
+      "borrower_readable": "Portfolio-level risk metric (95% Value-at-Risk over 10-day horizon) exceeds the institution's risk appetite. This is an institutional-portfolio consideration, not a borrower-specific credit judgment.",
+      "source_document": "Addendum C - Risk Appetite Note"
+    },
+    {
+      "feature": "fair_lending_review_flag",
+      "threshold_field": "fair_lending_review_flag",
+      "aa_code": "AA05",
+      "reg_b_category": "Human review required",
+      "borrower_readable": "The application requires review by a fair-lending officer prior to any final decision. This is a procedural gate, not a merit-based denial.",
+      "source_document": "BRD Governance Controls (ECOA / Reg B integration)"
+    }
+  ],
+  "protected_class_proxies": [
+    "zipcode",
+    "zip_code",
+    "postal_code",
+    "surname_ethnicity_score",
+    "first_language",
+    "country_of_origin",
+    "marital_status",
+    "age",
+    "sex",
+    "gender",
+    "religion",
+    "race",
+    "color",
+    "national_origin",
+    "source_of_income_public_assistance"
+  ],
+  "signature": {
+    "signer_name": "PLACEHOLDER - to be signed by bank counsel",
+    "signer_role": "PLACEHOLDER - e.g. General Counsel, Chief Compliance Officer",
+    "signed_at_utc": "PLACEHOLDER",
+    "signature_hmac_sha256": "PLACEHOLDER"
+  }
+}
