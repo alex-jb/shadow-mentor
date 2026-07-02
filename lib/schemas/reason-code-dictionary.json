@@ -44,6 +44,14 @@
       "reg_b_category": "Human review required",
       "borrower_readable": "The application requires review by a fair-lending officer prior to any final decision. This is a procedural gate, not a merit-based denial.",
       "source_document": "BRD Governance Controls (ECOA / Reg B integration)"
+    },
+    {
+      "feature": "aml_flags",
+      "threshold_field": "aml_kyc_policy",
+      "aa_code": "AA06",
+      "reg_b_category": "Regulatory compliance",
+      "borrower_readable": "An anti-money-laundering, sanctions, or customer-identification compliance concern requires additional review. This includes screening under the Bank Secrecy Act, OFAC sanctions, USA PATRIOT Act §326 Customer Identification Program, and FinCEN Customer Due Diligence requirements. This is a regulatory eligibility concern, not a merit-based denial.",
+      "source_document": "BSA / USA PATRIOT / FinCEN CDD / OFAC (see lib/aml-kyc-voice.js AML_FLAG_POLICY + KYC_STATUS_POLICY for the specific rule cited per finding)"
     }
   ],
   "protected_class_proxies": [

@@ -26,10 +26,11 @@ test("dictionary has schema_version", () => {
 });
 
 
-test("dictionary has all 5 AA01-05 mappings", () => {
+test("dictionary has all AA01-06 mappings", () => {
   const dict = loadReasonCodeDictionary();
   const codes = dict.mappings.map((m) => m.aa_code).sort();
-  assert.deepEqual(codes, ["AA01", "AA02", "AA03", "AA04", "AA05"]);
+  // AA06 (AML/KYC) added 2026-07-02 alongside the AML/KYC voice.
+  assert.deepEqual(codes, ["AA01", "AA02", "AA03", "AA04", "AA05", "AA06"]);
 });
 
 
