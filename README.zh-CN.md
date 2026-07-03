@@ -2,9 +2,50 @@
 
 [English](./README.md) · [中文](./README.zh-CN.md)
 
-> 跟随分析师跨桌面、智能眼镜、空间 AR 的端侧 AI 议会 + 审计链。一个引擎,四个设备端,五套人格包。面向受监管的银行工作流。
+> **5-到-6 voice 的 AI 合规议会,面向受监管的贷款业务。** 用 5 笔历史决策编码你银行的贷款政策。毫秒级得到一个 signed + attestation-bound 的 verdict。跑在你的 VPC。5 分钟通过 MCP 装进 Claude Desktop / Cursor / OpenCode。
 
-[![tests](https://img.shields.io/badge/tests-308%2F308%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-450%2F450%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+
+## 监管姿势(2026 H2)
+
+2026 年的两次监管转向改变了 Shadow 的定位框架。**弃用 "SR 11-7 compliant" 的措辞**,新的姿势是:
+
+- **SR 26-2 Tier 3 companion control**。SR 11-7 于 2026-04-17 被 Fed / OCC / FDIC 联合撤回;SR 26-2 明确把 GenAI / agentic AI 排出 Tier 3 范围。Shadow 是 SR 26-2 明确不管的这一类的治理层。对应 Treasury FS AI RMF(2026-02)230 项控制目标里的 40+ 项。
+- **欧盟侧:GDPR Art. 22 + Schufa(C-634/21),不是 AI Act 2026**。Digital Omnibus 把 Annex III(5)(b) 信用评分类的截止从 2026-08-02 → 2027-12-02。Schufa 今天就可以执行;Shadow 的人工复核 + 审计链直接映射 Art. 22 "关于逻辑的有意义信息" + "人工介入"要求。
+- **CFPB 2026-07-21 规则变更**。Reg B 下的 disparate-impact 被收窄,但 adverse-action 通知 / disparate-treatment / Fair Housing Act / 州总检察官执法都保持可诉。Shadow 的[签名 reason-code dictionary](./lib/schemas/reason-code-dictionary.json) 是防御性姿势 — 银行法律签这份字典,而不是签 LLM 输出。
+
+## v1.4 有什么新的(2026-07-02)
+
+一次深度研究 session 里 ship 了 7 个 lib 模块 — 78 个新测试,全绿。
+
+- **Confidence-weighted verdict 聚合器**([`lib/confidence-weighted-verdict.js`](./lib/confidence-weighted-verdict.js)) — Roundtable Policy(arxiv 2509.16839)confidence-weighted fusion 与 safety-in-depth 的简单 resolver 并列。每个响应都带 `confidence_weighted_verdict` + `aggregated_score` + `voice_contributions`。
+- **签名 reason-code 字典**([`lib/schemas/reason-code-dictionary.json`](./lib/schemas/reason-code-dictionary.json)+ [`lib/enforce-reason-code-dictionary.js`](./lib/enforce-reason-code-dictionary.js)) — 6 个 AA 码(AA01-06)+ 15 项 ECOA 受保护类别代理黑名单 + 银行法律 HMAC 签名占位。Guardrails 保证议会输出的每一个 AA 码都被字典背书。
+- **AEX-style attestation**([`lib/attestation.js`](./lib/attestation.js)) — 对 `/api/deliberate` 和 `/api/loan-council` 都签署 request / output / model commitment。捕捉静默 model substitution(arxiv 2504.04715)+ 响应篡改。两种模式:
+  - **HMAC-SHA-256**(默认,back-compat)— 对称 secret
+  - **Ed25519**(采购推荐)— 非对称;银行用 public key 验证,不能伪造
+- **Hidden-anchor 缓解**([`lib/presentation-order.js`](./lib/presentation-order.js)) — `voices[]` 保持 canonical 顺序保证 hash 确定性,新 `presentation_order[]` 字段告诉 UI 怎么打乱给人类看。修 Hidden Anchors bias(arxiv 2606.19494)。
+- **AML/KYC Investigator voice**([`lib/aml-kyc-voice.js`](./lib/aml-kyc-voice.js)) — 可选第 6 个 persona,只在 loan 带 `aml_flags[]` 或 `kyc_status` 时激活。监管锚:BSA 31 USC 5311、OFAC SDN + 50% rule、USA PATRIOT Act §326 CIP、FinCEN CDD 31 CFR 1010.230、FATF、GTOs。ACAMS 2026 信号 AML 是中型银行采购最快的 lane。
+- **Provider diversity**([`lib/provider-diversity.js`](./lib/provider-diversity.js)) — voices 到 LLM providers 的确定性分配,反 hallucination amplification(Free-MAD arxiv 2509.11035)。目前是 diagnostic 报告;逐 voice 路由下次 ship。
+
+### Ed25519 attestation — 采购部署指南
+
+部署时生成 keypair:
+
+```bash
+node -e "const {generateKeyPairSync}=require('crypto');const {privateKey,publicKey}=generateKeyPairSync('ed25519',{publicKeyEncoding:{type:'spki',format:'pem'},privateKeyEncoding:{type:'pkcs8',format:'pem'}});console.log(privateKey);console.log(publicKey)"
+```
+
+Shadow 上设置:
+
+```
+SHADOW_ATTESTATION_MODE=ed25519
+SHADOW_ATTESTATION_ED25519_PRIVATE_KEY=<上面输出的 PEM>
+SHADOW_ATTESTATION_KEY_ID=v1
+```
+
+**只把 PUBLIC key 交给银行审计员**。审计员可以用 `verifyAttestation(att, req, res, {publicKey})` 独立验证任何一笔 Shadow 历史决策。他们不能伪造签名 — 那需要你从不共享的 private key。
+
+按 NIST SP 800-57 §5.2 建议至少一年一轮换。每份 attestation 里的 `key_id` 字段允许多把 key 在轮换窗口并存。
 
 ### 直接对应 2026 已命名的 MCP 威胁(MCPTox / OX Security)
 
