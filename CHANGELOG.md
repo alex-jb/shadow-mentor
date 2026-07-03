@@ -26,6 +26,45 @@ Next planned:
 
 ---
 
+## v1.4.0 — Ed25519 asymmetric attestation + AML/KYC 6th persona + provider-diversity primitive (2026-07-02 NY, evening)
+
+Continuation of the v1.3.0 cluster earlier the same day. 3 more lib modules shipped in the second half of the shipping burst. Test surface **396 → 450** (+54 more). All green.
+
+### Added
+
+- **`lib/attestation.js` Ed25519 mode + 13 tests** (`7bd7d58`). Asymmetric public-key signature mode alongside HMAC-SHA-256. Bank auditors verify with public key only, cannot forge. Production posture — see README "Ed25519 attestation — deploy guide for procurement" for keypair generation + env var setup. RFC 8032, native in Node stdlib (no dep). Domain-separated signing payload prevents cross-mode signature reuse. HMAC mode stays default for back-compat; flip via `SHADOW_ATTESTATION_MODE=ed25519` env var.
+
+- **`lib/aml-kyc-voice.js` + 24 tests** (`3acb3f8`). Opt-in 6th council voice. Activated when loan carries `aml_flags[]` (`sanctions_hit` / `structuring` / `pep` / `high_risk_country` / `beneficial_ownership_opaque` / `ofac_50_rule` / `gto_metro`) or `kyc_status` (`current` / `stale` / `incomplete` / `not_verified`). Frozen `AML_FLAG_POLICY` + `KYC_STATUS_POLICY` map each flag to tier (block / escalate / approve) + specific regulatory citation (BSA / OFAC / PATRIOT §326 CIP / FinCEN CDD / FATF). AA06 added to reason-code dictionary. Preserves 5-voice back-compat when no AML fields present.
+
+  Bug also caught: `enforceReasonCodesInDictionary` was being called with `Array<{code, label, source}>` at the run-loan-council call site but expected `Array<string>`. Silent bug pre-existing since db0c206 — no test exercised it because most test loans passed all thresholds. Coerced to strings at call site now.
+
+- **`lib/provider-diversity.js` + 18 tests** (`77aab89`). Deterministic assignment of voices to LLM providers based on request seed. Diagnostic-only in this ship (reports would-be assignment + diversity_score + providers_available_count in `/api/deliberate` response body). Per-voice diverse ROUTING comes in the next commit — needs mock providers so tests don't require live keys. References Free-MAD (arxiv 2509.11035), Zhu et al. (arxiv 2601.19921), corpora.ai Hallucination Amplification report.
+
+### Response shape additions (in addition to v1.3.0 fields)
+
+- `/api/loan-council` response: `voices[].length` becomes 6 (was 5) when loan carries AML/KYC fields. Otherwise still 5.
+- Both `/api/*` responses: `attestation.mode` field ("hmac-sha256" | "ed25519"). Base64 signature when Ed25519, hex when HMAC.
+- `/api/deliberate` response: `provider_diversity` object with `{assignment, diversity_score, unique_providers_used, providers_available_count, assignment_method, actually_routed_diverse, note}`.
+
+### Testing
+
+- **450 tests, 449 pass, 1 skip (OCR quota-cap envelope), 0 fail.** Up from 396 pre-v1.4.0 (which was itself up from 335 pre-v1.3.0). Session total: +115 tests in one day, all green.
+- Full suite runs in ~9s via `node --test test/*.test.js`.
+
+### Refs added in v1.4.0
+
+- RFC 8032 EdDSA (Ed25519 signing)
+- ACAMS Assembly Hollywood 2026 (AML procurement lane signal)
+- BSA 31 USC 5311 + 5324, OFAC SDN + 50% rule, USA PATRIOT Act §326, FinCEN CDD 31 CFR 1010.230
+- CFPB Bulletin 2024-09 model-traceability (AML denials must cite specific rule)
+- Anthropic 10 finance-agents launch 2026-05-06 (RIABiz) — Shadow's positioning line
+- arXiv:2509.11035 Free-MAD (provider diversity as first-class defense)
+- Aegis (Justin0504) v0.2.0 2026-06-29 — Ed25519 signing pattern
+- NIST SP 800-186 §3.2 (recommends Ed25519 for new deployments)
+- Corpora.ai Hallucination Amplification in Multi-Agent Debate
+
+---
+
 ## v1.3.0 — Cognitive-defensibility upgrades: confidence weighting + reason-code dictionary + AEX attestation + anchor mitigation (2026-07-02 NY)
 
 Single-session cluster shipping the highest-ratio deltas from a 3-agent 2026-07-02 deep research pass (SR 26-2 rescission of SR 11-7 + Digital Omnibus deferral of EU AI Act credit-scoring + academic multi-agent-debate research + GitHub 2026 landscape). 4 new library modules, +61 tests (335 → 396), 0 fail.

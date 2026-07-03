@@ -2,9 +2,50 @@
 
 [English](./README.md) · [中文](./README.zh-CN.md)
 
-> **A 5-voice AI compliance council for regulated lending.** Encode your bank's loan policy in 5 past decisions. Get a verdict in milliseconds. Runs in your VPC. 5-minute install into Claude Desktop, Cursor, or OpenCode via MCP.
+> **A 5-to-6-voice AI compliance council for regulated lending.** Encode your bank's loan policy in 5 past decisions. Get a signed, attestation-bound verdict in milliseconds. Runs in your VPC. 5-minute install into Claude Desktop, Cursor, or OpenCode via MCP.
 
-[![tests](https://img.shields.io/badge/tests-308%2F308%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-450%2F450%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+
+## Regulatory positioning (2026 H2)
+
+Two 2026 regulatory shifts changed the enforcement posture Shadow addresses. Retire "SR 11-7 compliant" reads; the actual framing is:
+
+- **SR 26-2 Tier 3 companion control.** SR 11-7 was rescinded 2026-04-17 by joint Fed/OCC/FDIC action; SR 26-2 explicitly carved GenAI / agentic AI out of Tier 3. Shadow is the governance layer for the class SR 26-2 won't govern. Maps to 40+ of the 230 Treasury FS AI RMF (Feb 2026) control objectives.
+- **EU: GDPR Art. 22 + Schufa (C-634/21), not AI Act 2026.** Digital Omnibus deferred Annex III(5)(b) credit-scoring deadlines from 2026-08-02 → 2027-12-02. Schufa is enforceable today; Shadow's human-review + audit chain map directly to Art. 22 "meaningful information about the logic" + "human intervention" requirements.
+- **CFPB 2026-07-21 rule change.** Disparate-impact narrowed under Reg B, but adverse-action notices, disparate-treatment, Fair Housing Act, and state AG enforcement stay actionable. Shadow's [signed reason-code dictionary](./lib/schemas/reason-code-dictionary.json) is the defensive posture — bank counsel signs the dictionary, not the LLM output.
+
+## What's new in v1.4 (2026-07-02)
+
+7 lib modules shipped in a single deep-research session — 78 new tests, all green.
+
+- **Confidence-weighted verdict aggregator** ([`lib/confidence-weighted-verdict.js`](./lib/confidence-weighted-verdict.js)) — Roundtable Policy (arxiv 2509.16839) confidence-weighted fusion alongside the safety-in-depth simple resolver. `confidence_weighted_verdict` + `aggregated_score` + `voice_contributions` fields in every response.
+- **Signed reason-code dictionary** ([`lib/schemas/reason-code-dictionary.json`](./lib/schemas/reason-code-dictionary.json) + [`lib/enforce-reason-code-dictionary.js`](./lib/enforce-reason-code-dictionary.js)) — 6 AA codes (AA01-06), 15-item ECOA protected-class proxy blocklist, signature block for bank counsel HMAC sign-off. Guardrails enforce that every AA code the council emits is backed by the checked-in dictionary.
+- **AEX-style attestation** ([`lib/attestation.js`](./lib/attestation.js)) — signed request/output/model commitments on both `/api/deliberate` and `/api/loan-council`. Catches silent model substitution (arxiv 2504.04715) + response tampering. Two modes:
+  - **HMAC-SHA-256** (default, back-compat) — symmetric secret
+  - **Ed25519** (recommended for procurement) — asymmetric; bank verifies with public key, cannot forge
+- **Hidden-anchor mitigation** ([`lib/presentation-order.js`](./lib/presentation-order.js)) — `voices[]` stays canonical for deterministic hash, new `presentation_order[]` field tells UIs how to shuffle for human display. Fixes the Hidden Anchors bias (arxiv 2606.19494).
+- **AML/KYC Investigator voice** ([`lib/aml-kyc-voice.js`](./lib/aml-kyc-voice.js)) — opt-in 6th persona activated when loan carries `aml_flags[]` or `kyc_status`. Regulatory anchors: BSA 31 USC 5311, OFAC SDN + 50% rule, USA PATRIOT Act §326 CIP, FinCEN CDD 31 CFR 1010.230, FATF, GTOs. ACAMS 2026 signals AML is the fastest procurement lane at mid-tier banks.
+- **Provider diversity** ([`lib/provider-diversity.js`](./lib/provider-diversity.js)) — deterministic assignment of voices to LLM providers to counter hallucination amplification (Free-MAD arxiv 2509.11035). Currently reports diagnostic; per-voice routing coming next.
+
+### Ed25519 attestation — deploy guide for procurement
+
+Generate a keypair at deploy time:
+
+```bash
+node -e "const {generateKeyPairSync}=require('crypto');const {privateKey,publicKey}=generateKeyPairSync('ed25519',{publicKeyEncoding:{type:'spki',format:'pem'},privateKeyEncoding:{type:'pkcs8',format:'pem'}});console.log(privateKey);console.log(publicKey)"
+```
+
+Set on Shadow:
+
+```
+SHADOW_ATTESTATION_MODE=ed25519
+SHADOW_ATTESTATION_ED25519_PRIVATE_KEY=<PEM from above>
+SHADOW_ATTESTATION_KEY_ID=v1
+```
+
+Deliver to the bank auditor: **the PUBLIC key only**. Auditor can then run `verifyAttestation(att, req, res, {publicKey})` to independently verify any past Shadow decision. They cannot forge a signature — that requires the private key you never share.
+
+Rotate at least yearly per NIST SP 800-57 §5.2. The `key_id` field in every attestation lets multiple keys co-exist during rotation windows.
 
 ## For risk and compliance teams
 
