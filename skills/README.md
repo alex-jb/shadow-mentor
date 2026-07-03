@@ -6,10 +6,18 @@ Skills here are self-contained folders with a `SKILL.md` file at the root. Insta
 
 ## Available skills
 
-| Skill | What it does |
-|---|---|
-| [`shadow-compliance-officer`](./shadow-compliance-officer/SKILL.md) | Bank-grade compliance-officer persona (CFPB / SR 26-2 / ECOA / Reg B / BSA / OFAC / FinCEN CDD). Refuses to auto-approve without human review. |
-| [`shadow-loan-council`](./shadow-loan-council/SKILL.md) | 5-to-6 voice loan verdict layer. Pure-compute, Ed25519-signed attestation, milliseconds. |
+Full-catalog matrix — one skill per Shadow persona plus one for the aggregate loan-council verdict:
+
+| Skill | What it does | Confidence weight | Block authority |
+|---|---|---|---|
+| [`shadow-loan-council`](./shadow-loan-council/SKILL.md) | Full 5-to-6 voice pure-compute verdict layer. Ed25519 attestation. | — (aggregator) | — |
+| [`shadow-compliance-officer`](./shadow-compliance-officer/SKILL.md) | CFPB / SR 26-2 / ECOA / Reg B / Fair Housing. Refuses to auto-approve without human review. | 1.20 | ✅ on fair_lending flag |
+| [`shadow-aml-kyc-investigator`](./shadow-aml-kyc-investigator/SKILL.md) | BSA / OFAC / USA PATRIOT §326 / FinCEN CDD / FATF. **ACAMS 2026 procurement lane.** | 1.20 | ✅ on sanctions/CIP |
+| [`shadow-risk-officer`](./shadow-risk-officer/SKILL.md) | Portfolio VaR / LTV / concentration / sector. Loredana's Addendum C thresholds. | 1.00 | ✅ on VaR > 2× ceiling |
+| [`shadow-customer-advocate`](./shadow-customer-advocate/SKILL.md) | Adverse-action explanation quality per CFPB Bulletin 2024-09. | 0.85 | ❌ (escalate-only) |
+| [`shadow-macro-contrarian`](./shadow-macro-contrarian/SKILL.md) | Mandatory dissent voice — CRE + late-cycle sector risk. | 0.85 | ❌ (escalate-only) |
+
+**Credit Fundamentals** persona is intentionally NOT shipped as a standalone SKILL.md because its `FICO < 700 hard block` is Lora's non-negotiable policy floor (per her 2026-06-19 binding decision) — it should only run inside the full council alongside Compliance and Risk. Consumers who want a credit-only check should use `shadow-loan-council` directly.
 
 ## Why skills, not just an MCP server?
 
