@@ -15,6 +15,10 @@ import { PERSONA_PROMPTS, SCENARIO_CONTEXTS } from "../lib/prompts.js";
 import { runLoanCouncil } from "../lib/run-loan-council.js";
 import { validateLoan } from "../lib/schemas/loan.js";
 import { buildAttestation } from "../lib/attestation.js";
+import {
+  assignProvidersToVoices,
+  detectAvailableProviders,
+} from "../lib/provider-diversity.js";
 
 const CLAUDE_MODEL = "claude-sonnet-4-5-20250929";
 const CLAUDE_HAIKU_MODEL = "claude-haiku-4-5-20251001";
@@ -121,6 +125,20 @@ export default async function handler(req, res) {
     if (!/\?$/.test(followup)) followup = followup.replace(/[.!]+$/, "") + "?";
 
     const latency_ms = Date.now() - t0;
+
+    // 2026-07-02: provider-diversity DIAGNOSTIC. This ship reports
+    // what the assignment would have been if we'd routed diversely;
+    // actual per-voice routing lands in the next commit (needs
+    // integration tests with mock providers first). Diagnostic-only
+    // means procurement sees the ceiling ("hey, GLM key isn't set,
+    // you're 1-provider today") without breaking behavior.
+    const availableProviders = detectAvailableProviders(process.env);
+    const diversityDiag = assignProvidersToVoices(
+      ["junior", "senior", "third"],
+      availableProviders,
+      { persona, scenario, provider },
+    );
+
     const response = {
       junior,
       senior,
@@ -130,7 +148,17 @@ export default async function handler(req, res) {
       model,
       provider,
       persona,
-      scenario
+      scenario,
+      // Diversity DIAGNOSTIC — reflects env-var-detected providers.
+      // Would-be assignment (not actually routed yet). See
+      // lib/provider-diversity.js docstring for refs.
+      provider_diversity: {
+        ...diversityDiag,
+        actually_routed_diverse: false,
+        note:
+          "Diagnostic only. All voices ran on the single `provider` " +
+          "field above. Per-voice diverse routing coming in the next ship.",
+      },
     };
 
     // LBO scenario + loan dict → augment with deterministic verdict layer
