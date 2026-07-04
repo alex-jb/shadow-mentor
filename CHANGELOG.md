@@ -18,11 +18,59 @@ Next planned:
 - shadow.io domain procurement (vs alternatives)
 - IEEE VR 2027 abstract v1 (co-first-author with Loredana C. Levitchi)
 - Full bin/install.mjs that consumes installer/tools.json + auto-writes config for whichever MCP host is detected on the user's machine
-- **CNFinBench score publication** (arxiv 2512.09506) — natural procurement benchmark for financial LLMs, 15-subtask v1 (or 29 v2) Compliance-Safety triad
-- **Ed25519 public-key signature** — upgrade attestation from HMAC-SHA256 (symmetric) to Ed25519 (asymmetric) so banks verify without holding the server secret. Aegis (Justin0504) v0.2.0 as reference pattern.
-- **Anthropic Constitution v2 layered persona schema** — restructure the 5 voices' YAML into L1 universal / L2 voice-role principles / L3 Lora BRD+Addenda thresholds. Retire "SR 11-7" copy, replace with "SR 26-2 Tier 3 companion" positioning per 2026-07-02 regulatory research.
-- **AML/KYC persona pack** — ACAMS 2026 signals fastest procurement lane; add persona #6+#7 to the council with prompt anchors on FinCEN + BSA
-- **5 SKILL.md persona files on skills.sh** — Anthropic Skills marketplace distribution surface; every bank on Claude for Work becomes reachable
+- **CNFinBench score publication** (arxiv 2512.09506) — harness scaffolding shipped in v1.5.0 (`benchmark/cnfinbench/`), needs the dataset + LLM run to publish a score
+- **Anthropic Constitution v2 runtime prompt refactor** — metadata sidecar shipped in v1.4.0 (`lib/persona-schema.json`); runtime `lib/prompts.js` restructure into L1/L2/L3 headers still deferred (needs benchmark rerun to verify 87 ± 3 holds)
+
+---
+
+## v1.5.0 — Per-voice diverse routing + full SKILL.md marketplace + persona L1/L2/L3 sidecar + CNFinBench harness (2026-07-03 NY)
+
+Second half of the 2026-07-02 shipping cluster + a distribution + benchmark scaffolding wave on the following day. 4 more lib modules + 6 SKILL.md files + CNFinBench harness scaffold. Test surface **396 → 493** (+97). All green.
+
+### Added
+
+- **`lib/persona-schema.json` + `lib/persona-schema.js` + 14 tests** (`6c0ce5b`). Anthropic Claude Constitution v2 (2026-01-22) 3-layer alignment schema per voice. Sidecar metadata — doesn't touch runtime prompts (would risk the 87 ± 3 baseline). `getVoiceLayers(voiceName)` returns `{L1, L2, L3, adverse_action_codes}`; `verifyL3AgainstLoanDefaults(LOAN_DEFAULTS)` is the drift detector — any silent divergence between the schema and runtime `LOAN_DEFAULTS` breaks the test. All 6 voices covered. L1 principles cite Anthropic Constitution v2 + CFPB Circular 2022-03.
+
+- **`benchmark/cnfinbench/aggregate.js` + `benchmark/cnfinbench/README.md` + 19 tests** (`1d74523`). CNFinBench (arxiv 2512.09506) triad aggregation harness. **Rawlsian-min-weighted formula**:
+  ```
+  triad_score = min(cap, comp, safe) × 0.5 + mean(cap, comp, safe) × 0.5
+  ```
+  Half the score is the WORST dimension, half is the average. A model CANNOT hide a weak dimension behind two strong ones. Pinned by the load-bearing test "95/95/30 triad CANNOT be 87 — min dominates."
+
+- **6 SKILL.md files for skills.sh marketplace** (`f5a7faa` + `d978d9a`). Every Shadow persona is now `npx skills add`-installable into Claude Desktop / Cursor / OpenCode. Full catalog:
+  - `shadow-loan-council` (aggregator, all 12 regulatory anchors)
+  - `shadow-compliance-officer` (weight 1.20, CFPB / SR 26-2 / ECOA / Reg B / FHA)
+  - `shadow-aml-kyc-investigator` (weight 1.20, BSA / OFAC / PATRIOT §326 / FinCEN CDD / FATF)
+  - `shadow-risk-officer` (weight 1.00, Basel III / Addendum C Risk Appetite Note)
+  - `shadow-customer-advocate` (weight 0.85, CFPB Bulletin 2024-09, escalate-only)
+  - `shadow-macro-contrarian` (weight 0.85, arxiv 2601.19921 diversity theory, escalate-only)
+
+  Credit Fundamentals intentionally NOT shipped as standalone — its FICO<700 hard block is Lora's non-negotiable policy floor per her 2026-06-19 binding decision, only valid inside the full council.
+
+- **`lib/diverse-caller.js` + 10 tests** (`d7202b8`). **Delivers on the promise from `77aab89`**: per-voice ROUTING, not just diagnostic reporting. When `body.diverse: true` is passed to `/api/deliberate` AND ≥2 providers are configured, each of the 3 voices routes to a different provider. Dependency-injected provider callers (tests use fakes, prod wires real Anthropic/GLM/local clients). Response body adds `actually_routed_diverse: true` + `per_voice_models: {junior: "glm/glm-5.2", senior: "anthropic/claude-sonnet-4-6", third: "local/phi-4-mini"}`.
+
+  Combined with Ed25519 attestation (v1.4.0), bank auditors can now prove: (1) response body wasn't tampered, (2) THESE models actually ran per-voice, (3) THIS deployment had these providers available at the time.
+
+  Load-bearing test: "one provider throwing does NOT silently substitute another" — the defense is only real if a broken Anthropic doesn't fall back to GLM (which would put us back in single-provider land).
+
+### Testing
+
+- Test surface: **493 tests, 492 pass, 1 skip (OCR quota-cap envelope), 0 fail** (up from 396 pre-v1.4.0 + 484 pre-v1.5.0).
+- Full suite runs in ~12s via `node --test test/*.test.js`.
+
+### Refs added in v1.5.0
+
+- arXiv:2512.09506 CNFinBench (Capability-Compliance-Safety triad)
+- arXiv:2509.11035 Free-MAD Consensus-Free Multi-Agent Debate
+- arXiv:2601.19921 Demystifying Multi-Agent Debate (diversity + confidence theory)
+- Corpora.ai Hallucination Amplification in Multi-Agent Debate (the failure mode diverse routing defends)
+- Anthropic Claude Constitution v2 (2026-01-22)
+- arXiv:2212.08073 Constitutional AI: Harmlessness from AI Feedback
+- ACAMS Assembly Hollywood 2026 (AML procurement lane)
+
+---
+
+## v1.4.0 — Ed25519 asymmetric attestation + AML/KYC 6th persona + provider-diversity primitive (2026-07-02 NY, evening)
 
 ---
 
