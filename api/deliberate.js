@@ -19,6 +19,7 @@ import {
   assignProvidersToVoices,
   detectAvailableProviders,
 } from "../lib/provider-diversity.js";
+import { callVoicesDiversely } from "../lib/diverse-caller.js";
 
 const CLAUDE_MODEL = "claude-sonnet-4-5-20250929";
 const CLAUDE_HAIKU_MODEL = "claude-haiku-4-5-20251001";
@@ -30,7 +31,7 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
 
-  const { persona = "compliance", scenario = "lbo", question, context, provider = "anthropic", loan } = req.body || {};
+  const { persona = "compliance", scenario = "lbo", question, context, provider = "anthropic", loan, diverse = false } = req.body || {};
 
   // 2026-06-30 wire-in: provider="local" routes to Ollama / llama.cpp
   // OpenAI-compat endpoint (default phi4-mini @ http://127.0.0.1:11434/v1).
@@ -91,11 +92,69 @@ export default async function handler(req, res) {
   }
 
   try {
-    const [junior, senior, third] = await Promise.all([
-      callVoice(prompts.junior),
-      callVoice(prompts.senior),
-      callVoice(prompts.third)
-    ]);
+    // 2026-07-03: per-voice diverse routing wire-in (delivered on
+    // the promise from 77aab89). When `diverse: true` in the request
+    // body AND at least 2 providers have keys configured, each of
+    // the 3 voices routes to a different provider (deterministically
+    // assigned based on request seed). Anti-hallucination-
+    // amplification defense per corpora.ai + Free-MAD.
+    let junior, senior, third;
+    let diverseRoutingUsed = false;
+    let diverseRoutingResult = null;
+
+    const availableProvidersForDiverse = detectAvailableProviders(process.env);
+    const canRouteDiversely = diverse === true && availableProvidersForDiverse.length >= 2;
+
+    if (canRouteDiversely) {
+      // Build providerCallers map on the fly. Each caller matches
+      // the callProvider({systemPrompt, userMessage, maxTokens}) →
+      // {text, model} contract in lib/diverse-caller.js.
+      const providerCallers = {};
+      if (availableProvidersForDiverse.includes("anthropic")) {
+        const ac = anthropicClient || new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+        providerCallers.anthropic = async ({ systemPrompt, userMessage, maxTokens }) => {
+          const r = await ac.messages.create({
+            model: CLAUDE_MODEL,
+            max_tokens: maxTokens,
+            system: [{ type: "text", text: systemPrompt, cache_control: { type: "ephemeral" } }],
+            messages: [{ role: "user", content: userMessage }],
+          });
+          const text = r.content.filter((b) => b.type === "text").map((b) => b.text).join("").trim();
+          return { text, model: CLAUDE_MODEL };
+        };
+      }
+      if (availableProvidersForDiverse.includes("glm")) {
+        providerCallers.glm = async ({ systemPrompt, userMessage, maxTokens }) =>
+          callGlm({ systemPrompt, userMessage, maxTokens });
+      }
+      if (availableProvidersForDiverse.includes("local")) {
+        providerCallers.local = async ({ systemPrompt, userMessage, maxTokens }) =>
+          callLocalLlm({ systemPrompt, userMessage, maxTokens });
+      }
+
+      diverseRoutingResult = await callVoicesDiversely({
+        prompts: {
+          junior: prompts.junior,
+          senior: prompts.senior,
+          third: prompts.third,
+        },
+        userMessage,
+        maxTokens: 180,
+        availableProviders: availableProvidersForDiverse,
+        providerCallers,
+        seed: { persona, scenario, provider },
+      });
+      junior = diverseRoutingResult.voice_results.junior?.text || "";
+      senior = diverseRoutingResult.voice_results.senior?.text || "";
+      third = diverseRoutingResult.voice_results.third?.text || "";
+      diverseRoutingUsed = true;
+    } else {
+      [junior, senior, third] = await Promise.all([
+        callVoice(prompts.junior),
+        callVoice(prompts.senior),
+        callVoice(prompts.third)
+      ]);
+    }
 
     // v0.3 — followup hard-capped 180 chars + forced terminal '?'
     const followupSys = "You generate exactly ONE follow-up question a VP would ask next. HARD LIMIT: MAXIMUM 180 characters total. Must end with a question mark. No preamble. No 'Follow-up:' prefix. Just the question.";
@@ -126,18 +185,24 @@ export default async function handler(req, res) {
 
     const latency_ms = Date.now() - t0;
 
-    // 2026-07-02: provider-diversity DIAGNOSTIC. This ship reports
-    // what the assignment would have been if we'd routed diversely;
-    // actual per-voice routing lands in the next commit (needs
-    // integration tests with mock providers first). Diagnostic-only
-    // means procurement sees the ceiling ("hey, GLM key isn't set,
-    // you're 1-provider today") without breaking behavior.
+    // 2026-07-03: provider-diversity now supports ACTUAL routing when
+    // `body.diverse === true` + ≥2 providers configured. When diverse
+    // routing fires, diversityDiag reflects the assignment that was
+    // actually used. Otherwise it's still diagnostic-only (as before).
     const availableProviders = detectAvailableProviders(process.env);
-    const diversityDiag = assignProvidersToVoices(
-      ["junior", "senior", "third"],
-      availableProviders,
-      { persona, scenario, provider },
-    );
+    const diversityDiag = diverseRoutingUsed && diverseRoutingResult
+      ? {
+          assignment: diverseRoutingResult.assignment,
+          diversity_score: diverseRoutingResult.diversity_score,
+          unique_providers_used: diverseRoutingResult.unique_providers_used,
+          providers_available_count: diverseRoutingResult.providers_available_count,
+          assignment_method: "shuffle_and_walk_v1",
+        }
+      : assignProvidersToVoices(
+          ["junior", "senior", "third"],
+          availableProviders,
+          { persona, scenario, provider },
+        );
 
     const response = {
       junior,
@@ -149,15 +214,20 @@ export default async function handler(req, res) {
       provider,
       persona,
       scenario,
-      // Diversity DIAGNOSTIC — reflects env-var-detected providers.
-      // Would-be assignment (not actually routed yet). See
-      // lib/provider-diversity.js docstring for refs.
+      // Diversity report. When `body.diverse === true` and ≥2
+      // providers are configured, `actually_routed_diverse: true`
+      // and `per_voice_models` shows the actual model_ids per voice
+      // (defense against silent model substitution across the
+      // council). Otherwise diagnostic-only.
       provider_diversity: {
         ...diversityDiag,
-        actually_routed_diverse: false,
-        note:
-          "Diagnostic only. All voices ran on the single `provider` " +
-          "field above. Per-voice diverse routing coming in the next ship.",
+        actually_routed_diverse: diverseRoutingUsed,
+        per_voice_models: diverseRoutingUsed && diverseRoutingResult
+          ? diverseRoutingResult.per_voice_models
+          : null,
+        note: diverseRoutingUsed
+          ? "Per-voice routing fired. Each voice ran on a different provider per the assignment map above."
+          : "Diagnostic only. All voices ran on the single `provider` field above. Pass `diverse: true` in request body + configure ≥2 provider env vars to enable per-voice routing.",
       },
     };
 
