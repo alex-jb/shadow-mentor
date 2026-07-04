@@ -47,6 +47,38 @@ Deliver to the bank auditor: **the PUBLIC key only**. Auditor can then run `veri
 
 Rotate at least yearly per NIST SP 800-57 §5.2. The `key_id` field in every attestation lets multiple keys co-exist during rotation windows.
 
+### 5-second procurement demo — public verifier CLI
+
+Give this to a bank auditor:
+
+```bash
+# Bank auditor holds shadow-public.pem (public key only, NOT the private key)
+node bin/verify-attestation.mjs \
+  --response saved-shadow-response.json \
+  --public-key shadow-public.pem
+```
+
+Output (happy path — the response is authentic):
+
+```
+✓ attestation verified
+  mode:            ed25519
+  model_id:        runLoanCouncil/pure-compute
+  completed_at:    2026-07-04T16:52:28.131Z
+  key_id:          v1
+  request_hash:    9379409de5f633d4…
+  output_hash:     b72e9f155823bba1…
+```
+
+Output (tampered path — the verdict was silently flipped after signing):
+
+```
+✗ attestation FAILED to verify
+  reason:  output commitment mismatch — response was tampered
+```
+
+That's the whole thing. Bank auditor holds only the public key and can verify with one command. Cannot forge (that requires the private key you never share). No JS knowledge needed beyond running `node`. Works offline.
+
 ## For risk and compliance teams
 
 - **5-minute install.** Drop Shadow's MCP server into Claude Desktop, Cursor, or OpenCode; the 5-voice council becomes callable from the model in under five minutes. See [`mcp/README.md`](./mcp/README.md).
