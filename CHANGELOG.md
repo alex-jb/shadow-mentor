@@ -23,6 +23,36 @@ Next planned:
 
 ---
 
+## v1.5.11 — Schema ↔ runtime coherence drift gates (2026-07-05 NY)
+
+Audit agent flagged that `persona-schema.json` documents L1/L2/L3 layers but never fires against runtime state. Two silent-drift risks: (1) L3 threshold values (FICO 700, DTI 0.36, etc.) diverging from `LOAN_DEFAULTS`; (2) `PERSONA_PROMPTS` structural invariants (length caps + anchor terms + "ONE sentence" scaffolding) drifting without a benchmark rerun. By the time the score comes back low, the offending PR is already merged.
+
+### Added
+
+`test/schema-runtime-coherence.test.js` — 48 tests fired every `npm test`:
+
+**Schema L3 vs runtime LOAN_DEFAULTS (2 tests)**
+- `verifyL3AgainstLoanDefaults(LOAN_DEFAULTS)` must return `ok: true`. Every mismatch is printed with voice + field + schema_value + runtime_value.
+- Schema documents all 6 loan-council voices by name.
+
+**PERSONA_PROMPTS structural invariants (45 tests + 1 count)**
+- Every persona × seniority (5 × 3 = 15 prompts) must contain all 5 required clauses: `HARD LIMIT: MAXIMUM \d+ characters`, `ONE sentence`, `No preamble`, `No follow-up`, `No list`.
+- Every prompt must contain its persona anchor term: `Policy` (compliance), `SR 11-7` (quant), `Fair Lending` (engineer), `regime` (trader), `Reg BI` (advisor).
+- Every prompt's MAX cap must sit in the benchmark-tuned 250-360 range. Escaping this window means Sonnet's natural overshoot lands outside the rubric window and the score drops.
+- 15-prompt count is pinned.
+
+### Why this matters
+
+The Shadow Agentic Score (87 ± 3 n=6) is sensitive to prompt structure. Prior benchmark reruns showed a 3-4 point regression per removed anchor term. Without live Anthropic credits to rerun continuously, structural pins in `test/` are the only way to catch benchmark-affecting drift at PR time. This closes that gap.
+
+Not covered by this ship: the actual benchmark rerun. That requires credit topup (Anthropic + OpenAI both currently dry per 2026-07-05 audit). Once credits are restored, run `npm run benchmark` and publish a new SUMMARY.md.
+
+### Tests
+
+- Node test suite: **620 → 668** (+48). All green.
+
+---
+
 ## v1.5.10 — Hash-chain integrity verifier (`/api/verify-chain` + `bin/verify-chain.mjs`) (2026-07-05 NY)
 
 The audit agent flagged that `previous_hash` was populated in every attestation but never end-to-end exercised — no endpoint returned chain data, no verifier walked it. This ships the exercise. Chain integrity is the hardest evidence to forge: any single-record edit cascades through every subsequent link.
