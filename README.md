@@ -4,7 +4,7 @@
 
 > **A 5-to-6-voice AI compliance council for regulated lending.** Encode your bank's loan policy in 5 past decisions. Get a signed, attestation-bound verdict in milliseconds. Runs in your VPC. 5-minute install into Claude Desktop, Cursor, or OpenCode via MCP.
 
-[![tests](https://img.shields.io/badge/tests-528%2F529%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-539%2F540%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
 
 ## Regulatory positioning (2026 H2)
 
@@ -35,23 +35,26 @@ Two 2026 regulatory shifts changed the enforcement posture Shadow addresses. Ret
 
 ### Ed25519 attestation — deploy guide for procurement
 
-Generate a keypair at deploy time:
+Generate a keypair at deploy time (v1.5.4+ ships a real CLI — no more scary `node -e` one-liner):
 
 ```bash
-node -e "const {generateKeyPairSync}=require('crypto');const {privateKey,publicKey}=generateKeyPairSync('ed25519',{publicKeyEncoding:{type:'spki',format:'pem'},privateKeyEncoding:{type:'pkcs8',format:'pem'}});console.log(privateKey);console.log(publicKey)"
+node bin/generate-attestation-keypair.mjs --key-id prod-2026-Q3
+# → shadow-private.pem  (mode 0600, Shadow deployment ONLY)
+# → shadow-public.pem   (mode 0644, share with bank auditors)
+# → paste-ready env block printed to stdout
 ```
 
-Set on Shadow:
+The CLI writes both keys with correct file permissions (0600 private / 0644 public) and prints a ready-to-paste env block for the Vercel dashboard / KMS:
 
 ```
 SHADOW_ATTESTATION_MODE=ed25519
-SHADOW_ATTESTATION_ED25519_PRIVATE_KEY=<PEM from above>
-SHADOW_ATTESTATION_KEY_ID=v1
+SHADOW_ATTESTATION_KEY_ID=prod-2026-Q3
+SHADOW_ATTESTATION_ED25519_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
 ```
 
 Deliver to the bank auditor: **the PUBLIC key only**. Auditor can then run `verifyAttestation(att, req, res, {publicKey})` to independently verify any past Shadow decision. They cannot forge a signature — that requires the private key you never share.
 
-Rotate at least yearly per NIST SP 800-57 §5.2. The `key_id` field in every attestation lets multiple keys co-exist during rotation windows.
+Options: `--out <dir>` writes to a chosen directory · `--print-only` skips files for KMS-only pipelines · `--force` overwrites (rotation). Rotate at least yearly per NIST SP 800-57 §5.2 — the `key_id` field lets multiple keys co-exist during grace windows.
 
 ### 5-second procurement demo — public verifier CLI
 

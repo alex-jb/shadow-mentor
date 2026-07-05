@@ -23,6 +23,39 @@ Next planned:
 
 ---
 
+## v1.5.4 — Deploy bootstrap CLI (bin/generate-attestation-keypair.mjs) (2026-07-04 NY late)
+
+Kills the scary `node -e "const {generateKeyPairSync}=..."` one-liner in the deploy guide. Bank ops teams now get a real CLI that writes both PEM files with correct file permissions and prints a ready-to-paste env block.
+
+### Added
+
+- **`bin/generate-attestation-keypair.mjs`** — bootstrap CLI. Flags:
+  - `--out <dir>` — where to write the two PEM files (default cwd)
+  - `--key-id <str>` — rotation tag stamped into every attestation (default `v1`; recommend e.g. `prod-2026-Q3`)
+  - `--print-only` — skip files, print PEMs + env block to stdout (KMS-only pipelines)
+  - `--force` — overwrite existing files (safety default: refuse, to prevent accidental key rotation via double-run)
+- **File permissions on write:** `shadow-private.pem` gets mode `0600` (owner read/write only), `shadow-public.pem` gets `0644`. Prevents world-readable private keys on shared CI runners.
+- **Env block formatter** JSON-quotes the PEM so multi-line PEM survives Vercel-dashboard paste boxes.
+- **`test/generate-attestation-keypair-cli.test.js`** — 11 tests: keypair round-trips through `verifyAttestation()`, PEM headers/footers verified, env block shape pinned (mode + key_id + `\n`-escaped PEM), CLI subprocess exit codes (0 / 1-refuse-overwrite / 2-bad-flag), file modes pinned to `0600` / `0644`, `--force` rotates to a genuinely different keypair, `--print-only` writes nothing to disk.
+
+### Docs
+
+- `README.md` + `README.zh-CN.md` — deploy guide swapped from `node -e` one-liner to the new CLI + options table + updated env block example.
+
+### Why this matters
+
+Every bank ops team doing the deploy walkthrough copies the one-liner from the README. The old version:
+1. Was 380 characters of unformatted `node -e` — no ergonomic file writing, no permission hygiene, no rotation-tag guidance.
+2. Left the operator to figure out chmod, file naming, and how to safely paste the private key into their secret manager.
+
+The new CLI: 30 seconds, correct chmod by default, key-id rotation tag as a first-class flag, refuses to accidentally overwrite. Same primitive, real ergonomics.
+
+### Tests
+
+- Node test suite: **528 → 539** (+11 CLI + round-trip). All green. 1 skipped (unrelated).
+
+---
+
 ## v1.5.3 — Drop-in bank CI recipe + zh-CN sync + tests badge refresh (2026-07-04 NY)
 
 Consumer-side polish on the v1.5.2 HTTP verifier. Instead of leaving banks to write their own CI harness, ship a working example.

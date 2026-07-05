@@ -4,7 +4,7 @@
 
 > **5-到-6 voice 的 AI 合规议会,面向受监管的贷款业务。** 用 5 笔历史决策编码你银行的贷款政策。毫秒级得到一个 signed + attestation-bound 的 verdict。跑在你的 VPC。5 分钟通过 MCP 装进 Claude Desktop / Cursor / OpenCode。
 
-[![tests](https://img.shields.io/badge/tests-528%2F529%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-539%2F540%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
 
 ## 监管姿势(2026 H2)
 
@@ -47,23 +47,26 @@
 
 ### Ed25519 attestation — 采购部署指南
 
-部署时生成 keypair:
+部署时生成 keypair(v1.5.4+ 起有正经 CLI,不用再抄那条吓人的 `node -e` 一行):
 
 ```bash
-node -e "const {generateKeyPairSync}=require('crypto');const {privateKey,publicKey}=generateKeyPairSync('ed25519',{publicKeyEncoding:{type:'spki',format:'pem'},privateKeyEncoding:{type:'pkcs8',format:'pem'}});console.log(privateKey);console.log(publicKey)"
+node bin/generate-attestation-keypair.mjs --key-id prod-2026-Q3
+# → shadow-private.pem  (mode 0600,只留在 Shadow 部署上)
+# → shadow-public.pem   (mode 0644,发给银行审计员)
+# → 直接可粘贴的 env block 打到 stdout
 ```
 
-Shadow 上设置:
+CLI 会用正确权限写两个文件(私钥 0600 / 公钥 0644),并把 Vercel dashboard / KMS 可以直接粘的 env block 打到 stdout:
 
 ```
 SHADOW_ATTESTATION_MODE=ed25519
-SHADOW_ATTESTATION_ED25519_PRIVATE_KEY=<上面输出的 PEM>
-SHADOW_ATTESTATION_KEY_ID=v1
+SHADOW_ATTESTATION_KEY_ID=prod-2026-Q3
+SHADOW_ATTESTATION_ED25519_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
 ```
 
 **只把 PUBLIC key 交给银行审计员**。审计员可以用 `verifyAttestation(att, req, res, {publicKey})` 独立验证任何一笔 Shadow 历史决策。他们不能伪造签名 — 那需要你从不共享的 private key。
 
-按 NIST SP 800-57 §5.2 建议至少一年一轮换。每份 attestation 里的 `key_id` 字段允许多把 key 在轮换窗口并存。
+其他选项:`--out <dir>` 写到指定目录 · `--print-only` 不落盘(适合 KMS 管道) · `--force` 覆盖(轮换)。按 NIST SP 800-57 §5.2 至少一年一轮换 — 每份 attestation 里的 `key_id` 字段允许多把 key 在轮换窗口并存。
 
 ### 直接对应 2026 已命名的 MCP 威胁(MCPTox / OX Security)
 
