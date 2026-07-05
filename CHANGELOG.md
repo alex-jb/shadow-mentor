@@ -23,6 +23,33 @@ Next planned:
 
 ---
 
+## v1.5.9 — AML/KYC adversarial hardening (ACAMS 2026 procurement lane) (2026-07-05 NY)
+
+Deep-audit agent flagged that the AML/KYC voice tests only covered single-flag cases. Real procurement threat models are combinatorial. This ships 32 new adversarial tests across all 7 AML flags, all 4 KYC statuses, flag combinations, unknown-flag fail-safes, tipping-off compliance, and confidence tiering.
+
+### Added
+
+`test/aml-kyc-adversarial.test.js` — 32 tests:
+
+- **Coverage** (11 tests): every AML flag (`sanctions_hit`, `ofac_50_rule`, `structuring`, `pep`, `high_risk_country`, `beneficial_ownership_opaque`, `gto_metro`) and every KYC status (`current`, `stale`, `incomplete`, `not_verified`) fires independently with correct tier + citation.
+- **Combinations** (3 tests): 3 flags with mixed tiers → block wins; 2 escalate flags → escalate (never approve on multi-escalate); 2 block flags → block (no double-count).
+- **Cross-dimension** (4 tests): `kyc_status × aml_flags` interaction. `current` KYC does NOT mask a `pep` escalate. `stale` KYC alone escalates. `not_verified` KYC alone blocks. Both dimensions contribute findings to audit trail.
+- **Fail-safes** (3 tests): unknown flag → escalate + auditor-visible note with fix-it pointer to the AML_FLAG_POLICY table; unknown kyc_status → same; unknown flag + known block flag → block still wins.
+- **Tipping-off compliance** (2 tests): `sanctions_hit` rationale must NOT contain the raw flag key string (BSA 31 USC 5318(g)(2) — tipping-off vector); AA06 borrower-facing label must NOT contain "OFAC" / "SDN" / "sanctioned" (naming would tip off a sanctioned party).
+- **Confidence tiering** (3 tests): block-tier confidence pinned at 0.95, escalate at 0.75, approve at 0.60. Deterministic regulatory rules > escalation-requires-human > weakest-evidence approve.
+- **Attach guardrails** (4 tests): empty `aml_flags: []` doesn't attach voice (5-voice back-compat preserved); `kyc_status` alone triggers attach; missing fields → no attach.
+- **Policy tables frozen** (2 tests): `AML_FLAG_POLICY` and `KYC_STATUS_POLICY` are `Object.freeze()`d against runtime privilege creep.
+
+### Why this matters for procurement
+
+ACAMS Assembly Hollywood 2026 signals AML/KYC is the fastest procurement lane at mid-tier banks — ahead of consumer-credit decisioning. Comply ComplyAI MCP Server (GA May 2026) targets pre-clearance + AML. Shadow's positioning is "we're the OSS council that governs Anthropic's KYC agent" (10 finance agents launched to LPL 2026-05-06). Adversarial coverage on the AML/KYC surface is the difference between "we implemented the flag table" and "we adversarially tested every combination + tipping-off boundary." Bank compliance procurement teams read the test file.
+
+### Tests
+
+- Node test suite: **566 → 598** (+32). All green.
+
+---
+
 ## v1.5.8 — `dictionary_hash` binding attestation → tamper-proof Reg B reason codes (2026-07-05 NY)
 
 Closes Reg B's highest-stakes moat. The signed reason-code dictionary at `lib/schemas/reason-code-dictionary.json` is what bank counsel signs off on — bank counsel does NOT sign LLM output. Before v1.5.8, a downstream could swap the dictionary between signature time and audit time and no attestation would notice. That's a Reg B violation waiting to happen.
