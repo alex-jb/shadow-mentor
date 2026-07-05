@@ -13,6 +13,7 @@ Two 2026 regulatory shifts changed the enforcement posture Shadow addresses. Ret
 - **SR 26-2 Tier 3 companion control.** SR 11-7 was rescinded 2026-04-17 by joint Fed/OCC/FDIC action; SR 26-2 explicitly carved GenAI / agentic AI out of Tier 3. Shadow is the governance layer for the class SR 26-2 won't govern. Maps to 40+ of the 230 Treasury FS AI RMF (Feb 2026) control objectives.
 - **EU: GDPR Art. 22 + Schufa (C-634/21), not AI Act 2026.** Digital Omnibus deferred Annex III(5)(b) credit-scoring deadlines from 2026-08-02 → 2027-12-02. Schufa is enforceable today; Shadow's human-review + audit chain map directly to Art. 22 "meaningful information about the logic" + "human intervention" requirements.
 - **CFPB 2026-07-21 rule change.** Disparate-impact narrowed under Reg B, but adverse-action notices, disparate-treatment, Fair Housing Act, and state AG enforcement stay actionable. Shadow's [signed reason-code dictionary](./lib/schemas/reason-code-dictionary.json) is the defensive posture — bank counsel signs the dictionary, not the LLM output.
+- **SOC 2 Type 1 readiness map** — [`docs/soc2-readiness.md`](./docs/soc2-readiness.md) — 35 controls mapped against AICPA Trust Service Criteria (Security / Confidentiality / Processing Integrity). 21 mechanically enforced with code + test evidence; 10 documented as prose; 4 N/A. Not yet formally audited — this is what a procurement team can grade before we scope the audit.
 
 ## What's new in v1.4 (2026-07-02)
 
