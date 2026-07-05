@@ -23,6 +23,41 @@ Next planned:
 
 ---
 
+## v1.5.10 — Hash-chain integrity verifier (`/api/verify-chain` + `bin/verify-chain.mjs`) (2026-07-05 NY)
+
+The audit agent flagged that `previous_hash` was populated in every attestation but never end-to-end exercised — no endpoint returned chain data, no verifier walked it. This ships the exercise. Chain integrity is the hardest evidence to forge: any single-record edit cascades through every subsequent link.
+
+### Added
+
+- `lib/attestation-chain.js` — `computeAttestationHash(attestation)` (SHA-256 of canonicalized attestation) + `verifyChain(attestations[])` (walks the sequence, reports first-broken index).
+- `POST /api/verify-chain` — HTTP endpoint. Accepts `{attestations: []}`, returns `{ok, length, broken_at_index, links_verified, reason, interpretation, latency_ms, timestamp}`. No OAuth scope required — chain integrity is a read-only crypto check.
+- `bin/verify-chain.mjs` — CLI. Reads a JSONL audit log, extracts attestations via `--field response.attestation` (default) or `--field ""` for raw. Exit 0 = intact, 1 = broken (broken_at_index reported), 2 = argument error.
+- `test/attestation-chain.test.js` — 22 tests:
+  - Primitive: hash format + determinism + differs-on-signature-change + non-object throws (4)
+  - Verifier happy paths: empty, singleton, 5-chain intact (3)
+  - **Attack detection**: truncation (first entry has previous_hash → prior record was deleted), reordering, mid-chain insertion (fabricated record breaks the following link, not its own), edit cascades from prior record (5)
+  - HTTP endpoint contract (5)
+  - CLI subprocess (5)
+
+### What this catches
+
+- Reordering of the audit log
+- Insertion of a fabricated record retroactively
+- Silent deletion of a record from the audit log
+- Post-hoc edit of any prior record's request or response body
+
+Any of these produces a mismatch at the first affected link. Records at or after the broken index cannot be trusted for audit.
+
+### Chain verification is separate from signature verification
+
+`verifyAttestation()` proves a single attestation was signed by the right key. `verifyChain()` proves the SEQUENCE is intact. Run both. Neither subsumes the other.
+
+### Tests
+
+- Node test suite: **598 → 620** (+22). All green.
+
+---
+
 ## v1.5.9 — AML/KYC adversarial hardening (ACAMS 2026 procurement lane) (2026-07-05 NY)
 
 Deep-audit agent flagged that the AML/KYC voice tests only covered single-flag cases. Real procurement threat models are combinatorial. This ships 32 new adversarial tests across all 7 AML flags, all 4 KYC statuses, flag combinations, unknown-flag fail-safes, tipping-off compliance, and confidence tiering.

@@ -25,7 +25,7 @@ export default async function handler(req, res) {
   return res.status(200).json({
     status: "ok",
     service: "shadow-mentor",
-    version: "1.5.9",
+    version: "1.5.10",
     providers_wired: {
       anthropic: Boolean(process.env.ANTHROPIC_API_KEY),
       glm: Boolean(process.env.GLM_API_KEY)
