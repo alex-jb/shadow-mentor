@@ -23,6 +23,32 @@ Next planned:
 
 ---
 
+## v1.5.5 — One-command procurement acceptance demo (2026-07-04 NY late)
+
+The full v1.4.0 → v1.5.4 attestation story now fires end-to-end from a fresh clone in ~250ms. Not a marketing gif — a real reproducible acceptance test that a procurement reviewer runs on their own machine.
+
+### Added
+
+- **`bin/attestation-acceptance-demo.mjs`** — 6-step end-to-end demo. Generates a fresh Ed25519 keypair, runs `/api/loan-council` in-process, verifies the response via three dispatch surfaces (lib primitive / HTTP endpoint / MCP tool), then tampers the response body and confirms detection catches it. All in-memory, no server startup, no external state. Exit 0 = whole chain works, exit 1 = any step regressed.
+- **`npm run demo:attestation`** + **`npm run keygen:attestation`** — package.json scripts so procurement reviewers don't have to know the file paths.
+- **`test/attestation-acceptance-demo.test.js`** — 4 smoke tests wrap the demo as a subprocess. If any of the 5 attestation releases regresses (attestation module contract, loan-council handler shape, verify-attestation endpoint shape, MCP tool dispatch, or the keypair generator), the demo breaks and this test surfaces which step failed. The tests also pin every step's label so a silent no-op-ification of step 6 (tamper detection) is caught.
+
+### Why this ships as a demo, not a marketing gif
+
+A gif is a promise. A running command from a fresh clone is proof. The demo output shows:
+- Keypair generation writes correct PEM headers
+- `/api/loan-council` returns an attestation whose `mode` is `ed25519` and whose `key_id` matches the just-generated key
+- All three verifier surfaces (`lib/attestation.js`, `POST /api/verify-attestation`, `shadow_verify_attestation` MCP tool) agree the attestation is valid
+- Flipping one field in the response body triggers "output commitment mismatch" — the exact failure mode a downstream tamper would produce
+
+Procurement reviewer takes 30 seconds, verifies the whole chain works, moves on.
+
+### Tests
+
+- Node test suite: **539 → 543** (+4 wrapping smoke tests). All green.
+
+---
+
 ## v1.5.4 — Deploy bootstrap CLI (bin/generate-attestation-keypair.mjs) (2026-07-04 NY late)
 
 Kills the scary `node -e "const {generateKeyPairSync}=..."` one-liner in the deploy guide. Bank ops teams now get a real CLI that writes both PEM files with correct file permissions and prints a ready-to-paste env block.

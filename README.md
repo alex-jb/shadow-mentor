@@ -4,7 +4,7 @@
 
 > **A 5-to-6-voice AI compliance council for regulated lending.** Encode your bank's loan policy in 5 past decisions. Get a signed, attestation-bound verdict in milliseconds. Runs in your VPC. 5-minute install into Claude Desktop, Cursor, or OpenCode via MCP.
 
-[![tests](https://img.shields.io/badge/tests-539%2F540%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-543%2F544%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
 
 ## Regulatory positioning (2026 H2)
 
@@ -87,6 +87,22 @@ Output (tampered path — the verdict was silently flipped after signing):
 ```
 
 That's the whole thing. Bank auditor holds only the public key and can verify with one command. Cannot forge (that requires the private key you never share). No JS knowledge needed beyond running `node`. Works offline.
+
+### One-command procurement acceptance demo (v1.5.5+)
+
+Whole attestation loop end-to-end from a fresh clone — keypair generation → attestation build → CLI verify → HTTP verify → MCP verify → tamper detection — in one command, ~250ms:
+
+```bash
+npm run demo:attestation
+# [1/6] Generate Ed25519 keypair                    ✓
+# [2/6] Run /api/loan-council in-process             ✓
+# [3/6] Verify with lib/attestation.js (CLI path)    ✓
+# [4/6] Verify with POST /api/verify-attestation     ✓
+# [5/6] Verify with shadow_verify_attestation (MCP)  ✓
+# [6/6] Tamper detection catches silent verdict flip ✓ (correctly rejected)
+```
+
+The demo is wired into the test suite (`test/attestation-acceptance-demo.test.js`) so any regression in signing, verification, or tamper detection breaks CI. Procurement reviewers get a one-command proof; contributors get a one-command regression net.
 
 ### Same verifier, three dispatch surfaces (v1.5.2)
 
