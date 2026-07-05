@@ -23,6 +23,40 @@ Next planned:
 
 ---
 
+## v1.5.8 — `dictionary_hash` binding attestation → tamper-proof Reg B reason codes (2026-07-05 NY)
+
+Closes Reg B's highest-stakes moat. The signed reason-code dictionary at `lib/schemas/reason-code-dictionary.json` is what bank counsel signs off on — bank counsel does NOT sign LLM output. Before v1.5.8, a downstream could swap the dictionary between signature time and audit time and no attestation would notice. That's a Reg B violation waiting to happen.
+
+Now every attestation binds the SHA-256 hash of the counsel-signed dictionary file at decision time. Any post-hoc edit changes the file hash, and every attestation signed against the old bytes fails verification.
+
+### Added
+
+- `computeDictionaryHash()` in `lib/enforce-reason-code-dictionary.js` — SHA-256 of the raw file bytes. Cached after first call.
+- `buildAttestation({..., dictionaryHash})` — new optional param. When passed, the attestation object gains a `dictionary_hash` field AND the hash is bound into the signing payload.
+- `verifyAttestation()` — automatically includes `dictionary_hash` in the recomputed signing payload when the attestation carries it.
+- `/api/loan-council` — production wire-up: every response now carries `attestation.dictionary_hash = computeDictionaryHash()`.
+- `test/dictionary-hash-binding.test.js` — 8 tests: hash stability + shape, endpoint-side wiring, HMAC + Ed25519 happy paths, tamper detection breaks BOTH HMAC + Ed25519 signatures, **pre-v1.5.8 attestations without dictionary_hash still verify (wire back-compat)**, rotated-dictionary detection.
+- Python side (`python/shadow_verify/`) updated to match — same conditional-append rule so pre-v1.5.8 Python-side verifications remain byte-identical.
+- 2 new cross-language tests: Node signs with `dictionaryHash` → Python verifies; Node signs WITHOUT (old shape) → Python still verifies.
+
+### Wire back-compat
+
+The signing payload appends `dictionary_hash` ONLY when it exists. Every attestation ever signed before v1.5.8 verifies unchanged because both sides omit the field in identical fashion. There is no version bump on the wire format.
+
+### What this catches
+
+- Downstream service edits `reason-code-dictionary.json` between decision and audit → hash mismatch → signature fails
+- Auditor cross-checks `attestation.dictionary_hash` against a counsel-delivered copy → detects rotation vs the retired dictionary
+- Attacker fabricates a plausible `dictionary_hash` value → signature no longer matches → verifier fails
+
+### Tests
+
+- Node test suite: **556 → 566** (+10). All green.
+- Python test suite: 16/16 (unchanged — back-compat preserved).
+- Cross-language: 7/7 (up from 5/5) — both dictionary_hash-carrying and back-compat cases pinned.
+
+---
+
 ## v1.5.7 — `GET /api/attestation-info` public key discovery + fingerprint (2026-07-05 NY)
 
 Closes another procurement onboarding gap. Bank SIEM pipelines can now auto-hydrate the verifier's public key by hitting a single endpoint, and cross-check against a fingerprint delivered out-of-band at procurement time to detect silent rotation or MITM.

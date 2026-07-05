@@ -26,6 +26,7 @@ import { runLoanCouncil } from "../lib/run-loan-council.js";
 import { validateLoan } from "../lib/schemas/loan.js";
 import { parseBearer, validateToolScope } from "../lib/auth/oauth-scaffold.js";
 import { buildAttestation } from "../lib/attestation.js";
+import { computeDictionaryHash } from "../lib/enforce-reason-code-dictionary.js";
 
 // Opt-in MCP EMA scope enforcement. When SHADOW_REQUIRE_BEARER is set,
 // every call to /api/loan-council must carry an Authorization: Bearer
@@ -128,10 +129,15 @@ export default async function handler(req, res) {
   // attestation still matters because it lets auditors verify the
   // response wasn't tampered in transit + it's linked to the exact
   // input that produced it.
+  // v1.5.8+: bind the counsel-signed reason-code dictionary hash into the
+  // attestation. Any post-hoc edit to lib/schemas/reason-code-dictionary.json
+  // breaks verification because the file hash no longer matches what the
+  // attestation was signed with.
   const attestation = buildAttestation({
     request: { loan },
     response: responseBody,
     modelId: "runLoanCouncil/pure-compute",
+    dictionaryHash: computeDictionaryHash(),
   });
 
   return res.status(200).json({

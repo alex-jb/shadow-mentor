@@ -75,13 +75,20 @@ def commitment_of(value: Any) -> str:
 
 def _signing_payload(*, mode: str, request_commitment: str,
                      output_commitment: str, model_id: str,
-                     completed_at_utc: str, previous_hash, key_id: str) -> str:
+                     completed_at_utc: str, previous_hash, key_id: str,
+                     dictionary_hash=None) -> str:
     """Exact same pipe-delimited signing payload as the Node lib.
+
+    `dictionary_hash` is optional (v1.5.8+). When absent, the field is
+    omitted from the payload so pre-v1.5.8 attestations continue to
+    verify byte-for-byte. When present, the counsel-signed reason-code
+    dictionary hash at decision time is bound into the signature so
+    any post-hoc dictionary edit breaks verification.
 
     Any drift here means Node signatures don't verify in Python and
     vice versa — the cross-language test catches that immediately.
     """
-    return "|".join([
+    parts = [
         ATTESTATION_VERSION,
         mode,
         request_commitment,
@@ -90,7 +97,10 @@ def _signing_payload(*, mode: str, request_commitment: str,
         completed_at_utc,
         previous_hash or "",
         key_id,
-    ])
+    ]
+    if dictionary_hash:
+        parts.append(dictionary_hash)
+    return "|".join(parts)
 
 
 def _verify_hmac(payload: str, signature_hex: str, secret: str) -> bool:
@@ -187,6 +197,9 @@ def verify_attestation(
         completed_at_utc=attestation["completed_at_utc"],
         previous_hash=attestation.get("previous_hash"),
         key_id=attestation["key_id"],
+        # v1.5.8+: only included when the attestation carries it. This
+        # keeps pre-v1.5.8 attestations verifying byte-identical.
+        dictionary_hash=attestation.get("dictionary_hash"),
     )
 
     if mode == MODE_HMAC:

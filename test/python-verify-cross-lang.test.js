@@ -153,6 +153,38 @@ test("CROSS-LANG: Python detects Node-signed HMAC with wrong secret", { skip: !P
 
 // ─── Canonicalization drift catch ────────────────────────────────
 
+test("CROSS-LANG: Node signs with dictionary_hash → Python verifies (v1.5.8+)", { skip: !PYTHON.available && PYTHON.reason }, () => {
+  const { privateKey, publicKey } = generateKeyPairSync("ed25519", {
+    publicKeyEncoding: { type: "spki", format: "pem" },
+    privateKeyEncoding: { type: "pkcs8", format: "pem" },
+  });
+  const request = { loan_id: "CROSS-DICT-001" };
+  const response = { verdict: "escalate" };
+  const dictionaryHash = "e".repeat(64);
+  const attestation = buildAttestation({
+    request, response, modelId: "sonnet",
+    mode: SIGNATURE_MODES.ED25519, privateKey, dictionaryHash,
+  });
+  const result = pyVerify({ attestation, request, response, publicKey });
+  assert.equal(result.ok, true, `dictionary_hash cross-lang failed: ${result.reason}`);
+});
+
+test("CROSS-LANG: Python still verifies Node-signed attestation WITHOUT dictionary_hash (back-compat)", { skip: !PYTHON.available && PYTHON.reason }, () => {
+  const { privateKey, publicKey } = generateKeyPairSync("ed25519", {
+    publicKeyEncoding: { type: "spki", format: "pem" },
+    privateKeyEncoding: { type: "pkcs8", format: "pem" },
+  });
+  const request = { loan_id: "CROSS-DICT-COMPAT-001" };
+  const response = { verdict: "approve" };
+  const attestation = buildAttestation({
+    request, response, modelId: "sonnet",
+    mode: SIGNATURE_MODES.ED25519, privateKey,
+    // no dictionaryHash — old shape
+  });
+  const result = pyVerify({ attestation, request, response, publicKey });
+  assert.equal(result.ok, true, "back-compat: pre-v1.5.8 attestation MUST verify in Python");
+});
+
 test("CROSS-LANG: nested-array-in-nested-object payload survives canonicalization drift", { skip: !PYTHON.available && PYTHON.reason }, () => {
   // The nastiest canonicalization edge case is nested arrays inside
   // objects with non-alphabetical keys. If Python and Node disagree
