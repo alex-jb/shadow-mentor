@@ -23,6 +23,42 @@ Next planned:
 
 ---
 
+## v1.5.6 — Python verifier (`shadow-verify`) + Node↔Python cross-language proof (2026-07-05 NY)
+
+Extends the verifier reach past Node. Banks whose SIEM pipelines are Python-based (Splunk SDK, pandas-based audit tooling, custom compliance harnesses) no longer need Node on the box.
+
+### Added
+
+- **`python/shadow_verify/`** — pure-Python verifier. Same wire contract as the Node primitive (pipe-delimited signing payload, sorted-key JSON canonicalization, base64 signature for Ed25519, hex for HMAC). Response shape identical to the Node MCP tool + HTTP endpoint. Stdlib-only for HMAC mode; `cryptography>=41` required only for Ed25519 PEM parsing.
+- **`python/pyproject.toml`** — `pip install python/` works out of the box (verified). Ready for PyPI publish as `shadow-verify` v0.1.0.
+- **`python/tests/test_verify.py`** — 16 Python-side unit tests (no pytest dep). Covers: canonicalization determinism, commitment SHA-256 correctness, HMAC happy path + 4 tamper modes + missing-key TypeError, Ed25519 happy path + 3 failure modes, version + malformed-attestation gates.
+- **`test/python-verify-cross-lang.test.js`** — 5 cross-language tests where Node signs and Python verifies. Skips gracefully (does not fail) if `python3` or `cryptography` aren't installed on the runner, but actively proves compat when they are. Includes a nested-array-in-nested-object test that catches ANY canonicalization drift between the two implementations.
+
+### Verifier surface (complete cross-language)
+
+| Language | Surface | Path |
+|---|---|---|
+| Node | CLI | `bin/verify-attestation.mjs` |
+| Node | MCP tool | `shadow_verify_attestation` |
+| Node | HTTP endpoint | `POST /api/verify-attestation` |
+| **Python** | **library** | **`from shadow_verify import verify_attestation`** |
+
+### Why this matters
+
+Banks are typically Python shops for compliance work. A Node-only verifier told a bank: "your ops team has to learn Node just to check a signature." That's friction that scuttles procurement conversations. `pip install shadow-verify` removes it.
+
+### Tests
+
+- Node test suite: **543 → 548** (+5 cross-lang). All green. 1 skipped (existing unrelated).
+- Python test suite: **16/16** passed via `python3 python/tests/test_verify.py`.
+
+### Not yet shipped (deferred)
+
+- PyPI publish of `shadow-verify` — needs Alex's Trusted Publisher setup at pypi.org (batch across the stack, per brain-memory backlog).
+- Python-side installer that generates a keypair (would duplicate `bin/generate-attestation-keypair.mjs`). The Node CLI is the single source of truth for keypair generation; Python side only verifies.
+
+---
+
 ## v1.5.5 — One-command procurement acceptance demo (2026-07-04 NY late)
 
 The full v1.4.0 → v1.5.4 attestation story now fires end-to-end from a fresh clone in ~250ms. Not a marketing gif — a real reproducible acceptance test that a procurement reviewer runs on their own machine.

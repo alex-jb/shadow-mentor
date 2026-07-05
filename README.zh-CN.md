@@ -4,7 +4,7 @@
 
 > **5-到-6 voice 的 AI 合规议会,面向受监管的贷款业务。** 用 5 笔历史决策编码你银行的贷款政策。毫秒级得到一个 signed + attestation-bound 的 verdict。跑在你的 VPC。5 分钟通过 MCP 装进 Claude Desktop / Cursor / OpenCode。
 
-[![tests](https://img.shields.io/badge/tests-543%2F544%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-548%2F549%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
 
 ## 监管姿势(2026 H2)
 
@@ -18,11 +18,12 @@
 
 **验证器三通道全通:CLI / MCP / HTTP 同一 primitive,三种 dispatch 面。** 银行审计员按自己的工作流选:
 
-| 通道 | 路径 | 适合 |
-|---|---|---|
-| CLI | `bin/verify-attestation.mjs` | 开发机、一次性审计、采购 demo |
-| MCP 工具 | `shadow_verify_attestation`(第 7 个 MCP 工具) | Claude Desktop / Cursor / OpenCode 聊天 |
-| HTTP 端点 | `POST /api/verify-attestation` | SIEM 流水线、CI 集成测试、curl from anywhere |
+| 语言 | 通道 | 路径 | 适合 |
+|---|---|---|---|
+| Node | CLI | `bin/verify-attestation.mjs` | 开发机、一次性审计、采购 demo |
+| Node | MCP 工具 | `shadow_verify_attestation`(第 7 个 MCP 工具) | Claude Desktop / Cursor / OpenCode 聊天 |
+| Node | HTTP 端点 | `POST /api/verify-attestation` | SIEM 流水线、CI 集成测试、curl from anywhere |
+| Python | 库 | `from shadow_verify import verify_attestation`(v1.5.6+) | Splunk SDK、pandas 审计流水线、Python 合规 harness |
 
 三个通道全部走 `lib/attestation.js` 里的 `verifyAttestation()`,MCP 工具和 HTTP 端点响应形状完全一致,审计留痕的可比性不因 dispatch 面而改变。**HTTP 端点不需 OAuth scope** —— 验证是只读密码学检查,持有响应体 + attestation + 正确公钥的审计员按定义已经被授权看到该记录。
 

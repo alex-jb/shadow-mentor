@@ -2,3 +2,11 @@ node_modules/
 .vercel/
 .env*.local
 .vercel
+
+# Python build artifacts (v1.5.6+ shadow_verify package)
+__pycache__/
+*.py[cod]
+*.egg-info/
+python/build/
+python/dist/
+.pytest_cache/

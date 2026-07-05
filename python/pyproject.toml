@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "shadow-verify"
+version = "0.1.0"
+description = "Pure-Python verifier for Shadow AEX-style attestations (Ed25519 + HMAC-SHA256)"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+authors = [
+  { name = "Alex Xiaoyu Ji", email = "xji1@mail.yu.edu" },
+]
+keywords = ["attestation", "shadow", "compliance", "banking", "ed25519", "mcp"]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Security :: Cryptography",
+  "Intended Audience :: Financial and Insurance Industry",
+]
+dependencies = [
+  "cryptography>=41",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7",
+]
+
+[project.urls]
+Homepage = "https://github.com/alex-jb/shadow-mentor"
+Issues = "https://github.com/alex-jb/shadow-mentor/issues"
+Changelog = "https://github.com/alex-jb/shadow-mentor/blob/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["shadow_verify*"]
+exclude = ["tests*"]

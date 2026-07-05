@@ -4,7 +4,7 @@
 
 > **A 5-to-6-voice AI compliance council for regulated lending.** Encode your bank's loan policy in 5 past decisions. Get a signed, attestation-bound verdict in milliseconds. Runs in your VPC. 5-minute install into Claude Desktop, Cursor, or OpenCode via MCP.
 
-[![tests](https://img.shields.io/badge/tests-543%2F544%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-548%2F549%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
 
 ## Regulatory positioning (2026 H2)
 
@@ -108,11 +108,12 @@ The demo is wired into the test suite (`test/attestation-acceptance-demo.test.js
 
 Auditors pick the surface that fits their workflow — same RFC 8032 primitive under all three, same response shape between the MCP tool + HTTP endpoint.
 
-| Surface | Path | Best for |
-|---|---|---|
-| CLI | `bin/verify-attestation.mjs` | dev machines, one-off audits, procurement demos |
-| MCP tool | `shadow_verify_attestation` | Claude Desktop / Cursor / OpenCode chat |
-| HTTP endpoint | `POST /api/verify-attestation` | SIEM pipelines, CI integration tests, curl from anywhere |
+| Language | Surface | Path | Best for |
+|---|---|---|---|
+| Node | CLI | `bin/verify-attestation.mjs` | dev machines, one-off audits, procurement demos |
+| Node | MCP tool | `shadow_verify_attestation` | Claude Desktop / Cursor / OpenCode chat |
+| Node | HTTP endpoint | `POST /api/verify-attestation` | SIEM pipelines, CI integration tests, curl from anywhere |
+| Python | library | `from shadow_verify import verify_attestation` (v1.5.6+) | Splunk SDK, pandas-based audit tooling, custom Python compliance harnesses |
 
 **Drop-in bank CI recipe** for the HTTP endpoint: [`examples/verify-in-ci/`](./examples/verify-in-ci/) — GitHub Actions workflow + POSIX shell verifier + README. Every audit-log JSON file gets re-verified before merge; failures block the compliance record from being filed. Zero bank-side code required beyond dropping the two files into `.github/workflows/` and `scripts/`.
 
