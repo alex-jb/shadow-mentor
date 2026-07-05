@@ -23,6 +23,32 @@ Next planned:
 
 ---
 
+## v1.5.2 — POST /api/verify-attestation (HTTP verifier for SIEM + procurement pipelines) (2026-07-03 NY late)
+
+Closes the CLI / MCP / HTTP verifier triangle. v1.4.0 shipped Ed25519 signing. v1.5.0 shipped `bin/verify-attestation.mjs` for CLI use. v1.5.1 shipped `shadow_verify_attestation` for chat-surface use. **v1.5.2 ships the HTTP endpoint so a bank SIEM pipeline, GitHub Actions integration test, or plain curl-from-Splunk workflow can verify without either an MCP host or a local Node install.**
+
+### Added
+
+- `POST /api/verify-attestation` — public HTTP verifier. Same primitive as the CLI + MCP tool (all three wrap `verifyAttestation()` from `lib/attestation.js`). Response shape is identical to the MCP tool, so audit-trail comparability holds regardless of which surface a bank uses.
+- No OAuth scope required (unlike `/api/loan-council`). Verification is a read-only crypto check; an auditor holding response body + attestation + correct public key is by definition already authorized to see the record.
+- `test/verify-attestation-endpoint.test.js` — 11 contract tests: happy-path HMAC + Ed25519, tamper detection, model-swap detection, all three 400-required-field cases, 405 with usage example, CORS preflight, cache headers, and a full "bank curl round-trip with Ed25519 public key" procurement scenario.
+
+### Verifier surface (complete)
+
+| Surface | Path | Best for |
+|---|---|---|
+| CLI | `bin/verify-attestation.mjs` | dev machines, one-off audits, procurement demos |
+| MCP tool | `shadow_verify_attestation` | Claude Desktop / Cursor / OpenCode chat |
+| **HTTP endpoint** | `POST /api/verify-attestation` | SIEM pipelines, CI integration tests, curl from anywhere |
+
+Same primitive under all three. Response shape is identical for the MCP tool + HTTP endpoint.
+
+### Tests
+
+- Node test suite: **510 → 521** (+11 endpoint contract tests). All green. 1 skipped (unrelated).
+
+---
+
 ## v1.5.1 — shadow_verify_attestation as 7th MCP tool (2026-07-03 NY late)
 
 Closes a procurement asymmetry: v1.5.0 shipped Ed25519 attestation + a public CLI verifier (`bin/verify-attestation.mjs`) so bank auditors could verify without holding Shadow's private key. But an auditor sitting inside Claude Desktop / Cursor / OpenCode couldn't verify without dropping to a shell. Now they can call `shadow_verify_attestation` inline from chat.

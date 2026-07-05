@@ -85,6 +85,29 @@ Output (tampered path — the verdict was silently flipped after signing):
 
 That's the whole thing. Bank auditor holds only the public key and can verify with one command. Cannot forge (that requires the private key you never share). No JS knowledge needed beyond running `node`. Works offline.
 
+### Same verifier, three dispatch surfaces (v1.5.2)
+
+Auditors pick the surface that fits their workflow — same RFC 8032 primitive under all three, same response shape between the MCP tool + HTTP endpoint.
+
+| Surface | Path | Best for |
+|---|---|---|
+| CLI | `bin/verify-attestation.mjs` | dev machines, one-off audits, procurement demos |
+| MCP tool | `shadow_verify_attestation` | Claude Desktop / Cursor / OpenCode chat |
+| HTTP endpoint | `POST /api/verify-attestation` | SIEM pipelines, CI integration tests, curl from anywhere |
+
+Example curl for the HTTP endpoint (bank SIEM playbook):
+
+```bash
+curl -sX POST https://your-shadow.vercel.app/api/verify-attestation \
+  -H 'content-type: application/json' \
+  -d '{
+    "attestation": {...},
+    "original_request": {...},
+    "original_response": {...},
+    "public_key": "-----BEGIN PUBLIC KEY-----\n..."
+  }' | jq '{ok, mode, model_id, interpretation}'
+```
+
 ## For risk and compliance teams
 
 - **5-minute install.** Drop Shadow's MCP server into Claude Desktop, Cursor, or OpenCode; the 5-voice council becomes callable from the model in under five minutes. See [`mcp/README.md`](./mcp/README.md).
@@ -137,7 +160,7 @@ Toggle Live mode → click any combo → real 3-voice deliberation in 6-10 secon
 - Real Anthropic Sonnet 4.6 + Zhipu GLM-5.2 provider integration (toggle in Live mode)
 - Cross-session memory backend (`/api/recall` + `/api/calibration`) with 30 seed entries + per-persona Brier stats + Elastic agent-memory swap stub
 - Shadow Agentic Capability Benchmark **v0.3.3** runner — **87 ± 3 (n=6)** aggregate (HF "Is it agentic enough?"-inspired); compliance × LBO anchor cell at **100/100 n=3 stable**
-- **8 JSON endpoints live**: `/api/deliberate` (POST, +loan body adds verdict) · `/api/loan-council` (POST, pure-compute 5-voice rule layer, Lora Mode A) · `/api/recall` · `/api/calibration` · `/api/scenarios` · `/api/health` · `/api/badge` (shields.io) · `/api/version` (git SHA audit pin)
+- **9 JSON endpoints live**: `/api/deliberate` (POST, +loan body adds verdict) · `/api/loan-council` (POST, pure-compute 5-voice rule layer, Lora Mode A) · `/api/verify-attestation` (POST, public HTTP verifier, v1.5.2) · `/api/recall` · `/api/calibration` · `/api/scenarios` · `/api/health` · `/api/badge` (shields.io) · `/api/version` (git SHA audit pin)
 - **MCP server**: `node mcp/server.js` exposes 5 tools (`shadow_loan_council`, `shadow_risk_tools`, `shadow_recall`, `shadow_calibration`, `shadow_scenarios`) for Claude Desktop / Cursor / Zed / OpenCode native tool-use. See `mcp/README.md` for `claude_desktop_config.json` snippet.
 - **Levitchi Mode A integration shipped + tightened (v1.1.1)**: typed risk tools (VaR / ES / concentration / sector / correlation / beta) + 5-voice verdict resolver (block > escalate > approve) + loan input schema with BR thresholds (FICO 700 / DTI 0.36 / LTV 0.80 / VaR 0.12 @ 95%/10d) pinned in drift-detection tests. **v1.1.1: FICO < 700 is a hard block** (not escalate) per Levitchi's policy clarification — credit-eligibility floor is not negotiable.
 - **Procurement-grade citation chain (v1.1+)**: inline `traceability` dict in every `/api/deliberate` response mapping each threshold to BRD vs Addendum vs Risk Appetite Note source. AA01-05 adverse-action codes match CFPB Bulletin 2024-09 model-traceability requirement. `enforceAnalysisOnly()` regex guardrail catches LLM hallucination of trade-execution verbs at council output boundary. 14 contract tests enforce provenance.
