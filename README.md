@@ -14,6 +14,7 @@ Two 2026 regulatory shifts changed the enforcement posture Shadow addresses. Ret
 - **EU: GDPR Art. 22 + Schufa (C-634/21), not AI Act 2026.** Digital Omnibus deferred Annex III(5)(b) credit-scoring deadlines from 2026-08-02 → 2027-12-02. Schufa is enforceable today; Shadow's human-review + audit chain map directly to Art. 22 "meaningful information about the logic" + "human intervention" requirements.
 - **CFPB 2026-07-21 rule change.** Disparate-impact narrowed under Reg B, but adverse-action notices, disparate-treatment, Fair Housing Act, and state AG enforcement stay actionable. Shadow's [signed reason-code dictionary](./lib/schemas/reason-code-dictionary.json) is the defensive posture — bank counsel signs the dictionary, not the LLM output.
 - **SOC 2 Type 1 readiness map** — [`docs/soc2-readiness.md`](./docs/soc2-readiness.md) — 35 controls mapped against AICPA Trust Service Criteria (Security / Confidentiality / Processing Integrity). 21 mechanically enforced with code + test evidence; 10 documented as prose; 4 N/A. Not yet formally audited — this is what a procurement team can grade before we scope the audit.
+- **Case studies** — [`docs/case-studies/`](./docs/case-studies/) — realistic scenarios showing Shadow's council + supporting controls firing end-to-end on synthetic loan applications. Case 1: [$2.5M CRE loan with PEP owner + diverse routing](./docs/case-studies/01-cre-loan-with-pep-and-diverse-routing.md) — AML/KYC + Compliance + Macro Contrarian all fire; Ed25519 verifier demo included.
 
 ## What's new in v1.4 (2026-07-02)
 
