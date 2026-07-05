@@ -85,7 +85,8 @@
       "shadow_recall",
       "shadow_calibration",
       "shadow_scenarios",
-      "shadow_traceability"
+      "shadow_traceability",
+      "shadow_verify_attestation"
     ]
   }
 }

@@ -30,7 +30,7 @@ describe("EMA scope catalog (frozen surface)", () => {
     }
   });
 
-  test("ALL_TOOLS lists exactly the 6 MCP tools — no orphan surface", () => {
+  test("ALL_TOOLS lists exactly the MCP tools — no orphan surface", () => {
     const declared = new Set(TOOLS.map((t) => t.name));
     const guarded = new Set(ALL_TOOLS);
     assert.equal(declared.size, guarded.size,

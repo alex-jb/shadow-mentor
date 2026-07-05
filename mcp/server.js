@@ -31,6 +31,7 @@ import {
 import { PERSONA_PROMPTS, SCENARIO_CONTEXTS } from "../lib/prompts.js";
 import { TRACEABILITY } from "../lib/traceability.js";
 import { ADVERSE_ACTION_CODES, AA_SOURCES } from "../lib/schemas/adverse-action.js";
+import { verifyAttestation, SIGNATURE_MODES } from "../lib/attestation.js";
 
 const TOOLS = [
   {
@@ -108,6 +109,36 @@ const TOOLS = [
           description: "Include the AA01-05 adverse-action code mappings in the response."
         }
       }
+    }
+  },
+  {
+    name: "shadow_verify_attestation",
+    description: "Verify a Shadow AEX-style attestation on a persisted /api/deliberate or /api/loan-council response. Confirms (1) the request wasn't tampered, (2) the response wasn't tampered, (3) the exact model_id ran, (4) the deployment key material matches. Bank-auditor path — pass the persisted request + response body (attestation field stripped) + the attestation object + the verification key material (HMAC signing key OR Ed25519 public key). Returns {ok, reason, checks}. Ok=false means the record is tampered, silently model-swapped, or a different key was used. Ed25519 mode is the procurement-recommended mode: bank holds only the public half of the keypair, cannot forge, only verify.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        attestation: {
+          type: "object",
+          description: "The signed attestation object (from response.attestation). Must include version, mode, request_commitment, output_commitment, model_id, completed_at_utc, key_id, signature."
+        },
+        original_request: {
+          type: "object",
+          description: "The exact request body Shadow was called with — the loan/policy dict passed to /api/loan-council or /api/deliberate."
+        },
+        original_response: {
+          type: "object",
+          description: "The exact response body Shadow returned — with the attestation field REMOVED (else you'd be hashing the attestation into itself)."
+        },
+        public_key: {
+          type: "string",
+          description: "Ed25519 public key (PEM string OR base64-encoded raw 32-byte). Required if attestation.mode is 'ed25519'. Falls back to the SHADOW_ATTESTATION_ED25519_PUBLIC_KEY deployment variable if omitted."
+        },
+        hmac_key: {
+          type: "string",
+          description: "HMAC-SHA-256 signing key material. Required if attestation.mode is 'hmac-sha256'. Falls back to the SHADOW_ATTESTATION_SECRET deployment variable if omitted."
+        }
+      },
+      required: ["attestation", "original_request", "original_response"]
     }
   }
 ];
@@ -213,6 +244,30 @@ export function handleToolCall(name, args) {
       attribution: "Primary author of risk, credit-policy, threshold, adverse-action, and traceability modules: Loredana C. Levitchi. Integration maintainer: Alex Xiaoyu Ji. License: MIT (per 2026-06-19 explicit grant).",
       source_documents: "docs/external/ — BRD_ALIGNMENT, ADDENDUM_A/B/C, TRACEABILITY_MATRIX, IMPLEMENTATION_GUIDE, TECHNICAL_REPORT",
       ...(aa_codes ? { adverse_action_codes: aa_codes } : {})
+    };
+  }
+
+  if (name === "shadow_verify_attestation") {
+    const { attestation, original_request, original_response, public_key, hmac_key, secret } = args;
+    if (!attestation) return { error: "attestation required" };
+    if (!original_request) return { error: "original_request required" };
+    if (!original_response) return { error: "original_response required" };
+    const keys = {};
+    if (public_key) keys.publicKey = public_key;
+    // Accept both `hmac_key` (new schema name) + `secret` (legacy alias for
+    // callers that already speak the lib/attestation.js verifier vocabulary).
+    const hmacMaterial = hmac_key ?? secret;
+    if (hmacMaterial) keys.secret = hmacMaterial;
+    const result = verifyAttestation(attestation, original_request, original_response, keys);
+    return {
+      ...result,
+      mode: attestation.mode ?? SIGNATURE_MODES.HMAC,
+      model_id: attestation.model_id,
+      completed_at_utc: attestation.completed_at_utc,
+      key_id: attestation.key_id,
+      interpretation: result.ok
+        ? "Attestation verified. Request + response were not tampered, the pinned model ran, and the deployment key matches."
+        : "Attestation FAILED verification. Do NOT trust this record — it may have been tampered, silently model-swapped, or signed with a different key."
     };
   }
 

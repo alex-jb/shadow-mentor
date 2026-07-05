@@ -4,10 +4,12 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { generateKeyPairSync } from "node:crypto";
 import { handleToolCall, TOOLS } from "../mcp/server.js";
+import { buildAttestation, SIGNATURE_MODES } from "../lib/attestation.js";
 
-test("MCP server exposes 6 tools (v1.1.1+ adds shadow_traceability)", () => {
-  assert.equal(TOOLS.length, 6);
+test("MCP server exposes 7 tools (v1.5.1+ adds shadow_verify_attestation)", () => {
+  assert.equal(TOOLS.length, 7);
   const names = TOOLS.map((t) => t.name);
   for (const expected of [
     "shadow_loan_council",
@@ -15,7 +17,8 @@ test("MCP server exposes 6 tools (v1.1.1+ adds shadow_traceability)", () => {
     "shadow_recall",
     "shadow_calibration",
     "shadow_scenarios",
-    "shadow_traceability"
+    "shadow_traceability",
+    "shadow_verify_attestation"
   ]) {
     assert.ok(names.includes(expected), `missing tool ${expected}`);
   }
@@ -109,4 +112,93 @@ test("shadow_scenarios returns full surface catalog", () => {
 
 test("unknown tool name throws", () => {
   assert.throws(() => handleToolCall("shadow_lol", {}));
+});
+
+// ─── shadow_verify_attestation ─────────────────────────────────────
+
+test("shadow_verify_attestation verifies a good HMAC-signed record", () => {
+  const request = { loan_id: "MCP-TEST-001", credit_score: 720 };
+  const response = { verdict: "approve", voices: [] };
+  const secret = "mcp-test-secret";
+  const att = buildAttestation({
+    request, response, modelId: "sonnet",
+    mode: SIGNATURE_MODES.HMAC, secret,
+  });
+  const r = handleToolCall("shadow_verify_attestation", {
+    attestation: att,
+    original_request: request,
+    original_response: response,
+    secret,
+  });
+  assert.equal(r.ok, true);
+  assert.equal(r.mode, SIGNATURE_MODES.HMAC);
+  assert.equal(r.model_id, "sonnet");
+  assert.match(r.interpretation, /verified/);
+});
+
+test("shadow_verify_attestation detects a tampered response", () => {
+  const request = { loan_id: "MCP-TEST-002", credit_score: 640 };
+  const response = { verdict: "block" };
+  const secret = "mcp-test-secret";
+  const att = buildAttestation({
+    request, response, modelId: "sonnet",
+    mode: SIGNATURE_MODES.HMAC, secret,
+  });
+  const tampered = { ...response, verdict: "approve" };
+  const r = handleToolCall("shadow_verify_attestation", {
+    attestation: att,
+    original_request: request,
+    original_response: tampered,
+    secret,
+  });
+  assert.equal(r.ok, false);
+  assert.match(r.reason, /output commitment mismatch/);
+  assert.match(r.interpretation, /FAILED/);
+});
+
+test("shadow_verify_attestation verifies Ed25519-signed record with public key", () => {
+  const { privateKey, publicKey } = generateKeyPairSync("ed25519", {
+    publicKeyEncoding: { type: "spki", format: "pem" },
+    privateKeyEncoding: { type: "pkcs8", format: "pem" },
+  });
+  const request = { loan_id: "MCP-TEST-003" };
+  const response = { verdict: "escalate" };
+  const att = buildAttestation({
+    request, response, modelId: "claude-sonnet-4-6",
+    mode: SIGNATURE_MODES.ED25519, privateKey,
+  });
+  const r = handleToolCall("shadow_verify_attestation", {
+    attestation: att,
+    original_request: request,
+    original_response: response,
+    public_key: publicKey,
+  });
+  assert.equal(r.ok, true);
+  assert.equal(r.mode, SIGNATURE_MODES.ED25519);
+  assert.equal(r.model_id, "claude-sonnet-4-6");
+});
+
+test("shadow_verify_attestation rejects missing attestation arg", () => {
+  const r = handleToolCall("shadow_verify_attestation", {
+    original_request: {},
+    original_response: {},
+  });
+  assert.match(r.error, /attestation required/);
+});
+
+test("shadow_verify_attestation surfaces model_id + key_id for audit trail", () => {
+  const request = { loan_id: "MCP-TEST-004" };
+  const response = { verdict: "approve" };
+  const att = buildAttestation({
+    request, response, modelId: "sonnet-v4",
+    mode: SIGNATURE_MODES.HMAC, secret: "s", keyId: "prod-2026-Q3",
+  });
+  const r = handleToolCall("shadow_verify_attestation", {
+    attestation: att,
+    original_request: request,
+    original_response: response,
+    secret: "s",
+  });
+  assert.equal(r.model_id, "sonnet-v4");
+  assert.equal(r.key_id, "prod-2026-Q3");
 });

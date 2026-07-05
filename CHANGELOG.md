@@ -23,6 +23,27 @@ Next planned:
 
 ---
 
+## v1.5.1 — shadow_verify_attestation as 7th MCP tool (2026-07-03 NY late)
+
+Closes a procurement asymmetry: v1.5.0 shipped Ed25519 attestation + a public CLI verifier (`bin/verify-attestation.mjs`) so bank auditors could verify without holding Shadow's private key. But an auditor sitting inside Claude Desktop / Cursor / OpenCode couldn't verify without dropping to a shell. Now they can call `shadow_verify_attestation` inline from chat.
+
+### Added
+
+- `shadow_verify_attestation` — 7th MCP tool. Wraps `verifyAttestation()` from `lib/attestation.js`. Accepts the persisted `attestation` object + `original_request` + `original_response` + either `public_key` (Ed25519 mode) or `hmac_key` (HMAC mode). Returns `{ok, reason, checks, mode, model_id, completed_at_utc, key_id, interpretation}`. On failure, `interpretation` names all three failure modes explicitly (tamper / silent model-swap / wrong key material).
+- OAuth scope catalog (`lib/auth/oauth-scaffold.js`) — added `shadow_verify_attestation` to `shadow:read` (analyst seats can verify integrity without escalating to a council seat) and `shadow:admin`.
+- `installer/tools.json` `$tool_surface.tools` — catalog now declares 7 tools; drift gate at `test/tools-catalog.test.js` catches the sync in both directions.
+- `test/mcp-server.test.js` — 5 new coverage tests for the verify tool: happy-path HMAC, tampered-response detection, Ed25519 with generated keypair, missing-attestation rejection, model_id + key_id surfacing.
+
+### Why this matters for procurement
+
+The Ed25519 verifier CLI already gave banks the asymmetric primitive: Shadow holds the private key, bank holds only the public key. But before v1.5.1, the auditor's workflow required shelling out. Now a bank compliance officer inside Cursor can paste a persisted response + attestation + their public key into chat, the MCP tool runs the RFC 8032 verify inline, and returns `ok: true` or names the exact failure mode. Closes the last mile of the "who can verify" contract.
+
+### Tests
+
+- Node test suite: **510 → 515** (+5 for shadow_verify_attestation). All green. 1 skipped (existing unrelated).
+
+---
+
 ## v1.5.0 — Per-voice diverse routing + full SKILL.md marketplace + persona L1/L2/L3 sidecar + CNFinBench harness (2026-07-03 NY)
 
 Second half of the 2026-07-02 shipping cluster + a distribution + benchmark scaffolding wave on the following day. 4 more lib modules + 6 SKILL.md files + CNFinBench harness scaffold. Test surface **396 → 493** (+97). All green.
