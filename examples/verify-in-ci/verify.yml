@@ -1,0 +1,74 @@
+name: verify-shadow-attestations
+
+# Runs on every push touching a persisted Shadow response file. Fails
+# the workflow if any attestation fails to verify — the compliance
+# record cannot be filed until the merge is unblocked.
+#
+# Uses the Shadow public HTTP verifier (POST /api/verify-attestation)
+# shipped in shadow-mentor v1.5.2.
+
+on:
+  push:
+    paths:
+      - "audit-log/**/*.json"
+  pull_request:
+    paths:
+      - "audit-log/**/*.json"
+  workflow_dispatch:
+    # Manual re-verify sweep. Useful after key rotation to prove the
+    # historical record still verifies against the new accepted key set.
+    inputs:
+      full_sweep:
+        description: "Verify ALL audit-log files, not just changed ones"
+        required: false
+        default: "false"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2  # need HEAD^ for the changed-files diff
+
+      - name: Determine files to verify
+        id: files
+        run: |
+          if [ "${{ github.event.inputs.full_sweep }}" = "true" ]; then
+            find audit-log -type f -name '*.json' > files.txt
+          else
+            git diff --name-only HEAD^ HEAD | grep '^audit-log/.*\.json$' > files.txt || true
+          fi
+          echo "count=$(wc -l < files.txt | tr -d ' ')" >> "$GITHUB_OUTPUT"
+          cat files.txt
+
+      - name: Skip if nothing changed
+        if: steps.files.outputs.count == '0'
+        run: |
+          echo "No audit-log JSON files changed. Nothing to verify."
+          exit 0
+
+      - name: Verify every file
+        if: steps.files.outputs.count != '0'
+        env:
+          SHADOW_URL: ${{ vars.SHADOW_URL }}
+          SHADOW_ATTESTATION_PUBLIC_KEY: ${{ secrets.SHADOW_ATTESTATION_PUBLIC_KEY }}
+        run: |
+          chmod +x scripts/verify-shadow.sh
+          failed=0
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            echo "─── $f ───────────────────────────"
+            if ! scripts/verify-shadow.sh "$f"; then
+              failed=$((failed + 1))
+            fi
+          done < files.txt
+          if [ $failed -gt 0 ]; then
+            echo ""
+            echo "✗ $failed file(s) failed attestation verification. Merge blocked."
+            exit 1
+          fi
+          echo ""
+          echo "✓ all $(wc -l < files.txt | tr -d ' ') file(s) verified"

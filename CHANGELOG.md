@@ -23,6 +23,33 @@ Next planned:
 
 ---
 
+## v1.5.3 — Drop-in bank CI recipe + zh-CN sync + tests badge refresh (2026-07-04 NY)
+
+Consumer-side polish on the v1.5.2 HTTP verifier. Instead of leaving banks to write their own CI harness, ship a working example.
+
+### Added
+
+- **`examples/verify-in-ci/`** — drop-in bank CI recipe for the HTTP verifier.
+  - `verify.yml` — GitHub Actions workflow that watches `audit-log/**/*.json`, verifies every changed file against the deployment's Ed25519 public key, and fails the merge if any attestation doesn't verify. Supports manual `workflow_dispatch` for a full sweep after key rotation.
+  - `verify.sh` — POSIX shell verifier. Runnable standalone from any laptop. Exit codes: 0 verified / 1 verification failed / 2 HTTP transport error.
+  - `README.md` — one-page setup: two GH secrets, drop two files, done.
+- **`test/examples-verify-in-ci.test.js`** — 7 drift-detection tests that pin the shape of the example against the endpoint contract. If someone renames `original_request` → `req`, or the workflow drops the `SHADOW_ATTESTATION_PUBLIC_KEY` secret, or the shell script stops parsing `.ok` — CI fails loudly instead of silently breaking every downstream bank fork.
+
+### Docs
+
+- `README.zh-CN.md` — v1.5.0-v1.5.2 三通道验证器新章节(bilingual rule).
+- Tests badge refreshed **493/493 → 528/529** across `README.md` and `README.zh-CN.md`.
+
+### Why ship the example
+
+A bank ops team should not have to read `lib/attestation.js` to wire their CI. The API contract is now three files — copy, set two secrets, done. Any drift in the endpoint field names (e.g. `original_request` → `req`) trips the drift-detection tests before the release goes out, so the example never quietly rots.
+
+### Tests
+
+- Node test suite: **521 → 528** (+7 drift-detection). All green. 1 skipped (existing unrelated).
+
+---
+
 ## v1.5.2 — POST /api/verify-attestation (HTTP verifier for SIEM + procurement pipelines) (2026-07-03 NY late)
 
 Closes the CLI / MCP / HTTP verifier triangle. v1.4.0 shipped Ed25519 signing. v1.5.0 shipped `bin/verify-attestation.mjs` for CLI use. v1.5.1 shipped `shadow_verify_attestation` for chat-surface use. **v1.5.2 ships the HTTP endpoint so a bank SIEM pipeline, GitHub Actions integration test, or plain curl-from-Splunk workflow can verify without either an MCP host or a local Node install.**

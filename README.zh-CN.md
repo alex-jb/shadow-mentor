@@ -4,7 +4,7 @@
 
 > **5-到-6 voice 的 AI 合规议会,面向受监管的贷款业务。** 用 5 笔历史决策编码你银行的贷款政策。毫秒级得到一个 signed + attestation-bound 的 verdict。跑在你的 VPC。5 分钟通过 MCP 装进 Claude Desktop / Cursor / OpenCode。
 
-[![tests](https://img.shields.io/badge/tests-493%2F493%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-528%2F529%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
 
 ## 监管姿势(2026 H2)
 
@@ -13,6 +13,24 @@
 - **SR 26-2 Tier 3 companion control**。SR 11-7 于 2026-04-17 被 Fed / OCC / FDIC 联合撤回;SR 26-2 明确把 GenAI / agentic AI 排出 Tier 3 范围。Shadow 是 SR 26-2 明确不管的这一类的治理层。对应 Treasury FS AI RMF(2026-02)230 项控制目标里的 40+ 项。
 - **欧盟侧:GDPR Art. 22 + Schufa(C-634/21),不是 AI Act 2026**。Digital Omnibus 把 Annex III(5)(b) 信用评分类的截止从 2026-08-02 → 2027-12-02。Schufa 今天就可以执行;Shadow 的人工复核 + 审计链直接映射 Art. 22 "关于逻辑的有意义信息" + "人工介入"要求。
 - **CFPB 2026-07-21 规则变更**。Reg B 下的 disparate-impact 被收窄,但 adverse-action 通知 / disparate-treatment / Fair Housing Act / 州总检察官执法都保持可诉。Shadow 的[签名 reason-code dictionary](./lib/schemas/reason-code-dictionary.json) 是防御性姿势 — 银行法律签这份字典,而不是签 LLM 输出。
+
+## v1.5.0-v1.5.2 有什么新的(2026-07-03)
+
+**验证器三通道全通:CLI / MCP / HTTP 同一 primitive,三种 dispatch 面。** 银行审计员按自己的工作流选:
+
+| 通道 | 路径 | 适合 |
+|---|---|---|
+| CLI | `bin/verify-attestation.mjs` | 开发机、一次性审计、采购 demo |
+| MCP 工具 | `shadow_verify_attestation`(第 7 个 MCP 工具) | Claude Desktop / Cursor / OpenCode 聊天 |
+| HTTP 端点 | `POST /api/verify-attestation` | SIEM 流水线、CI 集成测试、curl from anywhere |
+
+三个通道全部走 `lib/attestation.js` 里的 `verifyAttestation()`,MCP 工具和 HTTP 端点响应形状完全一致,审计留痕的可比性不因 dispatch 面而改变。**HTTP 端点不需 OAuth scope** —— 验证是只读密码学检查,持有响应体 + attestation + 正确公钥的审计员按定义已经被授权看到该记录。
+
+`shadow:read` 分析师席位可以调 `shadow_verify_attestation`(读级完整性验证不需要升到 council 席),这条通过 `test/oauth-scaffold.test.js` 契约测试锁死。
+
+其他 v1.5 增量:full SKILL.md marketplace 6 persona 全上(`npx skills add alex-jb/shadow-mentor/skills/<name>`)· per-voice 多样化路由(diverse mode 每个 voice 用不同 provider)· persona L1/L2/L3 sidecar(Anthropic Constitution v2 metadata,不改 runtime prompt)· CNFinBench triad 打分脚手架(Rawlsian-min-weighted 公式)· SOC 2 Type 1 就绪清单 35 项控制,其中 21 项已代码强制。
+
+---
 
 ## v1.4 有什么新的(2026-07-02)
 
