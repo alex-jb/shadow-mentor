@@ -23,6 +23,23 @@ Next planned:
 
 ---
 
+## v1.5.7 — `GET /api/attestation-info` public key discovery + fingerprint (2026-07-05 NY)
+
+Closes another procurement onboarding gap. Bank SIEM pipelines can now auto-hydrate the verifier's public key by hitting a single endpoint, and cross-check against a fingerprint delivered out-of-band at procurement time to detect silent rotation or MITM.
+
+### Added
+
+- `GET /api/attestation-info` — returns `{service, attestation_version, mode, key_id, public_key_pem, public_key_fingerprint_sha256, rotation_note, docs, completeness_check, timestamp}`. In HMAC mode, exposes only the mode + key_id (never any key material). In Ed25519 mode, exposes the public PEM + SHA-256 SPKI fingerprint (RFC 5280 §4.2.1.2).
+- 5-minute cache header (`public, max-age=300`) — bank SIEM polling every minute doesn't overwhelm the endpoint; rotation still lands within the `key_id` grace window.
+- Completeness self-check: if deployed in ed25519 mode without a public key configured, `completeness_check.warning` surfaces the exact env var missing.
+- `test/attestation-info-endpoint.test.js` — 8 contract tests: fingerprint determinism + differing across keypairs, Ed25519 full metadata path, HMAC mode hides all key material, warning fires when mode-configuration mismatched, POST rejected 405, OPTIONS 200 for CORS, docs advertise all 4 verifier surfaces (CLI + MCP + HTTP + Python).
+
+### Tests
+
+- Node test suite: **548 → 556** (+8). All green.
+
+---
+
 ## v1.5.6 — Python verifier (`shadow-verify`) + Node↔Python cross-language proof (2026-07-05 NY)
 
 Extends the verifier reach past Node. Banks whose SIEM pipelines are Python-based (Splunk SDK, pandas-based audit tooling, custom compliance harnesses) no longer need Node on the box.
