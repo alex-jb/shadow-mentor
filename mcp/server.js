@@ -28,6 +28,7 @@ import {
   correlation_matrix,
   beta_decomposition
 } from "../lib/risk-tools/index.js";
+import { sizePosition } from "../lib/personas/trader-pack/risk-sizer.js";
 import { PERSONA_PROMPTS, SCENARIO_CONTEXTS } from "../lib/prompts.js";
 import { TRACEABILITY } from "../lib/traceability.js";
 import { ADVERSE_ACTION_CODES, AA_SOURCES } from "../lib/schemas/adverse-action.js";
@@ -139,6 +140,61 @@ const TOOLS = [
         }
       },
       required: ["attestation", "original_request", "original_response"]
+    }
+  },
+  {
+    name: "shadow_size_position",
+    description: "Size a trading position via the Shadow Trader Pack Risk Sizer voice (FinPos, arXiv 2510.27251). Takes a proposed direction from an upstream Judge (or the caller directly) + Kelly parameters + volatility regime + optional drawdown. Returns fund/skip verdict + position_usd + Kelly notional + volatility scalar + human-readable rationale. Never returns a direction — Judge owns direction, Sizer only decides SIZE. Pure computation (no LLM). Cross-vertical wire format identical to Orallexa's Python engine/risk_sizer.py so banking + trading audit trails share one schema. Use when: (1) you have a trade thesis and need principled sizing, (2) you want to audit whether a proposed position respects Kelly cap + volatility discipline + drawdown adjustment.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        direction: {
+          type: "string",
+          enum: ["long", "short", "no_op"],
+          description: "The trade direction from the upstream Judge. no_op → Sizer returns skip immediately."
+        },
+        directional_confidence: {
+          type: "number",
+          description: "Judge's confidence in the direction (0.0-1.0). Currently metadata-only; v0.3 will use it to shrink positions under low confidence."
+        },
+        bankroll_usd: {
+          type: "number",
+          description: "Total account bankroll in USD. Position is capped at this and at (max_kelly_cap × bankroll_usd)."
+        },
+        volatility_regime: {
+          type: "string",
+          enum: ["low", "medium", "high"],
+          description: "Volatility regime scalar: low=1.0, medium=0.7, high=0.4. Position scales inversely with vol."
+        },
+        kelly_p_win: {
+          type: "number",
+          description: "Historical win rate for the strategy (0.0-1.0)."
+        },
+        kelly_avg_win_pct: {
+          type: "number",
+          description: "Average winning trade return as a fraction (e.g. 0.04 = 4% avg win)."
+        },
+        kelly_avg_loss_pct: {
+          type: "number",
+          description: "Average losing trade return as a fraction (e.g. 0.02 = 2% avg loss)."
+        },
+        current_drawdown_pct: {
+          type: "number",
+          description: "Current portfolio drawdown as a fraction OR percent (values ≤ 1.0 treated as fraction, > 1.0 as percent). Default 0."
+        },
+        max_kelly_cap: {
+          type: "number",
+          description: "Max fraction of bankroll to risk on a single trade. Default 0.25."
+        }
+      },
+      required: [
+        "direction",
+        "bankroll_usd",
+        "volatility_regime",
+        "kelly_p_win",
+        "kelly_avg_win_pct",
+        "kelly_avg_loss_pct"
+      ]
     }
   }
 ];
@@ -287,6 +343,14 @@ export function handleToolCall(name, args) {
       defaults: LOAN_DEFAULTS,
       cells_total: Object.keys(PERSONA_PROMPTS).length * Object.keys(SCENARIO_CONTEXTS).length
     };
+  }
+
+  if (name === "shadow_size_position") {
+    try {
+      return sizePosition(args);
+    } catch (err) {
+      return { error: `Risk Sizer input invalid: ${err.message}` };
+    }
   }
 
   throw new Error(`unknown tool: ${name}`);

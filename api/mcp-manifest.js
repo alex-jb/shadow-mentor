@@ -21,7 +21,7 @@
 
 import { createHash } from "node:crypto";
 
-const SHADOW_VERSION = "v1.5.12";
+const SHADOW_VERSION = "v1.5.15";
 const MCP_PROTOCOL_VERSION = "2024-11-05";
 
 // Canonical tool list — must match mcp/server.js TOOLS array.
@@ -100,6 +100,25 @@ const CANONICAL_TOOLS = [
     regulatoryScope: ["SR 26-2 tamper-evident audit chain"],
     determinismClaim: "no-llm-inside-tool",
     latencyPercentiles: { p50_ms: 2, p95_ms: 6 },
+  },
+  {
+    name: "shadow_size_position",
+    description:
+      "Cross-vertical Trader Pack Risk Sizer voice (FinPos arXiv 2510.27251). Takes upstream Judge direction + Kelly params + volatility regime + optional drawdown. Returns fund/skip verdict + position_usd + Kelly notional + volatility scalar. Never emits a direction — Judge owns direction, Sizer only sizes.",
+    inputSchemaKeys: [
+      "direction",
+      "bankroll_usd",
+      "volatility_regime",
+      "kelly_p_win",
+      "kelly_avg_win_pct",
+      "kelly_avg_loss_pct",
+    ],
+    regulatoryScope: [
+      "FinPos dual-agent architecture",
+      "Kelly-cap discipline",
+    ],
+    determinismClaim: "no-llm-inside-tool",
+    latencyPercentiles: { p50_ms: 1, p95_ms: 3 },
   },
 ];
 

@@ -8,8 +8,8 @@ import { generateKeyPairSync } from "node:crypto";
 import { handleToolCall, TOOLS } from "../mcp/server.js";
 import { buildAttestation, SIGNATURE_MODES } from "../lib/attestation.js";
 
-test("MCP server exposes 7 tools (v1.5.1+ adds shadow_verify_attestation)", () => {
-  assert.equal(TOOLS.length, 7);
+test("MCP server exposes 8 tools (v1.5.15+ adds shadow_size_position)", () => {
+  assert.equal(TOOLS.length, 8);
   const names = TOOLS.map((t) => t.name);
   for (const expected of [
     "shadow_loan_council",
@@ -18,10 +18,52 @@ test("MCP server exposes 7 tools (v1.5.1+ adds shadow_verify_attestation)", () =
     "shadow_calibration",
     "shadow_scenarios",
     "shadow_traceability",
-    "shadow_verify_attestation"
+    "shadow_verify_attestation",
+    "shadow_size_position"
   ]) {
     assert.ok(names.includes(expected), `missing tool ${expected}`);
   }
+});
+
+test("shadow_size_position: valid input returns Risk Sizer verdict", () => {
+  const r = handleToolCall("shadow_size_position", {
+    direction: "long",
+    directional_confidence: 0.72,
+    bankroll_usd: 10000,
+    volatility_regime: "medium",
+    kelly_p_win: 0.55,
+    kelly_avg_win_pct: 0.04,
+    kelly_avg_loss_pct: 0.02,
+  });
+  assert.equal(r.voice, "Risk Sizer");
+  assert.ok(["fund", "skip"].includes(r.verdict));
+  // The tool NEVER exposes a direction (Judge owns direction).
+  assert.equal(r.direction, undefined);
+});
+
+test("shadow_size_position: no_op direction → skip", () => {
+  const r = handleToolCall("shadow_size_position", {
+    direction: "no_op",
+    bankroll_usd: 10000,
+    volatility_regime: "medium",
+    kelly_p_win: 0.55,
+    kelly_avg_win_pct: 0.04,
+    kelly_avg_loss_pct: 0.02,
+  });
+  assert.equal(r.verdict, "skip");
+  assert.equal(r.position_usd, null);
+});
+
+test("shadow_size_position: negative-Kelly params skip cleanly", () => {
+  const r = handleToolCall("shadow_size_position", {
+    direction: "long",
+    bankroll_usd: 10000,
+    volatility_regime: "medium",
+    kelly_p_win: 0.30,
+    kelly_avg_win_pct: 0.02,
+    kelly_avg_loss_pct: 0.02,
+  });
+  assert.equal(r.verdict, "skip");
 });
 
 test("Every tool has name + description + inputSchema", () => {

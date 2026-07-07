@@ -13,13 +13,13 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const REPO_ROOT = join(__dirname, "..");
 
-test("buildManifest returns 7 tools", () => {
+test("buildManifest returns 8 tools (v1.5.15+ adds shadow_size_position)", () => {
   const m = buildManifest();
-  assert.equal(m.tool_count, 7);
-  assert.equal(m.tools.length, 7);
+  assert.equal(m.tool_count, 8);
+  assert.equal(m.tools.length, 8);
 });
 
-test("buildManifest tools include all 7 canonical Shadow MCP tools", () => {
+test("buildManifest tools include all 8 canonical Shadow MCP tools", () => {
   const m = buildManifest();
   const names = m.tools.map((t) => t.name).sort();
   assert.deepEqual(names, [
@@ -28,6 +28,7 @@ test("buildManifest tools include all 7 canonical Shadow MCP tools", () => {
     "shadow_recall",
     "shadow_risk_tools",
     "shadow_scenarios",
+    "shadow_size_position",
     "shadow_traceability",
     "shadow_verify_attestation",
   ]);
@@ -104,7 +105,7 @@ test("canonical tool list in api/mcp-manifest.js includes shadow_verify_attestat
   );
 });
 
-test("mcp/server.js source contains a TOOLS array with 7 tool names", () => {
+test("mcp/server.js source contains a TOOLS array with 8 tool names", () => {
   // Rough parity check — if mcp/server.js drops a tool, this test catches
   // the drift so the manifest stays honest.
   const src = readFileSync(join(REPO_ROOT, "mcp", "server.js"), "utf-8");
@@ -116,6 +117,7 @@ test("mcp/server.js source contains a TOOLS array with 7 tool names", () => {
     "shadow_scenarios",
     "shadow_traceability",
     "shadow_verify_attestation",
+    "shadow_size_position",
   ];
   for (const name of canonicalNames) {
     assert.ok(
