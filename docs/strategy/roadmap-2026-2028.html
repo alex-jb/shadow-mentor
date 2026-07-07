@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Shadow Strategic Roadmap 2026-2028</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Shadow Strategic Roadmap 2026-2028</h1>
+</header>
+<h1 id="shadow-strategic-roadmap-2026-2028">Shadow Strategic Roadmap
+2026-2028</h1>
+<p><strong>Version:</strong> 1.0 · <strong>Prepared:</strong> 2026-07-07
+· <strong>Post 4-agent full-web deep research</strong>
+<strong>Authors:</strong> Alex Xiaoyu Ji (design + implementation) ·
+Loredana C. Levitchi (regulatory-domain + banking-audience audit)</p>
+<p><strong>Purpose:</strong> consolidate the four parallel research
+reports (voice+AR UX, future direction, persona professionalization,
+RP1/Sony/Android XR/Apple design references) into one 18-month product +
+platform roadmap. Every claim below is cited to a dated public source in
+the appendix.</p>
+<hr />
+<h2 id="executive-summary">Executive summary</h2>
+<p>Shadow is on track to be the first shipping AR compliance product for
+regulated banking. Three simultaneous claims hold:</p>
+<ol type="1">
+<li><strong>Voice interaction pattern is settled</strong>: gpt-realtime
+over WebRTC (200-350ms first-audio) as primary; Gemini 3.1 Flash Live as
+fallback for deictic references (“this loan”). No wake word — copy the
+visionOS 27 orb pattern shipping now.</li>
+<li><strong>Hardware bet is settled</strong>: XREAL One Pro + Eye add-on
+($99) + iPhone/Mac tether + WebXR is the safest 24-month path. Apple
+killed Vision Pro 2 (Kuo confirmed 2026-06-03); Vision Pro is publicly
+de-prioritized. XREAL Aura Fall 2026 is upgrade path but not July demo
+path.</li>
+<li><strong>Three-vertical opportunity is real</strong>: Bank (July
+2026), Trading (Q4 2026 via Orallexa backend), Data-Science (Q1 2027).
+No shipping product spans all three; academic term “context-aware AR”
+(Zhu 2504.16562, Chen 2412.12681) not adopted by any vendor. Shadow
+claims “Ambient Council” as the surface layer term.</li>
+</ol>
+<hr />
+<h2 id="voice-ar-interaction-stack-july-2026-demo">Voice + AR
+interaction stack (July 2026 demo)</h2>
+<p><strong>Primary voice model:</strong> <code>gpt-realtime</code>
+(OpenAI, released 2025-08). WebRTC transport, 200-350ms first-audio
+latency, native barge-in, MultiChallenge audio score 30.5% (up from
+20.6% in prior generation). Reference: <a
+href="https://openai.com/index/introducing-gpt-realtime/">OpenAI Aug
+2025</a>, <a
+href="https://webrtchacks.com/measuring-the-response-latency-of-openais-webrtc-based-real-time-api/">webrtcHacks
+latency benchmark</a>.</p>
+<p><strong>Fallback voice model for deictic reference:</strong> Gemini
+3.1 Flash Live. Best 1M-token multimodal context for “this loan” / “that
+flag” resolution across gaze + prior turns. Reference: <a
+href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-1-flash-live/">Google
+Blog</a>.</p>
+<p><strong>Disqualified:</strong> Claude Voice (no real interruption,
+turn-by-turn only, cutoff bugs GH #40345 + #47136). Reference: <a
+href="https://support.claude.com/en/articles/11101966-use-voice-mode">Anthropic
+Support docs</a>.</p>
+<p><strong>Activation pattern:</strong> no wake word. Copy visionOS 27
+Siri orb (June 2026 beta shipping now) — a gaze-anchored Council orb
+pinned above the physical loan PDF. Look-and-speak, 20-second
+always-listening window after each utterance. Neural-Band-style pinch as
+push-to-talk fallback for noisy demo rooms. References: <a
+href="https://roadtovr.com/siri-on-vision-pro-is-getting-eye-tracked-activation-and-visual-awareness-alongside-new-ai-features/">Road
+to VR visionOS 27</a>, <a
+href="https://www.macrumors.com/2026/06/09/visionos-27-siri-ai-eye-aware-notifications/">MacRumors
+2026-06-09</a>.</p>
+<p><strong>Interaction contract:</strong> ambient conversation with
+native barge-in (“wait, back up”). Every AI answer anchored as visual
+overlay attached to the specific voice or flag being discussed per arXiv
+2405.18537 (CHI 2024).</p>
+<p><strong>Compliance layer:</strong> persist voice queries +
+transcripts into Shadow’s hash-chain attestation (v1.5.10 primitive
+already exists). Treat every voice query as evidentiary. Disclose “you
+are speaking to an AI compliance council” per TX TRAIGA (Jan 2026) + FCC
+2024 declaratory ruling at session start.</p>
+<hr />
+<h2 id="hardware-bet-18-month-view">Hardware bet — 18-month view</h2>
+<h3 id="shipped-or-shipping-in-the-demo-window-july-2026">Shipped or
+shipping in the demo window (July 2026)</h3>
+<ul>
+<li><strong>XREAL One Pro</strong> ($599) — Lora purchased 2026-07-06.
+Display peripheral, requires USB-C DP-Alt from Android or Mac.</li>
+<li><strong>XREAL Eye add-on</strong> ($99) — 12MP camera + 6DoF spatial
+anchoring. GA since July 2025. Order immediately.</li>
+<li><strong>Meta Ray-Ban Meta Gen 2</strong> ($379) — only mass-market
+smart-glasses installed base. Audio-only mode as fallback demo path if
+XREAL fails.</li>
+<li><strong>Apple Vision Pro M5</strong> ($3,499) — shipped Oct 2025 but
+publicly de-prioritized (Kuo 2026-06-03). Skip for the pitch; too
+expensive for banking narrative.</li>
+<li><strong>Samsung Galaxy XR</strong> ($1,799) — shipped Oct 2025,
+Android XR + Gemini baked in. Path forward if XREAL Aura slips.
+Reference: <a
+href="https://roadtovr.com/samsung-galaxy-xr-headset-price-specs-release-date/">Road
+to VR</a>.</li>
+</ul>
+<h3 id="coming-in-the-roadmap-window-fall-2026---2028">Coming in the
+roadmap window (Fall 2026 - 2028)</h3>
+<ul>
+<li><strong>XREAL Aura</strong> ($1,500, Fall 2026) — standalone Android
+XR + Gemini + puck. Same WebXR + Chrome path as our current stack;
+migration cost near zero. Frame in pitch as upgrade path.</li>
+<li><strong>Snap Specs consumer</strong> ($2,195, Fall 2026) — 51° FOV
+standalone AR + OpenAI + Google AI. Prosumer/dev.</li>
+<li><strong>Meta Hypernova / Artemis</strong> (~$800 Sept 2026 / 2027) —
+Ray-Ban form + sEMG wristband. Consumer mass market. Watch, don’t build
+for.</li>
+<li><strong>Apple smart glasses</strong> (2027, Kuo) — audio-only v1,
+display glasses “2028 or later.” Not on Shadow’s critical path.</li>
+</ul>
+<h3 id="disqualified">Disqualified</h3>
+<ul>
+<li><strong>Meta Quest 3S</strong> ($299) — VR headset with passthrough.
+Breaks eyeglass aesthetic; not a compliance officer sitting-at-desk
+device.</li>
+<li><strong>OpenAI/Ive smart speaker</strong> (Feb 2027) — not glasses
+at launch.</li>
+<li><strong>xAI/Grok glasses</strong> — vaporware, Musk denied July
+2026.</li>
+</ul>
+<hr />
+<h2 id="three-vertical-roadmap">Three-vertical roadmap</h2>
+<h3 id="bank-mode-july-2026-demo-q4-2026-gtm">Bank Mode (July 2026 demo,
+Q4 2026 GTM)</h3>
+<ul>
+<li><strong>Product:</strong> Shadow v3 Ambient Council on XREAL One Pro
++ Eye + iPhone.</li>
+<li><strong>Audience:</strong> Chief Compliance Officer + Chief Audit
+Executive at mid-tier banks (Raymond James, Stifel, LPL, Houlihan Lokey,
+Lazard MM). Not JPM/GS (they build in-house).</li>
+<li><strong>Pricing:</strong> $2K/seat/year. Comparable: Vanta
+$15-60K/year, Drata $15-75K/year, enterprise SOC 2 $600K+.</li>
+<li><strong>2027 realistic TAM:</strong> 30 mid-tier banks × 20 seats ×
+$2K = <strong>$1.2M ACV</strong> path to $5M by 2028 if Big-4 channel
+partnership lands (Deloitte Omnia serves 85K auditors; PwC Aura; KPMG
+Clara). References: <a
+href="https://www.prnewswire.com/news-releases/deloitte-unveils-connected-agentic-intelligence-in-deloitte-omnia-to-advance-audit--assurance-302808361.html">Deloitte
+Omnia</a>, <a
+href="https://kpmg.com/xx/en/media/press-releases/2025/04/kpmg-advances-ai-integration-in-kpmg-clara-smart-audit-platform.html">KPMG
+Clara</a>, <a
+href="https://www.pento.ai/blog/a-year-of-mcp-2025-review">Pento 2025
+review</a>, <a
+href="https://itbudgetcalculator.com/financial-services-it-budget">ItBudgetCalculator</a>.</li>
+<li><strong>Regulatory anchor:</strong> SR 26-2 Tier 3 explicitly carves
+GenAI/agentic AI out — Shadow fills the gap.</li>
+</ul>
+<h3 id="trading-mode-q4-2026-orallexa-backend">Trading Mode (Q4 2026 —
+Orallexa backend)</h3>
+<ul>
+<li><strong>Product:</strong> Shadow surface + Orallexa backend
+(<code>github.com/alex-jb/orallexa-ai-trading-agent</code>, LangGraph
+5-voice Bull/Bear/Judge + Critic + Polyseer, 745+ tests).</li>
+<li><strong>Audience:</strong> Chief Risk Officer, not the trader.
+Compliance sidecar on the desk, not Bloomberg-seat replacement.</li>
+<li><strong>Anchor:</strong> Bloomberg / broker screen. Risk-Officer
+voice surfaces VaR/ES violation pill anchored to position line; AML/KYC
+voice surfaces tipping-off flags anchored to counterparty row.</li>
+<li><strong>Direct competitor:</strong> <a
+href="https://techcrunch.com/2026/04/14/financial-risk-management-platform-pillar-raises-20m-seed-in-round-led-by-a16z/">Pillar
+($20M a16z seed Apr 2026)</a> — but they don’t have AR. Shadow’s
+differentiator is the surface layer + attestation chain.</li>
+</ul>
+<h3 id="data-science-mode-q1-2027">Data-Science Mode (Q1 2027)</h3>
+<ul>
+<li><strong>Product:</strong> Shadow surface + calibration engine on
+Jupyter cell / Cursor buffer anchor. Fair Lending voice flags
+protected-class proxy features inline (per v1.5.9 32 adversarial
+tests).</li>
+<li><strong>Audience:</strong> ML validator, model validation officer.
+Quiet but defensible — SR 26-2 Tier 3 explicitly carves out GenAI, no
+incumbent owns “council-based validation.”</li>
+<li><strong>Reference customer:</strong> Loredana’s Columbia statistics
+faculty introduction (2026-07-06 promise); Prof. Yang’s capstone
+cohort.</li>
+</ul>
+<hr />
+<h2 id="persona-professionalization-v1.5.14-shipping-now">Persona
+professionalization (v1.5.14, shipping now)</h2>
+<p>Post-deep-research on CFPB Circular 2022-03/2023-03 + FFIEC ECOA
+procedures + SR 26-2 replacement letter + FinCEN CDD Rule + tipping-off
+provisions, all 5 core persona rationale strings updated with real
+regulatory examiner voice.</p>
+<p><strong>Before/After sample (Credit Fundamentals FICO block
+path):</strong> - <strong>Before:</strong> “FICO=X below Addendum A
+floor Y; credit-eligibility floor failure is a hard block per Levitchi
+2026-06-19 policy semantics.” - <strong>After:</strong> “FICO=X below
+Addendum A floor Y (Reg B §1002.6 permissible consideration);
+credit-eligibility floor failure is a hard block per Levitchi 2026-06-19
+policy semantics. Principal reason per CFPB Circular 2022-03:
+insufficient credit history depth (AA01).”</p>
+<p><strong>Before/After sample (Risk Officer):</strong> -
+<strong>Before:</strong> “VaR(95%, 10d)=X% vs 12% Addendum C cutoff
+(status: escalate); LTV=0.82 vs 0.80 Addendum C ceiling.” -
+<strong>After:</strong> “SR 26-2 materiality assessment: VaR(95%,
+10d)=X% vs 12% Addendum C benchmark (status: escalate); LTV=0.82 vs 0.80
+Addendum C ceiling. Effective challenge: exposure × purpose warrants
+escalation to Credit Committee.”</p>
+<p><strong>Before/After sample (Fair Lending block):</strong> -
+<strong>Before:</strong> “Fair-lending review flag set; ECOA/Reg B
+disparate-impact escalation required prior to human review.” -
+<strong>After:</strong> “Fair-lending review flag set; FFIEC three-step
+framework required — prima facie statistical showing, business necessity
+defense, then less discriminatory alternative search per ECOA/Reg B
+§1002.4. Escalate for comparative file review prior to human
+decision.”</p>
+<p>All 5 personas updated. 706/707 tests pass, zero regressions.</p>
+<hr />
+<h2 id="design-references-ready-player-one-sony-android-xr-apple">Design
+references (Ready Player One + Sony + Android XR + Apple)</h2>
+<p><strong>Adopt from RP1:</strong> Kinetic HUD summon on button/context
+trigger + dissolve on decision. Warm/cold faction color language
+(approve = warm, block = cold). References: <a
+href="https://territorystudio.com/project/ready-player-one/">Territory
+Studio</a>, <a
+href="https://www.fxguide.com/fxfeatured/ready-player-one-inside-the-oasis/">fxguide</a>.</p>
+<p><strong>Adopt from Sony:</strong> 360 Reality Audio object-based
+spatial-audio primitive. 5 personas as 5 spatial audio object sources in
+a 145° arc around reviewer. References: <a
+href="https://www.whathifi.com/advice/sony-360-reality-audio-everything-you-need-to-know">Sony
+360 RA overview</a>.</p>
+<p><strong>Adopt from Android XR:</strong> WebXR delivery. Same build
+runs Galaxy XR + Aura + Vision Pro Safari + Chrome desktop. References:
+<a href="https://developer.android.com/develop/xr/web">Android
+Developers WebXR</a>, <a
+href="https://www.xreal.com/us/blog/project-aura-google-io-2026">XREAL
+Aura announcement</a>.</p>
+<p><strong>Adopt from Apple Vision Pro:</strong> Environment-anchor
+everything, never head-lock. Gaze-hover + pinch-select for XREAL Eye
+users. Windows anchored to space, not head. References: <a
+href="https://developer.apple.com/design/human-interface-guidelines/designing-for-visionos/">Apple
+HIG for visionOS</a>, <a
+href="https://medium.com/antaeus-ar/design-principles-issues-for-gaze-and-pinch-interaction-a95e251169ae">Ken
+Pfeuffer gaze-pinch</a>.</p>
+<p><strong>Reject:</strong> Vision Pro Persona avatars (uncanny + breaks
+Severance restraint), Ready Player One haptic suit (fiction), Sony XYN
+ring controller (separate hardware), sticky head-locked overlay (Apple
+HIG anti-pattern), Gemini auto-spatialize on demo path (Android-only
+cuts Apple auditors out).</p>
+<hr />
+<h2 id="month-execution-plan">18-month execution plan</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Quarter</th>
+<th>Deliverable</th>
+<th>Success criterion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>2026-Q3 (July)</strong></td>
+<td>v3 Ambient Council Bank mode demo to Yeshiva Dean + VP</td>
+<td>Live 5-question voice interaction on XREAL One Pro + Eye + iPhone,
+hash-chain attestation verified on-stage</td>
+</tr>
+<tr>
+<td><strong>2026-Q3 (Aug)</strong></td>
+<td>ICAIF Milan paper submit (already skeleton’d 2026-07-06)</td>
+<td>Paper accepted, Yang + Levitchi co-authors</td>
+</tr>
+<tr>
+<td><strong>2026-Q3 (Aug)</strong></td>
+<td>IEEE VR 2027 abstract submit (v3 abstract already drafted)</td>
+<td>Abstract accepted for full paper track</td>
+</tr>
+<tr>
+<td><strong>2026-Q4</strong></td>
+<td>Trading Mode v3.1 — Orallexa backend + Bloomberg-screen anchor</td>
+<td>Working demo on 3 SpaceX-IPO-Tracker tickers, mid-tier trading desk
+pilot conversation</td>
+</tr>
+<tr>
+<td><strong>2027-Q1</strong></td>
+<td>Data-Science Mode v3.2 — Jupyter + Cursor anchor</td>
+<td>Working demo with Columbia statistics faculty + Yang capstone
+cohort</td>
+</tr>
+<tr>
+<td><strong>2027-Q1</strong></td>
+<td>Big-4 channel conversation (Deloitte / PwC / KPMG / EY)</td>
+<td>Warm intro via Loredana or Yang’s network, LOI or pilot
+conversation</td>
+</tr>
+<tr>
+<td><strong>2027-Q2</strong></td>
+<td>Audit Replay v3.3 — Joi-style volumetric persona embodiment</td>
+<td>Ships on XREAL Aura (standalone). First 3 bank counsel
+evaluations.</td>
+</tr>
+<tr>
+<td><strong>2027-Q3</strong></td>
+<td>Mid-tier bank first customer contract</td>
+<td>1 bank at $40K ACV (20 seats × $2K), 12-month contract</td>
+</tr>
+<tr>
+<td><strong>2028-Q1</strong></td>
+<td>Path to $1M ARR</td>
+<td>5 mid-tier banks × $200K average ACV, 100+ compliance officer
+seats</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="contact-attribution">Contact + attribution</h2>
+<ul>
+<li>Alex Xiaoyu Ji · xji1@mail.yu.edu — design + implementation, engine
++ surface adapters</li>
+<li>Loredana C. Levitchi · [email verify] — regulatory-domain audit,
+banking-audience validation, XREAL One Pro purchase authority</li>
+<li>Hieu Ngo, PhD · Yeshiva Katz School — IEEE VR 2027 co-author, XR
+pedagogical scaffolding</li>
+<li>Michael Yang, PhD · Yeshiva Katz School — ICAIF 2026 co-author
+(trading vertical), capstone advisor</li>
+</ul>
+<p><em>This roadmap is a public artifact of <code>shadow-mentor</code>
+(MIT). Every claim above is cited to a dated public source. Open an
+issue if any claim is out of date.</em></p>
+</body>
+</html>
