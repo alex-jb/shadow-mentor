@@ -1,153 +1,198 @@
-# XREAL One Pro Test Protocol — Shadow × Yeshiva U
+# XREAL One Pro Test Protocol — Shadow × Yeshiva U (v2, Ambient Council-aligned)
 
-**Version:** 1.0 · **Prepared:** 2026-07-06 (evening, post-Lora email confirming XREAL One Pro purchase)
-**Hardware:** XREAL One Pro (X1 chip, native 3DoF, X-Prism optics, 57° FOV, 171" virtual display, 120 Hz FHD)
-**Software backend:** Shadow v1.5.12 (`github.com/alex-jb/shadow-mentor`, MIT, public 2026-07-06)
-**Rendering pipeline:** WebXR + Three.js (browser-native) with Flow Immersive optional presentation layer
-**Authors:** Alex Xiaoyu Ji (author) · Loredana C. Levitchi (reviewer + purchase authority)
+**Version:** 2.0 · **Prepared:** 2026-07-07 (post 4-agent full-web deep research + design pivot to Ambient Council v3)
+**Supersedes:** v1.0 (2026-07-06) — which assumed standalone rendering + persona semicircle. Both assumptions were wrong.
+**Hardware:** XREAL One Pro ($599, Lora purchased 2026-07-06) + **XREAL Eye add-on ($99, ORDER NOW)** + Android phone (Pixel 9 Pro / Samsung S24) or MacBook Pro as USB-C tether host
+**Software backend:** Shadow v1.5.14 (`github.com/alex-jb/shadow-mentor`, MIT, public, 706/707 tests)
+**Rendering pipeline:** WebXR + Three.js + gpt-realtime voice (WebRTC) + Perplexity-style citation pills — served over Chrome on the tether host
+**Design paradigm:** Ambient Council v3 (`docs/product-design/xr-visual-paradigm-2026-07-06-v3-AMBIENT-COUNCIL.md`)
 
-**Purpose:** define what "the XREAL One Pro test week" actually looks like so Lora and Alex agree on the pass/fail criteria before the hardware lands and before the Yeshiva Dean + Vice-Provost demo date is locked.
+**Purpose:** define what the July 2026 Dean + Vice-Provost demo actually looks like, what pass/fail criteria we agree on before the demo date, and what the Alex + Loredana test-week protocol is on-device.
+
+**Authors:** Alex Xiaoyu Ji (design + implementation) · Loredana C. Levitchi (regulatory-domain review + hardware ownership)
+
+---
+
+## What changed from v1
+
+The v1 protocol had two structural errors baked in that would have wasted Phase B on-device time:
+
+1. **v1 assumed XREAL One Pro is a standalone computer.** It is not. It is a USB-C DisplayPort-Alt-Mode peripheral. iPhone Safari does NOT support WebXR immersive-AR. The correct compute host is Android + Chrome + WebXR, or Mac + Chrome window as a 2D fallback.
+2. **v1 assumed a "5 personas floating in tribunal" showcase.** Full-web research on 12 years of shipping bank AR/VR demos (Fidelity StockCity 2014 → Meta Horizon Workrooms killed 2026-02-16) showed every floating-showcase demo died in the day-30 utility test. v3 Ambient Council paradigm replaces this with document-anchored Perplexity-style pills + spatialized voice + Severance restraint.
+
+If you are reading v1 (`git log --diff-filter=D`) — throw it out. Read only v2.
 
 ---
 
 ## Ownership and coordination
 
-- Lora holds the physical device. Amazon delivery ETA: max Saturday 2026-07-11. Device stays at Lora's or Alex's per weekly agreement.
-- Alex owns the software pipeline (Shadow endpoints, Three.js scene graph, Flow Immersive scene JSON).
-- Neither party solo-approves a demo scene for the Dean + Vice-Provost session. Both sign off in writing (email is fine) on each scene's readiness before it appears in the executive demo.
+- **Loredana** owns the physical device + XREAL Eye purchase + regulatory-domain scene review + executive coordination with the Dean's office.
+- **Alex** owns the software pipeline: Shadow API + WebXR scene + gpt-realtime voice + Perplexity citation pills.
+- **Both** sign off in writing before the Dean + VP demo on each scene's readiness. No solo approvals.
 
 ---
 
-## Phase A — Preflight (2026-07-07 to 2026-07-10, no hardware needed)
+## Hardware pipeline (corrected)
 
-While the XREAL One Pro is in transit, Alex builds and validates every render path on desktop Chrome + WebXR emulator. Any failure caught here saves live device time next week.
+### The critical purchase (do this today, ~$99)
 
-### A1. Flow Immersive scene template
+**XREAL Eye add-on** — 12MP forward camera + native 6DoF spatial anchoring on the X1 chip. General availability since July 2025. Ships from `us.shop.xreal.com/products/xreal-eye` in 2-4 business days. Without the Eye, XREAL One Pro is display-only with no camera and no 6DoF — Ambient Council's document-anchored HUD cannot work.
 
-Alex registers `a.flow.gl` (Jason Marsh gave free-tier access post 2026-06-22 call). Builds a scene JSON template that consumes `POST /api/deliberate` output and renders the five personas as spatial cards in a 4×4 meter room, plus the hash-chain audit trail as a walk-around 3D object.
+**Total additional cost:** $99.
 
-Expected deliverable: `docs/xreal-one-pro-test-protocol/flow-scene-template.json` in this repo before Sat 2026-07-11.
+### The compute host (borrow or use MacBook)
 
-### A2. WebXR emulator dry-run
+- **Primary:** Android phone with USB-C DisplayPort-Alt-Mode support — Pixel 9 Pro, Samsung S24 Ultra, or OnePlus 12. Runs Chrome + WebXR + Three.js + gpt-realtime voice.
+- **Fallback:** MacBook Pro (any Apple Silicon). Runs Chrome window that gets cast to XREAL One Pro as a 171-inch 2D virtual screen. Loses head-tracked rendering; retains persona positions and voice interaction as a fixed 2D image.
 
-Chrome WebXR API emulator (Chrome DevTools → Sensors → Virtual reality profile) validates:
-- Scene graph loads without a runtime error
-- 5 persona cards positioned at [±1.5m, 1.6m, ±1.5m] (semicircle around origin)
-- Hash-chain object at [0m, 1.4m, -2.0m] (walk-through-able)
-- FPS overlay ≥ 60 fps on M-series MacBook + Chrome
-- Camera aligned so a reviewer at [0m, 1.6m, 1m] sees all 5 cards without turning
+**iPhone is not a host** because Safari does not support WebXR immersive-AR (verified via `caniuse.com/webxr` 2026-07-07). Do not plug XREAL One Pro into an iPhone for the demo.
 
-### A3. Fallback rendering paths (defensive plan)
+### Voice stack
 
-If X1 chip native 3DoF fails at target FPS on-device (documented failure mode in XREAL developer forum posts for large scenes with >800k transparent quads), fall back to:
+- **Primary voice model:** `gpt-realtime` (OpenAI, WebRTC transport, 200-350ms first-audio latency, native barge-in). Reference: `docs/strategy/roadmap-2026-2028.md` § voice.
+- **Fallback for deictic references** ("this loan", "that flag"): Gemini 3.1 Flash Live (1M-token multimodal context).
+- **Activation:** no wake word. Copy visionOS 27 Siri orb pattern — a gaze-anchored Council orb pinned above the physical loan PDF. Look-and-speak.
 
-1. **Reduced-vertex scene** — swap the 3D Gaussian Splatting ambient with a flat cubemap (drops per-frame cost 3× at the cost of losing the immersive background)
-2. **Two-persona focus** — hide 3 personas behind a "voice cabinet" UI element; reviewer summons them individually
-3. **Tethered mode** — plug One Pro into MacBook Pro USB-C, run scene in Chrome on the laptop, One Pro becomes a 171" virtual display + head-tracking input (X1 chip idle)
+### What we do NOT buy
 
-Each fallback is coded into the scene graph as a `params.mode = 'full' | 'reduced' | 'focus' | 'tethered'` switch, so Lora and Alex can flip between modes during on-device tests without recompiling.
+- No Meta Quest 3S backup ($299). VR headset aesthetic breaks the Ambient Council eyeglass framing. Fallback is MacBook + Chrome, not another head-mounted device.
+- No Meta Ray-Ban Display ($799). Monocular 20° HUD is too small for the 4-element document-anchored layout.
+- No Apple Vision Pro ($3,499+). Publicly de-prioritized (Kuo 2026-06-03), off-brand for the pitch.
 
 ---
 
-## Phase B — On-device test (starting week of 2026-07-14)
+## Phase A — Preflight (2026-07-08 to 2026-07-10, no hardware needed)
 
-Lora brings the XREAL One Pro to school. Test cycle runs Mon 7/14 → Fri 7/18, one 60-minute session per day.
+While the XREAL Eye is in transit, Alex builds and validates the WebXR scene on desktop Chrome + WebXR emulator.
 
-### B1. Session 1 (Mon 2026-07-14) — Standalone rendering baseline
+### A1. Ambient Council scene skeleton
 
-Boot XREAL One Pro standalone (X1 chip, no laptop tether). Load `a.flow.gl` in the device's browser. Open the Phase A1 scene URL. Measure:
+Alex builds the 4-element HUD:
+- Verdict pill (top-right, above document region)
+- 5 collapsed voice cards (right column, expand on voice command or pinch)
+- Attestation status pill (bottom-right)
+- Optional AML/KYC per-line callouts anchored to specific lines of the PDF
 
-- Cold load time (scene JSON fetch + scene graph build)
-- Sustained FPS over 3 minutes with reviewer walking around the persona semicircle
-- Head-tracking latency (subjective: does the persona card drift with head movement?)
-- Battery draw (One Pro internal, per XREAL app)
+Content spec + design references at `docs/product-design/xr-visual-paradigm-2026-07-06-v3-AMBIENT-COUNCIL.md`.
 
-**Pass criteria:** ≥ 45 fps sustained, < 3s cold load, no visible head-track drift after 30s.
+Voice interaction: user says "explain the compliance voice" → the corresponding voice card expands with the full rationale + Reg B citation pill + AA code. User says "audit trail" → the scene shifts to Joi-style volumetric persona replay for the past 30 days of decisions (reserved for this one use case only).
 
-If any criterion fails: promote reduced-vertex fallback (Phase A3.1), rerun. Log which mode achieved the pass.
+### A2. WebXR emulator dry run
 
-### B2. Session 2 (Tue 2026-07-15) — Live Shadow endpoint integration
+Chrome DevTools → Sensors → Virtual reality profile:
+- Scene loads without runtime error on Chrome 137+
+- 4 HUD elements render in correct positions relative to a mock PDF surface
+- Verdict pill = green/amber/red based on mock verdict response
+- Voice command "explain the compliance voice" expands the correct card
+- Fade-in 300ms / fade-out 500ms on head-turn simulation
 
-Same scene, but instead of a mocked `/api/deliberate` response, hit the live Shadow endpoint with a real loan scenario. Measure:
+### A3. iPhone camera + Shadow API round-trip
 
-- Round-trip latency from persona voice-vote gesture (Web Speech + hand pinch) to verdict-render in the scene
-- Attestation verification success rate (client-side `/api/verify-attestation` after each verdict)
-- Bill-counsel-facing readability of the `citation` field in each persona's rationale (Lora reads each of the 5 rationales aloud, confirms each cites the correct regulatory anchor)
+Two-layer honest demo (per v3 design):
+- **Layer 1:** iPhone camera + `VisionKit VNRecognizeTextRequest` on-device OCR + `POST /api/deliberate` (Shadow API) round-trip. Verify < 2s on Wi-Fi, < 3s on cellular.
+- **Layer 2:** the XREAL Eye captures the same document + renders the HUD. This is the "target platform" demo layer.
 
-**Pass criteria:** < 1.5s round-trip p95, 100% verify success, Lora approves all 5 citation strings for reader-audience clarity.
+Both layers must work by 2026-07-10 EOD.
 
-### B3. Session 3 (Wed 2026-07-16) — 4-case verdict lattice
+---
 
-Load each of the 4 canonical case studies from `docs/case-studies/`:
-- Case 1: $2.5M CRE loan with PEP owner + diverse routing → escalate
-- Case 2: First-time HELOC, FICO 640 → block by Credit Fundamentals
-- Case 3: SBA loan, OFAC SDN hit → block by AML/KYC
-- Case 4: Standard approve path
+## Phase B — On-device test (2026-07-14 to 2026-07-18)
 
-For each case, run the scene end-to-end. Measure:
-- Verdict-render correctness against the case-study expected verdict
-- 5-voice agreement (do all 5 personas render + speak?)
-- Gesture-vote submission → hash-chain audit entry (verify via `/api/verify-chain`)
+Loredana brings XREAL One Pro + Eye to school. 5 sessions, 60 minutes each, one per day.
 
-**Pass criteria:** 4-of-4 verdict correctness, 5-of-5 persona rendering, 4-of-4 audit entries verify.
+### B1 (Mon 2026-07-14) — Tethered baseline
 
-### B4. Session 4 (Thu 2026-07-17) — Executive demo dress rehearsal
+Boot XREAL One Pro + Eye + Android host or MacBook. Load Chrome + WebXR scene. Measure:
 
-Alex + Lora run the full Dean + Vice-Provost demo from start to end, timing the transitions. This is a rehearsal, not a technical test.
+- Cold load: < 3s from Eye document capture to HUD render
+- Sustained FPS: ≥ 45 fps on Android tether, ≥ 60 fps on MacBook fallback, over a 3-minute session with 4 HUD elements + spatialized voice
+- HUD anchor drift: < 5mm at 40cm document viewing distance over 30 seconds
+- Voice round-trip: < 1.5s p95 from utterance to card expansion
 
-- Open scene from `a.flow.gl` URL (30s)
+**Pass criteria:** all four numeric thresholds met on the primary path (Android + Chrome + WebXR). If Android fails on FPS or anchor drift, degrade to MacBook fallback and record the fallback numbers.
+
+### B2 (Tue 2026-07-15) — 4-element HUD readability
+
+Same scene, real Shadow API endpoint. Measure:
+
+- Verdict pill readable at 40cm without leaning in
+- 5 voice cards expand on voice command in a quiet room (rehearsal room, no noise)
+- Attestation status pill (green ✓ / red ✗) legible from the reviewer's seated posture
+- Optional AML/KYC per-line callouts: track accuracy on 8pt loan text. If drift > 3mm/callout, DROP the per-line feature and put flags at the top of the Compliance voice card instead.
+
+**Pass criteria:** verdict + voice-card expand + attestation pill all pass; per-line callouts are gambled — accept the accuracy result whatever it is.
+
+### B3 (Wed 2026-07-16) — 4-case verdict lattice
+
+Load each of the 4 canonical case studies (approve × 1, escalate × 1, block × 2 paths) from `docs/case-studies/`. Run each end-to-end. Measure:
+
+- Verdict correctness against expected verdict (4/4)
+- 5 voices render + are voice-callable (5/5)
+- Hash-chain audit entry verifies via `/api/verify-chain` (4/4)
+- Voice-command "explain compliance voice" surfaces the correct rationale text with the correct AA code and Reg B / SR 26-2 / CFPB citation
+
+**Pass criteria:** 4/4 verdict correctness, 5/5 voice availability, 4/4 audit entries verify, all voice-invoked drill-downs surface the right rationale.
+
+### B4 (Thu 2026-07-17) — Executive demo dress rehearsal
+
+Full 5-minute Dean + VP demo rehearsal. The Ambient Council paradigm keeps this shorter than v1 (was 8 min; now 5 min):
+
+- Open scene from tethered laptop or Android phone (30s)
 - Play Case 1 ($2.5M CRE loan) — 90s
-- Reviewer walks around the persona semicircle to inspect each verdict (60s)
-- Reviewer performs a gesture-vote on the escalation prompt (30s)
-- Hash-chain audit trail renders as a walk-through 3D object; reviewer walks through it (60s)
-- Q&A anticipation — Lora and Alex rehearse answers to 5 questions the Dean/VP are likely to ask (10 min)
+- Reviewer says "explain the compliance voice" → HUD updates → 45s
+- Reviewer says "audit trail" → scene shifts to Joi-style volumetric replay for 30 days → 60s
+- Reviewer says "back to loan" → return to Case 1 HUD → 30s
+- Q&A anticipation (10 min prep — off the demo clock)
 
-**Pass criteria:** end-to-end demo runs in under 8 minutes, both Lora and Alex are comfortable with the narrative flow.
+**Pass criteria:** end-to-end demo runs in ≤ 5 minutes, both Alex and Loredana can narrate confidently.
 
-### B5. Session 5 (Fri 2026-07-18) — Failure mode red-team
+### B5 (Fri 2026-07-18) — Failure mode red-team
 
-Deliberately break the scene in 5 ways and measure recovery:
-1. Kill network mid-verdict → does the client retry gracefully, or hang?
-2. Send a tampered attestation → does the client-side verifier catch it?
-3. Trigger a WebXR permission revoke mid-session → does the scene degrade to 2D safely?
-4. Rotate the X1 chip's IMU calibration → does the scene re-anchor?
-5. Overload with 10 concurrent verdict requests → does the SIEM's batch-verify (v1.5.12) hold?
+Deliberately break 5 things + measure recovery:
 
-**Pass criteria:** all 5 failure modes recover gracefully. None crash the browser.
+1. Kill Wi-Fi mid-verdict → does the client retry gracefully or hang?
+2. Send a tampered attestation → does client-side verify catch it?
+3. Trigger WebXR permission revoke mid-session → does scene degrade to 2D?
+4. Speak "explain the compliance voice" while another voice is expanded → does the interruption pattern (gpt-realtime barge-in) actually work?
+5. Occlude the XREAL Eye camera for 3 seconds → does the HUD gracefully hide + re-appear on re-detect?
+
+**Pass criteria:** all 5 failures recover gracefully. None crash the browser or freeze the scene.
 
 ---
 
-## Phase C — Dean + Vice-Provost executive demo (target: last week of July or early August, TBC by Lora)
+## Phase C — Dean + Vice-Provost executive demo (target: last week of July)
 
-- Lora coordinates the date with the Dean and Vice-Provost office.
-- Alex + Lora demo Case 1 ($2.5M CRE loan) as the primary narrative. Fallback scenes B2 + B3 are ready if the reviewer asks for a second case.
-- Loom recording (unlisted) of the exact demo goes to the shared Drive within 24h of the session so anyone who missed it can replay.
-- Post-demo debrief: Lora + Alex agree on which scenes to publish (public repo) vs keep private (for procurement-only viewing).
+- Loredana coordinates the date with the Dean's office.
+- Alex + Loredana demo Case 1 ($2.5M CRE loan) as the primary narrative.
+- Backup: Case 3 (SBA loan, OFAC SDN hit → block by AML/KYC) if reviewer asks for a second scenario.
+- Fallback path if XREAL fails on the day: MacBook + Chrome window running same WebXR scene as 2D preview. Loses head-tracked rendering; retains everything else.
+- Loom recording (unlisted) of the actual session in Loredana's Drive within 24h.
+- Post-demo debrief: agree on what publishes vs stays private.
 
 ---
 
 ## Failure protocol
 
 If any Phase B session fails a pass criterion:
-1. Log the failure in `docs/xreal-one-pro-test-protocol/failure-log.md`
-2. Alex has 24h to iterate the scene / endpoint / fallback path
+1. Log in `docs/xreal-one-pro-test-protocol/failure-log.md`
+2. Alex has 24h to iterate the scene / endpoint / fallback
 3. Rerun the failed session within 48h
-4. Do NOT proceed to Phase C until every Phase B session has a green pass criterion
+4. Do NOT proceed to Phase C until every Phase B session is green
 
-If a systemic failure (X1 chip driver crash, XREAL SDK regression, etc.):
+If a systemic hardware failure (X1 driver crash, XREAL SDK regression, USB-C DP-Alt loss):
 - Alex contacts XREAL developer support
-- Lora holds the demo date and communicates the slip to the Dean's office
-- The 4-week Q3 macOS native fallback (per brain memory) becomes the accelerated path
+- Loredana communicates the slip to the Dean's office
+- Fall back to MacBook + Chrome window as the demo target — the Ambient Council WebXR scene works identically here, just as 2D not head-tracked.
 
 ---
 
 ## Contact
 
-- Alex Xiaoyu Ji · xji1@mail.yu.edu — software pipeline, scene graph, endpoint integration
-- Loredana C. Levitchi · [email verify] — hardware ownership, executive coordination, banking-domain scene review
-- Jason Marsh · Flow Immersive · [via existing thread] — Flow scene template support if we hit rendering ceilings
-- Hieu Ngo, PhD · Yeshiva Katz School — XR faculty consult, spatial-XR pedagogical scaffolding
+- Alex Xiaoyu Ji · xji1@mail.yu.edu — software pipeline + WebXR scene + voice stack
+- Loredana C. Levitchi · [email verify] — hardware ownership + Eye add-on purchase + executive coordination + regulatory-domain scene review
+- Jason Marsh · jason@flow.gl — Flow Immersive template support (fallback layer only, not primary path)
+- Hieu Ngo, PhD · Yeshiva Katz School — XR faculty consult, IEEE VR co-author
 
 ---
 
-*This protocol is a public artifact of the `shadow-mentor` repository (MIT). It is meant to be iterated in-place; any change from either author should be committed with a short "why" note.*
+*This protocol is a public artifact of `shadow-mentor` (MIT). Every design decision above is grounded in either v3 Ambient Council design doc, 4-agent full-web deep research 2026-07-06 through 2026-07-07, or the Strategic Roadmap 2026-2028 doc. Open an issue if any claim is out of date.*
