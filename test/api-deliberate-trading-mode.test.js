@@ -143,12 +143,33 @@ test("mode=trading dispatch bypasses persona/scenario validation (banking mode i
   assert.equal(res.body.mode, "trading");
 });
 
-test("mode=trading returns latency_ms + attestation=null on v0.2", async () => {
+test("mode=trading returns latency_ms + attestation on v0.2.1", async () => {
   const res = mockRes();
   await handler(mockReq({ mode: "trading", trade: baseTrade() }), res);
   assert.equal(res.statusCode, 200);
   assert.equal(typeof res.body.latency_ms, "number");
   assert.ok(res.body.latency_ms >= 0);
-  // v0.2 skips attestation — v0.4 adds cross-vertical hash-chain continuity.
-  assert.equal(res.body.attestation, null);
+  // v0.2.1 (2026-07-07): trading verdicts now signed. Cross-vertical
+  // hash-chain continuity still deferred to v0.4.
+  const att = res.body.attestation;
+  assert.ok(att && typeof att === "object", "attestation must be an object");
+  assert.equal(typeof att.signature, "string");
+  assert.ok(att.signature.length > 0);
+  assert.equal(typeof att.request_commitment, "string");
+  assert.equal(typeof att.output_commitment, "string");
+  assert.equal(att.model_id, "shadow/trader-pack-risk-sizer@v0.2");
+});
+
+test("mode=trading attestation binds request → response (tamper detection)", async () => {
+  const res1 = mockRes();
+  await handler(mockReq({ mode: "trading", trade: baseTrade() }), res1);
+  const res2 = mockRes();
+  await handler(mockReq({ mode: "trading", trade: baseTrade({ bankroll_usd: 20_000 }) }), res2);
+  // Two different requests must produce two different request_commitments.
+  assert.notEqual(
+    res1.body.attestation.request_commitment,
+    res2.body.attestation.request_commitment,
+  );
+  // And two different signatures.
+  assert.notEqual(res1.body.attestation.signature, res2.body.attestation.signature);
 });

@@ -73,16 +73,29 @@ export default async function handler(req, res) {
     } catch (err) {
       return res.status(400).json({ error: `Risk Sizer input invalid: ${err.message}` });
     }
-    return res.status(200).json({
+    const tradingResponse = {
       mode: "trading",
       voices: [sizerOut],
       verdict: sizerOut.verdict,
       trader_pack_version: "v0.2",
       latency_ms: Date.now() - t0Trading,
-      // No attestation on v0.2 trading path yet — v0.4 adds cross-vertical
-      // hash-chain continuity per lib/personas/trader-pack/README.md § Roadmap.
-      attestation: null,
+    };
+    // v0.2.1 attestation (2026-07-07): trading verdicts now sign the same
+    // way banking verdicts do, so bank counsel + trading desk audit
+    // trails share ONE Ed25519 key + ONE signing-payload format.
+    // Cross-vertical hash-chain continuity (single monotone attestation
+    // chain across banking + trading) still deferred to v0.4.
+    //
+    // modelId here is deterministic — trading v0.2 is pure computation
+    // (no LLM), so the audit surface pins the risk-sizer version. When
+    // v0.3 LangGraph voices ship, this will become a composite id like
+    // "anthropic/sonnet-4-6+shadow/trader-pack-risk-sizer@v0.3".
+    tradingResponse.attestation = buildAttestation({
+      request: body,
+      response: tradingResponse,
+      modelId: "shadow/trader-pack-risk-sizer@v0.2",
     });
+    return res.status(200).json(tradingResponse);
   }
 
   const { persona = "compliance", scenario = "lbo", question, context, provider = "anthropic", loan, diverse = false } = body;
