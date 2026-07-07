@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Regulatory Citation × Persona × Test Map</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="CITATION_MAP.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Regulatory Citation × Persona × Test Map</h1>
+</header>
+<h1 id="regulatory-citation-persona-test-map">Regulatory Citation ×
+Persona × Test Map</h1>
+<p><strong>Version:</strong> 1.0 · <strong>Generated:</strong>
+2026-07-06 · <strong>Framework:</strong> SR 26-2 Tier 3 companion
+control (effective 2026-04-17)</p>
+<p><strong>Authority:</strong> - Loredana C. Levitchi — BRD + Addenda
+A/B/C banking domain grounding, regulatory citation review - Alex Xiaoyu
+Ji — schema mapping, test coverage extraction, cryptographic attestation
+binding</p>
+<p><strong>Purpose:</strong> This document is the procurement-audience
+map from Shadow’s runtime personas to (1) the specific regulatory
+citations each voice is tested against and (2) the exact test files that
+exercise each citation. Bank counsel opening the repo can trace a
+regulatory obligation to a Shadow persona to a runtime test, all in one
+traversal.</p>
+<p><strong>How to read this document:</strong> every row is a triple
+<code>&lt;persona, citation, test file&gt;</code> and represents a
+defended invariant. If a bank auditor asks <em>“does Shadow’s Fair
+Lending Compliance voice test the CFPB Bulletin 2024-09
+model-traceability requirement?”</em> the answer is row-lookup, not code
+archaeology.</p>
+<hr />
+<h2 id="persona-overview">1. Persona Overview</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Persona</th>
+<th>Role</th>
+<th>AA Codes</th>
+<th>L3 Source Document</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Credit Fundamentals</strong></td>
+<td>Underwriter — evaluate borrower creditworthiness against
+institutional floors</td>
+<td>AA01, AA02</td>
+<td>Addendum A (Credit Policy) + Addendum B (DTI Policy)</td>
+</tr>
+<tr>
+<td><strong>Risk Officer</strong></td>
+<td>Portfolio VaR + concentration + LTV — institutional-side risk
+appetite</td>
+<td>AA03, AA04</td>
+<td>Addendum C (LTV Policy) + Risk Appetite Note</td>
+</tr>
+<tr>
+<td><strong>Fair Lending Compliance</strong></td>
+<td>ECOA / Reg B disparate-impact + adverse-action notice
+compliance</td>
+<td>AA05</td>
+<td>BRD Governance Controls (ECOA / Reg B integration)</td>
+</tr>
+<tr>
+<td><strong>Customer Advocate</strong></td>
+<td>Adverse-action explanation quality + borrower-facing
+readability</td>
+<td>(escalates all)</td>
+<td>CFPB Bulletin 2024-09 (model traceability)</td>
+</tr>
+<tr>
+<td><strong>Macro Contrarian</strong></td>
+<td>Sector cycle + recession sensitivity — devil’s advocate</td>
+<td>(none)</td>
+<td>Institutional risk appetite note (sector-cycle overlay)</td>
+</tr>
+<tr>
+<td><strong>AML/KYC Investigator</strong> (opt-in)</td>
+<td>AML / Sanctions / KYC — regulatory eligibility</td>
+<td>AA06</td>
+<td>BSA + USA PATRIOT §326 + FinCEN CDD (31 CFR 1010.230) + OFAC 50%
+rule</td>
+</tr>
+</tbody>
+</table>
+<p>The AML/KYC voice is opt-in: it attaches only when the loan payload
+contains <code>aml_flags[]</code> or <code>kyc_status</code> fields (per
+<code>lib/aml-kyc-voice.js</code> AML_FLAG_POLICY +
+KYC_STATUS_POLICY).</p>
+<hr />
+<h2 id="citation-persona-test-file-map">2. Citation × Persona × Test
+File Map</h2>
+<h3 id="us-federal-banking-supervision">2.1 US federal banking
+supervision</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Citation</th>
+<th>Full name</th>
+<th>Persona(s) enforcing</th>
+<th>Primary test file</th>
+<th>Test count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SR 26-2</strong></td>
+<td>Federal Reserve Model Risk Management Guidance (formerly SR 11-7,
+replaced 2026-04-17)</td>
+<td>All 6</td>
+<td><code>test/traceability-and-guardrail.test.js</code></td>
+<td>19</td>
+</tr>
+<tr>
+<td><strong>SR 11-7 (rescinded)</strong></td>
+<td>Predecessor to SR 26-2 — retained in
+<code>lib/traceability.js:33</code> as historical annotation for legacy
+audit trails</td>
+<td>All 6</td>
+<td><code>test/traceability-and-guardrail.test.js</code></td>
+<td>19</td>
+</tr>
+<tr>
+<td><strong>CFPB Circular 2022-03</strong></td>
+<td>Requires denials to cite the specific policy source, no template
+phrases</td>
+<td>Fair Lending + Customer Advocate</td>
+<td><code>test/reason-code-dictionary.test.js</code></td>
+<td>17</td>
+</tr>
+</tbody>
+</table>
+<h3 id="fair-lending-ecoa-reg-b-regulation-b">2.2 Fair lending / ECOA /
+Reg B (Regulation B)</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Citation</th>
+<th>Full name</th>
+<th>Persona</th>
+<th>Primary test file(s)</th>
+<th>Test count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ECOA</strong></td>
+<td>Equal Credit Opportunity Act — prohibited-basis analysis</td>
+<td>Fair Lending Compliance</td>
+<td><code>test/run-loan-council.test.js</code></td>
+<td>15</td>
+</tr>
+<tr>
+<td><strong>Reg B (12 CFR 1002)</strong></td>
+<td>ECOA implementing regulation — adverse action notice
+requirements</td>
+<td>Fair Lending Compliance</td>
+<td><code>test/reason-code-dictionary.test.js</code> +
+<code>test/run-loan-council.test.js</code></td>
+<td>17 + 15</td>
+</tr>
+<tr>
+<td><strong>Reg B adverse-action codes AA01-AA06</strong></td>
+<td>Signed reason-code dictionary — post-hoc dictionary swap breaks
+attestation verification (v1.5.8)</td>
+<td>Fair Lending Compliance + Credit + Risk + AML/KYC</td>
+<td><code>test/dictionary-hash-binding.test.js</code> +
+<code>test/reason-code-dictionary.test.js</code></td>
+<td>(bound) + 17</td>
+</tr>
+<tr>
+<td><strong>CFPB Bulletin 2024-09</strong></td>
+<td>Model-traceability for adverse-action explanations</td>
+<td>Customer Advocate</td>
+<td><code>test/traceability-reproducibility.test.js</code></td>
+<td>14</td>
+</tr>
+<tr>
+<td><strong>Protected-class proxy blocklist</strong></td>
+<td>15-item ECOA proxy attribute blocklist enforced in
+<code>lib/enforce-reason-code-dictionary.js</code></td>
+<td>All 6</td>
+<td><code>test/reason-code-dictionary.test.js</code></td>
+<td>17</td>
+</tr>
+</tbody>
+</table>
+<h3 id="aml-kyc-sanctions-opt-in-amlkyc-voice">2.3 AML / KYC / Sanctions
+(opt-in AML/KYC voice)</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Citation</th>
+<th>Full name</th>
+<th>Persona</th>
+<th>Primary test file(s)</th>
+<th>Test count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>BSA (Bank Secrecy Act)</strong></td>
+<td>31 USC 5311 — recordkeeping + reporting</td>
+<td>AML/KYC Investigator</td>
+<td><code>test/aml-kyc-voice.test.js</code></td>
+<td>24</td>
+</tr>
+<tr>
+<td><strong>BSA §5318(g)(2) — tipping-off</strong></td>
+<td>Borrower-facing rationale must NOT name specific SAR-related AML
+flag</td>
+<td>AML/KYC Investigator</td>
+<td><code>test/aml-kyc-adversarial.test.js</code></td>
+<td>23</td>
+</tr>
+<tr>
+<td><strong>USA PATRIOT Act §326</strong></td>
+<td>Customer Identification Program (CIP) — CDD verification</td>
+<td>AML/KYC Investigator</td>
+<td><code>test/aml-kyc-voice.test.js</code></td>
+<td>24</td>
+</tr>
+<tr>
+<td><strong>FinCEN Customer Due Diligence rule</strong></td>
+<td>31 CFR 1010.230 — beneficial ownership + risk-based CDD program</td>
+<td>AML/KYC Investigator</td>
+<td><code>test/aml-kyc-voice.test.js</code></td>
+<td>24</td>
+</tr>
+<tr>
+<td><strong>OFAC SDN list match</strong></td>
+<td>Sanctions program — Specially Designated Nationals list</td>
+<td>AML/KYC Investigator</td>
+<td><code>test/aml-kyc-adversarial.test.js</code></td>
+<td>23</td>
+</tr>
+<tr>
+<td><strong>OFAC 50% rule</strong></td>
+<td>Sanctions ownership aggregation</td>
+<td>AML/KYC Investigator</td>
+<td><code>test/aml-kyc-voice.test.js</code></td>
+<td>24</td>
+</tr>
+<tr>
+<td><strong>FinCEN 2026-Q1 GTOs</strong></td>
+<td>Geographic Targeting Orders — extended coverage</td>
+<td>AML/KYC Investigator</td>
+<td><code>test/aml-kyc-voice.test.js</code></td>
+<td>24</td>
+</tr>
+<tr>
+<td><strong>FATF Recommendation 10</strong></td>
+<td>International CDD framework — risk-based approach</td>
+<td>AML/KYC Investigator</td>
+<td><code>test/aml-kyc-voice.test.js</code></td>
+<td>24</td>
+</tr>
+</tbody>
+</table>
+<h3 id="eu-credit-scoring-regime">2.4 EU credit-scoring regime</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Citation</th>
+<th>Full name</th>
+<th>Persona</th>
+<th>Primary test file(s)</th>
+<th>Test count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GDPR Article 22</strong></td>
+<td>Automated individual decision-making + right to meaningful
+information</td>
+<td>Fair Lending + Customer Advocate</td>
+<td><code>test/reason-code-dictionary.test.js</code></td>
+<td>17</td>
+</tr>
+<tr>
+<td><strong>ECJ Schufa case (C-634/21)</strong></td>
+<td>2023 ruling — credit scoring qualifies as “automated decision” under
+Article 22</td>
+<td>Fair Lending + Customer Advocate</td>
+<td><code>test/traceability-reproducibility.test.js</code></td>
+<td>14</td>
+</tr>
+<tr>
+<td><strong>EU AI Act Article 14 — human oversight</strong></td>
+<td>High-risk system oversight — audit trail export requirements</td>
+<td>All 6</td>
+<td><code>test/attestation-acceptance-demo.test.js</code></td>
+<td>(chain)</td>
+</tr>
+<tr>
+<td><strong>EU AI Act — credit-scoring deferral to
+2027-12-02</strong></td>
+<td>Digital Omnibus Regulation 2026-05 pushed credit-scoring
+deadlines</td>
+<td>(context only)</td>
+<td>(documented in <code>docs/EU_AI_ACT_STATUS.md</code>)</td>
+<td>N/A</td>
+</tr>
+</tbody>
+</table>
+<h3 id="investor-conduct-suitability-advisor-pack">2.5 Investor conduct
+/ suitability (advisor pack)</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Citation</th>
+<th>Full name</th>
+<th>Persona</th>
+<th>Primary test file(s)</th>
+<th>Test count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Reg BI (Regulation Best Interest)</strong></td>
+<td>Broker-dealer suitability standard — fiduciary verdict engine</td>
+<td>(advisor pack, roadmap)</td>
+<td><code>test/persona-schema.test.js</code> (schema anchor test)</td>
+<td>14</td>
+</tr>
+<tr>
+<td><strong>FINRA Rule 2111</strong></td>
+<td>Suitability requirements</td>
+<td>(advisor pack, roadmap)</td>
+<td>(persona schema anchor: <code>Reg BI</code>)</td>
+<td>(via schema)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cryptographic-attestation-invariants">2.6 Cryptographic
+attestation invariants</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Citation</th>
+<th>Full name</th>
+<th>Persona-independent</th>
+<th>Primary test file(s)</th>
+<th>Test count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>RFC 8032 (Ed25519)</strong></td>
+<td>Edwards-Curve Digital Signature Algorithm — SR 26-2 Tier 3
+attestation binding</td>
+<td>(all decisions)</td>
+<td><code>test/attestation-ed25519.test.js</code> +
+<code>test/attestation.test.js</code></td>
+<td>13 + 20</td>
+</tr>
+<tr>
+<td><strong>Dictionary-hash binding (v1.5.8)</strong></td>
+<td>Reason-code dictionary SHA-256 signed into every attestation payload
+— post-hoc dictionary edit breaks verification</td>
+<td>(all decisions)</td>
+<td><code>test/dictionary-hash-binding.test.js</code></td>
+<td>(dedicated file)</td>
+</tr>
+<tr>
+<td><strong>Hash-chain integrity (v1.5.10)</strong></td>
+<td><code>previous_hash</code> chain — detects reordering / insertion /
+truncation / edit-cascade</td>
+<td>(all decisions)</td>
+<td><code>test/attestation-chain.test.js</code></td>
+<td>22</td>
+</tr>
+<tr>
+<td><strong>Schema-runtime coherence (v1.5.11)</strong></td>
+<td>Persona L1/L2/L3 thresholds pinned against runtime
+<code>LOAN_DEFAULTS</code> — silent prompt drift blocked</td>
+<td>All 6</td>
+<td><code>test/schema-runtime-coherence.test.js</code></td>
+<td>48</td>
+</tr>
+<tr>
+<td><strong>Cross-language Node ↔︎ Python verifier</strong></td>
+<td><code>shadow_verify</code> Python library replicates Node signing
+payload byte-for-byte</td>
+<td>(all decisions)</td>
+<td><code>test/python-verify-cross-lang.test.js</code></td>
+<td>(cross-lang)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="adversarial-red-team-invariants">2.7 Adversarial / red-team
+invariants</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Citation</th>
+<th>Full name</th>
+<th>Persona</th>
+<th>Primary test file(s)</th>
+<th>Test count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MCPTox canary tokens (arXiv:2508.14925)</strong></td>
+<td>Prompt-injection detection at council output boundary</td>
+<td>All 6</td>
+<td><code>test/mcptox-canary.test.js</code></td>
+<td>(dedicated)</td>
+</tr>
+<tr>
+<td><strong>Free-MAD hallucination amplification
+(arXiv:2509.11035)</strong></td>
+<td>Provider diversity — never silently substitute providers during
+diverse routing</td>
+<td>All 6</td>
+<td><code>test/provider-diversity.test.js</code></td>
+<td>18</td>
+</tr>
+<tr>
+<td><strong>Hidden-anchor bias (arXiv:2606.19494)</strong></td>
+<td>Randomize persona presentation order to defeat position bias</td>
+<td>All 6</td>
+<td><code>test/presentation-order.test.js</code></td>
+<td>12</td>
+</tr>
+<tr>
+<td><strong>Analysis-only guardrail</strong></td>
+<td>12-pattern regex catches hallucinated trade-execution verbs at
+council output</td>
+<td>All 6</td>
+<td><code>test/traceability-and-guardrail.test.js</code></td>
+<td>19</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="persona-citation-coverage-matrix">3. Persona × Citation Coverage
+Matrix</h2>
+<table>
+<colgroup>
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+</colgroup>
+<thead>
+<tr>
+<th>Persona</th>
+<th>US federal (SR 26-2, CFPB)</th>
+<th>ECOA / Reg B</th>
+<th>AML / KYC / OFAC</th>
+<th>EU (GDPR, Schufa)</th>
+<th>Reg BI</th>
+<th>Ed25519 / Hash-chain</th>
+<th>Adversarial</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Credit Fundamentals</strong></td>
+<td>✅</td>
+<td>✅</td>
+<td>—</td>
+<td>✅ (via reason codes)</td>
+<td>(roadmap)</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>Risk Officer</strong></td>
+<td>✅</td>
+<td>✅ (LTV via AA03/AA04)</td>
+<td>—</td>
+<td>✅</td>
+<td>(roadmap)</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>Fair Lending Compliance</strong></td>
+<td>✅</td>
+<td>✅ (primary)</td>
+<td>—</td>
+<td>✅ (primary)</td>
+<td>(roadmap)</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>Customer Advocate</strong></td>
+<td>✅ (Bulletin 2024-09)</td>
+<td>✅</td>
+<td>—</td>
+<td>✅ (Schufa case)</td>
+<td>(roadmap)</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>Macro Contrarian</strong></td>
+<td>✅</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>(roadmap)</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>AML/KYC Investigator</strong> (opt-in)</td>
+<td>✅</td>
+<td>✅ (AA06)</td>
+<td>✅ (primary)</td>
+<td>—</td>
+<td>—</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Legend:</strong> ✅ = covered by named runtime test; — = not
+applicable to persona role; (roadmap) = advisor pack shipping post-Reg
+BI vertical launch.</p>
+<hr />
+<h2 id="test-count-summary">4. Test count summary</h2>
+<ul>
+<li><strong>Total runtime tests:</strong> 668 (v1.5.11)</li>
+<li><strong>AML/KYC coverage (voice + adversarial):</strong> 47 tests
+(24 + 23)</li>
+<li><strong>Attestation cryptographic coverage:</strong> 55+ tests
+(Ed25519 + hash-chain + dictionary-hash binding + cross-language)</li>
+<li><strong>Reg B reason-code dictionary coverage:</strong> 17 tests
+(<code>test/reason-code-dictionary.test.js</code>)</li>
+<li><strong>Persona schema × runtime coherence gate:</strong> 48 tests
+(<code>test/schema-runtime-coherence.test.js</code>)</li>
+<li><strong>Provider diversity + hallucination amplification
+defense:</strong> 18 tests
+(<code>test/provider-diversity.test.js</code>)</li>
+</ul>
+<p>Full test surface: run <code>npm test</code> at repository root. All
+668 tests currently pass, zero regressions across v1.5.7 to v1.5.11.</p>
+<hr />
+<h2 id="reviewer-notes">5. Reviewer notes</h2>
+<p><strong>For bank counsel / regulatory examiner:</strong> the
+<em>citations</em> in Section 2 are the regulatory obligations. The
+<em>tests</em> named in each row are the deterministic invariants Shadow
+ships to defend that obligation at runtime. A regression in any named
+test blocks the CI merge gate, so the coverage is not aspirational — it
+is enforced.</p>
+<p><strong>For grad-school co-authors / academic collaborators:</strong>
+this document is a live-updated appendix to any paper citing Shadow’s
+runtime coverage. Please add a citation to
+<code>docs/CITATION_MAP.md</code> (this file) in the paper’s methods
+section so reviewers can trace the empirical claim to the specific test
+file.</p>
+<p><strong>For Lora specifically:</strong> every row in Section 2 flows
+from your BRD + Addenda A/B/C. The rows we discussed on 2026-06-19 (FICO
+700 hard block, DTI 0.36 escalate, Tier 3 SR 26-2 companion positioning)
+are all in Section 2.1 and 2.2. The dictionary-hash binding (v1.5.8)
+closes the Reg B post-hoc dictionary edit gap you flagged. The AML/KYC
+voice (v1.4.0) is opt-in per your July 2026 feedback that BSA
+§5318(g)(2) tipping-off must NOT be triggered when the loan payload
+doesn’t declare <code>aml_flags[]</code> or <code>kyc_status</code>.</p>
+<p>If any row is <em>missing</em>, mis-classified, or needs a stronger
+citation — please annotate this file directly and I will iterate. This
+map is the artifact bank auditors will read before they read the
+code.</p>
+<hr />
+<h2 id="contact-feedback">6. Contact &amp; feedback</h2>
+<ul>
+<li>Alex Xiaoyu Ji · xji1@mail.yu.edu · schema mapping + test coverage +
+cryptographic binding</li>
+<li>Loredana C. Levitchi · regulatory citation authority + BRD + Addenda
+A/B/C</li>
+</ul>
+<p><em>This document is a public artifact of the shadow-mentor
+repository (MIT license). Re-use with attribution is
+encouraged.</em></p>
+</body>
+</html>
