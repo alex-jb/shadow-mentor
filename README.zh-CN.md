@@ -117,6 +117,7 @@ Shadow v1.1.1 集成了 **Loredana C. Levitchi**(叶史瓦大学 + William Pater
 - **采购级 citation chain (v1.1+)**:每个 `/api/deliberate` 响应都 inline 返回 `traceability` dict,把每个阈值映射回 BRD vs Addendum vs Risk Appetite Note 来源。AA01-05 adverse-action codes 对齐 CFPB Bulletin 2024-09 model-traceability 要求。`enforceAnalysisOnly()` regex guardrail 在 council 输出边界 catch LLM 幻觉的交易执行词。14 个契约测试守 provenance。
 - 727/728 测试绿;GitHub Actions CI 连续 15+ commits 绿
 - **跨垂类 persona pack (v0.2.1 LIVE)** —— `lib/personas/trader-pack/` Risk Sizer 已接入 `POST /api/deliberate`(请求体 `{"mode": "trading", "trade": {...}}`)+ `shadow_size_position` 作为 MCP 第 8 个 tool(analyst 在 Cursor / Claude Desktop 里直接 sizing trade,不用 curl)。Trading verdict 也用同一个 Ed25519 签名 key + payload 格式。7 纯 JS 契约测试 + 11 HTTP 边界测试守 FinPos "never emit direction" 铁律。v0.4 会补跨垂类 hash-chain 连续性。
+- **第三垂类脚手架 (ds-pack v0.1)** —— `lib/personas/ds-pack/` 文档化 data-science 治理 pack,覆盖 SR 26-2 Tier 3 缺口(LLM-in-the-loop 特征工程 + LLM 生成的 pipeline 代码)。6 persona 映射(Data Steward / Model Validator / Fair-ML Auditor / Reproducibility Critic / Ops Realist / ML Attribution Auditor 可选)。Wire 格式与 banking + trading 字节相同。尚未可 import —— v0.2 接入 `/api/deliberate?mode=ds`。
 - 原生 macOS app 计划 2026 Q3 上线
 
 ## Shadow Agentic Score — 88 ± 4 (n=3, 2026-06-18 晚)
