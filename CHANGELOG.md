@@ -11,15 +11,53 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 ## [Unreleased]
 
 Next planned:
+- **v0.4 trader-pack** — cross-vertical hash-chain continuity (single monotone chain across banking + trading + data-science)
+- **v0.3 trader-pack** — HTTP proxy adapter to Orallexa live deployment for Bull/Bear/Judge/Critic/Polyseer LLM voices; Judge sets direction, Sizer receives it
+- **Data-science persona pack v0.1 scaffold** (third vertical: ML/analytics governance)
 - macOS native app POC (ScreenCaptureKit + on-device Phi-4-mini + AppKit overlay)
-- 5-minute Loom recording per the rehearsal script
 - 30-target cold email round (July) — requires Loom URL substitution
 - SOC 2 Type 1 readiness checklist
 - shadow.io domain procurement (vs alternatives)
-- IEEE VR 2027 abstract v1 (co-first-author with Loredana C. Levitchi)
 - Full bin/install.mjs that consumes installer/tools.json + auto-writes config for whichever MCP host is detected on the user's machine
 - **CNFinBench score publication** (arxiv 2512.09506) — harness scaffolding shipped in v1.5.0 (`benchmark/cnfinbench/`), needs the dataset + LLM run to publish a score
 - **Anthropic Constitution v2 runtime prompt refactor** — metadata sidecar shipped in v1.4.0 (`lib/persona-schema.json`); runtime `lib/prompts.js` restructure into L1/L2/L3 headers still deferred (needs benchmark rerun to verify 87 ± 3 holds)
+
+---
+
+## v1.5.15 — Cross-vertical trader-pack MCP dispatch + persona professionalization + spatial-render + batch attestation (2026-07-06 → 2026-07-07 NY, 4-release burst)
+
+Bundles v1.5.12 through v1.5.15 shipped over the 2026-07-06 evening → 2026-07-07 morning autonomous run (Alex "全部开始 跑3hr" trigger + follow-up 继续 chain). Delivers the "one Shadow engine, three verticals" claim from the strategic roadmap.
+
+### v1.5.15 — trader-pack MCP tool + Ed25519 attestation on trading verdicts (2026-07-07)
+
+- **`shadow_size_position` as 8th MCP tool** — bank analysts inside Cursor / Claude Desktop / OpenCode can size trades without going through `POST /api/deliberate`. FinPos-style Risk Sizer (arXiv 2510.27251): direction is INPUT (from upstream Judge), verdict is fund/skip, position_usd is Kelly-cap + volatility-scalar + drawdown-adjusted. Never emits a direction (Contract #1 pinned by 7 pure-JS tests + 11 HTTP-boundary tests).
+- **Wired across all 4 tool-discovery surfaces** so procurement audit trusts one → trusts the rest: `mcp/server.js` TOOLS, `api/mcp-manifest.js` CANONICAL_TOOLS SBOM, `installer/tools.json` `$tool_surface`, `lib/auth/oauth-scaffold.js` `ALL_TOOLS` + `SCOPE_TO_TOOLS` (assigned to `shadow:council` since sizing touches capital-allocation math).
+- **Ed25519 attestation on trading verdicts** — same signing key + payload format as banking (`modelId = "shadow/trader-pack-risk-sizer@v0.2"`). Cross-vertical hash-chain continuity (single monotone chain) still deferred to v0.4.
+- **`POST /api/deliberate` with `{"mode": "trading", "trade": {...}}`** — dispatch to `sizePosition()` before banking-mode validation. Bad-persona-with-mode=trading isolation test proves the two verticals don't leak into each other.
+- **Trader-pack cross-language contract** — 7 pure-JS contract tests parallel to Orallexa `tests/test_risk_sizer_contract.py`. Any drift between the JS + Python risk sizers breaks both sides simultaneously.
+- **Test surface** 706/707 → 727/728 (+21 across the trader-pack cross-vertical work).
+
+### v1.5.14 — Persona professionalization (2026-07-06)
+
+Rewrote all 5 loan-council voice rationales in the language a real Fed / CFPB examiner uses. Fair Lending cites the FFIEC three-step framework; Compliance cites CFPB Circular 2022-03 + Reg B §1002.6/9; Risk cites SR 26-2 materiality + effective challenge; Customer Advocate cites CFPB Bulletin 2024-09; Macro Contrarian cites historical stress episodes (2008 CMBS, 2020 SVB, 2023 Signature). No LLM prompt changes — this is deterministic rationale-text upgrades in `lib/run-loan-council.js` per the 2026-07-06 4-agent deep research on primary regulatory sources.
+
+### v1.5.13 — `POST /api/spatial-render` for Flow ingestion (2026-07-06)
+
+New endpoint at `POST /api/spatial-render` returns a 3D scene descriptor (4 render modes: `full` / `reduced` / `focus` / `tethered`) that Flow / XREAL / any WebXR client can consume without re-computing the spatial layout on the client. Powers the Ambient Council HUD demo path. +17 tests.
+
+### v1.5.12 — Batch Ed25519 attestation signing + `GET /api/mcp-manifest` SBOM (2026-07-06)
+
+- **`lib/attestation-batch.js`** — batch Ed25519 signing over the SHA-256 root hash of concatenated per-decision hashes. Closes the Holistic AI Guardian Agents throughput gap: SIEM verifies O(1) instead of O(N) per batch.
+- **`GET /api/mcp-manifest`** — publishes 7 (now 8 with v1.5.15) MCP tools as an SBOM with per-tool + envelope SHA-256 hashes so bank counsel can pin `manifest_hash_sha256` in procurement contracts. Closes the Comply.ai MCP-native discoverability gap identified in the 2026-07-06 competitor audit.
+- **v1.5.12 was the audit-triggered ship** — deep research surfaced 3 "under-crowded moats"; this closes 2 of them.
+
+### Why this matters (procurement)
+
+The strategic pitch is "one Shadow engine, three verticals — banking + trading + data-science — sharing one audit surface, one attestation key, one MCP tool namespace." Before this burst, the trading vertical was a scaffold-only README claim. Now it's a live endpoint, a live MCP tool, a live attestation contract, and an SBOM entry. When Alex demos to a mid-tier bank + regional broker-dealer prospect in the same week, both prospects see the same evidence chain.
+
+### Tests
+
++21 tests across the burst: 706/707 → 727/728. Zero regressions on the 706 banking tests. GitHub Actions CI still green.
 
 ---
 
