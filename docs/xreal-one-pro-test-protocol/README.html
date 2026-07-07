@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>XREAL One Pro Test Protocol — Shadow x YU</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">XREAL One Pro Test Protocol — Shadow x YU</h1>
+</header>
+<h1 id="xreal-one-pro-test-protocol-shadow-yeshiva-u">XREAL One Pro Test
+Protocol — Shadow × Yeshiva U</h1>
+<p><strong>Version:</strong> 1.0 · <strong>Prepared:</strong> 2026-07-06
+(evening, post-Lora email confirming XREAL One Pro purchase)
+<strong>Hardware:</strong> XREAL One Pro (X1 chip, native 3DoF, X-Prism
+optics, 57° FOV, 171” virtual display, 120 Hz FHD) <strong>Software
+backend:</strong> Shadow v1.5.12
+(<code>github.com/alex-jb/shadow-mentor</code>, MIT, public 2026-07-06)
+<strong>Rendering pipeline:</strong> WebXR + Three.js (browser-native)
+with Flow Immersive optional presentation layer
+<strong>Authors:</strong> Alex Xiaoyu Ji (author) · Loredana C. Levitchi
+(reviewer + purchase authority)</p>
+<p><strong>Purpose:</strong> define what “the XREAL One Pro test week”
+actually looks like so Lora and Alex agree on the pass/fail criteria
+before the hardware lands and before the Yeshiva Dean + Vice-Provost
+demo date is locked.</p>
+<hr />
+<h2 id="ownership-and-coordination">Ownership and coordination</h2>
+<ul>
+<li>Lora holds the physical device. Amazon delivery ETA: max Saturday
+2026-07-11. Device stays at Lora’s or Alex’s per weekly agreement.</li>
+<li>Alex owns the software pipeline (Shadow endpoints, Three.js scene
+graph, Flow Immersive scene JSON).</li>
+<li>Neither party solo-approves a demo scene for the Dean + Vice-Provost
+session. Both sign off in writing (email is fine) on each scene’s
+readiness before it appears in the executive demo.</li>
+</ul>
+<hr />
+<h2
+id="phase-a-preflight-2026-07-07-to-2026-07-10-no-hardware-needed">Phase
+A — Preflight (2026-07-07 to 2026-07-10, no hardware needed)</h2>
+<p>While the XREAL One Pro is in transit, Alex builds and validates
+every render path on desktop Chrome + WebXR emulator. Any failure caught
+here saves live device time next week.</p>
+<h3 id="a1.-flow-immersive-scene-template">A1. Flow Immersive scene
+template</h3>
+<p>Alex registers <code>a.flow.gl</code> (Jason Marsh gave free-tier
+access post 2026-06-22 call). Builds a scene JSON template that consumes
+<code>POST /api/deliberate</code> output and renders the five personas
+as spatial cards in a 4×4 meter room, plus the hash-chain audit trail as
+a walk-around 3D object.</p>
+<p>Expected deliverable:
+<code>docs/xreal-one-pro-test-protocol/flow-scene-template.json</code>
+in this repo before Sat 2026-07-11.</p>
+<h3 id="a2.-webxr-emulator-dry-run">A2. WebXR emulator dry-run</h3>
+<p>Chrome WebXR API emulator (Chrome DevTools → Sensors → Virtual
+reality profile) validates: - Scene graph loads without a runtime error
+- 5 persona cards positioned at [±1.5m, 1.6m, ±1.5m] (semicircle around
+origin) - Hash-chain object at [0m, 1.4m, -2.0m] (walk-through-able) -
+FPS overlay ≥ 60 fps on M-series MacBook + Chrome - Camera aligned so a
+reviewer at [0m, 1.6m, 1m] sees all 5 cards without turning</p>
+<h3 id="a3.-fallback-rendering-paths-defensive-plan">A3. Fallback
+rendering paths (defensive plan)</h3>
+<p>If X1 chip native 3DoF fails at target FPS on-device (documented
+failure mode in XREAL developer forum posts for large scenes with
+&gt;800k transparent quads), fall back to:</p>
+<ol type="1">
+<li><strong>Reduced-vertex scene</strong> — swap the 3D Gaussian
+Splatting ambient with a flat cubemap (drops per-frame cost 3× at the
+cost of losing the immersive background)</li>
+<li><strong>Two-persona focus</strong> — hide 3 personas behind a “voice
+cabinet” UI element; reviewer summons them individually</li>
+<li><strong>Tethered mode</strong> — plug One Pro into MacBook Pro
+USB-C, run scene in Chrome on the laptop, One Pro becomes a 171” virtual
+display + head-tracking input (X1 chip idle)</li>
+</ol>
+<p>Each fallback is coded into the scene graph as a
+<code>params.mode = 'full' | 'reduced' | 'focus' | 'tethered'</code>
+switch, so Lora and Alex can flip between modes during on-device tests
+without recompiling.</p>
+<hr />
+<h2 id="phase-b-on-device-test-starting-week-of-2026-07-14">Phase B —
+On-device test (starting week of 2026-07-14)</h2>
+<p>Lora brings the XREAL One Pro to school. Test cycle runs Mon 7/14 →
+Fri 7/18, one 60-minute session per day.</p>
+<h3 id="b1.-session-1-mon-2026-07-14-standalone-rendering-baseline">B1.
+Session 1 (Mon 2026-07-14) — Standalone rendering baseline</h3>
+<p>Boot XREAL One Pro standalone (X1 chip, no laptop tether). Load
+<code>a.flow.gl</code> in the device’s browser. Open the Phase A1 scene
+URL. Measure:</p>
+<ul>
+<li>Cold load time (scene JSON fetch + scene graph build)</li>
+<li>Sustained FPS over 3 minutes with reviewer walking around the
+persona semicircle</li>
+<li>Head-tracking latency (subjective: does the persona card drift with
+head movement?)</li>
+<li>Battery draw (One Pro internal, per XREAL app)</li>
+</ul>
+<p><strong>Pass criteria:</strong> ≥ 45 fps sustained, &lt; 3s cold
+load, no visible head-track drift after 30s.</p>
+<p>If any criterion fails: promote reduced-vertex fallback (Phase A3.1),
+rerun. Log which mode achieved the pass.</p>
+<h3
+id="b2.-session-2-tue-2026-07-15-live-shadow-endpoint-integration">B2.
+Session 2 (Tue 2026-07-15) — Live Shadow endpoint integration</h3>
+<p>Same scene, but instead of a mocked <code>/api/deliberate</code>
+response, hit the live Shadow endpoint with a real loan scenario.
+Measure:</p>
+<ul>
+<li>Round-trip latency from persona voice-vote gesture (Web Speech +
+hand pinch) to verdict-render in the scene</li>
+<li>Attestation verification success rate (client-side
+<code>/api/verify-attestation</code> after each verdict)</li>
+<li>Bill-counsel-facing readability of the <code>citation</code> field
+in each persona’s rationale (Lora reads each of the 5 rationales aloud,
+confirms each cites the correct regulatory anchor)</li>
+</ul>
+<p><strong>Pass criteria:</strong> &lt; 1.5s round-trip p95, 100% verify
+success, Lora approves all 5 citation strings for reader-audience
+clarity.</p>
+<h3 id="b3.-session-3-wed-2026-07-16-4-case-verdict-lattice">B3. Session
+3 (Wed 2026-07-16) — 4-case verdict lattice</h3>
+<p>Load each of the 4 canonical case studies from
+<code>docs/case-studies/</code>: - Case 1: $2.5M CRE loan with PEP owner
++ diverse routing → escalate - Case 2: First-time HELOC, FICO 640 →
+block by Credit Fundamentals - Case 3: SBA loan, OFAC SDN hit → block by
+AML/KYC - Case 4: Standard approve path</p>
+<p>For each case, run the scene end-to-end. Measure: - Verdict-render
+correctness against the case-study expected verdict - 5-voice agreement
+(do all 5 personas render + speak?) - Gesture-vote submission →
+hash-chain audit entry (verify via <code>/api/verify-chain</code>)</p>
+<p><strong>Pass criteria:</strong> 4-of-4 verdict correctness, 5-of-5
+persona rendering, 4-of-4 audit entries verify.</p>
+<h3 id="b4.-session-4-thu-2026-07-17-executive-demo-dress-rehearsal">B4.
+Session 4 (Thu 2026-07-17) — Executive demo dress rehearsal</h3>
+<p>Alex + Lora run the full Dean + Vice-Provost demo from start to end,
+timing the transitions. This is a rehearsal, not a technical test.</p>
+<ul>
+<li>Open scene from <code>a.flow.gl</code> URL (30s)</li>
+<li>Play Case 1 ($2.5M CRE loan) — 90s</li>
+<li>Reviewer walks around the persona semicircle to inspect each verdict
+(60s)</li>
+<li>Reviewer performs a gesture-vote on the escalation prompt (30s)</li>
+<li>Hash-chain audit trail renders as a walk-through 3D object; reviewer
+walks through it (60s)</li>
+<li>Q&amp;A anticipation — Lora and Alex rehearse answers to 5 questions
+the Dean/VP are likely to ask (10 min)</li>
+</ul>
+<p><strong>Pass criteria:</strong> end-to-end demo runs in under 8
+minutes, both Lora and Alex are comfortable with the narrative flow.</p>
+<h3 id="b5.-session-5-fri-2026-07-18-failure-mode-red-team">B5. Session
+5 (Fri 2026-07-18) — Failure mode red-team</h3>
+<p>Deliberately break the scene in 5 ways and measure recovery: 1. Kill
+network mid-verdict → does the client retry gracefully, or hang? 2. Send
+a tampered attestation → does the client-side verifier catch it? 3.
+Trigger a WebXR permission revoke mid-session → does the scene degrade
+to 2D safely? 4. Rotate the X1 chip’s IMU calibration → does the scene
+re-anchor? 5. Overload with 10 concurrent verdict requests → does the
+SIEM’s batch-verify (v1.5.12) hold?</p>
+<p><strong>Pass criteria:</strong> all 5 failure modes recover
+gracefully. None crash the browser.</p>
+<hr />
+<h2
+id="phase-c-dean-vice-provost-executive-demo-target-last-week-of-july-or-early-august-tbc-by-lora">Phase
+C — Dean + Vice-Provost executive demo (target: last week of July or
+early August, TBC by Lora)</h2>
+<ul>
+<li>Lora coordinates the date with the Dean and Vice-Provost
+office.</li>
+<li>Alex + Lora demo Case 1 ($2.5M CRE loan) as the primary narrative.
+Fallback scenes B2 + B3 are ready if the reviewer asks for a second
+case.</li>
+<li>Loom recording (unlisted) of the exact demo goes to the shared Drive
+within 24h of the session so anyone who missed it can replay.</li>
+<li>Post-demo debrief: Lora + Alex agree on which scenes to publish
+(public repo) vs keep private (for procurement-only viewing).</li>
+</ul>
+<hr />
+<h2 id="failure-protocol">Failure protocol</h2>
+<p>If any Phase B session fails a pass criterion: 1. Log the failure in
+<code>docs/xreal-one-pro-test-protocol/failure-log.md</code> 2. Alex has
+24h to iterate the scene / endpoint / fallback path 3. Rerun the failed
+session within 48h 4. Do NOT proceed to Phase C until every Phase B
+session has a green pass criterion</p>
+<p>If a systemic failure (X1 chip driver crash, XREAL SDK regression,
+etc.): - Alex contacts XREAL developer support - Lora holds the demo
+date and communicates the slip to the Dean’s office - The 4-week Q3
+macOS native fallback (per brain memory) becomes the accelerated
+path</p>
+<hr />
+<h2 id="contact">Contact</h2>
+<ul>
+<li>Alex Xiaoyu Ji · xji1@mail.yu.edu — software pipeline, scene graph,
+endpoint integration</li>
+<li>Loredana C. Levitchi · [email verify] — hardware ownership,
+executive coordination, banking-domain scene review</li>
+<li>Jason Marsh · Flow Immersive · [via existing thread] — Flow scene
+template support if we hit rendering ceilings</li>
+<li>Hieu Ngo, PhD · Yeshiva Katz School — XR faculty consult, spatial-XR
+pedagogical scaffolding</li>
+</ul>
+<hr />
+<p><em>This protocol is a public artifact of the
+<code>shadow-mentor</code> repository (MIT). It is meant to be iterated
+in-place; any change from either author should be committed with a short
+“why” note.</em></p>
+</body>
+</html>
