@@ -1,0 +1,157 @@
+/* Academic-submission print stylesheet for the MCP Assignment 3 PDFs.
+ * Tuned for Chrome headless --print-to-pdf on US Letter, 0.5in margins. */
+
+@page {
+  size: Letter;
+  margin: 0.6in 0.7in;
+}
+
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+               "Segoe UI", "Roboto", "Noto Sans", "PingFang SC", sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.55;
+  color: #111;
+  max-width: none;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-size: 22pt;
+  margin-top: 0;
+  margin-bottom: 0.3em;
+  color: #0a2540;
+  border-bottom: 2px solid #0a2540;
+  padding-bottom: 0.2em;
+}
+
+h2 {
+  font-size: 15pt;
+  margin-top: 1.4em;
+  margin-bottom: 0.4em;
+  color: #0a2540;
+  border-bottom: 1px solid #ccd7e2;
+  padding-bottom: 0.15em;
+}
+
+h3 {
+  font-size: 12pt;
+  margin-top: 1.1em;
+  margin-bottom: 0.3em;
+  color: #234;
+}
+
+h4 {
+  font-size: 11pt;
+  margin-top: 0.9em;
+  margin-bottom: 0.25em;
+  color: #234;
+}
+
+p {
+  margin: 0.5em 0;
+}
+
+/* Front-matter block right under the H1 (institution/course/authors) */
+h1 + p, h1 + p + p {
+  color: #444;
+  font-size: 10pt;
+  margin: 0.15em 0;
+}
+
+code {
+  font-family: "SF Mono", "Menlo", "Consolas", "Liberation Mono", monospace;
+  font-size: 9.5pt;
+  background: #f4f6f8;
+  padding: 0.05em 0.35em;
+  border-radius: 3px;
+  color: #222;
+}
+
+pre {
+  background: #f4f6f8;
+  border: 1px solid #e2e6ea;
+  border-left: 3px solid #0a2540;
+  padding: 0.6em 0.8em;
+  margin: 0.8em 0;
+  overflow-x: auto;
+  font-size: 9pt;
+  line-height: 1.4;
+  border-radius: 4px;
+  page-break-inside: avoid;
+}
+
+pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 9pt;
+}
+
+table {
+  border-collapse: collapse;
+  margin: 0.8em 0;
+  width: 100%;
+  font-size: 9.5pt;
+  page-break-inside: avoid;
+}
+
+th, td {
+  border: 1px solid #ccd7e2;
+  padding: 0.35em 0.55em;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: #eef2f6;
+  font-weight: 600;
+}
+
+tr:nth-child(even) td {
+  background: #fafbfc;
+}
+
+blockquote {
+  border-left: 3px solid #a4b3c3;
+  margin: 0.8em 0;
+  padding: 0.15em 0.9em;
+  color: #445;
+  background: #f7f9fb;
+}
+
+ul, ol {
+  margin: 0.4em 0 0.8em 1.4em;
+  padding: 0;
+}
+
+li {
+  margin: 0.15em 0;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #ccd7e2;
+  margin: 1.5em 0;
+}
+
+a {
+  color: #0a2540;
+  text-decoration: none;
+  border-bottom: 1px dotted #0a2540;
+}
+
+strong {
+  color: #111;
+}
+
+/* Keep page breaks sensible */
+h1, h2, h3 {
+  page-break-after: avoid;
+}
+tr, li, pre, blockquote, table {
+  page-break-inside: avoid;
+}

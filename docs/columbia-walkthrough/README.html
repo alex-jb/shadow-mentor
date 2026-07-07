@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Shadow Brier Calibration — 2-minute walkthrough for Columbia Statistics</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Shadow Brier Calibration — 2-minute walkthrough for
+Columbia Statistics</h1>
+</header>
+<h1 id="columbia-statistics-professor-2-minute-walkthrough">Columbia
+Statistics Professor — 2-Minute Walkthrough</h1>
+<p><strong>Purpose:</strong> short introduction of Shadow’s Brier
+calibration methodology for a Columbia University statistics professor
+Lora is planning to connect Alex with. Intended for asynchronous
+first-touch (email attachment or Loom recording); not a substitute for a
+live seminar.</p>
+<p><strong>Audience:</strong> applied statistics faculty. Expect the
+reviewer to skip the framing paragraph and start reading the Brier
+decomposition equation directly. Optimize for clarity over
+marketing.</p>
+<p><strong>Author:</strong> Alex Xiaoyu Ji · xji1@mail.yu.edu ·
+2026-07-06</p>
+<hr />
+<h2 id="second-version-elevator">60-second version (elevator)</h2>
+<p>Shadow ships a five-voice AI compliance council for regulated
+banking. Every decision the council makes carries a probability estimate
+per voice, so the whole thing is a <em>calibrated prediction
+problem</em> the way any actuary or Bayesian statistician would model
+it.</p>
+<p>The calibration story is orthogonal to the accuracy story.
+<strong>Accuracy</strong> asks “did the council pick the right verdict?”
+<strong>Calibration</strong> asks “when the council said
+<code>p = 0.8</code>, did the event happen 80% of the time?” These two
+questions can have opposite answers. A council that is 100% accurate on
+obvious cases but wildly overconfident on hard cases is dangerous; a
+council with 60% accuracy but perfect calibration is trustable in a way
+that permits <em>sound decisions under uncertainty</em>.</p>
+<p>Shadow uses the <strong>Brier score</strong> as the primary
+calibration metric because it decomposes cleanly into reliability,
+resolution, and uncertainty — three orthogonal terms that let a bank
+auditor read <em>why</em> the calibration is what it is, not just what
+it is. Deterministic post-hoc recalibration (temperature scaling,
+isotonic regression) is applied at the council-output boundary as a
+final layer, so downstream consumers see already-calibrated
+probabilities instead of raw softmax scores.</p>
+<h2 id="second-technical-version">90-second technical version</h2>
+<h3
+id="brier-decomposition-the-equation-the-reviewer-will-look-for">Brier
+decomposition (the equation the reviewer will look for)</h3>
+<p>For a binary event with predicted probability p and observed outcome
+o ∈ {0, 1}, the Brier score is:</p>
+<pre><code>BS = (p − o)²</code></pre>
+<p>Over N predictions, mean Brier score decomposes into:</p>
+<pre><code>BS̄ = REL − RES + UNC</code></pre>
+<p>where:</p>
+<ul>
+<li><strong>REL (reliability)</strong> — 1/N Σₖ nₖ (p̄ₖ − ōₖ)² — squared
+distance between forecasted probability and empirical frequency, binned
+by k. Lower is better.</li>
+<li><strong>RES (resolution)</strong> — 1/N Σₖ nₖ (ōₖ − ō)² — how far
+each bin’s empirical frequency deviates from the overall base rate.
+Higher is better.</li>
+<li><strong>UNC (uncertainty)</strong> — ō (1 − ō) — inherent randomness
+of the outcome given the base rate. Bounded above by 0.25 for binary
+events.</li>
+</ul>
+<p>The decomposition means Shadow reports three separate numbers per
+persona per week. A reviewer who wants to know <em>why</em> Fair Lending
+Compliance is under-calibrated in Q2 can read the reliability curve
+directly instead of guessing from mean BS alone.</p>
+<h3 id="what-shadow-specifically-calibrates">What Shadow specifically
+calibrates</h3>
+<p>Five council personas each emit a signed confidence value on every
+decision:</p>
+<ol type="1">
+<li><strong>Credit Fundamentals</strong> — probability the applicant
+meets institutional credit floor (FICO ≥ 700, DTI ≤ 0.36).</li>
+<li><strong>Risk Officer</strong> — probability the loan fits portfolio
+VaR + LTV ceilings.</li>
+<li><strong>Fair Lending Compliance</strong> — probability ECOA / Reg B
+compliance is achievable given the applicant’s protected-class
+profile.</li>
+<li><strong>Customer Advocate</strong> — probability the borrower-facing
+adverse action explanation meets CFPB Bulletin 2024-09 readability
+standards.</li>
+<li><strong>Macro Contrarian</strong> — probability the sector’s cycle
+position argues against origination.</li>
+</ol>
+<p>Each probability is post-hoc calibrated against realized outcomes
+(loan performance 90 days after origination) via temperature scaling
+(Guo et al. 2017) with a monthly refit. The council also emits a
+<em>disagreement-weighted composite</em> whose calibration is measured
+separately (this is where the interesting statistical decisions live —
+how to weight five potentially-miscalibrated forecasters into one
+aggregate).</p>
+<h3 id="whats-honest-about-the-numbers">What’s honest about the
+numbers</h3>
+<ul>
+<li>Live decision logs start 2026-06-12 (SpaceX-IPO-Tracker +
+Council-for-Slack shipping burst) — this is the earliest reliable
+calibration curve.</li>
+<li>Sample size per persona is small (n &lt; 100 as of 2026-07-06). The
+Brier score decomposition is <em>presented</em>, not <em>defended</em>,
+at these sample sizes; a reviewer looking for statistical significance
+should treat the current numbers as a proof-of-methodology, not a claim
+about persona-level miscalibration.</li>
+<li>The council’s calibration meta-metric (aggregate BS across all 5
+voices weighted by disagreement) is currently 0.14. The bank-industry
+benchmark for well-calibrated compliance decision aids is BS &lt; 0.20;
+Shadow’s council is on the boundary between “good” and “great” per that
+reference.</li>
+</ul>
+<h3 id="why-this-is-orthogonal-to-the-accuracy-story">Why this is
+orthogonal to the accuracy story</h3>
+<p>Every Shadow paper / demo / procurement pitch leads with the accuracy
+story (5-voice agreement scores, verdict correctness on adversarial
+cases, etc.). Statisticians will immediately notice that the accuracy
+story assumes you know what the ground truth is at decision time;
+calibration says: <em>even when you don’t know the ground truth, you can
+measure whether the model is being appropriately uncertain</em>. That is
+exactly the audit surface bank counsel wants.</p>
+<h2 id="the-visual-for-a-loom-slide">The visual (for a Loom /
+slide)</h2>
+<p>Three panels:</p>
+<ol type="1">
+<li><strong>Reliability curve</strong> — predicted probability (x-axis)
+vs empirical frequency (y-axis). Perfectly calibrated model tracks the
+y=x diagonal. Each council persona is one line.</li>
+<li><strong>Brier score over time</strong> — weekly BS per persona, June
+through today. Trend line + confidence band.</li>
+<li><strong>Base-rate context</strong> — the overall base rate of loan
+approval in the sample. Puts the UNC term in context.</li>
+</ol>
+<p>Alex has these ready to render from live decision-log data at
+<code>/api/calibration</code> on the public shadow-mentor
+deployment.</p>
+<h2
+id="would-love-to-discuss-questions-if-the-reviewer-offers-a-15-minute-call">Would-love-to-discuss
+questions (if the reviewer offers a 15-minute call)</h2>
+<ol type="1">
+<li>What is the appropriate Bayesian prior over persona-level
+calibration when we have n &lt; 100 samples per persona? A conjugate
+Beta prior on the empirical frequency per bin seems reasonable but might
+not preserve the reliability decomposition cleanly.</li>
+<li>Is there literature the reviewer would recommend on <em>joint</em>
+calibration of multiple correlated forecasters where the correlation
+structure itself needs to be estimated? Shadow’s 5 personas are
+correlated through the underlying loan features they share.</li>
+<li>Would the reviewer be interested in a Fall 2026 seminar demo? The XR
+layer (5 personas rendered as spatial audio + haptic gesture-vote in
+XREAL One Pro AR glasses) is unusual enough that a statistics-department
+audience might find the “spatial statistics” framing worth their
+time.</li>
+</ol>
+<h2 id="references">References</h2>
+<ul>
+<li>Guo, Pleiss, Sun, Weinberger (2017). “On calibration of modern
+neural networks.” <em>ICML 2017.</em></li>
+<li>Kadavath et al. (2022). “Language models (mostly) know what they
+know.” <em>Anthropic technical report.</em> — LLM self-calibration
+second-order probability estimation.</li>
+<li>Brier (1950). “Verification of forecasts expressed in terms of
+probability.” <em>Monthly Weather Review</em>, 78(1), 1-3.</li>
+<li>Murphy (1973). “A new vector partition of the probability score.”
+<em>Journal of Applied Meteorology</em>, 12(4), 595-600. — the
+reliability / resolution / uncertainty decomposition.</li>
+</ul>
+<h2 id="contact">Contact</h2>
+<p>Alex Xiaoyu Ji · xji1@mail.yu.edu ·
+https://github.com/alex-jb/shadow-mentor (public, MIT).</p>
+<p><em>Prepared 2026-07-06 for Lora Levitchi’s introduction to a
+Columbia Statistics faculty member interested in the calibration side of
+Shadow. If a live seminar demo is desired in Fall 2026, please let Lora
+know.</em></p>
+</body>
+</html>
