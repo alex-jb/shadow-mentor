@@ -20,6 +20,7 @@ import {
   detectAvailableProviders,
 } from "../lib/provider-diversity.js";
 import { callVoicesDiversely } from "../lib/diverse-caller.js";
+import { sizePosition } from "../lib/personas/trader-pack/risk-sizer.js";
 
 const CLAUDE_MODEL = "claude-sonnet-4-5-20250929";
 const CLAUDE_HAIKU_MODEL = "claude-haiku-4-5-20251001";
@@ -31,7 +32,60 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
 
-  const { persona = "compliance", scenario = "lbo", question, context, provider = "anthropic", loan, diverse = false } = req.body || {};
+  const body = req.body || {};
+
+  // v0.2 trader-pack dispatch (2026-07-07). When mode === "trading", the
+  // caller passes a trade proposal + Kelly params and we run the Risk
+  // Sizer voice from lib/personas/trader-pack. No LLM calls — this is
+  // the pure-computation trading path so the cross-vertical wire-format
+  // claim is testable end-to-end before the LangGraph port lands (v0.3).
+  //
+  // Contract invariants preserved from Orallexa v1.2.0:
+  //   1. Risk Sizer never emits a direction — Judge (upstream) owns it.
+  //   2. Position respects max_kelly_cap and volatility scalar.
+  //   3. no_op direction → skip verdict, position_usd = null.
+  //
+  // Not yet included: Bull/Bear/Judge/Critic/Polyseer LLM voices (v0.3
+  // HTTP proxy path to Orallexa live deployment).
+  if (body.mode === "trading") {
+    const t0Trading = Date.now();
+    const tradeInput = body.trade;
+    if (!tradeInput || typeof tradeInput !== "object") {
+      return res.status(400).json({
+        error: "mode=trading requires `trade` object with direction, bankroll_usd, volatility_regime, kelly_p_win, kelly_avg_win_pct, kelly_avg_loss_pct",
+      });
+    }
+    const required = ["direction", "bankroll_usd", "volatility_regime", "kelly_p_win", "kelly_avg_win_pct", "kelly_avg_loss_pct"];
+    for (const key of required) {
+      if (tradeInput[key] === undefined || tradeInput[key] === null) {
+        return res.status(400).json({ error: `trade.${key} is required for mode=trading` });
+      }
+    }
+    if (!["long", "short", "no_op"].includes(tradeInput.direction)) {
+      return res.status(400).json({ error: `trade.direction must be "long", "short", or "no_op", got "${tradeInput.direction}"` });
+    }
+    if (!["low", "medium", "high"].includes(tradeInput.volatility_regime)) {
+      return res.status(400).json({ error: `trade.volatility_regime must be "low", "medium", or "high"` });
+    }
+    let sizerOut;
+    try {
+      sizerOut = sizePosition(tradeInput);
+    } catch (err) {
+      return res.status(400).json({ error: `Risk Sizer input invalid: ${err.message}` });
+    }
+    return res.status(200).json({
+      mode: "trading",
+      voices: [sizerOut],
+      verdict: sizerOut.verdict,
+      trader_pack_version: "v0.2",
+      latency_ms: Date.now() - t0Trading,
+      // No attestation on v0.2 trading path yet — v0.4 adds cross-vertical
+      // hash-chain continuity per lib/personas/trader-pack/README.md § Roadmap.
+      attestation: null,
+    });
+  }
+
+  const { persona = "compliance", scenario = "lbo", question, context, provider = "anthropic", loan, diverse = false } = body;
 
   // 2026-06-30 wire-in: provider="local" routes to Ollama / llama.cpp
   // OpenAI-compat endpoint (default phi4-mini @ http://127.0.0.1:11434/v1).

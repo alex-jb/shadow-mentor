@@ -4,7 +4,7 @@
 
 > **5-到-6 voice 的 AI 合规议会,面向受监管的贷款业务。** 用 5 笔历史决策编码你银行的贷款政策。毫秒级得到一个 signed + attestation-bound 的 verdict。跑在你的 VPC。5 分钟通过 MCP 装进 Claude Desktop / Cursor / OpenCode。
 
-[![tests](https://img.shields.io/badge/tests-713%2F714%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-723%2F724%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
 
 ## 监管姿势(2026 H2)
 
@@ -115,8 +115,8 @@ Shadow v1.1.1 集成了 **Loredana C. Levitchi**(叶史瓦大学 + William Pater
 - **8 个 JSON 端点 live**: `/api/deliberate` (POST, +loan body 加 verdict) · `/api/loan-council` (POST, 纯计算 5-voice 规则层,Lora Mode A) · `/api/recall` · `/api/calibration` · `/api/scenarios` · `/api/health` · `/api/badge` (shields.io) · `/api/version` (git SHA audit pin)
 - **Levitchi Mode A 集成 ship 完 + 收紧 (v1.1.1)**:typed risk tools (VaR / ES / concentration / sector / correlation / beta) + 5-voice verdict resolver (block > escalate > approve) + loan 输入 schema 带 BR 阈值 (FICO 700 / DTI 0.36 / LTV 0.80 / VaR 0.12 @ 95%/10d) pin 在 drift-detection 测试里。**v1.1.1: FICO < 700 是 hard block**(不是 escalate)per Levitchi 政策澄清 —— 信用资格底线不可让步。
 - **采购级 citation chain (v1.1+)**:每个 `/api/deliberate` 响应都 inline 返回 `traceability` dict,把每个阈值映射回 BRD vs Addendum vs Risk Appetite Note 来源。AA01-05 adverse-action codes 对齐 CFPB Bulletin 2024-09 model-traceability 要求。`enforceAnalysisOnly()` regex guardrail 在 council 输出边界 catch LLM 幻觉的交易执行词。14 个契约测试守 provenance。
-- 713/714 测试绿;GitHub Actions CI 连续 15+ commits 绿
-- **跨垂类 persona pack** —— `lib/personas/trader-pack/` v0.1.1 scaffold (7 契约测试与 Orallexa Python 端对齐)。字节相同的 wire 格式让 banking + trading + data-science verdict 共享同一 attestation 面。尚未接入 `/api/deliberate` —— v0.2 会加 `?mode=trading` dispatch。
+- 723/724 测试绿;GitHub Actions CI 连续 15+ commits 绿
+- **跨垂类 persona pack (v0.2 LIVE)** —— `lib/personas/trader-pack/` Risk Sizer 已接入 `POST /api/deliberate`,请求体 `{"mode": "trading", "trade": {...}}`。7 个纯 JS 契约测试与 Orallexa Python 对齐 + 10 个 HTTP 边界测试守 FinPos "never emit direction" 铁律直到 wire 层。字节相同的 wire 格式让 banking + trading + data-science verdict 未来共享同一 attestation 面(等 v0.4 hash-chain 落地)。
 - 原生 macOS app 计划 2026 Q3 上线
 
 ## Shadow Agentic Score — 88 ± 4 (n=3, 2026-06-18 晚)

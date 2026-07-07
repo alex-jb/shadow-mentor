@@ -1,6 +1,6 @@
 # Shadow Trader Pack — cross-vertical persona pack
 
-**Version:** 0.1 (scaffold, 2026-07-07) · **Status:** stub — do not import yet from `/api/deliberate`
+**Version:** 0.2 (Risk Sizer wired, 2026-07-07) · **Status:** live at `POST /api/deliberate` with `{"mode": "trading", "trade": {...}}`
 **Origin:** Orallexa (`github.com/alex-jb/orallexa-ai-trading-agent`) — Python LangGraph 5-voice debate (Bull / Bear / Judge / Critic / Polyseer) + FinPos Risk Sizer (v1.2.0 + v1.2.1, 2026-07-07)
 **Target consumer:** Shadow's `/api/deliberate` trading-mode surface adapter per `docs/strategy/roadmap-2026-2028.md` § "Three-vertical roadmap"
 
@@ -29,25 +29,74 @@ The trading personas map 1:1 to Orallexa's Python implementation. The port strat
 
 ---
 
-## What ships in v0.1.1 (scaffold + contract tests)
+## What ships in v0.2 (Risk Sizer live at the HTTP boundary)
 
-Interfaces + Risk Sizer port + 7 passing contract tests. No LLM calls yet. No `/api/deliberate` wire-up yet. This lets the Shadow trading-mode HUD design be validated against the v3 Ambient Council paradigm before we invest in the LangGraph port.
+Interfaces + Risk Sizer port + 7 pure-JS contract tests + 10 HTTP wire-format tests + live dispatch at `/api/deliberate` when `body.mode === "trading"`. No LLM calls yet. The Shadow trading-mode HUD design (v3 Ambient Council) can now hit a real endpoint end-to-end for the pure-computation trading path before we invest in the LangGraph port.
 
-- `types.js` — TypeScript-flavored JSDoc types for `TradingVoice`, `TradingDebateInput`, `TradingDebateOutput`, `TraderRiskSizerInput`, `TraderRiskSizerOutput`. Byte-identical shape to Orallexa's `models/decision.py` and `engine/risk_sizer.py` so cross-language attestation stays byte-identical.
+- `types.js` — JSDoc types for `TradingVoice`, `TradingDebateInput`, `TradingDebateOutput`, `TraderRiskSizerInput`, `TraderRiskSizerOutput`. Byte-identical shape to Orallexa's `models/decision.py` and `engine/risk_sizer.py` so cross-language attestation stays byte-identical.
 - `risk-sizer.js` — direct JS port of `engine/risk_sizer.py:size_position()` with the same 5 contract invariants and same volatility scalars (low=1.0, med=0.7, high=0.4).
-- `test/trader-pack-risk-sizer-contract.test.js` (in Shadow repo root, not inside the pack) — 7 contract tests parallel to Orallexa `tests/test_risk_sizer_contract.py`. Any drift between the JS + Python implementations breaks these.
+- `test/trader-pack-risk-sizer-contract.test.js` — 7 pure-JS contract tests parallel to Orallexa `tests/test_risk_sizer_contract.py`. Any drift between JS + Python breaks both sides.
+- `test/api-deliberate-trading-mode.test.js` — 10 HTTP-boundary contract tests: valid dispatch, never-emit-direction over the wire, no_op → skip envelope, cap enforcement, input validation (missing trade / bad direction / bad regime / missing Kelly fields), banking-mode isolation (bad persona ignored when mode=trading), latency + attestation shape.
 
 Not yet shipped:
-- LangGraph-equivalent Bull / Bear / Judge / Critic / Polyseer JS ports (deferred to v0.3 — HTTP proxy path)
-- Wire-up to `/api/deliberate?mode=trading` (deferred to v0.2)
+- LangGraph-equivalent Bull / Bear / Judge / Critic / Polyseer JS ports (v0.3 — HTTP proxy path to Orallexa live deployment)
+- Cross-vertical attestation (v0.4 — hash-chain continuity + shared reason-code dictionary)
+
+---
+
+## Wire-format contract
+
+```
+POST /api/deliberate
+Content-Type: application/json
+
+{
+  "mode": "trading",
+  "trade": {
+    "direction": "long" | "short" | "no_op",
+    "directional_confidence": 0.72,
+    "bankroll_usd": 10000,
+    "volatility_regime": "low" | "medium" | "high",
+    "kelly_p_win": 0.55,
+    "kelly_avg_win_pct": 0.04,
+    "kelly_avg_loss_pct": 0.02,
+    "current_drawdown_pct": 0.0,
+    "max_kelly_cap": 0.25
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "mode": "trading",
+  "voices": [
+    {
+      "voice": "Risk Sizer",
+      "verdict": "fund",
+      "position_usd": 700.00,
+      "kelly_notional": 1000.00,
+      "volatility_scalar": 0.7,
+      "rationale": "Kelly=1000.00 ...",
+      "metrics": { "direction": "long", ... }
+    }
+  ],
+  "verdict": "fund",
+  "trader_pack_version": "v0.2",
+  "latency_ms": 3,
+  "attestation": null
+}
+```
+
+`verdict` at the envelope level equals the Risk Sizer's verdict (fund/skip). No direction ever appears at the envelope level — that's Contract #1 of the FinPos design and it's asserted in the HTTP tests.
 
 ---
 
 ## Roadmap
 
-- **v0.2** (~1 hour remaining): wire `sizePosition()` into `/api/deliberate?mode=trading` so callers can pass a trade proposal and receive banking-format wire output.
-- **v0.3** (~4 hours): HTTP proxy adapter to Orallexa's live deployment for Judge + Polyseer voices; local implementation for Bull + Bear + Critic.
-- **v0.4** (~2 hours): shared reason-code dictionary between banking + trading verticals; hash-chain attestation cross-vertical continuity.
+- **v0.3** (~4 hours): HTTP proxy adapter to Orallexa's live deployment for Judge + Polyseer voices; local implementation for Bull + Bear + Critic. When `body.trade.request_debate === true`, the 5 LLM voices run before the Risk Sizer and the Sizer receives the Judge's direction as input (not the caller's).
+- **v0.4** (~2 hours): shared reason-code dictionary between banking + trading verticals; hash-chain attestation cross-vertical continuity (`attestation` field will populate).
 - **v0.5** — production-ready release. This is when the Shadow trading-mode Ambient Council HUD demo can be built for the 2026-Q4 pitch.
 
 ---
