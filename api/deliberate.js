@@ -21,6 +21,7 @@ import {
 } from "../lib/provider-diversity.js";
 import { callVoicesDiversely } from "../lib/diverse-caller.js";
 import { sizePosition } from "../lib/personas/trader-pack/risk-sizer.js";
+import { runDSCouncil } from "../lib/personas/ds-pack/run-ds-council.js";
 
 const CLAUDE_MODEL = "claude-sonnet-4-5-20250929";
 const CLAUDE_HAIKU_MODEL = "claude-haiku-4-5-20251001";
@@ -96,6 +97,54 @@ export default async function handler(req, res) {
       modelId: "shadow/trader-pack-risk-sizer@v0.2",
     });
     return res.status(200).json(tradingResponse);
+  }
+
+  // v0.2 ds-pack dispatch (2026-07-07). When mode === "ds", the caller
+  // passes an MLArtifactRef and the pure-computation 5-voice DS
+  // governance council runs. No LLM. Same attestation contract as
+  // banking + trading, so a bank SIEM that trusts one trusts them all.
+  //
+  // Contract invariants:
+  //   1. Conservative aggregation — ANY BLOCK → BLOCK, ANY REWORK →
+  //      REWORK, ALL SHIP → SHIP.
+  //   2. Fair-ML disparate-impact ratio < 0.80 (EEOC 80% rule) always
+  //      BLOCKS regardless of other voices.
+  //   3. Missing required metadata (artifact_id + feature_columns)
+  //      always REWORKS — no ship-review without provenance.
+  if (body.mode === "ds") {
+    const t0DS = Date.now();
+    const dsInput = body.ds ?? {};
+    if (!dsInput.artifact || typeof dsInput.artifact !== "object") {
+      return res.status(400).json({
+        error: "mode=ds requires `ds.artifact` object (MLArtifactRef). See lib/personas/ds-pack/types.js.",
+      });
+    }
+    if (dsInput.lifecycle_stage && !["pre_deploy", "post_deploy_monitor", "decommission"].includes(dsInput.lifecycle_stage)) {
+      return res.status(400).json({
+        error: `ds.lifecycle_stage must be pre_deploy | post_deploy_monitor | decommission, got "${dsInput.lifecycle_stage}"`,
+      });
+    }
+    let dsOut;
+    try {
+      dsOut = runDSCouncil(dsInput);
+    } catch (err) {
+      return res.status(400).json({ error: `DS council input invalid: ${err.message}` });
+    }
+    const dsResponse = {
+      mode: "ds",
+      voices: dsOut.voices,
+      verdict: dsOut.verdict,
+      governance_packet: dsOut.governance_packet,
+      adverse_action_codes: dsOut.adverse_action_codes,
+      ds_pack_version: dsOut.ds_pack_version,
+      latency_ms: Date.now() - t0DS,
+    };
+    dsResponse.attestation = buildAttestation({
+      request: body,
+      response: dsResponse,
+      modelId: "shadow/ds-pack@v0.2",
+    });
+    return res.status(200).json(dsResponse);
   }
 
   const { persona = "compliance", scenario = "lbo", question, context, provider = "anthropic", loan, diverse = false } = body;

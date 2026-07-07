@@ -1,6 +1,6 @@
 # Shadow DS Pack — Data-Science persona pack (third vertical)
 
-**Version:** 0.1 (scaffold, 2026-07-07) · **Status:** interfaces only — do NOT import yet from `/api/deliberate`
+**Version:** 0.2 (5-voice council LIVE, 2026-07-07) · **Status:** live at `POST /api/deliberate` with `{"mode": "ds", "ds": {...}}`
 **Target:** ML/analytics governance for institutions running production data-science pipelines (regulated fraud detection, credit risk scorecards, marketing propensity, insurance underwriting).
 **Sibling packs:** `../trader-pack/` (LIVE at `/api/deliberate?mode=trading` per v1.5.15) · banking mode is the default `/api/deliberate` path (5-voice loan council).
 
@@ -37,27 +37,94 @@ The wire format is identical across all three verticals. `TradingVoice` from `..
 
 ---
 
-## What ships in v0.1 (scaffold)
+## What ships in v0.2 (deterministic 5-voice council LIVE at the HTTP boundary)
 
-Only interfaces. No LLM calls. No governance logic yet. This lets the Shadow HUD design (v3 Ambient Council) be validated against a data-science vertical persona pack before we invest in the port.
+Types + deterministic 5-voice governance council + 13 pure-JS contract tests + 9 HTTP-boundary tests + live dispatch at `/api/deliberate` when `body.mode === "ds"`. **No LLM calls** — the DS vertical is pure computation on the caller-provided `MLArtifactRef`. Same attestation contract as banking + trading.
 
 - `types.js` — JSDoc types for `DSVoice`, `DSDebateInput`, `DSDebateOutput`, `MLArtifactRef`. Byte-identical shape to `../trader-pack/types.js:TradingVoice`.
-- `README.md` (this file) — port strategy + 3-vertical persona-mapping table.
+- `run-ds-council.js` — 5 deterministic voice scorers + conservative verdict resolver (ANY BLOCK → BLOCK; ANY REWORK → REWORK; ALL SHIP → SHIP). See § "Voice triggers" below.
+- `test/ds-pack-council-contract.test.js` — 13 pure-JS contract tests enforcing the 5 named invariants.
+- `test/api-deliberate-ds-mode.test.js` — 9 HTTP-boundary tests: valid dispatch, Fair-ML BLOCK propagation, Ed25519 attestation shape + tamper detection, input validation, banking-mode isolation, governance_packet shape.
 
-Not yet shipped in v0.1:
-- Any real LLM calls
-- Wire-up to `/api/deliberate?mode=ds` (deferred to v0.2 — mirror of `../trader-pack/` v0.2 wire-up)
-- Contract tests analogous to `test/aml-kyc-adversarial.test.js` (deferred to v0.2)
-- MCP tool `shadow_ds_council` (deferred to v0.3)
+Not yet shipped:
+- LLM-augmented voice rationales (v0.3 — narrative layer on top of the deterministic verdicts)
+- MCP tool `shadow_ds_council` as 9th canonical MCP tool (v0.3)
+- MLflow + Great Expectations metadata integration (v0.4)
+
+---
+
+## Voice triggers (v0.2)
+
+Each voice applies one declarative scorer to the `MLArtifactRef`. Thresholds are caller-overridable via `runDSCouncil(input, thresholds)` — defaults documented in `run-ds-council.js:DEFAULT_THRESHOLDS`.
+
+| Voice | Trigger | Default threshold | Verdict when triggered |
+|---|---|---|---|
+| Data Steward | `drift_snapshot.psi` too high | > 0.25 | REWORK |
+| Model Validator | `calibration.brier` too high | > 0.25 | REWORK |
+| Fair-ML Auditor | `disparate_impact.aim_ratio` below 80% rule | < 0.80 | **BLOCK** (EEOC 80% rule) |
+| Reproducibility Critic | `artifact_id` or `feature_columns` missing | present required | REWORK |
+| Ops Realist | `ops_metrics.p95_ms` too slow | > 1000ms | REWORK |
+
+Missing metadata is REWORK, never SHIP. This is the core Reproducibility invariant.
+
+---
+
+## Wire-format contract
+
+```
+POST /api/deliberate
+Content-Type: application/json
+
+{
+  "mode": "ds",
+  "ds": {
+    "artifact": {
+      "artifact_id": "mlflow-run-abc123",
+      "model_type": "xgboost.XGBClassifier",
+      "task": "credit_scoring",
+      "feature_columns": ["fico", "dti", "ltv", "amount", "sector"],
+      "drift_snapshot": { "psi": 0.10 },
+      "calibration": { "brier": 0.15 },
+      "disparate_impact": { "aim_ratio": 0.92 },
+      "ops_metrics": { "p95_ms": 250 }
+    },
+    "lifecycle_stage": "pre_deploy" // optional: pre_deploy | post_deploy_monitor | decommission
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "mode": "ds",
+  "voices": [ /* 5 DSVoice objects */ ],
+  "verdict": "SHIP" | "REWORK" | "BLOCK",
+  "governance_packet": {
+    "drift_status": "SHIP",
+    "model_validation_status": "SHIP",
+    "fair_ml_status": "SHIP",
+    "reproducibility_status": "SHIP",
+    "ops_status": "SHIP"
+  },
+  "adverse_action_codes": ["AA05"], // AA05 populated when Fair-ML BLOCK fires
+  "ds_pack_version": "v0.2",
+  "latency_ms": 2,
+  "attestation": {
+    "model_id": "shadow/ds-pack@v0.2",
+    "signature": "...",
+    ...
+  }
+}
+```
 
 ---
 
 ## Roadmap
 
-- **v0.2** (~2 hours): wire `runDSCouncil()` into `/api/deliberate?mode=ds` so callers can pass an `MLArtifactRef` (model+feature schema+drift metrics) and receive a banking-format wire output with the 5 DS voices firing.
-- **v0.3** (~2 hours): MCP tool `shadow_ds_council` as 9th canonical MCP tool. Analysts inside Cursor / Claude Desktop can ask "does this scorecard clear Fair Lending §1002.6 given the latest drift snapshot?" without curling.
-- **v0.4** (~4 hours): Great Expectations + MLflow integration — DS pack reads run metadata directly from MLflow tracking server + Great Expectations suite results, so the Data Steward voice has real drift + coverage numbers instead of caller-provided ones.
-- **v0.5** — production-ready release. This is when the Shadow "one engine, three verticals" claim is fully demonstrable end-to-end at the mid-tier bank + regional broker-dealer + insurer prospect meetings.
+- **v0.3** (~4 hours): LLM-augmented voice rationales — deterministic scorer above still fires the verdict, but Claude Sonnet re-writes the rationale field with regulator-fluent language (SR 26-2 effective challenge / FFIEC three-step / GDPR Art. 22 as applicable). Adds MCP tool `shadow_ds_council` as the 9th canonical MCP tool.
+- **v0.4** (~4 hours): Great Expectations + MLflow integration — DS pack reads metadata directly from MLflow tracking server + Great Expectations suite results.
+- **v0.5** — production-ready release. This is when the Shadow "one engine, three verticals" claim is demonstrable end-to-end at bank + broker-dealer + insurer prospect meetings.
 
 ---
 
