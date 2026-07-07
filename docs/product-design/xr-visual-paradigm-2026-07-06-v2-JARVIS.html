@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Shadow XR v2 — JARVIS Document HUD</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Shadow XR v2 — JARVIS Document HUD</h1>
+</header>
+<h1 id="shadow-xr-visual-paradigm-v2-jarvis-style-document-hud">Shadow
+XR Visual Paradigm v2 — JARVIS-Style Document HUD</h1>
+<p><strong>Version:</strong> 2.0 · <strong>Prepared:</strong> 2026-07-06
+late night, post-Alex intuition + full-web deep research
+<strong>Supersedes:</strong>
+<code>xr-visual-paradigm-2026-07-06.md</code> v1 (Semicircular
+Tribunal). The tribunal was a museum piece, not a workflow tool. Alex’s
+intuition was correct: what a compliance officer actually needs is
+JARVIS in Iron Man — point at a document, see AI analysis anchored to
+what you’re looking at, voice-invoke deep-dive, dismiss when done.</p>
+<p><strong>Authority:</strong> cross-referenced against XREAL Eye
+product ship data (2025-07 GA, currently available), RealitySummary
+(arXiv 2405.18620 SUI 2025 = closest prior art), Jayse Hansen’s Iron Man
+HUD Bible + UXmatters analysis of Iron Man UX, Bier PDF+ (1993), Wellner
+DigitalDesk, HoloDoc (Li 2019), Paper Trail (Rajaram 2022), Fjeld Fluid
+Beam (1998), and industry web survey confirming zero shipping bank AR
+product does this today.</p>
+<p><strong>Authors:</strong> Alex Xiaoyu Ji (design + implementation,
+product intuition) · Loredana C. Levitchi (regulatory-domain review +
+banking-audience audit)</p>
+<hr />
+<h2 id="why-v1-was-wrong">Why v1 was wrong</h2>
+<p>The v1 Semicircular Tribunal design (5 flat persona verdict cards
+floating in the forward 120° cone + central hash-chain ribbon) was a
+<strong>showcase</strong> design. It puts the reviewer in the <em>center
+of a museum installation</em>. Every publicly-shipped bank AR/VR demo
+since 2014 that has failed the “day 30 utility” test looked like this:
+impressive to walk into for the first time, useless to work with on the
+tenth day.</p>
+<p>Compliance officers do not walk into rooms of floating personas. They
+sit at desks with printed loan applications. They read. They flag. They
+approve or escalate. The XR layer only earns its keep if it makes
+<em>that</em> workflow faster or more auditable, not if it dresses up
+the room.</p>
+<p>Alex’s Iron Man / JARVIS reference is the correct frame. Tony Stark’s
+HUD is workflow tooling for a diagnostic user (the character): you look
+at a target, it labels the threat. You look at engine internals, it
+labels the problem. You never walk around a tribunal of five debating
+Jarvises.</p>
+<p>Delete v1. Start over.</p>
+<hr />
+<h2 id="the-design-document-anchored-verdict-hud">The design:
+Document-Anchored Verdict HUD</h2>
+<h3 id="physical-setup">Physical setup</h3>
+<ul>
+<li>Compliance officer sits at a desk, holds a printed loan application
+(or a laptop showing the PDF).</li>
+<li>Officer wears XREAL One Pro + XREAL Eye add-on (see hardware
+section).</li>
+<li>iPhone or laptop tethered via USB-C DisplayPort-Alt-Mode does the
+compute (Shadow API call + WebXR/native rendering).</li>
+<li>Officer looks at the document. Eye’s forward-facing 12MP camera
+captures a frame. OCR + Shadow API round-trip completes in ~1.5s. HUD
+appears, spatially anchored to the physical document via Eye’s 6DoF
+tracking.</li>
+</ul>
+<h3 id="hud-elements-four-no-more">HUD elements (four, no more)</h3>
+<ol type="1">
+<li><p><strong>Verdict pill</strong> — top-right corner of the document
+in the reviewer’s view. Colored green (approve), amber (escalate), red
+(block). Contains three-character verdict code (<code>APR</code>,
+<code>ESC</code>, <code>BLK</code>) and confidence-weighted percentage.
+Static; no animation.</p></li>
+<li><p><strong>Five collapsed voice cards</strong> — right column,
+stacked vertically outside the document’s right edge. Each card shows
+the voice name + verdict pill only. Expand one via voice command
+(“explain the compliance voice” or gesture pinch on the card) to reveal
+the full rationale + AA code + citation.</p></li>
+<li><p><strong>Attestation status pill</strong> — bottom-right corner of
+the document. Green checkmark when the Ed25519 signature verifies + hash
+chain intact + dictionary hash matches. Red X when any check fails.
+Voice command “show me the audit trail” opens a full-screen chain
+traversal in a second scene (this is the <em>only</em> place where the
+walk-around 3D hash-chain from the v1 design still lives — as an opt-in
+second scene, not a persistent presence).</p></li>
+<li><p><strong>Optional inline AML/KYC flag callouts</strong> — when the
+AML/KYC voice returns a flag on a specific line of the document
+(borrower’s declared income, listed collateral, source of funds), a
+small icon anchors to that line with a subtle callout arrow. Alex to
+test on-device whether 8pt loan text can be tracked accurately enough at
+40cm viewing distance; if not, drop the per-line callouts and put the
+AML/KYC flags at the top of the compliance voice card instead. This is
+the one gamble in the design — the rest is solid.</p></li>
+</ol>
+<h3 id="what-is-not-in-the-hud">What is NOT in the HUD</h3>
+<ul>
+<li>No walk-around 3D hash-chain ribbon <em>persistent in the
+scene</em>. (Available on voice command as a separate opt-in view.)</li>
+<li>No floating persona avatars, no persona semicircle, no room-scale
+tribunal.</li>
+<li>No 3D Gaussian Splatting ambient. No decorative geometry. No
+animated transitions.</li>
+<li>No text density that would require the reviewer to squint at
+40cm.</li>
+</ul>
+<h3 id="the-jarvis-discipline">The JARVIS discipline</h3>
+<p>Iron Man’s HUD is deliberately <em>over-cluttered</em> for cinematic
+effect. Every serious HUD-UX critique (UXmatters, Jayse Hansen’s own
+postmortems, Medium’s “Redesigning JARVIS UX” 2021) reaches the same
+conclusion: real HUDs work when they surface <em>only</em> what the user
+needs <em>at the moment they need it</em>, and fade away otherwise. The
+JARVIS aesthetic (semi-transparent, ambient status, voice-invoked
+drill-down, content-anchored) is copied; the JARVIS cluttering is
+<em>not</em> copied.</p>
+<p>Practical rules:</p>
+<ul>
+<li><strong>Everything is dismissable.</strong> Turn head away → HUD
+fades. Look back at doc → HUD returns. No modal takeover.</li>
+<li><strong>Voice is optional.</strong> Every action possible via voice
+is also possible via pinch gesture on the visible card. No voice-only
+affordance for the executive demo (Dean + VP may not want to speak
+commands in a demo room with an audience).</li>
+<li><strong>The document is primary.</strong> HUD elements live at the
+periphery of the document, never overlap the document text. The reviewer
+reads the doc, and the HUD gives them a running commentary at the
+edges.</li>
+<li><strong>Fade timings.</strong> HUD elements fade in over 300ms when
+a document is recognized, fade out over 500ms when the head turns away
+for &gt;2 seconds. No hard on/off.</li>
+</ul>
+<hr />
+<h2 id="hardware-pipeline-corrected-from-v1">Hardware pipeline
+(corrected from v1)</h2>
+<h3 id="the-critical-purchase-xreal-eye-add-on-99">The critical
+purchase: XREAL Eye add-on ($99)</h3>
+<p>XREAL Eye is the modular camera + 6DoF anchoring accessory for XREAL
+One and One Pro. 1.5g clip-in module. 12MP RGB sensor. 1080p60 video.
+Native 6DoF spatial anchoring on-device via X1 chip. <strong>General
+availability since July 2025.</strong> Ships from
+<code>us.shop.xreal.com/products/xreal-eye</code> in July 2026.</p>
+<p>Without Eye, the XREAL One Pro is display-only and has no camera.
+Alex’s JARVIS design <em>requires</em> a forward-facing camera for
+document OCR + spatial anchoring. <strong>Do not defer this purchase. It
+is $99 and it is the hardware that makes the whole design
+work.</strong></p>
+<h3 id="full-stack">Full stack</h3>
+<ul>
+<li><strong>XREAL One Pro</strong> ($599) — already purchased by
+Loredana 2026-07-06</li>
+<li><strong>XREAL Eye</strong> ($99) — buy immediately; ships 2-4
+business days</li>
+<li><strong>Host device</strong> — iPhone 17 or MacBook Pro. iPhone runs
+Shadow client app that receives Eye’s camera feed via Beam Pro OR wired
+camera capture via USB-C. MacBook Pro is the fallback host.</li>
+<li><strong>Total additional cost from v1 plan: $99</strong></li>
+</ul>
+<h3 id="what-we-do-not-need">What we do NOT need</h3>
+<ul>
+<li>No Meta Quest 3S backup. The Quest 3S is a VR headset with
+passthrough; it looks like a headset in the reviewer’s hand + on their
+face. JARVIS eyeglass aesthetic is broken. Delete from the plan.</li>
+<li>No Meta Ray-Ban Display alternative purchase. Its 20° monocular
+display is too small for the 4-element HUD.</li>
+<li>No Vision Pro purchase. $3,699 breaks the “commodity hardware banks
+can buy today” narrative.</li>
+</ul>
+<h3 id="the-two-layer-honest-demo-from-web-research-recommendation">The
+two-layer honest demo (from web research recommendation)</h3>
+<p>Rather than pretending the entire pipeline runs on-glass compute,
+Alex demos in two layers, transparently:</p>
+<p><strong>Layer 1 (fully real, happens live)</strong>: iPhone camera →
+OCR → Shadow API round-trip → attestation verification. Reviewer sees
+the iPhone screen with the real 5-voice verdict, the real signed
+attestation, the real hash-chain integrity check.</p>
+<p><strong>Layer 2 (glass HUD, live but replaying pre-tested
+capture)</strong>: Alex takes the XREAL One Pro + Eye and shows the
+reviewer the same document being scanned + the HUD appearing anchored to
+the physical doc. This is <em>not</em> faked — it’s a fresh capture on
+the day of the demo — but it is a second capture of the same document,
+not a live re-run of the entire API pipeline. This avoids the risk that
+a network hiccup during the demo makes the glasses appear broken.</p>
+<p>Frame the two layers to the audience: <strong>“The verdict, the
+attestation, and the citation chain are all live in Layer 1. The glasses
+HUD is the target platform — today it tethers to a phone, tomorrow it
+runs on-glass. Here’s what it looks like now.”</strong> This is honest
+and it invites the Dean and VP to ask “when does on-glass ship?” — which
+is the correct future-work conversation to have.</p>
+<hr />
+<h2 id="roadmap-update">Roadmap update</h2>
+<h3 id="immediate-before-hardware-arrives-2026-07-11">Immediate (before
+hardware arrives 2026-07-11)</h3>
+<ul>
+<li><strong>Buy XREAL Eye</strong> on
+<code>us.shop.xreal.com/products/xreal-eye</code>. Alex or Loredana —
+whoever can put $99 on their card fastest. Amazon or XREAL direct.</li>
+<li><strong>Draft the HUD scene JSON</strong> (this document has enough
+spec to guide implementation)</li>
+<li><strong>Prototype OCR pipeline</strong> on the iPhone or Mac side
+using <code>VisionKit VNRecognizeTextRequest</code> (Apple’s built-in
+OCR is state-of-the-art, private, on-device, free)</li>
+</ul>
+<h3 id="preflight-2026-07-07-to-2026-07-10-without-hardware">Preflight
+(2026-07-07 to 2026-07-10, without hardware)</h3>
+<ul>
+<li>WebXR emulator dry run of the HUD scene (Chrome DevTools Sensors →
+VR profile)</li>
+<li>OCR pipeline hooked up to the Shadow API — verify the round-trip
+completes in &lt;2s on Wi-Fi, &lt;3s on cellular</li>
+<li>Voice-command prototype using Web Speech API — verify “explain the
+compliance voice” reliably parses in a quiet room</li>
+</ul>
+<h3 id="on-device-2026-07-14-to-2026-07-18">On-device (2026-07-14 to
+2026-07-18)</h3>
+<ul>
+<li>Session 1: Eye + One Pro standalone test with a real printed loan
+doc (Session 1 replaces v1’s “standalone baseline” session)</li>
+<li>Session 2: HUD rendering test with all 4 elements</li>
+<li>Session 3: Two-layer demo dress rehearsal</li>
+<li>Session 4: Failure mode red team (network hiccup, camera occlusion,
+HUD anchor drift)</li>
+<li>Session 5: 8pt inline AML/KYC flag callouts — accuracy test. If
+per-line tracking is unreliable, drop that HUD element gracefully.</li>
+</ul>
+<h3
+id="executive-dean-vice-provost-demo-late-july-or-early-august">Executive
+Dean + Vice-Provost demo (late July or early August)</h3>
+<ul>
+<li>Layer 1 + Layer 2 as described above.</li>
+<li>Bring a paper loan application printed on 20lb standard paper. Do
+not rely on office WiFi — pin the document under a small light
+source.</li>
+<li>Have a MacBook fallback for Layer 2 in case XREAL One Pro tethering
+to the iPhone has a driver issue on the day.</li>
+</ul>
+<hr />
+<h2
+id="why-this-design-is-defensible-under-loras-regulatory-domain-scrutiny">Why
+this design is defensible under Lora’s regulatory-domain scrutiny</h2>
+<ul>
+<li>Bank counsel opens the demo and sees the <em>same document layout
+they would read on paper</em>. The HUD annotates. It does not
+replace.</li>
+<li>The verdict pill uses the same three verdict codes Shadow’s API
+already returns. No new taxonomy invented for the AR layer.</li>
+<li>The attestation status pill maps to <code>verifyAttestation()</code>
++ <code>verifyChain()</code> + <code>dictionary_hash</code> binding.
+Every green checkmark corresponds to a passing test in
+<code>test/attestation.test.js</code>,
+<code>test/attestation-chain.test.js</code>, and
+<code>test/dictionary-hash-binding.test.js</code>.</li>
+<li>The 5 voice cards match the runtime persona list from
+<code>lib/prompts.js</code>.</li>
+<li>The AML/KYC per-line callouts (if shipped) map to the 32 adversarial
+tests in <code>test/aml-kyc-adversarial.test.js</code> and specifically
+respect the BSA §5318(g)(2) tipping-off boundary (borrower-facing
+rationale never names the specific SAR flag).</li>
+</ul>
+<p>Every visual claim in the HUD is backed by a specific runtime test
+and a specific regulatory citation. This is the discipline Loredana’s
+BRD Source Separation Principle demands.</p>
+<hr />
+<h2 id="what-changes-in-the-july-14-xreal-one-pro-test-protocol">What
+changes in the July 14 XREAL One Pro test protocol</h2>
+<p>The protocol at
+<code>docs/xreal-one-pro-test-protocol/README.md</code> was written on
+the (incorrect) assumption of standalone rendering + a persona
+semicircle scene. It needs to be updated to reflect:</p>
+<ol type="1">
+<li>Hardware pipeline is XREAL Eye add-on + One Pro + iPhone/Mac tether.
+Not standalone.</li>
+<li>Scene is document-anchored HUD, not persona semicircle.</li>
+<li>Phase B session pass criteria change to reflect the HUD:
+<ul>
+<li><strong>B1 replaced</strong>: standalone → tethered baseline. Cold
+load &lt; 3s from Eye capture to HUD render. HUD anchor drift &lt; 5mm
+at 40cm document distance over 30s.</li>
+<li><strong>B2 replaced</strong>: 5-personas-render → 4-element HUD
+(verdict pill + collapsed voice cards + attestation pill + optional
+AML/KYC callouts). Pass criteria: all 4 render, voice command expands
+cards reliably, HUD dismisses on head-turn.</li>
+<li><strong>B3 unchanged</strong>: 4-case verdict lattice still runs
+through the same case studies.</li>
+<li><strong>B4 replaced</strong>: 8-min executive rehearsal → 5-min
+executive rehearsal (the JARVIS HUD makes the demo shorter because there
+is less to explain).</li>
+<li><strong>B5 unchanged</strong>: failure mode red-team.</li>
+</ul></li>
+</ol>
+<p>Alex will refresh the test protocol document in a follow-on commit
+tonight.</p>
+<hr />
+<h2 id="reviewer-notes-for-loredana">Reviewer notes for Loredana</h2>
+<ol type="1">
+<li><strong>Alex’s original intuition was correct and my v1 tribunal
+design was wrong.</strong> The JARVIS-style document HUD is a workflow
+tool, not a museum installation. This is a better design for the Dean +
+VP audience and, more importantly, for actual bank compliance
+officers.</li>
+<li><strong>The XREAL Eye add-on is a $99 purchase that unlocks the
+entire design.</strong> Please tell me whether you want to add it to
+your order (same XREAL merchant account) or whether I should buy it on
+my end so it ships to your address in time for the 7/11 hardware
+landing. Either works.</li>
+<li><strong>The design uses 5 voice cards but only expands one at a
+time.</strong> Your BRD Source Separation Principle is preserved: every
+visible verdict + rationale + AA code + citation traces to a specific
+test file and a specific regulation. Nothing is invented for the AR
+layer.</li>
+<li><strong>The AML/KYC per-line callouts are the one gamble in the
+design.</strong> If on-device testing shows they drift or misalign on
+dense 8pt text, we drop them cleanly and put the flags at the top of the
+compliance voice card. Not a critical failure.</li>
+<li><strong>The Meta Quest 3S backup is off the plan.</strong> VR
+headset aesthetic breaks the JARVIS eyeglass framing. If XREAL fails on
+the day, we degrade to a MacBook + Chrome window running the same WebXR
+scene as a 2D preview. Honest fallback.</li>
+</ol>
+<hr />
+<h2 id="contact">Contact</h2>
+<ul>
+<li>Alex Xiaoyu Ji · xji1@mail.yu.edu — design + implementation, HUD
+scene, OCR pipeline</li>
+<li>Loredana C. Levitchi · [email verify] — regulatory-domain review,
+voice card content, per-line callout accuracy audit</li>
+<li>Hieu Ngo, PhD · Yeshiva Katz School — XR pedagogical scaffolding
+(IEEE VR co-author)</li>
+</ul>
+<p><em>This design doc supersedes v1 and is a public artifact of
+<code>shadow-mentor</code> (MIT). If any claim about XREAL Eye
+availability, JARVIS UX literature, or the two-layer demo pattern is
+outdated, please open an issue on the repository.</em></p>
+</body>
+</html>
