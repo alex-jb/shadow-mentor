@@ -1,0 +1,601 @@
+x_predicted_probability,y_empirical_frequency,z_week_offset,persona,bin_count
+0.05,0.0410,-11,Credit Fundamentals,64
+0.15,0.1399,-11,Credit Fundamentals,95
+0.25,0.2488,-11,Credit Fundamentals,125
+0.35,0.3343,-11,Credit Fundamentals,154
+0.45,0.4369,-11,Credit Fundamentals,185
+0.55,0.5339,-11,Credit Fundamentals,185
+0.65,0.6388,-11,Credit Fundamentals,154
+0.75,0.7448,-11,Credit Fundamentals,125
+0.85,0.8534,-11,Credit Fundamentals,95
+0.95,0.9483,-11,Credit Fundamentals,65
+0.05,0.0425,-10,Credit Fundamentals,64
+0.15,0.1381,-10,Credit Fundamentals,95
+0.25,0.2379,-10,Credit Fundamentals,125
+0.35,0.3341,-10,Credit Fundamentals,154
+0.45,0.4335,-10,Credit Fundamentals,185
+0.55,0.5414,-10,Credit Fundamentals,185
+0.65,0.6371,-10,Credit Fundamentals,154
+0.75,0.7389,-10,Credit Fundamentals,125
+0.85,0.8520,-10,Credit Fundamentals,95
+0.95,0.9499,-10,Credit Fundamentals,65
+0.05,0.0529,-9,Credit Fundamentals,64
+0.15,0.1519,-9,Credit Fundamentals,95
+0.25,0.2491,-9,Credit Fundamentals,125
+0.35,0.3427,-9,Credit Fundamentals,154
+0.45,0.4384,-9,Credit Fundamentals,185
+0.55,0.5426,-9,Credit Fundamentals,185
+0.65,0.6372,-9,Credit Fundamentals,154
+0.75,0.7501,-9,Credit Fundamentals,125
+0.85,0.8512,-9,Credit Fundamentals,95
+0.95,0.9447,-9,Credit Fundamentals,65
+0.05,0.0452,-8,Credit Fundamentals,64
+0.15,0.1415,-8,Credit Fundamentals,95
+0.25,0.2461,-8,Credit Fundamentals,125
+0.35,0.3318,-8,Credit Fundamentals,154
+0.45,0.4420,-8,Credit Fundamentals,185
+0.55,0.5400,-8,Credit Fundamentals,185
+0.65,0.6360,-8,Credit Fundamentals,154
+0.75,0.7375,-8,Credit Fundamentals,125
+0.85,0.8434,-8,Credit Fundamentals,95
+0.95,0.9474,-8,Credit Fundamentals,65
+0.05,0.0415,-7,Credit Fundamentals,64
+0.15,0.1391,-7,Credit Fundamentals,95
+0.25,0.2414,-7,Credit Fundamentals,125
+0.35,0.3435,-7,Credit Fundamentals,154
+0.45,0.4419,-7,Credit Fundamentals,185
+0.55,0.5400,-7,Credit Fundamentals,185
+0.65,0.6378,-7,Credit Fundamentals,154
+0.75,0.7349,-7,Credit Fundamentals,125
+0.85,0.8454,-7,Credit Fundamentals,95
+0.95,0.9483,-7,Credit Fundamentals,65
+0.05,0.0513,-6,Credit Fundamentals,64
+0.15,0.1450,-6,Credit Fundamentals,95
+0.25,0.2465,-6,Credit Fundamentals,125
+0.35,0.3375,-6,Credit Fundamentals,154
+0.45,0.4405,-6,Credit Fundamentals,185
+0.55,0.5368,-6,Credit Fundamentals,185
+0.65,0.6379,-6,Credit Fundamentals,154
+0.75,0.7470,-6,Credit Fundamentals,125
+0.85,0.8513,-6,Credit Fundamentals,95
+0.95,0.9405,-6,Credit Fundamentals,65
+0.05,0.0496,-5,Credit Fundamentals,64
+0.15,0.1361,-5,Credit Fundamentals,95
+0.25,0.2358,-5,Credit Fundamentals,125
+0.35,0.3444,-5,Credit Fundamentals,154
+0.45,0.4408,-5,Credit Fundamentals,185
+0.55,0.5382,-5,Credit Fundamentals,185
+0.65,0.6341,-5,Credit Fundamentals,154
+0.75,0.7423,-5,Credit Fundamentals,125
+0.85,0.8478,-5,Credit Fundamentals,95
+0.95,0.9478,-5,Credit Fundamentals,65
+0.05,0.0422,-4,Credit Fundamentals,64
+0.15,0.1483,-4,Credit Fundamentals,95
+0.25,0.2417,-4,Credit Fundamentals,125
+0.35,0.3383,-4,Credit Fundamentals,154
+0.45,0.4373,-4,Credit Fundamentals,185
+0.55,0.5369,-4,Credit Fundamentals,185
+0.65,0.6417,-4,Credit Fundamentals,154
+0.75,0.7332,-4,Credit Fundamentals,125
+0.85,0.8457,-4,Credit Fundamentals,95
+0.95,0.9493,-4,Credit Fundamentals,65
+0.05,0.0503,-3,Credit Fundamentals,64
+0.15,0.1385,-3,Credit Fundamentals,95
+0.25,0.2318,-3,Credit Fundamentals,125
+0.35,0.3397,-3,Credit Fundamentals,154
+0.45,0.4402,-3,Credit Fundamentals,185
+0.55,0.5291,-3,Credit Fundamentals,185
+0.65,0.6273,-3,Credit Fundamentals,154
+0.75,0.7359,-3,Credit Fundamentals,125
+0.85,0.8454,-3,Credit Fundamentals,95
+0.95,0.9519,-3,Credit Fundamentals,65
+0.05,0.0551,-2,Credit Fundamentals,64
+0.15,0.1495,-2,Credit Fundamentals,95
+0.25,0.2417,-2,Credit Fundamentals,125
+0.35,0.3392,-2,Credit Fundamentals,154
+0.45,0.4348,-2,Credit Fundamentals,185
+0.55,0.5316,-2,Credit Fundamentals,185
+0.65,0.6412,-2,Credit Fundamentals,154
+0.75,0.7342,-2,Credit Fundamentals,125
+0.85,0.8404,-2,Credit Fundamentals,95
+0.95,0.9499,-2,Credit Fundamentals,65
+0.05,0.0538,-1,Credit Fundamentals,64
+0.15,0.1420,-1,Credit Fundamentals,95
+0.25,0.2355,-1,Credit Fundamentals,125
+0.35,0.3338,-1,Credit Fundamentals,154
+0.45,0.4376,-1,Credit Fundamentals,185
+0.55,0.5380,-1,Credit Fundamentals,185
+0.65,0.6392,-1,Credit Fundamentals,154
+0.75,0.7297,-1,Credit Fundamentals,125
+0.85,0.8374,-1,Credit Fundamentals,95
+0.95,0.9509,-1,Credit Fundamentals,65
+0.05,0.0476,0,Credit Fundamentals,64
+0.15,0.1432,0,Credit Fundamentals,95
+0.25,0.2343,0,Credit Fundamentals,125
+0.35,0.3307,0,Credit Fundamentals,154
+0.45,0.4352,0,Credit Fundamentals,185
+0.55,0.5271,0,Credit Fundamentals,185
+0.65,0.6329,0,Credit Fundamentals,154
+0.75,0.7408,0,Credit Fundamentals,125
+0.85,0.8335,0,Credit Fundamentals,95
+0.95,0.9410,0,Credit Fundamentals,65
+0.05,0.0345,-11,Risk Officer,64
+0.15,0.1076,-11,Risk Officer,95
+0.25,0.1869,-11,Risk Officer,125
+0.35,0.2747,-11,Risk Officer,154
+0.45,0.3687,-11,Risk Officer,185
+0.55,0.4752,-11,Risk Officer,185
+0.65,0.5697,-11,Risk Officer,154
+0.75,0.6855,-11,Risk Officer,125
+0.85,0.8146,-11,Risk Officer,95
+0.95,0.9422,-11,Risk Officer,65
+0.05,0.0418,-10,Risk Officer,64
+0.15,0.1066,-10,Risk Officer,95
+0.25,0.1914,-10,Risk Officer,125
+0.35,0.2719,-10,Risk Officer,154
+0.45,0.3746,-10,Risk Officer,185
+0.55,0.4672,-10,Risk Officer,185
+0.65,0.5755,-10,Risk Officer,154
+0.75,0.6882,-10,Risk Officer,125
+0.85,0.8081,-10,Risk Officer,95
+0.95,0.9378,-10,Risk Officer,65
+0.05,0.0321,-9,Risk Officer,64
+0.15,0.1201,-9,Risk Officer,95
+0.25,0.1880,-9,Risk Officer,125
+0.35,0.2751,-9,Risk Officer,154
+0.45,0.3695,-9,Risk Officer,185
+0.55,0.4735,-9,Risk Officer,185
+0.65,0.5872,-9,Risk Officer,154
+0.75,0.6899,-9,Risk Officer,125
+0.85,0.8200,-9,Risk Officer,95
+0.95,0.9458,-9,Risk Officer,65
+0.05,0.0440,-8,Risk Officer,64
+0.15,0.1101,-8,Risk Officer,95
+0.25,0.1959,-8,Risk Officer,125
+0.35,0.2844,-8,Risk Officer,154
+0.45,0.3728,-8,Risk Officer,185
+0.55,0.4796,-8,Risk Officer,185
+0.65,0.5891,-8,Risk Officer,154
+0.75,0.7038,-8,Risk Officer,125
+0.85,0.8167,-8,Risk Officer,95
+0.95,0.9457,-8,Risk Officer,65
+0.05,0.0463,-7,Risk Officer,64
+0.15,0.1148,-7,Risk Officer,95
+0.25,0.1979,-7,Risk Officer,125
+0.35,0.2914,-7,Risk Officer,154
+0.45,0.3868,-7,Risk Officer,185
+0.55,0.4853,-7,Risk Officer,185
+0.65,0.5828,-7,Risk Officer,154
+0.75,0.7063,-7,Risk Officer,125
+0.85,0.8241,-7,Risk Officer,95
+0.95,0.9355,-7,Risk Officer,65
+0.05,0.0350,-6,Risk Officer,64
+0.15,0.1166,-6,Risk Officer,95
+0.25,0.2010,-6,Risk Officer,125
+0.35,0.2888,-6,Risk Officer,154
+0.45,0.3897,-6,Risk Officer,185
+0.55,0.4797,-6,Risk Officer,185
+0.65,0.5835,-6,Risk Officer,154
+0.75,0.6956,-6,Risk Officer,125
+0.85,0.8113,-6,Risk Officer,95
+0.95,0.9358,-6,Risk Officer,65
+0.05,0.0346,-5,Risk Officer,64
+0.15,0.1256,-5,Risk Officer,95
+0.25,0.2021,-5,Risk Officer,125
+0.35,0.2843,-5,Risk Officer,154
+0.45,0.3840,-5,Risk Officer,185
+0.55,0.4807,-5,Risk Officer,185
+0.65,0.5918,-5,Risk Officer,154
+0.75,0.7029,-5,Risk Officer,125
+0.85,0.8251,-5,Risk Officer,95
+0.95,0.9327,-5,Risk Officer,65
+0.05,0.0403,-4,Risk Officer,64
+0.15,0.1140,-4,Risk Officer,95
+0.25,0.2078,-4,Risk Officer,125
+0.35,0.2889,-4,Risk Officer,154
+0.45,0.3875,-4,Risk Officer,185
+0.55,0.4876,-4,Risk Officer,185
+0.65,0.5934,-4,Risk Officer,154
+0.75,0.7090,-4,Risk Officer,125
+0.85,0.8248,-4,Risk Officer,95
+0.95,0.9401,-4,Risk Officer,65
+0.05,0.0420,-3,Risk Officer,64
+0.15,0.1280,-3,Risk Officer,95
+0.25,0.2024,-3,Risk Officer,125
+0.35,0.3001,-3,Risk Officer,154
+0.45,0.3901,-3,Risk Officer,185
+0.55,0.4845,-3,Risk Officer,185
+0.65,0.5945,-3,Risk Officer,154
+0.75,0.7149,-3,Risk Officer,125
+0.85,0.8301,-3,Risk Officer,95
+0.95,0.9481,-3,Risk Officer,65
+0.05,0.0378,-2,Risk Officer,64
+0.15,0.1267,-2,Risk Officer,95
+0.25,0.2075,-2,Risk Officer,125
+0.35,0.2964,-2,Risk Officer,154
+0.45,0.4022,-2,Risk Officer,185
+0.55,0.4880,-2,Risk Officer,185
+0.65,0.5935,-2,Risk Officer,154
+0.75,0.7030,-2,Risk Officer,125
+0.85,0.8215,-2,Risk Officer,95
+0.95,0.9412,-2,Risk Officer,65
+0.05,0.0422,-1,Risk Officer,64
+0.15,0.1235,-1,Risk Officer,95
+0.25,0.2133,-1,Risk Officer,125
+0.35,0.3096,-1,Risk Officer,154
+0.45,0.3966,-1,Risk Officer,185
+0.55,0.4978,-1,Risk Officer,185
+0.65,0.6083,-1,Risk Officer,154
+0.75,0.7199,-1,Risk Officer,125
+0.85,0.8301,-1,Risk Officer,95
+0.95,0.9422,-1,Risk Officer,65
+0.05,0.0392,0,Risk Officer,64
+0.15,0.1277,0,Risk Officer,95
+0.25,0.2211,0,Risk Officer,125
+0.35,0.2983,0,Risk Officer,154
+0.45,0.4001,0,Risk Officer,185
+0.55,0.4996,0,Risk Officer,185
+0.65,0.6095,0,Risk Officer,154
+0.75,0.7221,0,Risk Officer,125
+0.85,0.8217,0,Risk Officer,95
+0.95,0.9353,0,Risk Officer,65
+0.05,0.0611,-11,Fair Lending Compliance,64
+0.15,0.1806,-11,Fair Lending Compliance,95
+0.25,0.2908,-11,Fair Lending Compliance,125
+0.35,0.3945,-11,Fair Lending Compliance,154
+0.45,0.5102,-11,Fair Lending Compliance,185
+0.55,0.6024,-11,Fair Lending Compliance,185
+0.65,0.7020,-11,Fair Lending Compliance,154
+0.75,0.7942,-11,Fair Lending Compliance,125
+0.85,0.8723,-11,Fair Lending Compliance,95
+0.95,0.9548,-11,Fair Lending Compliance,65
+0.05,0.0530,-10,Fair Lending Compliance,64
+0.15,0.1698,-10,Fair Lending Compliance,95
+0.25,0.2859,-10,Fair Lending Compliance,125
+0.35,0.4042,-10,Fair Lending Compliance,154
+0.45,0.5122,-10,Fair Lending Compliance,185
+0.55,0.6023,-10,Fair Lending Compliance,185
+0.65,0.7016,-10,Fair Lending Compliance,154
+0.75,0.7925,-10,Fair Lending Compliance,125
+0.85,0.8698,-10,Fair Lending Compliance,95
+0.95,0.9551,-10,Fair Lending Compliance,65
+0.05,0.0519,-9,Fair Lending Compliance,64
+0.15,0.1734,-9,Fair Lending Compliance,95
+0.25,0.2906,-9,Fair Lending Compliance,125
+0.35,0.4080,-9,Fair Lending Compliance,154
+0.45,0.5123,-9,Fair Lending Compliance,185
+0.55,0.6085,-9,Fair Lending Compliance,185
+0.65,0.7118,-9,Fair Lending Compliance,154
+0.75,0.8011,-9,Fair Lending Compliance,125
+0.85,0.8708,-9,Fair Lending Compliance,95
+0.95,0.9651,-9,Fair Lending Compliance,65
+0.05,0.0556,-8,Fair Lending Compliance,64
+0.15,0.1815,-8,Fair Lending Compliance,95
+0.25,0.2884,-8,Fair Lending Compliance,125
+0.35,0.4147,-8,Fair Lending Compliance,154
+0.45,0.5128,-8,Fair Lending Compliance,185
+0.55,0.6173,-8,Fair Lending Compliance,185
+0.65,0.7017,-8,Fair Lending Compliance,154
+0.75,0.7922,-8,Fair Lending Compliance,125
+0.85,0.8808,-8,Fair Lending Compliance,95
+0.95,0.9556,-8,Fair Lending Compliance,65
+0.05,0.0614,-7,Fair Lending Compliance,64
+0.15,0.1772,-7,Fair Lending Compliance,95
+0.25,0.2995,-7,Fair Lending Compliance,125
+0.35,0.4031,-7,Fair Lending Compliance,154
+0.45,0.5131,-7,Fair Lending Compliance,185
+0.55,0.6163,-7,Fair Lending Compliance,185
+0.65,0.7143,-7,Fair Lending Compliance,154
+0.75,0.8043,-7,Fair Lending Compliance,125
+0.85,0.8862,-7,Fair Lending Compliance,95
+0.95,0.9588,-7,Fair Lending Compliance,65
+0.05,0.0555,-6,Fair Lending Compliance,64
+0.15,0.1880,-6,Fair Lending Compliance,95
+0.25,0.2992,-6,Fair Lending Compliance,125
+0.35,0.4142,-6,Fair Lending Compliance,154
+0.45,0.5209,-6,Fair Lending Compliance,185
+0.55,0.6168,-6,Fair Lending Compliance,185
+0.65,0.7105,-6,Fair Lending Compliance,154
+0.75,0.8024,-6,Fair Lending Compliance,125
+0.85,0.8830,-6,Fair Lending Compliance,95
+0.95,0.9679,-6,Fair Lending Compliance,65
+0.05,0.0597,-5,Fair Lending Compliance,64
+0.15,0.1774,-5,Fair Lending Compliance,95
+0.25,0.2992,-5,Fair Lending Compliance,125
+0.35,0.4066,-5,Fair Lending Compliance,154
+0.45,0.5120,-5,Fair Lending Compliance,185
+0.55,0.6181,-5,Fair Lending Compliance,185
+0.65,0.7122,-5,Fair Lending Compliance,154
+0.75,0.7976,-5,Fair Lending Compliance,125
+0.85,0.8845,-5,Fair Lending Compliance,95
+0.95,0.9673,-5,Fair Lending Compliance,65
+0.05,0.0572,-4,Fair Lending Compliance,64
+0.15,0.1809,-4,Fair Lending Compliance,95
+0.25,0.3044,-4,Fair Lending Compliance,125
+0.35,0.4108,-4,Fair Lending Compliance,154
+0.45,0.5135,-4,Fair Lending Compliance,185
+0.55,0.6139,-4,Fair Lending Compliance,185
+0.65,0.7137,-4,Fair Lending Compliance,154
+0.75,0.8013,-4,Fair Lending Compliance,125
+0.85,0.8834,-4,Fair Lending Compliance,95
+0.95,0.9615,-4,Fair Lending Compliance,65
+0.05,0.0552,-3,Fair Lending Compliance,64
+0.15,0.1886,-3,Fair Lending Compliance,95
+0.25,0.2967,-3,Fair Lending Compliance,125
+0.35,0.4138,-3,Fair Lending Compliance,154
+0.45,0.5221,-3,Fair Lending Compliance,185
+0.55,0.6255,-3,Fair Lending Compliance,185
+0.65,0.7167,-3,Fair Lending Compliance,154
+0.75,0.8041,-3,Fair Lending Compliance,125
+0.85,0.8907,-3,Fair Lending Compliance,95
+0.95,0.9662,-3,Fair Lending Compliance,65
+0.05,0.0558,-2,Fair Lending Compliance,64
+0.15,0.1811,-2,Fair Lending Compliance,95
+0.25,0.2972,-2,Fair Lending Compliance,125
+0.35,0.4150,-2,Fair Lending Compliance,154
+0.45,0.5215,-2,Fair Lending Compliance,185
+0.55,0.6174,-2,Fair Lending Compliance,185
+0.65,0.7145,-2,Fair Lending Compliance,154
+0.75,0.7957,-2,Fair Lending Compliance,125
+0.85,0.8779,-2,Fair Lending Compliance,95
+0.95,0.9627,-2,Fair Lending Compliance,65
+0.05,0.0576,-1,Fair Lending Compliance,64
+0.15,0.1866,-1,Fair Lending Compliance,95
+0.25,0.2973,-1,Fair Lending Compliance,125
+0.35,0.4187,-1,Fair Lending Compliance,154
+0.45,0.5216,-1,Fair Lending Compliance,185
+0.55,0.6208,-1,Fair Lending Compliance,185
+0.65,0.7248,-1,Fair Lending Compliance,154
+0.75,0.7974,-1,Fair Lending Compliance,125
+0.85,0.8880,-1,Fair Lending Compliance,95
+0.95,0.9635,-1,Fair Lending Compliance,65
+0.05,0.0691,0,Fair Lending Compliance,64
+0.15,0.1907,0,Fair Lending Compliance,95
+0.25,0.3143,0,Fair Lending Compliance,125
+0.35,0.4150,0,Fair Lending Compliance,154
+0.45,0.5330,0,Fair Lending Compliance,185
+0.55,0.6240,0,Fair Lending Compliance,185
+0.65,0.7144,0,Fair Lending Compliance,154
+0.75,0.8002,0,Fair Lending Compliance,125
+0.85,0.8815,0,Fair Lending Compliance,95
+0.95,0.9584,0,Fair Lending Compliance,65
+0.05,0.0507,-11,Customer Advocate,64
+0.15,0.1475,-11,Customer Advocate,95
+0.25,0.2395,-11,Customer Advocate,125
+0.35,0.3488,-11,Customer Advocate,154
+0.45,0.4474,-11,Customer Advocate,185
+0.55,0.5413,-11,Customer Advocate,185
+0.65,0.6400,-11,Customer Advocate,154
+0.75,0.7439,-11,Customer Advocate,125
+0.85,0.8521,-11,Customer Advocate,95
+0.95,0.9435,-11,Customer Advocate,65
+0.05,0.0421,-10,Customer Advocate,64
+0.15,0.1418,-10,Customer Advocate,95
+0.25,0.2468,-10,Customer Advocate,125
+0.35,0.3480,-10,Customer Advocate,154
+0.45,0.4463,-10,Customer Advocate,185
+0.55,0.5463,-10,Customer Advocate,185
+0.65,0.6420,-10,Customer Advocate,154
+0.75,0.7393,-10,Customer Advocate,125
+0.85,0.8485,-10,Customer Advocate,95
+0.95,0.9551,-10,Customer Advocate,65
+0.05,0.0490,-9,Customer Advocate,64
+0.15,0.1467,-9,Customer Advocate,95
+0.25,0.2458,-9,Customer Advocate,125
+0.35,0.3370,-9,Customer Advocate,154
+0.45,0.4399,-9,Customer Advocate,185
+0.55,0.5463,-9,Customer Advocate,185
+0.65,0.6416,-9,Customer Advocate,154
+0.75,0.7506,-9,Customer Advocate,125
+0.85,0.8482,-9,Customer Advocate,95
+0.95,0.9532,-9,Customer Advocate,65
+0.05,0.0467,-8,Customer Advocate,64
+0.15,0.1425,-8,Customer Advocate,95
+0.25,0.2408,-8,Customer Advocate,125
+0.35,0.3468,-8,Customer Advocate,154
+0.45,0.4397,-8,Customer Advocate,185
+0.55,0.5382,-8,Customer Advocate,185
+0.65,0.6390,-8,Customer Advocate,154
+0.75,0.7419,-8,Customer Advocate,125
+0.85,0.8425,-8,Customer Advocate,95
+0.95,0.9500,-8,Customer Advocate,65
+0.05,0.0517,-7,Customer Advocate,64
+0.15,0.1411,-7,Customer Advocate,95
+0.25,0.2507,-7,Customer Advocate,125
+0.35,0.3465,-7,Customer Advocate,154
+0.45,0.4367,-7,Customer Advocate,185
+0.55,0.5413,-7,Customer Advocate,185
+0.65,0.6340,-7,Customer Advocate,154
+0.75,0.7496,-7,Customer Advocate,125
+0.85,0.8528,-7,Customer Advocate,95
+0.95,0.9549,-7,Customer Advocate,65
+0.05,0.0409,-6,Customer Advocate,64
+0.15,0.1469,-6,Customer Advocate,95
+0.25,0.2414,-6,Customer Advocate,125
+0.35,0.3340,-6,Customer Advocate,154
+0.45,0.4476,-6,Customer Advocate,185
+0.55,0.5434,-6,Customer Advocate,185
+0.65,0.6336,-6,Customer Advocate,154
+0.75,0.7456,-6,Customer Advocate,125
+0.85,0.8511,-6,Customer Advocate,95
+0.95,0.9557,-6,Customer Advocate,65
+0.05,0.0420,-5,Customer Advocate,64
+0.15,0.1411,-5,Customer Advocate,95
+0.25,0.2426,-5,Customer Advocate,125
+0.35,0.3391,-5,Customer Advocate,154
+0.45,0.4357,-5,Customer Advocate,185
+0.55,0.5391,-5,Customer Advocate,185
+0.65,0.6459,-5,Customer Advocate,154
+0.75,0.7429,-5,Customer Advocate,125
+0.85,0.8428,-5,Customer Advocate,95
+0.95,0.9457,-5,Customer Advocate,65
+0.05,0.0560,-4,Customer Advocate,64
+0.15,0.1457,-4,Customer Advocate,95
+0.25,0.2441,-4,Customer Advocate,125
+0.35,0.3456,-4,Customer Advocate,154
+0.45,0.4347,-4,Customer Advocate,185
+0.55,0.5437,-4,Customer Advocate,185
+0.65,0.6400,-4,Customer Advocate,154
+0.75,0.7405,-4,Customer Advocate,125
+0.85,0.8406,-4,Customer Advocate,95
+0.95,0.9438,-4,Customer Advocate,65
+0.05,0.0482,-3,Customer Advocate,64
+0.15,0.1421,-3,Customer Advocate,95
+0.25,0.2473,-3,Customer Advocate,125
+0.35,0.3429,-3,Customer Advocate,154
+0.45,0.4386,-3,Customer Advocate,185
+0.55,0.5339,-3,Customer Advocate,185
+0.65,0.6388,-3,Customer Advocate,154
+0.75,0.7375,-3,Customer Advocate,125
+0.85,0.8428,-3,Customer Advocate,95
+0.95,0.9480,-3,Customer Advocate,65
+0.05,0.0405,-2,Customer Advocate,64
+0.15,0.1381,-2,Customer Advocate,95
+0.25,0.2373,-2,Customer Advocate,125
+0.35,0.3474,-2,Customer Advocate,154
+0.45,0.4457,-2,Customer Advocate,185
+0.55,0.5467,-2,Customer Advocate,185
+0.65,0.6451,-2,Customer Advocate,154
+0.75,0.7457,-2,Customer Advocate,125
+0.85,0.8394,-2,Customer Advocate,95
+0.95,0.9521,-2,Customer Advocate,65
+0.05,0.0474,-1,Customer Advocate,64
+0.15,0.1431,-1,Customer Advocate,95
+0.25,0.2484,-1,Customer Advocate,125
+0.35,0.3448,-1,Customer Advocate,154
+0.45,0.4384,-1,Customer Advocate,185
+0.55,0.5325,-1,Customer Advocate,185
+0.65,0.6427,-1,Customer Advocate,154
+0.75,0.7375,-1,Customer Advocate,125
+0.85,0.8436,-1,Customer Advocate,95
+0.95,0.9501,-1,Customer Advocate,65
+0.05,0.0515,0,Customer Advocate,64
+0.15,0.1504,0,Customer Advocate,95
+0.25,0.2452,0,Customer Advocate,125
+0.35,0.3365,0,Customer Advocate,154
+0.45,0.4361,0,Customer Advocate,185
+0.55,0.5436,0,Customer Advocate,185
+0.65,0.6365,0,Customer Advocate,154
+0.75,0.7373,0,Customer Advocate,125
+0.85,0.8474,0,Customer Advocate,95
+0.95,0.9405,0,Customer Advocate,65
+0.05,0.0600,-11,Macro Contrarian,64
+0.15,0.1719,-11,Macro Contrarian,95
+0.25,0.2877,-11,Macro Contrarian,125
+0.35,0.3980,-11,Macro Contrarian,154
+0.45,0.4940,-11,Macro Contrarian,185
+0.55,0.6011,-11,Macro Contrarian,185
+0.65,0.6902,-11,Macro Contrarian,154
+0.75,0.7904,-11,Macro Contrarian,125
+0.85,0.8711,-11,Macro Contrarian,95
+0.95,0.9602,-11,Macro Contrarian,65
+0.05,0.0562,-10,Macro Contrarian,64
+0.15,0.1686,-10,Macro Contrarian,95
+0.25,0.2900,-10,Macro Contrarian,125
+0.35,0.3937,-10,Macro Contrarian,154
+0.45,0.4987,-10,Macro Contrarian,185
+0.55,0.6005,-10,Macro Contrarian,185
+0.65,0.6983,-10,Macro Contrarian,154
+0.75,0.7872,-10,Macro Contrarian,125
+0.85,0.8710,-10,Macro Contrarian,95
+0.95,0.9500,-10,Macro Contrarian,65
+0.05,0.0593,-9,Macro Contrarian,64
+0.15,0.1678,-9,Macro Contrarian,95
+0.25,0.2779,-9,Macro Contrarian,125
+0.35,0.3899,-9,Macro Contrarian,154
+0.45,0.4895,-9,Macro Contrarian,185
+0.55,0.5955,-9,Macro Contrarian,185
+0.65,0.7003,-9,Macro Contrarian,154
+0.75,0.7800,-9,Macro Contrarian,125
+0.85,0.8733,-9,Macro Contrarian,95
+0.95,0.9596,-9,Macro Contrarian,65
+0.05,0.0497,-8,Macro Contrarian,64
+0.15,0.1781,-8,Macro Contrarian,95
+0.25,0.2849,-8,Macro Contrarian,125
+0.35,0.3907,-8,Macro Contrarian,154
+0.45,0.4937,-8,Macro Contrarian,185
+0.55,0.5995,-8,Macro Contrarian,185
+0.65,0.6917,-8,Macro Contrarian,154
+0.75,0.7798,-8,Macro Contrarian,125
+0.85,0.8677,-8,Macro Contrarian,95
+0.95,0.9499,-8,Macro Contrarian,65
+0.05,0.0542,-7,Macro Contrarian,64
+0.15,0.1652,-7,Macro Contrarian,95
+0.25,0.2735,-7,Macro Contrarian,125
+0.35,0.3882,-7,Macro Contrarian,154
+0.45,0.4974,-7,Macro Contrarian,185
+0.55,0.5862,-7,Macro Contrarian,185
+0.65,0.6933,-7,Macro Contrarian,154
+0.75,0.7869,-7,Macro Contrarian,125
+0.85,0.8729,-7,Macro Contrarian,95
+0.95,0.9637,-7,Macro Contrarian,65
+0.05,0.0572,-6,Macro Contrarian,64
+0.15,0.1768,-6,Macro Contrarian,95
+0.25,0.2784,-6,Macro Contrarian,125
+0.35,0.3846,-6,Macro Contrarian,154
+0.45,0.4945,-6,Macro Contrarian,185
+0.55,0.5909,-6,Macro Contrarian,185
+0.65,0.6864,-6,Macro Contrarian,154
+0.75,0.7872,-6,Macro Contrarian,125
+0.85,0.8618,-6,Macro Contrarian,95
+0.95,0.9499,-6,Macro Contrarian,65
+0.05,0.0591,-5,Macro Contrarian,64
+0.15,0.1632,-5,Macro Contrarian,95
+0.25,0.2768,-5,Macro Contrarian,125
+0.35,0.3783,-5,Macro Contrarian,154
+0.45,0.4901,-5,Macro Contrarian,185
+0.55,0.5973,-5,Macro Contrarian,185
+0.65,0.6867,-5,Macro Contrarian,154
+0.75,0.7726,-5,Macro Contrarian,125
+0.85,0.8709,-5,Macro Contrarian,95
+0.95,0.9487,-5,Macro Contrarian,65
+0.05,0.0622,-4,Macro Contrarian,64
+0.15,0.1647,-4,Macro Contrarian,95
+0.25,0.2718,-4,Macro Contrarian,125
+0.35,0.3894,-4,Macro Contrarian,154
+0.45,0.4829,-4,Macro Contrarian,185
+0.55,0.5940,-4,Macro Contrarian,185
+0.65,0.6777,-4,Macro Contrarian,154
+0.75,0.7816,-4,Macro Contrarian,125
+0.85,0.8627,-4,Macro Contrarian,95
+0.95,0.9569,-4,Macro Contrarian,65
+0.05,0.0591,-3,Macro Contrarian,64
+0.15,0.1740,-3,Macro Contrarian,95
+0.25,0.2706,-3,Macro Contrarian,125
+0.35,0.3895,-3,Macro Contrarian,154
+0.45,0.4868,-3,Macro Contrarian,185
+0.55,0.5873,-3,Macro Contrarian,185
+0.65,0.6778,-3,Macro Contrarian,154
+0.75,0.7732,-3,Macro Contrarian,125
+0.85,0.8634,-3,Macro Contrarian,95
+0.95,0.9603,-3,Macro Contrarian,65
+0.05,0.0511,-2,Macro Contrarian,64
+0.15,0.1695,-2,Macro Contrarian,95
+0.25,0.2778,-2,Macro Contrarian,125
+0.35,0.3868,-2,Macro Contrarian,154
+0.45,0.4810,-2,Macro Contrarian,185
+0.55,0.5860,-2,Macro Contrarian,185
+0.65,0.6859,-2,Macro Contrarian,154
+0.75,0.7746,-2,Macro Contrarian,125
+0.85,0.8578,-2,Macro Contrarian,95
+0.95,0.9520,-2,Macro Contrarian,65
+0.05,0.0506,-1,Macro Contrarian,64
+0.15,0.1718,-1,Macro Contrarian,95
+0.25,0.2745,-1,Macro Contrarian,125
+0.35,0.3809,-1,Macro Contrarian,154
+0.45,0.4781,-1,Macro Contrarian,185
+0.55,0.5761,-1,Macro Contrarian,185
+0.65,0.6835,-1,Macro Contrarian,154
+0.75,0.7756,-1,Macro Contrarian,125
+0.85,0.8653,-1,Macro Contrarian,95
+0.95,0.9535,-1,Macro Contrarian,65
+0.05,0.0548,0,Macro Contrarian,64
+0.15,0.1626,0,Macro Contrarian,95
+0.25,0.2754,0,Macro Contrarian,125
+0.35,0.3701,0,Macro Contrarian,154
+0.45,0.4841,0,Macro Contrarian,185
+0.55,0.5866,0,Macro Contrarian,185
+0.65,0.6775,0,Macro Contrarian,154
+0.75,0.7715,0,Macro Contrarian,125
+0.85,0.8685,0,Macro Contrarian,95
+0.95,0.9485,0,Macro Contrarian,65
