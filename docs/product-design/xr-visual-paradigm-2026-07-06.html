@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Shadow XR Visual Paradigm — Design Rationale</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Shadow XR Visual Paradigm — Design Rationale</h1>
+</header>
+<h1 id="shadow-xr-visual-paradigm-design-rationale">Shadow XR Visual
+Paradigm — Design Rationale</h1>
+<p><strong>Version:</strong> 1.0 · <strong>Prepared:</strong> 2026-07-06
+(late night, post-full-web-deep-research) <strong>Supersedes:</strong>
+the “5 personas floating in semicircle + 4 Flow demos + 3D Gaussian
+Splatting ambient” plan. <strong>Authority:</strong> cross-referenced
+against Citi × 8ninths (2016), Fidelity StockCity postmortem (2014),
+Kraus et al. CGF 2022 immersive-analytics survey, Cordeil ImAxes/IATK,
+Redd 2025 chemistry-VR replication, Flow Immersive published gallery,
+and 2026 Big-4 AI audit market scans.</p>
+<p><strong>Authors:</strong> Alex Xiaoyu Ji (design + implementation) ·
+Loredana C. Levitchi (regulatory-domain review + banking-audience
+audit)</p>
+<hr />
+<h2 id="what-we-are-not-building">What we are NOT building</h2>
+<p>Every publicly-shipped bank AR/VR demo from 2014 through 2026 has
+died in the same trap: <strong>impressive for 30 seconds, useless at day
+30</strong>. Named case studies:</p>
+<ul>
+<li><strong>Fidelity StockCity (2014)</strong> — Oculus SimCity metaphor
+for portfolios. Never shipped consumer.</li>
+<li><strong>Citi Holographic Workstation (2016)</strong> — HoloLens
+3-tier trading dockspace. Piloted, never rolled out.</li>
+<li><strong>JPMorgan Onyx (2022, Decentraland)</strong> — branded lobby.
+Not a workflow tool.</li>
+<li><strong>HSBC × The Sandbox (2022)</strong> — 3×3 metaverse LAND for
+gaming engagement. Marketing.</li>
+<li><strong>Meta Horizon Workrooms</strong> — discontinued 2026-02-16
+after enterprise failure.</li>
+<li><strong>Wells Fargo Together Experience</strong> — Oculus +
+treadmill mall tour. Novelty.</li>
+</ul>
+<p>Cargo-cult 3D pie charts, floating city metaphors, and novelty
+spatial layouts all fail the day-30 utility test. <strong>Do not build
+any of these.</strong></p>
+<hr />
+<h2 id="what-we-are-building">What we ARE building</h2>
+<p>Two academic + industry evidence categories replicate under expert
+scrutiny:</p>
+<ol type="1">
+<li><strong>Spatial arrangement of familiar 2D artifacts</strong> (Flow
+Immersive portfolio panels, Citi 3-tier dockspace, Tableau visionOS
+floating dashboards)</li>
+<li><strong>Embodied outlier / cluster identification</strong> in 3D
+scatter (Kraus et al. CGF 2022, Filho et al. replicated by Redd 2025 in
+<em>J. Chemometrics</em>)</li>
+</ol>
+<p>Shadow’s design combines both plus one specific new claim:</p>
+<blockquote>
+<p>The only 3D element that earns its 3D existence is one that
+visualizes a <em>relationship</em> the 2D UI cannot afford.</p>
+</blockquote>
+<p>For Shadow, that relationship is <strong>cryptographic audit
+provenance</strong> — the hash chain linking every decision back through
+the reason-code dictionary hash to the model version. This has no clean
+2D representation because it is time-ordered + graph-structured +
+signature-bound. Spatializing it gives a bank auditor exactly the “walk
+the chain to inspect a specific link” affordance the 2D UI can’t
+produce.</p>
+<p>Everything else stays flat.</p>
+<hr />
+<h2 id="the-design-semicircular-tribunal">The design: Semicircular
+Tribunal</h2>
+<h3 id="geometry">Geometry</h3>
+<ul>
+<li>Reviewer stands at origin (0, 1.6, 1) looking toward −Z. Room extent
+4×3×4 meters.</li>
+<li><strong>Five persona cards</strong> float in a semicircle at radius
+1.5m, height 1.6m (eye level), spanning −60° to +60° in the reviewer’s
+forward 120° cone.</li>
+<li>Each card is a <strong>flat 2D panel</strong> (approximately 30cm
+wide × 45cm tall in world space, matching a large iPad).</li>
+<li><strong>Central hash-chain ribbon</strong> — the only true 3D
+element — rises vertically at (0, 0.8m to 2.4m, −1.0m). Each link of the
+ribbon corresponds to one prior attestation (24-hour rolling window).
+Reviewer walks toward the ribbon to inspect individual links; walks
+around to see the chain from side view; walks through if the room
+permits.</li>
+</ul>
+<h3 id="persona-card-content">Persona card content</h3>
+<p>Each card shows the same fields as <code>/api/deliberate</code>
+returns per voice:</p>
+<ul>
+<li><strong>Verdict pill</strong> — colored green (approve), amber
+(escalate), red (block)</li>
+<li><strong>Voice name</strong> in header</li>
+<li><strong>Rationale short</strong> — one paragraph</li>
+<li><strong>AA code</strong> if applicable</li>
+<li><strong>Confidence weight</strong> — small numeric badge in the
+corner</li>
+<li><strong>Signature footer</strong> — abbreviated attestation hash
+(first 8 chars)</li>
+</ul>
+<p>Layout is intentionally the same as a printed regulator submission
+page. Familiarity is the point. Bank counsel opens the demo and reads
+the same layout they would read on paper.</p>
+<h3 id="hash-chain-ribbon-the-only-3d-element">Hash-chain ribbon (the
+only 3D element)</h3>
+<ul>
+<li>Vertical column of horizontal ring-segments, one per
+attestation.</li>
+<li>Rings colored to indicate signature-verification status:
+<strong>white/silver = verified</strong>, <strong>red =
+tampered/broken</strong>.</li>
+<li>Ring label shows the attestation timestamp and short signature
+hash.</li>
+<li>Below each ring, a <strong>branch</strong> trails outward if that
+decision has an outstanding compliance flag (AML/KYC or fair-lending
+review). Reviewer follows the branch to a callout showing the flag
+context.</li>
+</ul>
+<p>The chain is the visual signature of Shadow. It is what the demo is
+<em>about</em>.</p>
+<h3 id="what-is-deliberately-not-in-the-scene">What is deliberately NOT
+in the scene</h3>
+<ul>
+<li>No floating 3D scatter plots of loan data (that goes in a
+<em>separate</em> Flow Immersive Brier calibration demo, targeted at the
+Columbia statistics faculty audience, not the Dean + VP).</li>
+<li>No ambient 3D Gaussian Splatting background (too heavy for
+phone-tethered XREAL One Pro; adds no signal).</li>
+<li>No animated persona avatars, gestures, or voice-over synthesis.
+Voice output is via the reviewer’s phone speakers only.</li>
+<li>No stock-city / dashboard-city / any -city metaphor.</li>
+</ul>
+<hr />
+<h2 id="the-hardware-pipeline">The hardware pipeline</h2>
+<h3 id="correction-to-the-2026-07-06-morning-test-protocol">Correction
+to the 2026-07-06 morning test protocol</h3>
+<p><strong>XREAL One Pro is a display peripheral, not a standalone
+computer.</strong> It requires USB-C DisplayPort-Alt-Mode from an iPhone
+15+/16/17 or Android with DP-out or Steam Deck / ROG Ally / Mac / PC.
+The X1 chip handles pose prediction, display stabilization, distortion
+correction; <strong>it does not run WebGL / WebXR / a
+browser</strong>.</p>
+<p><strong>Correction to Phase B test sessions</strong>: standalone
+rendering is impossible. The pipeline is:</p>
+<ul>
+<li><strong>Android phone + Chrome + WebXR + Three.js</strong> →
+HDMI-alt-mode → XREAL One Pro</li>
+<li>Fallback: <strong>Mac + Chrome window (non-WebXR)</strong> cast to
+XREAL One Pro as a 171” 2D virtual screen. Loses head-tracked rendering;
+retains the persona-tribunal layout as a fixed image.</li>
+</ul>
+<p><strong>iPhone Safari does not support WebXR immersive-AR
+mode.</strong> Do not build for iOS Safari.</p>
+<h3 id="rendering-budget-on-android-chrome-tethered">Rendering budget on
+Android + Chrome tethered</h3>
+<ul>
+<li>Three.js scene graph, WebGPU where available (WebGL2 fallback)</li>
+<li>Under 100 draw calls total</li>
+<li>Under 100k triangles total (5 persona cards × ~4k tris each +
+hash-chain 20k tris + reviewer UI 15k tris = ~55k)</li>
+<li>No 3D Gaussian Splatting (mobile CPU-sort drops FPS to 20-30)</li>
+<li>Target 60 fps on Pixel 9 Pro / Samsung S24 Ultra / OnePlus 12</li>
+<li>Fallback path: reduce persona count from 5 to 3, hide chain ring
+branches, drop to 30 fps target</li>
+</ul>
+<h3 id="what-to-buy-in-the-next-5-days">What to buy in the next 5
+days</h3>
+<ul>
+<li><strong>Android host phone</strong> — Pixel 9 Pro ($999) or borrow a
+Samsung S24. Must have USB-C with DisplayPort-Alt-Mode. <strong>Do not
+use iPhone as demo host</strong> (Safari WebXR gap).</li>
+<li><strong>USB-C to XREAL One Pro cable</strong> — included with the
+XREAL purchase, verify Loredana confirms it’s in the box before
+Saturday.</li>
+<li>Optional: <strong>compact Bluetooth controller</strong> for reviewer
+hand-input if MediaPipe Hands is not shipped in the demo.</li>
+</ul>
+<hr />
+<h2 id="what-ships-when">What ships when</h2>
+<ul>
+<li><strong>2026-07-07 (Tue)</strong>: rebuild the WebXR scene against
+the tribunal + hash-chain paradigm (delete the earlier semicircle
+prototype). Target: Chrome DevTools WebXR emulator renders the scene at
+60 fps on a Mac.</li>
+<li><strong>2026-07-08 (Wed)</strong>: package the scene as a Flow
+Immersive-compatible URL. Upload to <code>a.flow.gl</code>. Get share
+URL.</li>
+<li><strong>2026-07-11 (Fri/Sat)</strong>: XREAL One Pro arrives at
+Loredana. Both authors confirm the box includes the DP-alt USB-C
+cable.</li>
+<li><strong>2026-07-13 (Sun)</strong>: Council-for-Slack submit. XREAL
+demo is not on the critical path this weekend.</li>
+<li><strong>2026-07-14 (Mon)</strong> onward: 5-session on-device test
+week per <code>docs/xreal-one-pro-test-protocol/</code> (corrected
+version to reflect Android tethering).</li>
+<li><strong>Late July</strong> (executive Dean + VP demo): live demo
+with the corrected scene, corrected hardware pipeline, corrected
+fallback plan.</li>
+</ul>
+<hr />
+<h2 id="roadmap-after-the-july-demo">Roadmap after the July demo</h2>
+<p><strong>Late 2026</strong>: XREAL Aura ships ($1,500, Fall 2026 per
+XREAL’s Project Aura page). Aura is standalone (Android XR compute
+puck), which lets us drop the phone-tethering constraint. Migration
+cost: minimal, since the scene is already WebXR + Three.js — the Aura
+runs the same Chromium-based Android browser.</p>
+<p><strong>2027</strong>: Anthropic + Apple + Meta smart-glasses
+landings likely reshape the market. Track the space, but do not build
+the pitch around any of it. The pitch is that Shadow runs on
+<strong>commodity AR glasses banks can buy at Best Buy today for
+$599</strong>.</p>
+<p><strong>Publications</strong>: this design directly feeds the IEEE VR
+2027 paper
+(<code>Correspondence/ECC-2026/ieee-vr-2027-abstract-v3-2026-07-06.md</code>).
+Update the Method section (v2 Section 4.5 “Spatial XR layer”) to
+reference this document as the canonical design source.</p>
+<hr />
+<h2 id="reviewer-notes-for-loredana">Reviewer notes for Loredana</h2>
+<ol type="1">
+<li>This document changes the demo from “5 personas floating with 3D
+scatter ambient” to a much more sober “tribunal of 2D verdict cards +
+one true 3D hash-chain ribbon.” I made the change because the full-web
+deep-research on 2014–2026 bank AR/VR shipping products showed that
+every novelty-metaphor demo died in the “day 30” utility test. Sober +
+defensible + academic-evidence-backed is the right posture for the Dean
++ VP audience.</li>
+<li>Please confirm the persona card fields (verdict, rationale, AA code,
+confidence, signature footer) match what you would want a bank counsel
+to see first. If any field should be dropped or added, please
+annotate.</li>
+<li>The XREAL One Pro purchase is still the right call. It is $599
+hardware banks can actually adopt without a procurement cycle. The Aura
+roadmap ($1,500, Fall 2026) is the next-generation story to include in
+the pitch.</li>
+<li>The Android phone requirement is a new constraint I did not flag
+before Saturday’s purchase. If you don’t have a Pixel or a Samsung S24
+on hand, I can borrow one for the demo week.</li>
+<li>I will update
+<code>docs/xreal-one-pro-test-protocol/README.md</code> to reflect the
+tethered rendering pipeline. Phase B sessions become “tethered baseline”
+instead of “standalone baseline”.</li>
+</ol>
+<hr />
+<h2 id="contact">Contact</h2>
+<ul>
+<li>Alex Xiaoyu Ji · xji1@mail.yu.edu — visual + scene + rendering</li>
+<li>Loredana C. Levitchi · [email verify] — regulatory-domain review +
+card content</li>
+<li>Hieu Ngo, PhD · Yeshiva Katz School — XR pedagogical scaffolding
+(IEEE VR co-author)</li>
+</ul>
+<p><em>This design doc is a public artifact of
+<code>shadow-mentor</code> (MIT). Every claim above is cited to a dated
+public source. Please open an issue if any claim is out of
+date.</em></p>
+</body>
+</html>
