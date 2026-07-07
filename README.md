@@ -4,7 +4,7 @@
 
 > **A 5-to-6-voice AI compliance council for regulated lending.** Encode your bank's loan policy in 5 past decisions. Get a signed, attestation-bound verdict in milliseconds. Runs in your VPC. 5-minute install into Claude Desktop, Cursor, or OpenCode via MCP.
 
-[![tests](https://img.shields.io/badge/tests-668%2F669%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-706%2F707%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
 
 ## Regulatory positioning (2026 H2)
 
@@ -187,7 +187,7 @@ Toggle Live mode → click any combo → real 3-voice deliberation in 6-10 secon
 - **MCP server**: `node mcp/server.js` exposes 5 tools (`shadow_loan_council`, `shadow_risk_tools`, `shadow_recall`, `shadow_calibration`, `shadow_scenarios`) for Claude Desktop / Cursor / Zed / OpenCode native tool-use. See `mcp/README.md` for `claude_desktop_config.json` snippet.
 - **Levitchi Mode A integration shipped + tightened (v1.1.1)**: typed risk tools (VaR / ES / concentration / sector / correlation / beta) + 5-voice verdict resolver (block > escalate > approve) + loan input schema with BR thresholds (FICO 700 / DTI 0.36 / LTV 0.80 / VaR 0.12 @ 95%/10d) pinned in drift-detection tests. **v1.1.1: FICO < 700 is a hard block** (not escalate) per Levitchi's policy clarification — credit-eligibility floor is not negotiable.
 - **Procurement-grade citation chain (v1.1+)**: inline `traceability` dict in every `/api/deliberate` response mapping each threshold to BRD vs Addendum vs Risk Appetite Note source. AA01-05 adverse-action codes match CFPB Bulletin 2024-09 model-traceability requirement. `enforceAnalysisOnly()` regex guardrail catches LLM hallucination of trade-execution verbs at council output boundary. 14 contract tests enforce provenance.
-- 154/154 tests green; GitHub Actions CI 15+ consecutive commits green
+- 706/707 tests green (1 skipped: OCR live smoke gated on billing envelope); GitHub Actions CI 100+ consecutive commits green
 - Native macOS app to be built Q3 2026
 
 ## Shadow Agentic Score — 87 ± 3 (n=6) after 4-iteration prompt sweep (2026-06-18 evening)
