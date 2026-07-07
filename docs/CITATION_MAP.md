@@ -1,14 +1,34 @@
 # Regulatory Citation × Persona × Test Map
 
-**Version:** 1.0 · **Generated:** 2026-07-06 · **Framework:** SR 26-2 Tier 3 companion control (effective 2026-04-17)
+**Version:** 1.1 · **Generated:** 2026-07-06 · **Last updated:** 2026-07-07 (4-layer procurement structure + CSV export + CI Python 3.9-3.13) · **Framework:** SR 26-2 Tier 3 companion control (effective 2026-04-17)
 
 **Authority:**
-- Loredana C. Levitchi — BRD + Addenda A/B/C banking domain grounding, regulatory citation review
+- Loredana C. Levitchi — BRD + Addenda A/B/C banking domain grounding, regulatory citation review, 4-layer procurement structure (2026-07-06 Test Stack contribution)
 - Alex Xiaoyu Ji — schema mapping, test coverage extraction, cryptographic attestation binding
 
 **Purpose:** This document is the procurement-audience map from Shadow's runtime personas to (1) the specific regulatory citations each voice is tested against and (2) the exact test files that exercise each citation. Bank counsel opening the repo can trace a regulatory obligation to a Shadow persona to a runtime test, all in one traversal.
 
 **How to read this document:** every row is a triple `<persona, citation, test file>` and represents a defended invariant. If a bank auditor asks *"does Shadow's Fair Lending Compliance voice test the CFPB Bulletin 2024-09 model-traceability requirement?"* the answer is row-lookup, not code archaeology.
+
+**Also available as `docs/CITATION_MAP.csv`** for procurement counsel who want to filter / sort / import into a GRC system.
+
+---
+
+## 0. Recommended procurement format — 4-layer structure
+
+*Structure contributed by Loredana C. Levitchi (2026-07-06 Test Stack package).*
+
+Bank counsel who want to audit Shadow's regulatory posture should read the material in four layers, top-to-bottom. Each layer answers a specific counsel question and points to the underlying artifact.
+
+**Layer 1 — Persona-to-Regulation Mapping.** *"Which Shadow voice tests which regulation?"* Read Section 2 of this document (or `docs/CITATION_MAP.csv` if you prefer a spreadsheet). Every row is `<persona, citation, control objective, exact test file, assertion>`. Nothing is aspirational — every test named here runs in CI on every merge.
+
+**Layer 2 — Canonical Attestation Regression.** *"Is the signed record I'm reviewing untampered?"* Every Shadow decision produces an Ed25519-signed attestation (RFC 8032) with a canonical payload defined in `lib/attestation.js`. The same canonical payload is re-verified byte-for-byte by the Python `shadow_verify` library on Python 3.9-3.13 in CI. Cross-language drift is the load-bearing invariant — see `test/python-verify-cross-lang.test.js` + Python `shadow-verify/tests/`.
+
+**Layer 3 — Evidence Binder.** *"Where is the reproducible proof that CI passed for this specific commit?"* GitHub Actions test log for the pinned commit + npm test output + pytest output + `benchmark/history/SUMMARY.md` for the Shadow Agentic Score history. Every regression in a Layer 1 test blocks the merge gate, so the evidence binder is not aspirational — it is enforced by branch protection.
+
+**Layer 4 — Compliance Narrative.** *"Why does each persona exist and what regulatory risk does it control?"* Read Section 1 (Persona Overview) below. Each persona has one role, one AA-code assignment, and one L3 source document. If counsel wants a longer narrative, see `docs/BRD_ALIGNMENT.md` for the source separation principle.
+
+The 4-layer structure gives counsel four different navigation paths for four different audit questions. Reading only Layer 1 is enough for a rubric-level compliance review. Reading Layer 1 + Layer 4 is enough for procurement approval. Layers 2 + 3 exist for the deeper technical audit that follows sign-on.
 
 ---
 

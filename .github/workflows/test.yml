@@ -7,7 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  node:
+    name: node test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,3 +17,33 @@ jobs:
           node-version: "22"
       - run: npm install
       - run: node --test test/*.test.js
+
+  python:
+    name: python (${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install shadow-verify
+        working-directory: python
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+      - name: Run Python verifier tests (standalone runner)
+        working-directory: python
+        # test_verify.py uses a lightweight @test decorator + main() driver
+        # so it runs without a pytest dep — see file docstring. Exit code
+        # is non-zero on any failure per the file's main() implementation.
+        run: python tests/test_verify.py
+      # Cross-language contract enforcement: the same canonical attestation
+      # payload verified by Node above must verify byte-for-byte by the
+      # Python shadow-verify library across all supported Python versions.
+      # This closes the Layer 2 "Canonical Attestation Regression" gap in
+      # docs/CITATION_MAP.md section 0.
