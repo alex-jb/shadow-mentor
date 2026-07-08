@@ -4,7 +4,20 @@
 
 > **5-到-6 voice 的 AI 合规议会,面向受监管的贷款业务。** 用 5 笔历史决策编码你银行的贷款政策。毫秒级得到一个 signed + attestation-bound 的 verdict。跑在你的 VPC。5 分钟通过 MCP 装进 Claude Desktop / Cursor / OpenCode。
 
-[![tests](https://img.shields.io/badge/tests-770%2F771%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-1161%2F1162%20passing-brightgreen)](./test) [![verdict invariance](https://img.shields.io/badge/verdict%20invariance-10%2F10%20structural%20perturbations-blue)](./test/verdict-invariance.test.js) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+
+## v1.5.36 更新(2026-07-08)
+
+一天内连发 v1.5.31 → v1.5.36 六个版本。**核心改进**:Reg B 2026-07-21 生效前 13 天完成定位调整 · 4 篇 arXiv 2026-06 论文的护城河 · `/api/deliberate` 端点新增采购可见的 3 个字段。
+
+- **[`v1.5.36`](./CHANGELOG.md#v1536)** — 把 v1.5.35 的 `refuse_to_serve` 原语连线进 `/api/deliberate`。当 loan 携带 OFAC / BSA / 法定 / 地理 / 产品资格封锁时,verdict 从 `escalate` 提升到 `refuse_to_serve`。README badge 更新到 1161 tests。
+- **[`v1.5.35`](./CHANGELOG.md#v1535)** — 6 类威胁系统化(arXiv:2606.29142)+ `refuse_to_serve` 原语。区分 `escalate`(合规官有裁量权)与 `refuse_to_serve`(法定/制裁禁止,无裁量权)。
+- **[`v1.5.34`](./CHANGELOG.md#v1534)** — `/api/deliberate` 端点连线 v1.5.32 + v1.5.33。新增 body 字段 `strict_heterogeneity`(拒绝 deliberation 门 HTTP 428)+ `min_providers`。新增 response 字段 `heterogeneity_enforcement` + `reproducibility_manifest`。
+- **[`v1.5.33`](./CHANGELOG.md#v1533)** — 可复现性 manifest 原语(arXiv:2606.08285)。5 轴 JSON + 顶层 `manifest_hash_sha256`。银行 counsel 在考试工作稿里钉 1 个 hash 取代 9 个。
+- **[`v1.5.32`](./CHANGELOG.md#v1532)** — 异构 debate 强制执行(arXiv:2606.19826)。aex-attestation/v1 的第 9 个 append-only 字段。防止单一 provider 部署产生结构性通不过对抗性 peer 防御的签名决策。
+- **[`v1.5.31`](./CHANGELOG.md#v1531)** — Reg B 2026-07-21 final rule 定位调整 + Colorado SB 26-189 映射。**在 Reg B 生效前 13 天上线**。
+
+**test surface**: 1093 → **1161**(+68 tests 全绿)。**aex-attestation/v1 append-only 签名字段**: 8 → **9**。**GitHub Releases**: 11 → **17**。
 
 ## 监管姿势(2026 H2)
 
