@@ -12,6 +12,22 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.26 — GSAR 552.239-7001 provenance disclosure kit (2026-07-08 NY)
+
+Anchors [GSAR 552.239-7001 draft 2026-03-06](https://www.gibsondunn.com/gsa-ai-procurement-rules-would-introduce-new-disclosure-and-use-rights-requirements-for-federal-contractors/), the "Basic Safeguarding of Artificial Intelligence Systems" clause proposed for all GSA MAS vendors offering AI. MAS-Refresh-32 candidate.
+
+Federal contractors (SAIC, Booz Allen, Leidos, ManTech) reselling Shadow into TSP-supervised community banks now have a paste-ready provenance report for their MAS-Refresh-32 responses.
+
+- `bin/gsar-provenance-report.mjs` — CLI + module. Deterministic. Same commit + same `generatedAt` produces byte-identical output.
+- `npm run gsar:report` — convenience script.
+- 7 sections + `report_sha256`: product identification / model provenance (Anthropic + OpenAI + GLM + deterministic pure-computation paths) / data origins (Shadow ships zero training data) / risk assessments (each cites a doc + test file path) / cryptographic evidence (SHA-256 pins for prompts, citation registry, reason-code dict, US-ECOA + EU-GDPR schemas) / test surface / bill of tools (MCP-manifest SBOM endpoint).
+- `docs/GSAR-552-239-7001-PROVENANCE.md` — per-section explanation of what each block answers + how a GSA MAS reviewer verifies it.
+- `test/gsar-provenance-report.test.js` — 16 contract tests. Schema conformance, hash-hex validity, determinism, attestation-field-list completeness (all 13 fields), bill-of-tools 8-tool count.
+
+Test surface 1033 → 1049 (+16).
+
+**Bank buyer this unlocks**: federal contractors reselling into community banks + Alex's own federal AI safety adjacent roles (Public Trust / Tier 2 clearance eligible per brain memory).
+
 ## v1.5.25 — FinCEN NPRM 2026-04-07 alignment (2026-07-08 NY)
 
 Anchors the [joint FinCEN + Fed + OCC + FDIC NPRM 2026-04-07](https://www.fincen.gov/news/news-releases/fincen-proposes-rule-fundamentally-reform-financial-institution-programs), the largest BSA update since USA PATRIOT Act. Comment closed 2026-06-09. Final rule expected late 2026 / early 2027.

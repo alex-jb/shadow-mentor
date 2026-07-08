@@ -1,6 +1,6 @@
 {
   "name": "shadow-mentor",
-  "version": "1.5.25",
+  "version": "1.5.26",
   "description": "Shadow — on-device AI council and audit chain for regulated banking workflows",
   "license": "MIT",
   "author": "Alex Xiaoyu Ji <xji1@mail.yu.edu>",
@@ -22,6 +22,7 @@
     "install:mcp": "node bin/install.mjs",
     "demo:attestation": "node bin/attestation-acceptance-demo.mjs",
     "keygen:attestation": "node bin/generate-attestation-keypair.mjs",
+    "gsar:report": "node bin/gsar-provenance-report.mjs",
     "health": "curl -s http://localhost:3000/api/health",
     "calibration": "curl -s 'http://localhost:3000/api/calibration?persona=compliance'",
     "mcp": "node mcp/server.js"
