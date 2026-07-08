@@ -12,6 +12,23 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.36 — refuse_to_serve wire-in + API surface + README refresh (2026-07-08 NY)
+
+Wires the v1.5.35 `refuse_to_serve` primitive into the `/api/deliberate` LBO + loan flow so bank counsel testing the API sees the distinction between `escalate` and `refuse_to_serve` at the response body level. Prior to this ship, `runLoanCouncil()` returned `escalate` for OFAC/BSA/statutory/geographic/product bars — factually wrong per arXiv:2606.29142 systematization.
+
+- `api/deliberate.js` — wire-in.
+  - When `scenario === "lbo"` + `loan` is valid, after `runLoanCouncil()` computes the base verdict, `maybeRefuseToServe({loan, amlKycFindings})` is checked.
+  - `amlKycFindings.findings` is composed from `loan.aml_flags[]`. Accepts both string entries (`"OFAC_SDN_MATCH"`) and object entries (`{rule_id: "OFAC_SDN_MATCH"}`).
+  - When refusal is warranted, `response.verdict` is promoted from `escalate` (or whatever runLoanCouncil returned) to `"refuse_to_serve"`, and `response.refuse_to_serve` carries the full structured response (category + citations + borrower-facing notice + internal audit note + `escalation_valid: false`).
+- `test/api-deliberate-refuse-to-serve.test.js` — 8 contract tests. Wire-in for each of the 5 refusal categories, OFAC precedence, clean-loan pass-through, alternate `aml_flags[]` entry shapes.
+- `README.md` — badge refresh: tests 937/938 → 1161/1162 (matches full suite). New "What's new in v1.5.36" section covers the 6-release arc v1.5.31 → v1.5.36 from today with links.
+
+**Back-compat**: pre-v1.5.36 callers whose loans don't carry `aml_flags[]`, `product_ineligibility_flag`, `geographic_ineligibility_flag`, or `statutory_ineligibility_flag` see zero behavior change. The refuse-to-serve promotion is opt-in via loan payload shape.
+
+**Test surface 1153 → 1161 (+8). 1161/1162 pass, 1 skip existing, 0 fail.**
+
+**Procurement pitch**: bank counsel demo-ing the API can now paste `loan: { fico: 720, aml_flags: ["OFAC_SDN_MATCH"] }` into the request body and see `verdict: "refuse_to_serve"` in the response with the full non-discretionary citation chain. Prior to today's ship, the same payload returned `verdict: "escalate"` — factually wrong for a §5318 tipping-off case.
+
 ## v1.5.35 — Threat model systematization + refuse_to_serve primitive (2026-07-08 NY)
 
 Anchors [arXiv:2606.29142](https://arxiv.org/abs/2606.29142) — "Agent Security Meets Regulatory Reality: Systematization of Autonomous-Agent Threats in Regulated Financial Systems" (Mohan/Srinivasa, 2026-06-28). Distinguishes the two adverse-response classes that pre-v1.5.35 Shadow conflated: `escalate` (human discretion exists) vs `refuse_to_serve` (statute/sanctions bar service, no discretion).

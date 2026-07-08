@@ -4,7 +4,18 @@
 
 > **The post-classifier audit layer for regulated lending.** 5 auditable regulatory chains-of-reasoning per decision. Persona-prompt-binding attestation (Ed25519) + citation-registry SHA-256 + hash-chain provenance. Runs in your VPC. 5-minute install into Claude Desktop, Cursor, or OpenCode via MCP.
 
-[![tests](https://img.shields.io/badge/tests-937%2F938%20passing-brightgreen)](./test) [![verdict invariance](https://img.shields.io/badge/verdict%20invariance-10%2F10%20structural%20perturbations-blue)](./test/verdict-invariance.test.js) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-1161%2F1162%20passing-brightgreen)](./test) [![verdict invariance](https://img.shields.io/badge/verdict%20invariance-10%2F10%20structural%20perturbations-blue)](./test/verdict-invariance.test.js) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+
+## What's new in v1.5.36 (2026-07-08)
+
+Continuing arc from v1.5.31→v1.5.36 (6 releases in one day). Ships Reg B 7/21 pivot + arXiv-anchored moats + full API surface for procurement demos.
+
+- **[`v1.5.36`](./CHANGELOG.md#v1536--refuse_to_serve-wire-in--api-surface--2026-07-08-ny)** — wires `refuse_to_serve` (v1.5.35 primitive per arXiv:2606.29142) into `/api/deliberate` LBO+loan flow. Verdict promoted from `escalate` → `refuse_to_serve` when loan carries OFAC/BSA/statutory/geographic/product bar. README badge updated to 1161 tests.
+- **[`v1.5.35`](./CHANGELOG.md#v1535)** — 6-category threat systematization + `refuse_to_serve` primitive.
+- **[`v1.5.34`](./CHANGELOG.md#v1534)** — `/api/deliberate` wire-in for strict_heterogeneity gate + reproducibility_manifest.
+- **[`v1.5.33`](./CHANGELOG.md#v1533)** — reproducibility manifest primitive.
+- **[`v1.5.32`](./CHANGELOG.md#v1532)** — heterogeneous-debate enforcement + 9th append-only attestation field.
+- **[`v1.5.31`](./CHANGELOG.md#v1531)** — Reg B 2026-07-21 final-rule pivot + Colorado SB 26-189 mapping. **Ships 13 days before Reg B effective date.**
 
 ## What's new in v1.5.21 (2026-07-08)
 

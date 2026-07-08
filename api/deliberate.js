@@ -34,6 +34,11 @@ import {
 } from "../lib/heterogeneous-debate.js";
 import { buildReproducibilityManifest } from "../lib/reproducibility.js";
 import { computeDictionaryHash } from "../lib/enforce-reason-code-dictionary.js";
+// v1.5.36 wire-in: refuse_to_serve response type per arXiv:2606.29142.
+// When loan payload flags a non-discretionary bar (OFAC / BSA / statutory /
+// geographic / product), Shadow returns refuse_to_serve instead of
+// escalate so bank counsel + call center do not treat it as reviewable.
+import { maybeRefuseToServe } from "../lib/refuse-to-serve.js";
 
 const CLAUDE_MODEL = "claude-sonnet-4-5-20250929";
 const CLAUDE_HAIKU_MODEL = "claude-haiku-4-5-20251001";
@@ -415,6 +420,34 @@ export default async function handler(req, res) {
         const council = runLoanCouncil(loan);
         response.verdict = council.final_verdict;
         response.loan_council = council;
+
+        // v1.5.36: refuse_to_serve upgrade. If the loan payload carries
+        // a non-discretionary bar (OFAC SDN match, BSA tipping-off,
+        // statutory / geographic / product ineligibility), promote the
+        // verdict from `escalate` to `refuse_to_serve` per arXiv:2606.29142.
+        // Bank counsel + call center MUST treat these differently: no
+        // human review, no substantive rationale to borrower.
+        const amlKycFindings = {
+          findings: Array.isArray(loan.aml_flags)
+            ? loan.aml_flags.map((f) =>
+                typeof f === "string" ? { rule_id: f } : (f || {}))
+            : [],
+        };
+        const refusal = maybeRefuseToServe({
+          loan,
+          amlKycFindings,
+          evidenceRef: {
+            // populated below once attestation is computed; leaving
+            // as null here + patching after buildAttestation keeps
+            // request_commitment stable (attestation covers response,
+            // and response here still carries verdict + loan_council).
+            attestation_hash: null,
+          },
+        });
+        if (refusal) {
+          response.verdict = refusal.verdict; // "refuse_to_serve"
+          response.refuse_to_serve = refusal;
+        }
       } else {
         response.verdict_validation_errors = v.errors;
       }
