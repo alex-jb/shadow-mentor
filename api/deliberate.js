@@ -23,6 +23,7 @@ import { callVoicesDiversely } from "../lib/diverse-caller.js";
 import { sizePosition } from "../lib/personas/trader-pack/risk-sizer.js";
 import { runDSCouncil } from "../lib/personas/ds-pack/run-ds-council.js";
 import { defaultStore as chainStore } from "../lib/attestation-chain-store.js";
+import { formatForSiem } from "../lib/siem-export.js";
 
 const CLAUDE_MODEL = "claude-sonnet-4-5-20250929";
 const CLAUDE_HAIKU_MODEL = "claude-haiku-4-5-20251001";
@@ -386,6 +387,17 @@ export default async function handler(req, res) {
     // verifiable via a single POST /api/verify-chain call over the
     // mixed-mode response log.
     chainStore.recordAttestation(response.attestation);
+
+    // v1.5.22 (2026-07-08) — SIEM-native export via query param.
+    // ?format=cef → ArcSight CEF plain-text line
+    // ?format=cim or ?format=splunk → Splunk CIM Alerts JSON
+    // Default → the historical JSON shape (back-compat).
+    const siemFormat = (req.query?.format || "").toString();
+    if (siemFormat === "cef" || siemFormat === "cim" || siemFormat === "splunk") {
+      const { body, contentType } = formatForSiem(response, siemFormat);
+      res.setHeader("Content-Type", contentType);
+      return res.status(200).send(body);
+    }
 
     return res.status(200).json(response);
   } catch (err) {

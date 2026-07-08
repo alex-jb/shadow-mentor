@@ -12,6 +12,22 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.22 — SIEM-native export (Splunk CIM Alerts + ArcSight CEF) (2026-07-08 NY)
+
+**The bank-procurement unblocker.** Every mid-tier bank runs a SIEM (Splunk, ArcSight, QRadar, Sentinel, Chronicle). Before v1.5.22, ingesting Shadow verdicts into their existing audit-trail pipeline required a custom parser plus field mapping — a two- to four-week integration per buyer.
+
+`POST /api/deliberate?format=cef` returns a single ArcSight CEF line, direct drop-in for a syslog forwarder. `?format=cim` (alias `?format=splunk`) returns a Splunk CIM Alerts JSON payload, direct drop-in for the Splunk HTTP Event Collector. The default JSON shape stays unchanged, existing consumers stay wire-compatible.
+
+- `lib/siem-export.js` new module. `formatCEF()` + `formatCIMAlerts()` + `formatForSiem()` dispatcher.
+- Stable signature IDs across formats: `shadow.council.approve` / `shadow.council.escalate` / `shadow.council.block` / `shadow.council.proxy.block` / `shadow.council.aml.flag` / `shadow.council.unknown`. Bank correlation rules keyed on these never break on Shadow upgrades.
+- Effective-severity escalation for AA05 ECOA proxy detection to `critical`, AA06 AML/KYC review to `medium`, regardless of the raw verdict.
+- Every attestation field is preserved. CEF uses `csN`/`cnN` custom slots with `csNLabel` self-descriptors so ArcSight parses without a custom field-mapping table. CIM Alerts exposes `attestation_*` fields at the top level for direct SPL pivot.
+- `test/siem-export.test.js` ships 30 contract tests: CEF escaping (pipe / backslash / equals / newline), signature stability across formats, back-compat for optional attestation append fields (`dictionary_hash`, `citation_registry_sha256`, `proxy_schema_sha256`), multi-tenant `src` / `user` / `app` overrides, JSON round-trip.
+
+Test surface 937 → 966 (+29 net after the 1 pre-existing skip).
+
+---
+
 ## v1.5.21 — Research-driven repositioning + verdict-invariance defense (2026-07-08 NY)
 
 Absorbs findings from 12 parallel deep-research agents run 2026-07-08 overnight. Real arXiv anchors replace speculative citations. NIST 600-1 mapping opens federal contractor sub-market. Verdict-invariance test turns the arXiv 2607.00937 persona-instability threat into a publishable moat metric.
