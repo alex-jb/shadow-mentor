@@ -12,6 +12,28 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.35 — Threat model systematization + refuse_to_serve primitive (2026-07-08 NY)
+
+Anchors [arXiv:2606.29142](https://arxiv.org/abs/2606.29142) — "Agent Security Meets Regulatory Reality: Systematization of Autonomous-Agent Threats in Regulated Financial Systems" (Mohan/Srinivasa, 2026-06-28). Distinguishes the two adverse-response classes that pre-v1.5.35 Shadow conflated: `escalate` (human discretion exists) vs `refuse_to_serve` (statute/sanctions bar service, no discretion).
+
+- `lib/refuse-to-serve.js` — new module.
+  - `REFUSAL_CATEGORY` enum: OFAC_SDN_MATCH / BSA_TIPPING_OFF / STATUTORY_INELIGIBILITY / GEOGRAPHIC_INELIGIBILITY / PRODUCT_INELIGIBILITY (5 categories from paper Table 4).
+  - `REFUSAL_CITATIONS` — regulatory citation set per category (2+ citations each).
+  - `REFUSAL_BORROWER_NOTICE` — minimal borrower-facing notice text per category. OFAC + BSA notices byte-identical to remove side-channel.
+  - `buildRefuseToServeResponse({...})` — structured response with `escalation_valid: false` invariant.
+  - `assessRefusalCategory({loan, amlKycFindings})` — returns category or null.
+  - `maybeRefuseToServe({...})` — convenience wrapper (assess + build).
+- `test/refuse-to-serve.test.js` — 14 contract tests. 5-category enum coverage, citation set completeness, borrower-notice §5318 hygiene (no OFAC/SDN/SAR wording), `escalation_valid=false` invariant per category, OFAC precedence, side-channel regression.
+- `docs/THREAT_MODEL.md` — 6-category threat systematization + refuse-to-serve populations table + explicit non-coverage list + 5 procurement questions bank counsel should ask.
+
+**Not auto-invoked.** `runLoanCouncil()` continues to return `escalate` for these cases; callers who want the refuse_to_serve distinction wire `maybeRefuseToServe()` at the output boundary. Wiring into `/api/deliberate` deferred to v1.5.36.
+
+**Why**: pre-v1.5.35 borrower-facing notice for OFAC-refusal cases would cite the wrong basis (implying discretion) OR risk §5318(g)(2) tipping-off violation. The refuse_to_serve class fixes both.
+
+**Honest positioning**: `docs/THREAT_MODEL.md` § "Explicit non-coverage" documents 6 real gaps Shadow does NOT close (coordinated cross-provider attacks, mis-application of real CFR, prevention of at-rest tampering, KYC data quality, model-deprecation reproducibility, compliance officer discretion).
+
+**Test surface 1139 → 1153 (+14). 1153/1154 pass, 1 skip existing, 0 fail.**
+
 ## v1.5.34 — /api/deliberate wire-in: strict_heterogeneity + reproducibility_manifest (2026-07-08 NY)
 
 Makes the v1.5.32 heterogeneity enforcement primitive and v1.5.33 reproducibility manifest visible at the `/api/deliberate` HTTP surface. Prior to this ship, both primitives existed in `lib/` but a compliance officer testing Postman saw nothing new — this ships the procurement-visible surface.
