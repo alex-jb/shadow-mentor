@@ -28,6 +28,7 @@ import { parseBearer, validateToolScope } from "../lib/auth/oauth-scaffold.js";
 import { buildAttestation } from "../lib/attestation.js";
 import { computeDictionaryHash } from "../lib/enforce-reason-code-dictionary.js";
 import { registryMetadata } from "../lib/citation-registry.js";
+import { proxySchemaMetadata } from "../lib/proxy-detector.js";
 
 // Opt-in MCP EMA scope enforcement. When SHADOW_REQUIRE_BEARER is set,
 // every call to /api/loan-council must carry an Authorization: Bearer
@@ -144,6 +145,10 @@ export default async function handler(req, res) {
     // numbers, editing verbatim snippets, flipping valid_for_aa_codes)
     // breaks Ed25519 verification the same way dictionaryHash does.
     citationRegistrySha256: registryMetadata().registry_sha256,
+    // v1.5.19: bind the ECOA §701 protected-classes schema SHA-256.
+    // Post-hoc softening of the blocklist (e.g. moving a class from
+    // hard_block to advisory) breaks verification.
+    proxySchemaSha256: proxySchemaMetadata().proxy_schema_sha256,
   });
 
   return res.status(200).json({

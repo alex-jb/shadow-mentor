@@ -12,6 +12,53 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.19 — ECOA §701 proxy detector (honest scope) + attestation binding (2026-07-08 NY)
+
+Ships Pattern B honest-scope proxy detector per the 2026-07-07 bank-counsel red-team report. Direct-mention ECOA §701 terms produce hard block; combinatorial signals (HMDA MMCT ZIP + BISG surname + non-English language preference) produce advisory FLAG only. Fed itself has no crisp solution to combinatorial proxy detection; overclaiming would kill the procurement demo.
+
+### Added
+
+- **`lib/schemas/protected-classes-us-ecoa.json`** — 36 direct-mention terms across 7 protected classes (race, religion, national origin, sex, marital status, age, public assistance income) + 3 combinatorial advisory signals (`zip_prefix_hmda_mmct`, `surname_ssa_ethnic_correlation`, `language_preference`). Honest-scope disclosure baked into schema: "does NOT solve combinatorial proxy detection — Fed itself has no crisp solution."
+- **`lib/schemas/bank-personnel-roster.example.json`** — example template for the bank-provided allowlist. Real roster loaded from `SHADOW_BANK_PERSONNEL_ROSTER_PATH` env var; never committed to Shadow repo.
+- **`lib/proxy-detector.js`** — 4 exported functions: `scanDirectMentions` (word-boundary regex on 36 terms), `scanCombinatorialSignals` (3 advisory signals with CFPB Ally 2013 + BISG + 12 CFR §1002.4 anchors), `assessProxyRisk` (full envelope with `redaction_manifest_hash` B2 defense), `proxySchemaMetadata` (SHA-256 for attestation binding).
+- **Ed25519 attestation binds `proxy_schema_sha256`** — third append-only field after v1.5.8 `dictionary_hash` and v1.5.18 `citation_registry_sha256`. Post-hoc softening of the blocklist (e.g. quietly demoting a class from hard-block to advisory) breaks verification. Pre-v1.5.19 attestations verify byte-identically.
+- **`test/proxy-detector.test.js`** — 25 contract tests including named B1/B2/B3 defenses.
+
+### Changed
+
+- **`lib/run-loan-council.js`** — response envelope adds `proxy_risk_assessment` (per-decision) + `proxy_schema` (metadata for attestation binding).
+- **`api/loan-council.js`** — passes `proxySchemaMetadata().proxy_schema_sha256` as `proxySchemaSha256` param to `buildAttestation()`.
+- **`lib/attestation.js`** — `buildAttestation` + `verifyAttestation` accept + emit + verify `proxy_schema_sha256` (append-only, back-compat).
+
+### Red-team defenses closed
+
+- **B1 (combinatorial proxy evades regex)** — position as advisory FLAG + human review layer, never claim "solves proxy detection." Fed itself hasn't solved this. Honest scope disclosure surfaces in every response.
+- **B2 (attestation-bound redaction count proves count, not correctness)** — `redaction_manifest_hash` binds the sorted category distribution (race + religion + ...) not just the count. Auditor verifies distribution without seeing raw PII.
+- **B3 (regex false-positive redacts bank's own compliance officer)** — `SHADOW_BANK_PERSONNEL_ROSTER_PATH` env var loads a bank-provided allowlist. Names in the roster are skipped by the scanner. `roster_allowlist_active` field in response tells the bank whether they're running with a real roster or the example placeholder.
+
+### Positioning invariant baked in
+
+Every RFP claim uses "prophylactic enforcement of §1002.6(b)" or "advisory FLAG for combinatorial proxy signals requiring human review" — NEVER "solves ECOA proxy detection." Consistent with the v1.5.18 rule for citation registry: differentiator above the CFR floor, not a named mandate.
+
+### Deferred to v1.5.20
+
+- B4 EU jurisdiction — Schufa / GDPR Art. 22 protected-class taxonomy (`protected-classes-eu-gdpr.json` + jurisdiction param on `/api/loan-council`).
+- BISG production wiring — surname_ssa_correlated currently expects the caller to pre-compute the flag; v1.5.20 candidate to ship the SSA baby-name dataset + top-decile computation.
+- Pattern C `original_content_hash` — deferred until CCR mode actually ships.
+
+### Test surface
+
+876 → **901** (+25 new tests). Zero regressions. 1 skip is pre-existing envelope-skip pattern.
+
+### Research provenance
+
+- 2026-07-07 bank-counsel red-team report B1/B2/B3 attack analysis.
+- CFPB Ally $98M consent order (2013) — ZIP-based proxy detection precedent.
+- CFPB BISG (Bayesian Improved Surname Geocoding) methodology.
+- 12 CFR §1002.4 bilingual disclosure rule.
+
+---
+
 ## v1.5.18 — Citation registry + skill evals framework (2026-07-08 NY)
 
 Ships the procurement-discipline batch surfaced by the 3-agent deep-research pass on 2026-07-07 (regulatory anchor depth + competitor gap + bank-counsel red-team). Closes attacks A1 (LLM hallucinated CFR section numbers), A2 (semantically-wrong citation for a given AA code), and A3 (stale citations after amendment). Ships cryptographic binding of the citation registry into the Ed25519 attestation payload, same back-compat append-only pattern as v1.5.8 `dictionary_hash`.

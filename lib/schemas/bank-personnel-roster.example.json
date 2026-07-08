@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "shadow://schemas/bank-personnel-roster.example.json",
+  "version": "2026-07-08",
+  "description": "Example bank-personnel roster. Provided by the bank at Shadow deployment time. Names in this roster are skipped by proxy-detector.js so the scanner doesn't flag the bank's own compliance officer's name as protected-class-adjacent (red-team B3 defense). Actual roster file lives in bank's private config; this example ships as documentation only.",
+  "example_only": true,
+  "personnel": [
+    { "full_name": "Alex Analyst", "role": "credit analyst", "reason_allowlisted": "internal reviewer, name appears in memory rationales" },
+    { "full_name": "Officer Rodriguez", "role": "compliance officer", "reason_allowlisted": "example — first name would trigger surname_ssa_ethnic_correlation without allowlist" },
+    { "full_name": "Priya Patel", "role": "risk officer", "reason_allowlisted": "example — surname would trigger without allowlist" }
+  ],
+  "deploy_note": "Save your real roster as SHADOW_BANK_PERSONNEL_ROSTER_PATH env var pointing to a private JSON file with same shape. Do NOT commit real personnel names to the Shadow repo."
+}

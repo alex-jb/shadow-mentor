@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "shadow://schemas/protected-classes-us-ecoa.json",
+  "jurisdiction": "US-ECOA",
+  "version": "2026-07-08",
+  "regulatory_anchor": "15 U.S.C. § 1691(a) + 12 CFR § 1002.6(b)",
+  "description": "Protected classes under ECOA §701 as codified in the Reg B implementing rule. Direct-mention terms are hard block; combinatorial-proxy signals are advisory FLAG only because Fed itself has no crisp solution to combinatorial proxy detection. Red-team B1 defense: DO NOT claim this list solves combinatorial redlining; position as prophylactic §1002.6(b) enforcement + human review layer.",
+  "direct_mention_hard_block": [
+    { "term": "race", "class": "race" },
+    { "term": "racial", "class": "race" },
+    { "term": "black", "class": "race" },
+    { "term": "african-american", "class": "race" },
+    { "term": "african american", "class": "race" },
+    { "term": "white", "class": "race" },
+    { "term": "hispanic", "class": "race" },
+    { "term": "latino", "class": "race" },
+    { "term": "asian", "class": "race" },
+    { "term": "native american", "class": "race" },
+    { "term": "religion", "class": "religion" },
+    { "term": "religious", "class": "religion" },
+    { "term": "christian", "class": "religion" },
+    { "term": "muslim", "class": "religion" },
+    { "term": "jewish", "class": "religion" },
+    { "term": "hindu", "class": "religion" },
+    { "term": "buddhist", "class": "religion" },
+    { "term": "national origin", "class": "national_origin" },
+    { "term": "nationality", "class": "national_origin" },
+    { "term": "immigrant", "class": "national_origin" },
+    { "term": "foreign-born", "class": "national_origin" },
+    { "term": "sex", "class": "sex" },
+    { "term": "gender", "class": "sex" },
+    { "term": "female", "class": "sex" },
+    { "term": "male", "class": "sex" },
+    { "term": "marital status", "class": "marital_status" },
+    { "term": "married", "class": "marital_status" },
+    { "term": "divorced", "class": "marital_status" },
+    { "term": "widowed", "class": "marital_status" },
+    { "term": "age", "class": "age" },
+    { "term": "elderly", "class": "age" },
+    { "term": "senior citizen", "class": "age" },
+    { "term": "public assistance", "class": "public_assistance_income" },
+    { "term": "welfare", "class": "public_assistance_income" },
+    { "term": "food stamps", "class": "public_assistance_income" },
+    { "term": "snap benefits", "class": "public_assistance_income" }
+  ],
+  "combinatorial_advisory_signals": [
+    {
+      "signal": "zip_prefix_hmda_mmct",
+      "description": "Applicant ZIP prefix falls within an HMDA Majority-Minority Census Tract. Not by itself proof of proxy discrimination — real underwriting variance across geographies exists. But combined with other signals, flag for human review.",
+      "severity": "advisory",
+      "reference": "CFPB Ally $98M consent order (2013) established ZIP-based proxy detection framework"
+    },
+    {
+      "signal": "surname_ssa_ethnic_correlation",
+      "description": "Applicant surname falls in the top decile of SSA baby-name lists correlated with a specific race/ethnicity. Same caveat as ZIP — advisory only.",
+      "severity": "advisory",
+      "reference": "CFPB Bayesian Improved Surname Geocoding (BISG) methodology"
+    },
+    {
+      "signal": "language_preference",
+      "description": "Non-English language preference recorded in application. Reg B §1002.4 requires bilingual disclosures if bank markets in that language; presence alone is not discriminatory.",
+      "severity": "advisory",
+      "reference": "12 CFR § 1002.4"
+    }
+  ],
+  "honest_scope_disclosure": "This scanner catches direct-mention protected class references in analyst prose (hard block) + surfaces the three most-cited combinatorial signals as advisory FLAG. It does NOT solve combinatorial proxy detection — the Fed itself has no crisp solution. Do NOT claim this list is exhaustive of ECOA proxy risk. Human review layer remains load-bearing per red-team B1 defense."
+}
