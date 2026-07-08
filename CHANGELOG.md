@@ -12,6 +12,18 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.28 — Invisible-Manipulation-Channel defense (sampling attestation) (2026-07-08 NY)
+
+Anchors [arXiv:2606.16121](https://arxiv.org/abs/2606.16121) — "Invisible Manipulation Channels in AI-Assisted Financial Advisory" (2026-06-25). Partial defense: catches silent-substitution attacks on seed, temperature, model, and provider fingerprint. Complete defense per the paper requires QRNG + TEE, which Shadow does not currently ship.
+
+- `lib/sampling-attestation.js` — `computeSamplingSeedCommitment()` + `deterministicSamplingOptionsFor(provider)` + `commitFromProviderResponse()`.
+- Anthropic → `{ temperature: 0 }`. OpenAI → `{ temperature: 0, seed: 42 }` + captures response `system_fingerprint`. GLM → `{ temperature: 0, top_k: 1 }`.
+- `lib/attestation.js` — new append-only `sampling_seed_commitment_sha256` field. Same back-compat pattern as v1.5.8/18/19/20/23/24. Pre-v1.5.28 attestations verify unchanged.
+- `test/sampling-attestation.test.js` — 15 contract tests. Deterministic commitment, per-parameter divergence, canonical serialization, end-to-end verification (positive + tamper-detection).
+- `docs/SAMPLING-CHANNEL-DEFENSE.md` — anchors the paper, honest positioning (partial defense not complete), what attack class is / is not caught.
+
+Test surface 1069 → 1084 (+15).
+
 ## v1.5.27 — Per-tenant HMAC key isolation via HKDF-SHA-256 (2026-07-08 NY)
 
 Anchors [RFC 5869 HKDF](https://datatracker.ietf.org/doc/html/rfc5869). Answers the enterprise AI RFP question "how is our data cryptographically isolated from other customers?"
