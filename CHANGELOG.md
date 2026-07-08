@@ -12,6 +12,22 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.24 — GAICF layer 3: adverse-action language drafter (2026-07-08 NY)
+
+Anchors [Wang, Kang, Lin, Mao 2026-07-05 arXiv:2607.04103](https://arxiv.org/abs/2607.04103) — "Governing Generative AI Across Financial Institutions: An SR 26-2-Compatible Framework." Shadow already shipped GAICF layers 1 (5-voice council) and 2 (policy analysis + citation registry). Layer 3 was the last missing piece: **adverse-action language drafting**.
+
+Before v1.5.24, bank counsel had to draft the §1002.9(b)(2) notice separately from Shadow's verdict, which is where the largest CFPB liability tail sits. A council decision could be perfect on the crypto + citation side and still get a §1002.9(b)(2) fine if the downstream notice used a template phrase the CFR names as insufficient.
+
+- `lib/adverse-action-drafter.js` — turns AA01-AA06 codes emitted by `runLoanCouncil` into §1002.9(b)(2)-compliant, bilingual (§1002.4 EN + ES), citation-grounded notice text. Every sentence traces to a `citation-registry.json` entry via `valid_for_aa_codes`.
+- **Baked-in refusal invariants**: no ungrounded AA code (missing citation → throws), no §1002.6(b) protected-class term in the reason sentence (word-boundary matched), no §1002.9(b)(2) insufficient template phrase ("internal standards", "did not achieve a qualifying score", etc.).
+- Word-boundary matching (`\bage\b`) avoids false positives inside legitimate loan-terms like "coverage" or "collateral".
+- `lib/schemas/citation-registry.json` — added AA06 to `31CFR1010.230` (FinCEN CDD) + `31CFR1010.410` (BSA recordkeeping). Grounds AML/KYC review notices in FinCEN primary source.
+- `lib/attestation.js` — new append-only field `adverse_action_notice_sha256`. Same back-compat pattern as v1.5.8/18/19/20/23. Bank counsel pins the notice hash so post-hoc softening breaks Ed25519 verification.
+- `test/adverse-action-drafter.test.js` — 25 contract tests. Grounding invariants, English + Spanish reason cleanliness, §1002.9(b)(1) rights block verbatim ECOA quote (which intentionally contains protected-class terms), SHA-256 stability + drift, bilingual round-trip.
+- `docs/GAICF-COMPATIBILITY.md` — 3-column matrix mapping GAICF L1/L2/L3 to Shadow module + test file + attestation binding.
+
+Test surface 991 → 1016 (+25). Every AA code now has at least one primary-source citation.
+
 ## v1.5.23 — Policy Invariance Score + Judge Card protocol (2026-07-08 NY)
 
 Anchors [Weng, Feng, Xie 2026-05-07 arXiv:2605.06161](https://arxiv.org/abs/2605.06161) "Beyond Accuracy: Policy Invariance as a Reliability Test for LLM Safety Judges." Turns Shadow's existing "verdict-invariant" moat into a named academic metric that competitors like Comply.ai and Holistic AI Guardian have to match.
