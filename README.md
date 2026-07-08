@@ -2,9 +2,29 @@
 
 [English](./README.md) · [中文](./README.zh-CN.md)
 
-> **A 5-to-6-voice AI compliance council for regulated lending.** Encode your bank's loan policy in 5 past decisions. Get a signed, attestation-bound verdict in milliseconds. Runs in your VPC. 5-minute install into Claude Desktop, Cursor, or OpenCode via MCP.
+> **The post-classifier audit layer for regulated lending.** 5 auditable regulatory chains-of-reasoning per decision. Persona-prompt-binding attestation (Ed25519) + citation-registry SHA-256 + hash-chain provenance. Runs in your VPC. 5-minute install into Claude Desktop, Cursor, or OpenCode via MCP.
 
-[![tests](https://img.shields.io/badge/tests-770%2F771%20passing-brightgreen)](./test) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-937%2F938%20passing-brightgreen)](./test) [![verdict invariance](https://img.shields.io/badge/verdict%20invariance-10%2F10%20structural%20perturbations-blue)](./test/verdict-invariance.test.js) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+
+## What's new in v1.5.21 (2026-07-08)
+
+Research-driven repositioning release. Absorbs findings from 12 parallel deep-research agents run 2026-07-08 overnight — real-world arXiv anchors, NIST federal-market mapping, verdict-invariance defense against persona-instability threat.
+
+- **[`docs/arxiv-citation-map.md`](./docs/arxiv-citation-map.md)** — every Shadow architectural claim now traces to a 2026-in-window arXiv paper. Load-bearing anchors: **Seth & Sankarapu 2605.15164** (audit gap), **Mohan & Nagavenkata 2606.29142** (6 agentic threats × 5 regulatory frameworks — Shadow's exact intersection), **de la Chica & Martí-González 2605.14744** (mechanical enforcement), **Kohli 2605.29800** (correlated-vote critique + Shadow's response), **RefWalk 2605.29742** (per-rule attribution / citation-closure retrieval).
+- **[`docs/NIST-AI-600-1-MAP.md`](./docs/NIST-AI-600-1-MAP.md)** — 12 NIST 600-1 GenAI risks mapped against Shadow controls. 8 mechanically enforced with code + test evidence; 3 provider/deployment layer; honest N/A on the rest. This is the artifact federal contractors need for GSA MAS / FedRAMP AI Impact Assessment reviews.
+- **[`test/verdict-invariance.test.js`](./test/verdict-invariance.test.js)** — 10 tests pinning that Shadow's deterministic verdict does not change under 6 structural perturbation classes (key ordering, float precision, extra fields, null vs omitted, collateral ordering, exposure-weight ordering) + 5-voice regulatory-anchor independence pin. Direct response to arXiv 2607.00937 (Guerra-Solano) + 2607.02368 (Yuan). Turns persona-instability threat into a moat metric.
+- **Repositioning**: "Ed25519 attestation" hero retired — replaced with "**persona-prompt binding attestation**" (Sigstore commoditized Ed25519 the primitive; the binding is the moat). "Safety layer" retired — replaced with "**post-classifier audit layer**" (Anthropic Constitutional Classifiers ship in Claude 4.7; Shadow operates above them).
+
+### Emerging category names Shadow now owns
+
+Distilled from 20+ arXiv papers scanned 2026-05-24 → 2026-07-08:
+
+1. **Audit-Runtime Gap Sealing** (SIGIL 2605.05274 + Seth 2605.15164)
+2. **Mechanical Enforcement Layer** (de la Chica 2605.14744)
+3. **Per-Rule Attribution / Citation-Closure Retrieval** (RefWalk 2605.29742)
+4. **Effective Independent Vote Count** — as a publishable metric, not a claim (Kohli 2605.29800)
+
+
 
 ## Regulatory positioning (2026 H2)
 

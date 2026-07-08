@@ -12,6 +12,49 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.21 — Research-driven repositioning + verdict-invariance defense (2026-07-08 NY)
+
+Absorbs findings from 12 parallel deep-research agents run 2026-07-08 overnight. Real arXiv anchors replace speculative citations. NIST 600-1 mapping opens federal contractor sub-market. Verdict-invariance test turns the arXiv 2607.00937 persona-instability threat into a publishable moat metric.
+
+### Added
+
+- **`docs/arxiv-citation-map.md`** — every Shadow architectural claim now traces to a 2026-in-window arXiv paper. Load-bearing anchors:
+  - **arXiv:2605.15164** (Seth & Sankarapu, 2026-05-14) — "audit gap" formalization → §1 Motivation anchor for every abstract / blog / cover letter
+  - **arXiv:2606.29142** (Mohan & Nagavenkata, 2026-06-28) — 6 agentic threats × 5 regulatory frameworks (ECOA + Reg B + EU AI Act + GDPR Art. 22 + FINRA 2026) — Shadow's exact intersection. Cite in every LinkedIn post + resume + cover letter.
+  - **arXiv:2605.14744** (de la Chica & Martí-González, 2026-05-14) — "Mechanical Enforcement for LLM Governance" — direct citation for `lib/enforce-reason-code-dictionary.js` v1.5.8
+  - **arXiv:2605.29800** (Kohli, 2026-05-28) — correlated-vote critique + Shadow's response (5-voice council reframed as auditable regulatory chains-of-reasoning, not aggregate accuracy)
+  - **arXiv:2605.29742** (RefWalk, Ju & Lee, 2026-05-28) — per-rule attribution / citation-closure retrieval — Shadow's `CITATION_MAP.md` is a hand-curated version
+- **`docs/NIST-AI-600-1-MAP.md`** — 12 NIST 600-1 GenAI risks mapped against Shadow controls. 8 mechanically enforced with code + test evidence; 3 provider / deployment layer; 4 honest N/A on the lending surface. Federal contractor / GSA MAS / FedRAMP AI Impact Assessment artifact.
+- **`test/verdict-invariance.test.js`** — 10 contract tests pinning deterministic verdict is invariant to structural perturbation (key ordering, float precision, extra fields, null vs omitted, collateral ordering, exposure-weight ordering) + effective-independent-vote-count assertion (≥4 distinct regulatory anchor families across 5 voices). Direct response to arXiv 2607.00937 (Guerra-Solano) + 2607.02368 (Yuan). Turns persona-instability threat into a moat metric.
+
+### Changed
+
+- **README repositioning** — "Ed25519 attestation" hero retired (Sigstore commoditized the primitive) → replaced with "**persona-prompt binding attestation**" (the binding is the moat, not the crypto). "Safety layer" retired (Anthropic Constitutional Classifiers ship in Claude 4.7) → replaced with "**post-classifier audit layer**" (Shadow operates above them, not overlapping).
+- **README badges** — tests badge stale 770/771 → refreshed to 937/938 to reflect v1.5.21 test surface. New `verdict invariance` badge added — 10/10 structural perturbations.
+- **Emerging category names** section added — 4 Shadow-ownable taxonomic labels distilled from 20+ arXiv papers.
+
+### Renamed / Repositioning invariants baked in
+
+Every RFP claim + launch draft + LinkedIn post + cover letter follows these rules from v1.5.21 forward:
+
+1. Say **"persona-prompt binding attestation"** — not "Ed25519 attestation" as a hero (Ed25519 is commodity; the persona binding is the moat)
+2. Say **"post-classifier audit layer"** — not "safety layer" (Constitutional Classifiers arXiv:2501.18837 + 2601.04603 already fill safety-layer semantically)
+3. Say **"5 auditable regulatory chains-of-reasoning"** — not "5 voices for more robust accuracy" (Kohli 2605.29800 commoditized the second claim)
+4. Say **"GDPR Art. 22 + Schufa C-634/21 today"** — not "EU AI Act 2026" (Digital Omnibus 2026-06-29 final → 2027-12-02 deferral)
+5. Say **"12 CFR §1002.9(b)(2) statute-anchored"** — not "CFPB Circular 2023-03 required" (Circular 2023-03 withdrawn 2025-05)
+
+### Test surface
+
+901 → **937** (+36 new tests across v1.5.20 and v1.5.21). Zero regressions. 1 skip is pre-existing envelope-skip pattern.
+
+### Research provenance
+
+- 12-agent Karpathy-mode research batch run 2026-07-08 03:00-04:30 NY. Combined tool_uses: 300+ across all agents. Explicit discipline: minimum 40 min tool time per hour-agent, 20+ unique URLs, cross-reference every quantitative claim.
+- Agent 8 (Anthropic Financial Services teardown) — `gh api` verified 0 hits on ed25519/hash_chain/attestation/ECOA in `github.com/anthropics/financial-services` @ commit 4aa51ed3 (2026-06-26). 10-agent inventory + 3 largest gaps + Constitutional Classifiers implications documented in `docs/arxiv-citation-map.md`.
+- Agent 10 (arXiv exhaustive scan) — 47 papers examined 2026-05-24 → 2026-07-08, 20 in-window with real arXiv IDs, top 15 with Shadow anchor mapping.
+
+---
+
 ## v1.5.20 — EU-GDPR jurisdiction + Pattern C original_content_hash scaffold (2026-07-08 NY)
 
 Ships B4 EU jurisdiction (Schufa / GDPR Art. 9 / Art. 22) alongside a preemptive Pattern C `original_content_hash` scaffold in the Ed25519 attestation payload. Fourth append-only schema binding after v1.5.8 `dictionary_hash`, v1.5.18 `citation_registry_sha256`, v1.5.19 `proxy_schema_sha256`. Pre-v1.5.20 attestations verify byte-identically.
