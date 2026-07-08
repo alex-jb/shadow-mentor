@@ -12,6 +12,18 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.23 — Policy Invariance Score + Judge Card protocol (2026-07-08 NY)
+
+Anchors [Weng, Feng, Xie 2026-05-07 arXiv:2605.06161](https://arxiv.org/abs/2605.06161) "Beyond Accuracy: Policy Invariance as a Reliability Test for LLM Safety Judges." Turns Shadow's existing "verdict-invariant" moat into a named academic metric that competitors like Comply.ai and Holistic AI Guardian have to match.
+
+- `lib/policy-invariance.js` new module. Three named metrics: `rubric_semantics_score`, `rubric_threshold_score`, `ambiguity_calibration_score`. Overall is geometric mean so one low axis can't be masked by two strong ones.
+- `docs/JUDGE-CARD.md` — the reporting protocol as published in the paper. Target thresholds pinned per council mode (deterministic 1.00 / LLM ≥ 0.94 overall). Each metric definition tied to a specific `lib/policy-invariance.js` function.
+- `test/policy-invariance-score.test.js` — 25 contract tests. Ambiguity classifier semantics, per-metric edge cases (all-agree, half-agree, empty), threshold-monotonicity failure modes, Judge Card end-to-end round-trip.
+- `lib/attestation.js` — new append-only field `policy_invariance_score_sha256`. Same back-compat pattern as `dictionary_hash` (v1.5.8) / `citation_registry_sha256` (v1.5.18) / `proxy_schema_sha256` (v1.5.19) / `original_content_hash` (v1.5.20). Bank counsel pins the Judge Card hash in procurement contracts so post-hoc metric relaxation (widening the ambiguity signal list, softening thresholds) breaks Ed25519 verification.
+- Four certified-equivalent rewrite generators (whitespace / field-reorder / numeric-restatement / synonym-preserved) shipped as pure functions so callers can drive the protocol against `runLoanCouncil` or `/api/deliberate` without an LLM harness.
+
+Test surface 966 → 991 (+25).
+
 ## v1.5.22 — SIEM-native export (Splunk CIM Alerts + ArcSight CEF) (2026-07-08 NY)
 
 **The bank-procurement unblocker.** Every mid-tier bank runs a SIEM (Splunk, ArcSight, QRadar, Sentinel, Chronicle). Before v1.5.22, ingesting Shadow verdicts into their existing audit-trail pipeline required a custom parser plus field mapping — a two- to four-week integration per buyer.
