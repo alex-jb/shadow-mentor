@@ -37,8 +37,17 @@ import { computeDictionaryHash } from "../lib/enforce-reason-code-dictionary.js"
 // v1.5.36 wire-in: refuse_to_serve response type per arXiv:2606.29142.
 // When loan payload flags a non-discretionary bar (OFAC / BSA / statutory /
 // geographic / product), Shadow returns refuse_to_serve instead of
-// escalate so bank counsel + call center do not treat it as reviewable.
+// escalate so bank counsel do not treat it as reviewable.
 import { maybeRefuseToServe } from "../lib/refuse-to-serve.js";
+// v1.5.38 wire-in: typed-claim envelope per arXiv:2605.20312 (Pramana).
+// Declares the epistemic class of each decision so bank auditor knows
+// which additional hashes to verify at replay time. Heuristic classify
+// with optional caller override via body.claim_type.
+import {
+  CLAIM_TYPE,
+  buildTypedClaimEnvelope,
+  classifyClaimType,
+} from "../lib/typed-claims.js";
 
 const CLAUDE_MODEL = "claude-sonnet-4-5-20250929";
 const CLAUDE_HAIKU_MODEL = "claude-haiku-4-5-20251001";
@@ -182,6 +191,10 @@ export default async function handler(req, res) {
     // v1.5.34: heterogeneity enforcement opt-in. Default false (back-compat).
     strict_heterogeneity = false,
     min_providers = DEFAULT_MIN_PROVIDERS,
+    // v1.5.38: optional explicit claim_type override. When present,
+    // must be one of CLAIM_TYPE values or the request is rejected.
+    // When absent, the endpoint uses classifyClaimType() heuristic.
+    claim_type: claim_type_override = null,
   } = body;
 
   // v1.5.34: heterogeneity pre-flight gate. When the caller opts into
@@ -237,6 +250,18 @@ export default async function handler(req, res) {
   }
   if (!SCENARIO_CONTEXTS[scenario]) {
     return res.status(400).json({ error: `unknown scenario: ${scenario}` });
+  }
+  // v1.5.38: fast-fail on invalid claim_type override BEFORE any LLM
+  // call so the caller sees the error immediately, not after paying
+  // for latency + tokens.
+  if (claim_type_override !== null && claim_type_override !== undefined) {
+    if (!Object.values(CLAIM_TYPE).includes(claim_type_override)) {
+      return res.status(400).json({
+        error: `unknown claim_type "${claim_type_override}". ` +
+          `Must be one of: ${Object.values(CLAIM_TYPE).join(", ")}`,
+        anchor: "arXiv:2605.20312",
+      });
+    }
   }
 
   const prompts = PERSONA_PROMPTS[persona];
@@ -476,19 +501,38 @@ export default async function handler(req, res) {
       anchor: "arXiv:2606.19826",
     };
 
+    // v1.5.38: classify the claim epistemic class per arXiv:2605.20312.
+    // Override was already validated at top of handler; here we just
+    // pick between override and heuristic.
+    const effectiveClaimType = claim_type_override
+      ? claim_type_override
+      : classifyClaimType({ scenario, loan, verdict: response.verdict });
+    const claimTypeEnvelope = buildTypedClaimEnvelope(effectiveClaimType);
+    response.claim_type_envelope = {
+      claim_type: claimTypeEnvelope.claim_type,
+      audit_expectation_class: claimTypeEnvelope.audit_expectation_class,
+      additional_hashes_required: claimTypeEnvelope.additional_hashes_required,
+      envelope_hash_sha256: claimTypeEnvelope.envelope_hash_sha256,
+      caller_override: claim_type_override !== null,
+      anchor: "arXiv:2605.20312",
+    };
+
     // AEX-style attestation binding request → output → model.
     // 2026-07-02 upgrade. See lib/attestation.js docstring for refs.
     // Unlike /api/loan-council which is pure-compute, /api/deliberate
     // fires actual LLM calls — the model_id here reflects the actual
     // provider/model used so an auditor can detect silent substitution.
-    // v1.5.34: bind heterogeneity_commitment_sha256 into attestation
-    // so post-hoc relaxation of min_providers breaks Ed25519 verify.
+    // v1.5.34: bind heterogeneity_commitment_sha256.
+    // v1.5.38: bind claim_type_sha256 so post-hoc reclassification of
+    // an INFERENCE claim to PERCEPTION (skipping seed-commitment
+    // verification) breaks Ed25519 verification.
     response.attestation = buildAttestation({
       request: req.body ?? {},
       response,
       modelId: `${provider ?? "unknown"}/${model ?? "unknown"}`,
       previousHash: chainStore.getPreviousHash(),
       heterogeneityCommitmentSha256: heterogeneityEnforcement.commitment_sha256,
+      claimTypeSha256: claimTypeEnvelope.envelope_hash_sha256,
     });
 
     // v1.5.34: reproducibility manifest per arXiv:2606.08285. Composes

@@ -12,6 +12,21 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.38 — /api/deliberate wire-in for claim_type + explicit override (2026-07-08 NY)
+
+Wires the v1.5.37 typed-claim envelope into `/api/deliberate`. Every decision now emits `claim_type_envelope` in the response body (declaring the epistemic class + audit-replay expectation + additional_hashes_required) AND binds `claim_type_sha256` into the attestation. Callers can override the heuristic default via body field `claim_type`.
+
+- `api/deliberate.js`:
+  - New optional body field `claim_type` (must be one of PERCEPTION/INFERENCE/ANALOGY/TESTIMONY). Invalid values fast-fail with HTTP 400 before any LLM call.
+  - Heuristic `classifyClaimType()` default when no override provided.
+  - New response block `claim_type_envelope` (always emitted). Includes `caller_override` boolean for procurement audit.
+  - Attestation binds `claim_type_sha256` for every decision.
+- `test/api-deliberate-typed-claims.test.js` — 5 contract tests. Invalid override 400 + anchor, valid override accepted, all 4 valid values accepted, fast-fail before LLM, back-compat when field absent.
+
+**Back-compat**: pre-v1.5.38 callers see the additional `claim_type_envelope` response field + `claim_type_sha256` attestation field. Both are additive JSON.
+
+**Test surface 1178 → 1183 (+5). 1183/1184 pass, 1 skip existing, 0 fail.**
+
 ## v1.5.37 — Typed-claim envelope (Pramana, arXiv:2605.20312) (2026-07-08 NY)
 
 Anchors [arXiv:2605.20312](https://arxiv.org/abs/2605.20312) — "Pramana: A Protocol-Layer Treatment of Claim Verification in Autonomous Agent Networks" (Kadaboina, 2026-05-19). Declares the epistemic class of each Shadow decision so bank auditor knows which additional hashes to verify at replay time.
