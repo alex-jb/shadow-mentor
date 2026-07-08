@@ -1,0 +1,18 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.alex-jb/shadow-mentor",
+  "title": "Shadow Mentor",
+  "description": "Banking compliance council MCP server. 8 tools including Ed25519 attestation verifier, hash-chain audit, reason-code dictionary, Judge Card protocol (arXiv:2605.06161), GAICF adverse-action drafter (arXiv:2607.04103), Splunk CIM + ArcSight CEF SIEM export. 1016 tests. SR 26-2 Tier 3 companion. Regulatory anchors: Reg B / ECOA §701, BSA / PATRIOT §326, FinCEN CDD, GDPR Art. 22 + Schufa C-634/21, Reg BI.",
+  "repository": {
+    "url": "https://github.com/alex-jb/shadow-mentor",
+    "source": "github"
+  },
+  "websiteUrl": "https://shadow-mentor-phi.vercel.app",
+  "version": "1.5.24",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://shadow-mentor-phi.vercel.app/api/mcp"
+    }
+  ]
+}
