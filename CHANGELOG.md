@@ -10,6 +10,35 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+---
+
+## v1.5.16 — Cross-vertical hash-chain continuity (v0.4 delivered) (2026-07-07 NY)
+
+Closes the last "blocks-procurement" gap identified by the 2026-07-07 audit sweep. Sequential `POST /api/deliberate` calls — regardless of `mode` (banking default / trading / ds) — now form **one monotone SHA-256 chain**. Reordering, insertion, or deletion of any decision breaks `verifyChain()`, regardless of which vertical it came from.
+
+This makes the "one Shadow engine, three verticals" claim verifiable end-to-end at the audit-log level, not just the per-decision level. Bank counsel can mix banking loan reviews + trading position sizing + DS model-governance reviews in one session, log the responses, and hand the whole log to `POST /api/verify-chain` for one machine-readable "chain intact / broken" verdict.
+
+### Added
+
+- `lib/attestation-chain-store.js` — process-scoped chain store singleton. `getPreviousHash()` returns the SHA-256 of the last recorded attestation; `recordAttestation()` advances the head. Shared across all three vertical dispatch paths.
+- `test/attestation-chain-cross-vertical.test.js` — 11 contract tests including the named invariant: MIXED trading + ds sequence forms one valid chain, and any tamper (reorder / insert / delete) breaks it at the exact index.
+
+### Changed
+
+- `api/deliberate.js` — all three dispatch paths (banking / trading mode / ds mode) now thread `previousHash` from the store and advance the head after signing. Attestation payload wire format unchanged — this is a semantic upgrade, not a schema change.
+
+### Design notes
+
+- In-memory only in v1.5.16. Container restart resets the chain to null. This is intentional — the primary purpose is procurement demonstrability, not multi-restart replay. Optional JSONL persistence deferred to a future minor.
+- Not thread-safe for concurrent writers. Node.js is single-threaded per event loop so this is fine for the primary dispatch path.
+- Skip / block verdicts still advance the chain — otherwise an operator could hide "declined" decisions from the audit trail.
+
+### Test surface
+
+749/750 → **760/761** (+11 cross-vertical chain tests). Zero regressions.
+
+---
+
 Next planned:
 - **v0.4 trader-pack** — cross-vertical hash-chain continuity (single monotone chain across banking + trading + data-science)
 - **v0.3 trader-pack** — HTTP proxy adapter to Orallexa live deployment for Bull/Bear/Judge/Critic/Polyseer LLM voices; Judge sets direction, Sizer receives it

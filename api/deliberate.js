@@ -22,6 +22,7 @@ import {
 import { callVoicesDiversely } from "../lib/diverse-caller.js";
 import { sizePosition } from "../lib/personas/trader-pack/risk-sizer.js";
 import { runDSCouncil } from "../lib/personas/ds-pack/run-ds-council.js";
+import { defaultStore as chainStore } from "../lib/attestation-chain-store.js";
 
 const CLAUDE_MODEL = "claude-sonnet-4-5-20250929";
 const CLAUDE_HAIKU_MODEL = "claude-haiku-4-5-20251001";
@@ -95,7 +96,11 @@ export default async function handler(req, res) {
       request: body,
       response: tradingResponse,
       modelId: "shadow/trader-pack-risk-sizer@v0.2",
+      previousHash: chainStore.getPreviousHash(),
     });
+    // v1.5.16 cross-vertical chain — advance the shared head so the
+    // next decision (regardless of mode) chains to this one.
+    chainStore.recordAttestation(tradingResponse.attestation);
     return res.status(200).json(tradingResponse);
   }
 
@@ -143,7 +148,10 @@ export default async function handler(req, res) {
       request: body,
       response: dsResponse,
       modelId: "shadow/ds-pack@v0.2",
+      previousHash: chainStore.getPreviousHash(),
     });
+    // v1.5.16 cross-vertical chain
+    chainStore.recordAttestation(dsResponse.attestation);
     return res.status(200).json(dsResponse);
   }
 
@@ -370,7 +378,14 @@ export default async function handler(req, res) {
       request: req.body ?? {},
       response,
       modelId: `${provider ?? "unknown"}/${model ?? "unknown"}`,
+      previousHash: chainStore.getPreviousHash(),
     });
+    // v1.5.16 cross-vertical chain — advance the shared head so the
+    // next decision (banking / trading / ds) chains to this one. This
+    // is what makes the "one Shadow engine, three verticals" claim
+    // verifiable via a single POST /api/verify-chain call over the
+    // mixed-mode response log.
+    chainStore.recordAttestation(response.attestation);
 
     return res.status(200).json(response);
   } catch (err) {
