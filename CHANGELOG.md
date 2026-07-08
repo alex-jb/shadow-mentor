@@ -12,6 +12,19 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.27 — Per-tenant HMAC key isolation via HKDF-SHA-256 (2026-07-08 NY)
+
+Anchors [RFC 5869 HKDF](https://datatracker.ietf.org/doc/html/rfc5869). Answers the enterprise AI RFP question "how is our data cryptographically isolated from other customers?"
+
+- `lib/attestation-tenant.js` — `deriveTenantHmacSecret()` + `tenantSecretFingerprint()` + `verifyTenantSecret()` (constant-time) + `resolveTenantSecret()` (100% back-compat: null tenantId → master unchanged)
+- Cross-tenant signature verification fails by construction. Bank A cannot verify Bank B's audit trail.
+- `test/attestation-tenant.test.js` — 20 contract tests. Determinism, HKDF-vs-naive-HMAC distinction, per-tenant/per-master divergence, fingerprint stability, end-to-end signed attestation verification (positive + cross-tenant negative).
+- `docs/PER-TENANT-KEY-ISOLATION.md` — paste-ready RFP answer, sample code, back-compat guarantee.
+
+Ed25519 per-tenant keypair derivation deferred to v1.5.27.1 (raw-seed → PKCS#8 helpers vary across Node versions).
+
+Test surface 1049 → 1069 (+20).
+
 ## v1.5.26 — GSAR 552.239-7001 provenance disclosure kit (2026-07-08 NY)
 
 Anchors [GSAR 552.239-7001 draft 2026-03-06](https://www.gibsondunn.com/gsa-ai-procurement-rules-would-introduce-new-disclosure-and-use-rights-requirements-for-federal-contractors/), the "Basic Safeguarding of Artificial Intelligence Systems" clause proposed for all GSA MAS vendors offering AI. MAS-Refresh-32 candidate.
