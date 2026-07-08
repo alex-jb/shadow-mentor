@@ -1,0 +1,38 @@
+{
+  "$schema": "https://addyosmani.com/agent-skills/evals.schema.json",
+  "skill": "shadow-risk-officer",
+  "version": "1.0.0",
+  "description": "Trigger + expectation evals for the Risk Officer persona. Portfolio-level VaR / ES / concentration / sector under Loredana Addendum C thresholds.",
+  "trigger": {
+    "positive": [
+      { "prompt": "Compute VaR at 95% confidence over 10-day horizon for this portfolio", "reason": "Risk primitive core" },
+      { "prompt": "Is portfolio concentration in single-name above the 30% cap?", "reason": "Addendum C concentration_single_name_cap" },
+      { "prompt": "What does the risk-appetite note say about VaR > 0.12 escalation?", "reason": "Addendum C Risk Appetite Note" },
+      { "prompt": "Sector exposure exceeds the 40% CRE ceiling — escalate or block?", "reason": "Sector cap enforcement" }
+    ],
+    "negative": [
+      { "prompt": "Draft adverse-action letter for AA02 elevated DTI", "owner": "shadow-compliance-officer", "reason": "AA drafting routes to compliance-officer" },
+      { "prompt": "Screen this transaction pattern against BSA OFAC", "owner": "shadow-aml-kyc-investigator", "reason": "AML routes to investigator" },
+      { "prompt": "Size a trading position given p_win 0.55 R:R 2", "owner": "shadow-size-position", "reason": "Position sizing is trader-pack" }
+    ]
+  },
+  "expectations": [
+    {
+      "when": "VaR breach detected",
+      "must_contain_any": ["escalate", "block"],
+      "must_not_contain": "auto-approve",
+      "reason": "Addendum C: VaR > 0.12 escalates, VaR > 2x ceiling blocks"
+    },
+    {
+      "when": "concentration limit named",
+      "must_contain_any": ["30%", "0.30"],
+      "reason": "Addendum C concentration_single_name_cap = 30%"
+    },
+    {
+      "when": "traceability cited",
+      "must_contain_any": ["Addendum C", "Risk Appetite Note", "BRD Risk Packet"],
+      "must_not_contain": "BRD credit policy",
+      "reason": "Lora 4-layer separation: VaR calibration lives in Risk Appetite Note, not BRD"
+    }
+  ]
+}

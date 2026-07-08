@@ -8,8 +8,20 @@ description: >
   (that's the Judge's job upstream). Cross-vertical wire format identical
   to the Orallexa Python engine so banking + trading audit trails share
   one schema.
-version: 1.0.0
+version: 1.0.1
 author: Alex Xiaoyu Ji
+authors:
+  - Alex Xiaoyu Ji <xji1@mail.yu.edu>
+license: MIT
+repo: https://github.com/alex-jb/shadow-mentor
+tags:
+  - shadow
+  - trading
+  - trader-pack
+  - kelly
+  - finpos
+  - position-sizing
+  - risk-sizer
 scope: shadow:council
 depends_on:
   - shadow_size_position MCP tool (v1.5.15+)
@@ -20,7 +32,7 @@ depends_on:
 
 Position sizing with direction/sizing separation. Direction is an input.
 
-## When to invoke
+## When to use
 
 The user's request combines all of:
 

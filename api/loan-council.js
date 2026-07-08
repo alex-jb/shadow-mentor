@@ -27,6 +27,7 @@ import { validateLoan } from "../lib/schemas/loan.js";
 import { parseBearer, validateToolScope } from "../lib/auth/oauth-scaffold.js";
 import { buildAttestation } from "../lib/attestation.js";
 import { computeDictionaryHash } from "../lib/enforce-reason-code-dictionary.js";
+import { registryMetadata } from "../lib/citation-registry.js";
 
 // Opt-in MCP EMA scope enforcement. When SHADOW_REQUIRE_BEARER is set,
 // every call to /api/loan-council must carry an Authorization: Bearer
@@ -138,6 +139,11 @@ export default async function handler(req, res) {
     response: responseBody,
     modelId: "runLoanCouncil/pure-compute",
     dictionaryHash: computeDictionaryHash(),
+    // v1.5.18: bind the CFR citation registry SHA-256 into the
+    // signature. Post-hoc registry edit (adding hallucinated section
+    // numbers, editing verbatim snippets, flipping valid_for_aa_codes)
+    // breaks Ed25519 verification the same way dictionaryHash does.
+    citationRegistrySha256: registryMetadata().registry_sha256,
   });
 
   return res.status(200).json({

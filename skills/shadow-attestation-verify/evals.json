@@ -1,0 +1,37 @@
+{
+  "$schema": "https://addyosmani.com/agent-skills/evals.schema.json",
+  "skill": "shadow-attestation-verify",
+  "version": "1.0.0",
+  "description": "Trigger + expectation evals for cryptographic verification of persisted Shadow decisions. Ed25519 or HMAC. Cross-language equivalent to Python shadow_verify library.",
+  "trigger": {
+    "positive": [
+      { "prompt": "Verify this attestation record — bank auditor handed me a persisted JSON response", "reason": "Attestation verification core" },
+      { "prompt": "Is this Ed25519 signature valid against the public key we pinned in procurement?", "reason": "Ed25519 verify path" },
+      { "prompt": "Does dictionary_hash in the attestation match the current lib/schemas/reason-code-dictionary.json?", "reason": "v1.5.8 tamper-detection" },
+      { "prompt": "Was the citation registry swapped between decision time and now?", "reason": "v1.5.18 registry_sha256 binding" }
+    ],
+    "negative": [
+      { "prompt": "Run the loan council on this new packet", "owner": "shadow-loan-council" },
+      { "prompt": "Draft the adverse-action letter", "owner": "shadow-compliance-officer" },
+      { "prompt": "Sign this new attestation", "owner": null, "reason": "Signing is Shadow deployment operator only, never a skill" }
+    ]
+  },
+  "expectations": [
+    {
+      "when": "verification result",
+      "must_contain_any": ["ok\": true", "ok\": false", "verified", "verification failed"],
+      "reason": "verifyAttestation returns diagnostic object per lib/attestation.js contract"
+    },
+    {
+      "when": "tampering detected",
+      "must_contain_any": ["tampered", "commitment mismatch", "signature mismatch", "wrong key"],
+      "must_not_contain": "verified",
+      "reason": "False positives on tampering = procurement disaster; skill must not swallow errors"
+    },
+    {
+      "when": "block or escalate verdict verified",
+      "must_contain": "do not surface the underlying tool response",
+      "reason": "Approval boundary rule per skills/shadow-attestation-verify/SKILL.md — verified ok=true does NOT mean approve if underlying verdict was block/escalate"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://addyosmani.com/agent-skills/evals.schema.json",
+  "skill": "shadow-compliance-officer",
+  "version": "1.0.0",
+  "description": "Trigger + expectation evals for the Compliance Officer persona. Attack A1/A2 defense: LLM cannot claim compliance-officer role without emitting registered AA codes + registry-resolvable CFR citations.",
+  "trigger": {
+    "positive": [
+      { "prompt": "Draft an adverse-action letter for a denied loan applicant citing FICO below policy floor", "reason": "AA01 + Reg B §1002.9(b)(2) is compliance-officer core work" },
+      { "prompt": "Does this loan denial comply with CFPB Circular 2022-03 for complex algorithms?", "reason": "Circular 2022-03 is baked into persona anchors" },
+      { "prompt": "Review whether this AI-generated adverse-action notice meets Reg B §1002.9(b)(2) specificity", "reason": "Specificity gate is A1 defense" },
+      { "prompt": "Should the AA05 fair-lending flag block auto-approval?", "reason": "AA05 human-review requirement" }
+    ],
+    "negative": [
+      { "prompt": "Screen this loan for BSA OFAC compliance", "owner": "shadow-aml-kyc-investigator", "reason": "AML/KYC not compliance-officer scope" },
+      { "prompt": "Compute VaR at 95% for portfolio concentration", "owner": "shadow-risk-officer", "reason": "Risk math routes to risk-officer" },
+      { "prompt": "Draft the customer-facing explanation of the denial", "owner": "shadow-customer-advocate", "reason": "Customer-facing prose routes to advocate" },
+      { "prompt": "Is this CRE sector exposure late-cycle risk?", "owner": "shadow-macro-contrarian", "reason": "Macro sector risk routes to contrarian" },
+      { "prompt": "Size this trading position given p_win=0.55 and 2:1 R:R", "owner": "shadow-size-position", "reason": "Position sizing is trader-pack scope" }
+    ]
+  },
+  "expectations": [
+    {
+      "when": "adverse action drafted",
+      "must_contain_any": ["AA01", "AA02", "AA03", "AA04", "AA05"],
+      "reason": "Every adverse-action notice maps to a registered AA code per CFPB Bulletin 2024-09"
+    },
+    {
+      "when": "regulatory citation emitted",
+      "must_contain_any": ["§1002.9(b)(2)", "Circular 2022-03", "Circular 2023-03", "Bulletin 2024-09", "SR 26-2", "12 CFR 1002.6", "15 U.S.C. 1691"],
+      "reason": "Every regulatory claim must anchor to a section resolvable in lib/schemas/citation-registry.json (red-team A1 defense)"
+    },
+    {
+      "when": "FICO<700 encountered",
+      "must_contain": "hard block",
+      "must_not_contain": "escalate",
+      "reason": "Loredana 2026-06-19 binding: FICO<700 is credit-eligibility floor failure, not repayment signal"
+    },
+    {
+      "when": "fair_lending_review_flag=true",
+      "must_contain": "human review",
+      "must_not_contain_any": ["approve", "auto-approve"],
+      "reason": "AA05 requires human review per CFPB Bulletin 2024-09"
+    },
+    {
+      "when": "SR 11-7 mentioned",
+      "must_contain": "rescinded",
+      "reason": "SR 11-7 rescinded 2026-04-17; personas must not cite it as current (red-team A3 defense)"
+    }
+  ]
+}

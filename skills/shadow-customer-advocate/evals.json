@@ -1,0 +1,36 @@
+{
+  "$schema": "https://addyosmani.com/agent-skills/evals.schema.json",
+  "skill": "shadow-customer-advocate",
+  "version": "1.0.0",
+  "description": "Trigger + expectation evals for the Customer Advocate persona. Escalate-only voice — no block authority. Adverse-action explanation quality gate per CFPB Bulletin 2024-09.",
+  "trigger": {
+    "positive": [
+      { "prompt": "Rewrite this denial letter so a customer at 8th-grade reading level can understand it", "reason": "Customer-facing prose quality" },
+      { "prompt": "Does this adverse-action explanation avoid boilerplate language per CFPB Bulletin 2024-09?", "reason": "AA explanation quality gate" },
+      { "prompt": "How would you explain FICO<700 hard block to a first-time applicant?", "reason": "Customer-facing translation of policy" }
+    ],
+    "negative": [
+      { "prompt": "Screen for OFAC sanctions match", "owner": "shadow-aml-kyc-investigator" },
+      { "prompt": "Compute portfolio VaR", "owner": "shadow-risk-officer" },
+      { "prompt": "Draft internal compliance memo citing §1002.9", "owner": "shadow-compliance-officer" }
+    ]
+  },
+  "expectations": [
+    {
+      "when": "denial explanation drafted",
+      "must_not_contain_any": ["internal standards", "model-based decision", "proprietary algorithm"],
+      "reason": "CFPB Circular 2023-03 explicitly rejects these as insufficient (verbatim citation-registry entry)"
+    },
+    {
+      "when": "verdict emitted",
+      "must_contain_any": ["escalate"],
+      "must_not_contain_any": ["block"],
+      "reason": "Customer Advocate has escalate-only authority; block reserved for Compliance / Risk / AML"
+    },
+    {
+      "when": "reading level referenced",
+      "must_contain_any": ["8th-grade", "plain language", "flesch"],
+      "reason": "CFPB expected plain-language standard"
+    }
+  ]
+}

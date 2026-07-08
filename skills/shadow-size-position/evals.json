@@ -1,0 +1,43 @@
+{
+  "$schema": "https://addyosmani.com/agent-skills/evals.schema.json",
+  "skill": "shadow-size-position",
+  "version": "1.0.0",
+  "description": "Trigger + expectation evals for FinPos Risk Sizer. Direction is an INPUT (from an upstream Judge); this skill never emits a direction.",
+  "trigger": {
+    "positive": [
+      { "prompt": "Size a trading position: Judge said long, bankroll $10k, medium volatility, p_win 0.55 R:R 2:1", "reason": "Full 4-input Kelly sizing" },
+      { "prompt": "Given upstream verdict of long TSLA at half-Kelly cap 0.25, compute position_usd", "reason": "Position sizing core" },
+      { "prompt": "Should this trade be funded or skipped given current drawdown 15%?", "reason": "Drawdown-adjusted Kelly gate" }
+    ],
+    "negative": [
+      { "prompt": "Is TSLA a buy or sell right now?", "owner": null, "reason": "Direction is NOT this skill's scope — refuse politely and point to upstream Judge" },
+      { "prompt": "Predict TSLA price tomorrow", "owner": null, "reason": "No directional signal from this skill ever" },
+      { "prompt": "Run the loan council", "owner": "shadow-loan-council" },
+      { "prompt": "Screen for OFAC", "owner": "shadow-aml-kyc-investigator" }
+    ]
+  },
+  "expectations": [
+    {
+      "when": "response emitted",
+      "must_not_contain_any": ["direction\": \"long\"", "direction\": \"short\"", "you should buy", "you should sell"],
+      "reason": "Named invariant #1: skill NEVER emits a direction. metrics.direction echoes input for audit only"
+    },
+    {
+      "when": "no_op direction input",
+      "must_contain": "verdict\": \"skip\"",
+      "must_contain_any": ["position_usd\": null", "position_usd\": 0"],
+      "reason": "Named invariant #2: no_op short-circuits to skip; Kelly is not computed"
+    },
+    {
+      "when": "Kelly cap exceeded",
+      "must_contain_any": ["capped", "max_kelly_cap"],
+      "reason": "Named invariant #4: cap always wins over Kelly"
+    },
+    {
+      "when": "negative Kelly (p_win too low)",
+      "must_contain": "verdict\": \"skip\"",
+      "must_contain_any": ["p_win", "break-even"],
+      "reason": "Named invariant #3: negative Kelly skips cleanly with rationale citing p_win / R:R"
+    }
+  ]
+}

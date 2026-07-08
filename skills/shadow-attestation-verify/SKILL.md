@@ -7,8 +7,20 @@ description: >
   a bank auditor hands you a persisted JSON response and asks "is this real."
   Works cross-language — Python shadow-verify library produces byte-identical
   results for the same inputs on Python 3.9–3.13.
-version: 1.0.0
+version: 1.0.1
 author: Alex Xiaoyu Ji
+authors:
+  - Alex Xiaoyu Ji <xji1@mail.yu.edu>
+license: MIT
+repo: https://github.com/alex-jb/shadow-mentor
+tags:
+  - shadow
+  - attestation
+  - ed25519
+  - hmac
+  - audit
+  - verify
+  - cross-language
 scope: shadow:read
 depends_on:
   - shadow_verify_attestation MCP tool (v1.5.1+)
@@ -18,7 +30,7 @@ depends_on:
 
 Cryptographic verification of a persisted Shadow decision, without a network call to Shadow itself.
 
-## When to invoke
+## When to use
 
 The user's request combines all of:
 

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://addyosmani.com/agent-skills/evals.schema.json",
+  "skill": "shadow-aml-kyc-investigator",
+  "version": "1.0.0",
+  "description": "Trigger + expectation evals for the AML/KYC Investigator persona. Highest cross-persona routing risk: 'AML flag' MUST NOT route to loan-council (BSA §5318(g)(2) tipping-off violation).",
+  "trigger": {
+    "positive": [
+      { "prompt": "Screen this borrower against BSA OFAC PATRIOT §326 CIP FinCEN CDD anchors", "reason": "AML core work" },
+      { "prompt": "Is this beneficial owner disclosure compliant with 31 CFR 1010.230?", "reason": "FinCEN CDD final rule" },
+      { "prompt": "Suspicious activity threshold review for this transaction pattern", "reason": "SAR / BSA §5318" },
+      { "prompt": "OFAC sanctions match for this counterparty", "reason": "OFAC screening core" },
+      { "prompt": "Tipping-off review — can we notify the borrower they were flagged?", "reason": "BSA §5318(g)(2) hard NO" }
+    ],
+    "negative": [
+      { "prompt": "Draft adverse-action letter citing Reg B §1002.9(b)(2)", "owner": "shadow-compliance-officer", "reason": "AA notification is compliance-officer scope not AML" },
+      { "prompt": "Compute VaR at 95% for concentration risk", "owner": "shadow-risk-officer", "reason": "Risk math routes to risk-officer" },
+      { "prompt": "Should we flag this loan for CRE cycle risk?", "owner": "shadow-macro-contrarian", "reason": "Macro risk routes to contrarian" }
+    ]
+  },
+  "expectations": [
+    {
+      "when": "tipping-off scenario",
+      "must_contain": "cannot notify",
+      "must_not_contain_any": ["inform the customer", "tell the applicant"],
+      "reason": "BSA §5318(g)(2) prohibits disclosure of SAR filings"
+    },
+    {
+      "when": "sanctions match found",
+      "must_contain_any": ["block", "hold", "escalate to BSA Officer"],
+      "must_not_contain": "auto-approve",
+      "reason": "OFAC hits require human review + FinCEN 314(a) coordination"
+    },
+    {
+      "when": "regulatory citation emitted",
+      "must_contain_any": ["31 CFR 1010.230", "31 CFR 1010.410", "BSA §5318", "USA PATRIOT §326", "OFAC"],
+      "reason": "Every AML claim anchors to citation-registry entry (A1 defense)"
+    },
+    {
+      "when": "beneficial owner threshold",
+      "must_contain": "25%",
+      "reason": "FinCEN CDD 31 CFR 1010.230 beneficial-owner threshold is 25% ownership or single controlling person"
+    }
+  ]
+}

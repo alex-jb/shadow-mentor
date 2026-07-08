@@ -1,0 +1,40 @@
+{
+  "$schema": "https://addyosmani.com/agent-skills/evals.schema.json",
+  "skill": "shadow-loan-council",
+  "version": "1.0.0",
+  "description": "Trigger + expectation evals for the full 5-6 voice loan council aggregator. Highest routing priority when scope spans multiple personas + verdict resolution matters.",
+  "trigger": {
+    "positive": [
+      { "prompt": "Run the full loan council on this borrower packet with FICO/DTI/LTV + risk exposure", "reason": "Full council is aggregator core" },
+      { "prompt": "Return a block/escalate/approve verdict with 5-voice rationales + citation registry", "reason": "Council resolver contract" },
+      { "prompt": "Give me a procurement-grade audit trail for this loan decision", "reason": "Attestation + traceability chain requires full council" }
+    ],
+    "negative": [
+      { "prompt": "Just draft the adverse-action letter, skip the council", "owner": "shadow-compliance-officer", "reason": "Single-persona query routes to that persona, not council" },
+      { "prompt": "Only compute VaR, nothing else", "owner": "shadow-risk-officer" },
+      { "prompt": "Verify this attestation record from a persisted response", "owner": "shadow-attestation-verify" }
+    ]
+  },
+  "expectations": [
+    {
+      "when": "council response emitted",
+      "must_contain_all": ["final_verdict", "voices", "risk_packet", "traceability", "citation_registry", "citation_check"],
+      "reason": "v1.5.18 envelope shape — every consumer of the /api/loan-council response depends on this contract"
+    },
+    {
+      "when": "verdict resolution",
+      "must_contain_any": ["block > escalate > approve", "any block → block", "confidence_weighted_verdict"],
+      "reason": "Council resolver semantic must be documented in the response, not just computed"
+    },
+    {
+      "when": "FICO<700 in loan packet",
+      "must_contain": "final_verdict\": \"block\"",
+      "reason": "Loredana 2026-06-19 FICO hard-block gate propagates through resolver"
+    },
+    {
+      "when": "citation registry bound",
+      "must_contain_any": ["citation_registry_sha256", "registry_sha256"],
+      "reason": "v1.5.18 registry SHA-256 must flow into attestation payload"
+    }
+  ]
+}

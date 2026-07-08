@@ -7,8 +7,21 @@ description: >
   (metadata completeness), Ops Realist (p95 latency). Returns SHIP / REWORK
   / BLOCK with per-voice rationale. Pure computation — no LLM. Use before
   shipping any ML pipeline that will make consumer-facing decisions.
-version: 1.0.0
+version: 1.0.1
 author: Alex Xiaoyu Ji
+authors:
+  - Alex Xiaoyu Ji <xji1@mail.yu.edu>
+license: MIT
+repo: https://github.com/alex-jb/shadow-mentor
+tags:
+  - shadow
+  - data-science
+  - ml-governance
+  - fair-ml
+  - eeoc
+  - model-risk
+  - psi-drift
+  - brier
 scope: shadow:council
 depends_on:
   - shadow_ds_council MCP tool (v1.5.15+ via POST /api/deliberate?mode=ds)
@@ -18,7 +31,7 @@ depends_on:
 
 Model-risk council for data-science pipelines. Deterministic. No LLM.
 
-## When to invoke
+## When to use
 
 The user's request contains an ML artifact reference — at minimum a model + feature list — and asks any variant of:
 

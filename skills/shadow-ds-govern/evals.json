@@ -1,0 +1,44 @@
+{
+  "$schema": "https://addyosmani.com/agent-skills/evals.schema.json",
+  "skill": "shadow-ds-govern",
+  "version": "1.0.0",
+  "description": "Trigger + expectation evals for the 5-voice DS governance council. Fair-ML BLOCK on EEOC 80% rule violation is unconditional. Missing metadata is REWORK, never SHIP.",
+  "trigger": {
+    "positive": [
+      { "prompt": "Should we ship this ML model? MLflow run abc123, xgboost credit_scoring, aim_ratio 0.72", "reason": "Ship-review is DS council core" },
+      { "prompt": "Is this defensible for production? PSI 0.28 detected on 4 features", "reason": "Data Steward drift gate" },
+      { "prompt": "Would compliance sign off on Brier 0.32 out-of-sample?", "reason": "Model Validator calibration" },
+      { "prompt": "Are we above the EEOC 80% disparate-impact ratio?", "reason": "Fair-ML Auditor core" }
+    ],
+    "negative": [
+      { "prompt": "Draft an adverse-action letter for consumer credit denial", "owner": "shadow-compliance-officer", "reason": "Consumer-facing lives with compliance-officer even for AI-driven decisions" },
+      { "prompt": "Run the full loan council", "owner": "shadow-loan-council" },
+      { "prompt": "Size a trading position", "owner": "shadow-size-position" },
+      { "prompt": "Screen for OFAC sanctions", "owner": "shadow-aml-kyc-investigator" }
+    ]
+  },
+  "expectations": [
+    {
+      "when": "aim_ratio < 0.80",
+      "must_contain": "BLOCK",
+      "must_not_contain_any": ["SHIP", "APPROVE"],
+      "reason": "Named invariant #1: Fair-ML BLOCK on 80% rule is unconditional (EEOC 29 CFR 1607.4D). No other voice can override."
+    },
+    {
+      "when": "artifact_id or feature_columns missing",
+      "must_contain": "REWORK",
+      "must_not_contain": "SHIP",
+      "reason": "Named invariant #2: Missing metadata = REWORK, never SHIP. Reproducibility Critic non-negotiable"
+    },
+    {
+      "when": "consumer-facing model with Fair-ML BLOCK",
+      "must_contain": "AA05",
+      "reason": "Named invariant #3: AA05 fires when Fair-ML BLOCK fires for consumer-facing models (CFPB Bulletin 2024-09 integration)"
+    },
+    {
+      "when": "PSI > 0.25 on features",
+      "must_contain_any": ["REWORK", "drift"],
+      "reason": "Data Steward gate — PSI drift triggers REWORK per lib/personas/ds-pack/run-ds-council.js contract"
+    }
+  ]
+}

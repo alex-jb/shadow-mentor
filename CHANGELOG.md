@@ -12,6 +12,54 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.18 — Citation registry + skill evals framework (2026-07-08 NY)
+
+Ships the procurement-discipline batch surfaced by the 3-agent deep-research pass on 2026-07-07 (regulatory anchor depth + competitor gap + bank-counsel red-team). Closes attacks A1 (LLM hallucinated CFR section numbers), A2 (semantically-wrong citation for a given AA code), and A3 (stale citations after amendment). Ships cryptographic binding of the citation registry into the Ed25519 attestation payload, same back-compat append-only pattern as v1.5.8 `dictionary_hash`.
+
+### Added
+
+- **`lib/schemas/citation-registry.json`** — 11 CFR / USC / CFPB / Fed SR / FinCEN / FFIEC entries with verbatim regulatory snippets, source URLs, effective dates, sunset dates, and `valid_for_aa_codes` for semantic gating. 5 entries `verbatim_verified: true` (§1002.9(b)(2), §1002.6(b), 15 USC 1691(a), CFPB Circular 2023-03, SR 26-2 Tier 3, 31 CFR 1010.410); 6 pending Loredana verification before external procurement use.
+- **`lib/citation-registry.js`** — 8 helpers: `normalizeCitation`, `isValidCitation` (A1 defense), `isValidForAA` (A2 defense), `isCitationCurrent` (A3 defense — SR 11-7 rescinded 2026-04-17 returns false), `getCitation`, `citationsForAA`, `verifiedCitations`, `registryMetadata`.
+- **`lib/citation-scanner.js`** — 6-pattern extraction (CFR / USC / Reg B / ECOA / SR / CFPB Circular + Bulletin / FFIEC). `scanCouncilCoverage(voices)` returns per-voice `{resolved_ids, unresolved}` for the audit envelope.
+- **Ed25519 attestation payload binds `citation_registry_sha256`** — same conditional append-only pattern as v1.5.8 `dictionary_hash`. Post-hoc registry edit breaks verification. Pre-v1.5.18 attestations verify byte-identically.
+- **`skills/shadow-*/evals.json` × 9** — trigger + expectation evals per addyosmani/agent-skills framework. Positive triggers, negative triggers with `owner` field for cross-persona routing collision detection, expectations asserting specific regulatory string presence (AA01-AA06, CFR section numbers, named invariants: FICO<700 hard block, Fair-ML BLOCK unconditional, size-position never emits direction, tipping-off routes to aml-kyc).
+- **`skills/scripts/lint-skills.sh`** — CI gate adopted from msitarzewski/agency-agents lint pattern. Checks frontmatter fields, CRLF absence, "## When to use" section, evals.json presence + validity.
+- **`test/citation-registry.test.js`** — 38 contract tests including named A1/A2/A3 attack coverage + registry sha256 determinism.
+- **`test/skill-evals-contract.test.js`** — 29 contract tests loading all 9 evals.json + verifying trigger.positive ≥ 3, trigger.negative ≥ 3, expectations ≥ 2, negative-trigger owners are registered skill names, compliance-officer routes AML flags to aml-kyc-investigator, size-position refuses direction queries.
+
+### Changed
+
+- **`lib/run-loan-council.js`** — response envelope adds `citation_registry: {version, entry_count, verified_count, sunset_count, registry_sha256}` + `citation_check: {by_voice, totals}` (advisory in v1.5.18, promote to REWORK-blocking in v1.5.19 after per-persona base rates known).
+- **`api/loan-council.js`** — passes `registryMetadata().registry_sha256` as `citationRegistrySha256` param to `buildAttestation()`. Bank counsel pins this hash in procurement contract.
+- **`lib/attestation.js`** — `buildAttestation` + `verifyAttestation` accept + emit + verify `citation_registry_sha256`. `_signingPayload` appends when present (same conditional pattern as `dictionaryHash`).
+- **`skills/shadow-{attestation-verify,size-position,ds-govern}/SKILL.md`** — frontmatter normalized to canonical 7-field shape + "## When to invoke" section renamed to "## When to use" for consistency. Version bumps 1.0.0 → 1.0.1.
+
+### Positioning rules baked in
+
+Every RFP claim uses "cryptographically enforces §1010.410 integrity" or "prophylactic enforcement of §1002.6(b)" or "implements failure clause of §1002.9(b)(2)" — never "required by." Ed25519 + `citation_registry_sha256` is a procurement differentiator above the CFR floor, not a named mandate. Same rule as v1.5.8 `dictionary_hash`.
+
+### Deferred to v1.5.19 (not shipped in v1.5.18)
+
+- B1 combinatorial protected-class proxy detector — industry-unsolved (Fed itself has no crisp solution); v1.5.18 keeps 15-item ECOA exact-match hard block per `enforce-reason-code-dictionary.js` and defers combinatorial to advisory FLAG.
+- B4 EU jurisdiction — Schufa / GDPR Art. 22 protected-class taxonomy separate from ECOA §701.
+- A2 semantic-match counsel-review loop — full defense requires Loredana `citation_reviewed_by: "counsel_id"` field.
+- D1/D3 runtime eval attestation + model version drift check — needs `bin/eval-runtime.mjs` against live `/api/deliberate`.
+- 6 pending `verbatim_verified: false` registry entries (Circular 2022-03, Bulletin 2024-09, SR 11-7, 31 CFR 1010.230, FFIEC IS Booklet) — Loredana verification round.
+- Pattern C `original_content_hash` — deferred until v1.5.20 CCR mode ships.
+
+### Test surface
+
+760/761 → **875/876** (+115 across v1.5.17 and v1.5.18). Zero regressions. 1 skip is pre-existing envelope-skip pattern.
+
+### Research provenance
+
+- 3-agent deep-research 2026-07-07: regulatory anchor depth + competitor gap analysis + bank-counsel red-team.
+- Verbatim snippets sourced from ecfr.gov, consumerfinance.gov, federalreserve.gov, ithandbook.ffiec.gov.
+- Skill evals framework from addyosmani/agent-skills (72.6k stars).
+- Lint gate pattern from msitarzewski/agency-agents (129.5k stars).
+
+---
+
 ## v1.5.16 — Cross-vertical hash-chain continuity (v0.4 delivered) (2026-07-07 NY)
 
 Closes the last "blocks-procurement" gap identified by the 2026-07-07 audit sweep. Sequential `POST /api/deliberate` calls — regardless of `mode` (banking default / trading / ds) — now form **one monotone SHA-256 chain**. Reordering, insertion, or deletion of any decision breaks `verifyChain()`, regardless of which vertical it came from.
