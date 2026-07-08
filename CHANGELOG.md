@@ -12,6 +12,22 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.33 — Reproducibility manifest (5-axis exam-workpaper primitive) (2026-07-08 NY)
+
+Anchors [arXiv:2606.08285](https://arxiv.org/abs/2606.08285) — "Beyond Agent Architecture: Execution Assumptions and Reproducibility in LLM-Based Trading Systems" (Yao/Zheng, 2026-06-06). Composes existing per-decision hashes into a single 5-axis JSON block bank counsel pins in one line of an exam workpaper instead of chasing 9 separate hashes across the attestation object.
+
+- `lib/reproducibility.js` — new module.
+  - `buildReproducibilityManifest({...})` — returns canonical 5-axis JSON with top-level `manifest_hash_sha256`.
+  - `manifestHash(manifest)` — SHA-256 hex over sorted-key canonicalization.
+  - `auditManifestCompleteness(manifest)` — verifies every axis has at least one populated sub-field.
+  - `REPRODUCIBILITY_AXES` — frozen array of the 5 axis names.
+- `test/reproducibility.test.js` — 13 contract tests. Axis structure + minimal + full construction + provider sort + hash determinism + sensitivity + audit completeness + exam-workpaper end-to-end.
+- `docs/REPRODUCIBILITY-MANIFEST.md` — anchor + manifest shape + exam-workpaper use case + relationship to aex-attestation/v1.
+
+**Not a new signed field.** All 5 axes are already covered by hashes bound in v1.5.8/18/19/20/23/24/28/30/32. This is a convenience helper. Wiring into `/api/deliberate` response body deferred to v1.5.34.
+
+**Test surface 1120 → 1133 (+13). 1133/1134 pass, 1 skip existing, 0 fail.**
+
 ## v1.5.32 — Heterogeneous-debate enforcement + attestation binding (2026-07-08 NY)
 
 Anchors [arXiv:2606.19826](https://arxiv.org/abs/2606.19826) — "Heterogeneous LLM Debate Under Adversarial Peers" (Nilayam et al., 2026-06-18). Flips v1.4.0's diagnostic `diversity_score` into a first-class enforcement gate with attestation binding. When one voice is silently compromised (prompt injection, adversarial-tuning backdoor, silent provider substitution), a homogeneous council amplifies that voice's error through debate; a heterogeneous council structurally weighs against it.
