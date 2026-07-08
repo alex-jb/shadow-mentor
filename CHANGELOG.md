@@ -12,6 +12,25 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.32 — Heterogeneous-debate enforcement + attestation binding (2026-07-08 NY)
+
+Anchors [arXiv:2606.19826](https://arxiv.org/abs/2606.19826) — "Heterogeneous LLM Debate Under Adversarial Peers" (Nilayam et al., 2026-06-18). Flips v1.4.0's diagnostic `diversity_score` into a first-class enforcement gate with attestation binding. When one voice is silently compromised (prompt injection, adversarial-tuning backdoor, silent provider substitution), a homogeneous council amplifies that voice's error through debate; a heterogeneous council structurally weighs against it.
+
+- `lib/heterogeneous-debate.js` — new module.
+  - `enforceHeterogeneousDebate({ voiceNames, availableProviders, minProviders })` — returns `{ ok: false }` when deployment does not meet the min-provider floor (default 2 per paper).
+  - `heterogeneityCommitment({ minProviders, uniqueProvidersUsed, providersUsedSorted })` — SHA-256 hex over the enforcement inputs. Order-insensitive, deterministic.
+  - `enforceAndCommit(params)` — convenience wrapper returning both.
+  - `detectDominanceRisk(assignment, dominanceThreshold=0.6)` — flags single-provider dominance ≥60% in multi-provider deployments.
+- `lib/attestation.js` — new append-only `heterogeneity_commitment_sha256` field. Same back-compat pattern as v1.5.8/18/19/20/23/24/28/30. Pre-v1.5.32 attestations verify unchanged.
+- `test/heterogeneous-debate.test.js` — 20 contract tests. Enforcement gate (5), commitment determinism + order-insensitivity + distinctness (4), dominance detection (3), attestation binding HMAC + Ed25519 + tamper detection + back-compat (5), adversarial-peer scenario (3).
+- `docs/HETEROGENEOUS-DEBATE-ENFORCEMENT.md` — anchor + design + procurement review questions + full aex-attestation/v1 append-only field table.
+
+**Enforcement policy**: primitive is policy-agnostic. Callers can wire strict-refuse / warn / escalate. Wiring into `/api/deliberate` deferred to v1.5.33 so bank counsel can flag-gate the transition per deployment.
+
+**Test surface 1100 → 1120 (+20). 1120/1121 pass, 1 skip existing, 0 fail.**
+
+**Back-compat**: pre-v1.5.32 attestations do not carry the field. Their signing payloads never included it. Their signatures verify unchanged.
+
 ## v1.5.31 — Reg B final rule pivot + Colorado SB 26-189 mapping (2026-07-08 NY)
 
 Anchors [Federal Register 2026-04-22 · Equal Credit Opportunity Act (Regulation B) final rule](https://www.federalregister.gov/documents/2026/04/22/2026-07804/equal-credit-opportunity-act-regulation-b) effective **2026-07-21** (13 days from ship). Ships 13 days before the effective date so bank counsel reviewing Shadow for Q3 procurement sees the correct post-7/21 positioning, not stale pre-rule framing.
