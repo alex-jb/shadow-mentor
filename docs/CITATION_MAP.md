@@ -1,6 +1,6 @@
 # Regulatory Citation × Persona × Test Map
 
-**Version:** 1.1 · **Generated:** 2026-07-06 · **Last updated:** 2026-07-07 (4-layer procurement structure + CSV export + CI Python 3.9-3.13) · **Framework:** SR 26-2 Tier 3 companion control (effective 2026-04-17)
+**Version:** 1.2 · **Generated:** 2026-07-06 · **Last updated:** 2026-07-08 (Reg B final rule pivot + Colorado SB 26-189 column) · **Framework:** SR 26-2 Tier 3 companion control (effective 2026-04-17) + Reg B final rule (effective 2026-07-21)
 
 **Authority:**
 - Loredana C. Levitchi — BRD + Addenda A/B/C banking domain grounding, regulatory citation review, 4-layer procurement structure (2026-07-06 Test Stack contribution)
@@ -66,6 +66,14 @@ The AML/KYC voice is opt-in: it attaches only when the loan payload contains `am
 | **Reg B adverse-action codes AA01-AA06** | Signed reason-code dictionary — post-hoc dictionary swap breaks attestation verification (v1.5.8) | Fair Lending Compliance + Credit + Risk + AML/KYC | `test/dictionary-hash-binding.test.js` + `test/reason-code-dictionary.test.js` | (bound) + 17 |
 | **CFPB Bulletin 2024-09** | Model-traceability for adverse-action explanations | Customer Advocate | `test/traceability-reproducibility.test.js` | 14 |
 | **Protected-class proxy blocklist** | 15-item ECOA proxy attribute blocklist enforced in `lib/enforce-reason-code-dictionary.js` | All 6 | `test/reason-code-dictionary.test.js` | 17 |
+| **Reg B final rule (effective 2026-07-21)** | Eliminates federal disparate-impact "effects test"; narrows discouragement; restricts SPCPs. **§1002.9(b)(2) specificity + prohibited-basis disparate treatment unchanged.** See `docs/REG-B-2026-07-21-FINAL-RULE.md`. Runtime behavior unchanged; threat model reposition documented. | All 6 | `test/reason-code-dictionary.test.js` + `test/dictionary-hash-binding.test.js` | 17 + (bound) |
+
+### 2.2.1 State AI / algorithmic-decisioning laws (state-AG defense)
+
+| Citation | Full name | Persona | Primary test file(s) | Test count |
+|---|---|---|---|---|
+| **Colorado SB 26-189** (effective 2027-01-01) | Pre-use notice + 30-day post-adverse-outcome notice + right to human review + right to correct personal data | Customer Advocate + Fair Lending Compliance | `test/adverse-action-drafter.test.js` + `test/attestation-chain.test.js` | (existing coverage) |
+| **NY / CA / IL / MA / WA state UDAP + fair-lending** | State-AG disparate-impact enforcement unaffected by federal Reg B narrowing. Protected-class proxy blocklist enforces state-neutral posture. | All 6 | `test/reason-code-dictionary.test.js` | 17 |
 
 ### 2.3 AML / KYC / Sanctions (opt-in AML/KYC voice)
 

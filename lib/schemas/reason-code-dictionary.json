@@ -1,6 +1,6 @@
 {
   "$comment_1": "Signed reason-code dictionary for post-2026-07-21 Reg B compliance.",
-  "$comment_2": "This JSON file is the AUTHORITATIVE mapping from loan features to adverse-action codes to Reg B categories. Bank counsel signs THIS FILE, not the LLM output. Refs: CFPB Circular 2022-03, CFPB final rule effective 2026-07-21, Freddie Mac Bulletin 2025-16 effective 2026-03-03, Decomposing Discrimination arxiv:2603.27510.",
+  "$comment_2": "This JSON file is the AUTHORITATIVE mapping from loan features to adverse-action codes to Reg B categories. Bank counsel signs THIS FILE, not the LLM output. Refs: CFPB Circular 2022-03, CFPB final rule effective 2026-07-21 (see docs/REG-B-2026-07-21-FINAL-RULE.md for post-effective-date positioning), CFPB Bulletin 2024-09 model traceability, Freddie Mac Bulletin 2025-16 effective 2026-03-03, Decomposing Discrimination arxiv:2603.27510. State-AG defense (NY/CA/CO/IL/MA/WA): proxy blocklist stays state-neutral because federal effects-test narrowing does not affect state UDAP or state fair-lending enforcement. Colorado SB 26-189 (effective 2027-01-01) obligations answered via lib/adverse-action-drafter.js + escalate-verdict path + hash-chain provenance.",
   "schema_version": "reason-code-dictionary/v1.0.0",
   "generated_at_utc": "2026-07-02T00:00:00Z",
   "authority": "Loredana C. Levitchi, primary-author contributor to Shadow (2026-06-19)",

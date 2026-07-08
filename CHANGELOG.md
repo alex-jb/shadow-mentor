@@ -12,6 +12,24 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.31 — Reg B final rule pivot + Colorado SB 26-189 mapping (2026-07-08 NY)
+
+Anchors [Federal Register 2026-04-22 · Equal Credit Opportunity Act (Regulation B) final rule](https://www.federalregister.gov/documents/2026/04/22/2026-07804/equal-credit-opportunity-act-regulation-b) effective **2026-07-21** (13 days from ship). Ships 13 days before the effective date so bank counsel reviewing Shadow for Q3 procurement sees the correct post-7/21 positioning, not stale pre-rule framing.
+
+**What the final rule changes:** eliminates federal disparate-impact "effects test"; narrows discouragement; restricts SPCPs.
+**What the final rule does NOT change:** §1002.9(b)(2) specificity; CFPB Circular 2022-03; CFPB Bulletin 2024-09; ECOA prohibited-basis disparate-treatment liability. Every Shadow runtime invariant remains valid.
+
+- `docs/REG-B-2026-07-21-FINAL-RULE.md` — new procurement-audience document. Sections: what changes / what does NOT change / where Shadow repositions / state-AG defense (NY/CA/CO/IL/MA/WA) / Colorado SB 26-189 obligation mapping (pre-use notice · 30-day AA notice · human review · data correction) / what bank counsel should do before 2026-07-21 / test evidence unchanged.
+- `docs/CITATION_MAP.md` — v1.2. Added Reg B final rule row to Section 2.2 and new Section 2.2.1 for state-AI / algorithmic-decisioning laws (Colorado SB 26-189 + NY/CA/IL/MA/WA state UDAP + fair-lending). Framework header updated to reference both SR 26-2 Tier 3 and the Reg B final rule.
+- `lib/enforce-reason-code-dictionary.js` — updated header docstring with v1.5.31 threat-model pivot commentary. `enforceNoProtectedClassProxies()` error message now cites both ECOA prohibited-basis disparate-treatment (federal, unchanged) AND state-AG disparate-impact enforcement (NY/CA/CO/IL/MA/WA, unaffected by federal narrowing).
+- `lib/schemas/reason-code-dictionary.json` — `$comment_2` extended with post-effective-date references, state-AG defense rationale, and Colorado SB 26-189 obligation-to-artifact mapping. Dictionary contents unchanged; `dictionary_hash` will roll (bank counsel re-signs) but this is expected and correct — the file legitimately changed.
+
+**No runtime behavior change.** Every existing test continues to pass. The proxy blocklist stays state-neutral because state-AG enforcement is not affected by the federal narrowing — removing zip code because the federal test is gone would strip state-AG defense with no offsetting benefit.
+
+**Back-compat:** attestations signed pre-v1.5.31 verify unchanged (dictionary_hash binding is by content-hash, not by version). Bank counsel re-signs the dictionary because `$comment_2` changed — this is a rehash-and-resign event, not a schema break.
+
+**Bank buyer this unlocks:** every mid-tier bank compliance officer whose Q3 2026 due diligence starts 7/21. Prior to this ship, opening Shadow's docs post-7/21 would have shown pre-rule framing (federal disparate-impact defense) that a compliance officer would flag as stale.
+
 ## v1.5.30 — Per-persona evidence partitioning (InfoDelphi) (2026-07-08 NY)
 
 Anchors [arXiv:2607.01661](https://arxiv.org/abs/2607.01661) — Li, Tao, Zhang InfoDelphi (2026-07-02). Documents 12-18% Brier improvement when council personas receive partitioned evidence rather than identical prompts. Structural defense against Kohli 2605.29800 correlated-votes pathology.
