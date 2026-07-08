@@ -12,6 +12,57 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.20 — EU-GDPR jurisdiction + Pattern C original_content_hash scaffold (2026-07-08 NY)
+
+Ships B4 EU jurisdiction (Schufa / GDPR Art. 9 / Art. 22) alongside a preemptive Pattern C `original_content_hash` scaffold in the Ed25519 attestation payload. Fourth append-only schema binding after v1.5.8 `dictionary_hash`, v1.5.18 `citation_registry_sha256`, v1.5.19 `proxy_schema_sha256`. Pre-v1.5.20 attestations verify byte-identically.
+
+### Added
+
+- **`lib/schemas/protected-classes-eu-gdpr.json`** — 20 direct-mention terms across 10 GDPR Art. 9 special categories (racial_origin, ethnic_origin, political_opinion, religion_belief, trade_union_membership, genetic_data, biometric_data, health, sex_life, sexual_orientation) in English + German (`Herkunft`, `Religionszugehörigkeit`, `sexuelle Orientierung`). 3 combinatorial advisory signals: `postal_code_ethnic_correlation` (Eurostat), `surname_national_origin_correlation` (Schufa framework), `residency_status` (AGG Germany). Honest scope disclosure explicitly rejects "AI Act 2026 ready" framing per Digital Omnibus deferral to 2027-12-02.
+- **`test/proxy-detector-eu-gdpr.test.js`** — 21 contract tests covering German + English direct-mention, EU-specific combinatorial signals, jurisdiction routing, and cross-jurisdiction `proxy_schema_sha256` differentiation.
+- **`test/attestation-original-content-hash.test.js`** — 5 contract tests for Pattern C scaffold (back-compat verification + opt-in binding + tamper detection).
+- **Pattern C `original_content_hash` scaffold in `lib/attestation.js`** — fourth append-only field. Populated only when Shadow ships CCR (compressed content retrieval) mode later. Ships now as scaffold so v1.5.20+ callers who opt in are already wire-compatible with future CCR implementation.
+
+### Changed
+
+- **`lib/proxy-detector.js`** — refactored to route on `jurisdiction` param. Loads both US-ECOA and EU-GDPR schemas at module init; `scanDirectMentions`, `scanCombinatorialSignals`, `assessProxyRisk`, `proxySchemaMetadata` all accept `{ jurisdiction }` opt param. Default US-ECOA preserves v1.5.19 back-compat. New `supportedJurisdictions()` export enumerates the two.
+- **`lib/run-loan-council.js`** — reads `loan.jurisdiction` (defaults to "US-ECOA") and threads through to proxy assessment + schema metadata.
+- **`api/loan-council.js`** — passes jurisdiction-aware `proxySchemaSha256` into `buildAttestation`. EU-GDPR decisions bind a different schema hash than US-ECOA decisions.
+- **`lib/attestation.js`** — `_signingPayload` + `buildAttestation` + `verifyAttestation` accept + emit + verify `original_content_hash`. Same conditional append-only pattern.
+
+### Red-team B4 defense closed
+
+- **B4 (EU jurisdiction)** — dedicated GDPR Art. 9 taxonomy + Schufa combinatorial framing + AGG Germany reference + honest disclosure that EU AI Act Annex III(5)(b) credit-scoring deadline was deferred to 2027-12-02 by Digital Omnibus. RFP framing: "GDPR Art. 22 + Schufa C-634/21 compliant advisory layer" — NEVER "AI Act 2026 ready."
+
+### Positioning invariant baked in
+
+Same rule as v1.5.18 / v1.5.19. Never claim regulatory mandate; always frame as "advisory FLAG requiring human review under Art. 22" or "cryptographically enforces integrity under 31 CFR 1010.410." The `honest_scope_note` field in every EU-GDPR response explicitly rejects "AI Act 2026 ready" as a positioning claim.
+
+### Pattern C scaffold rationale
+
+Ships preemptively even though CCR mode is not implemented yet. The reasoning: bank counsel signs procurement contracts pinning a specific attestation payload shape. Adding new fields later requires a wire migration. Shipping the append-only field now lets v1.5.21+ CCR implementations activate the binding without a new procurement round.
+
+### Deferred to v1.5.21
+
+- CCR (compressed content retrieval) mode itself — `shadow_retrieve` MCP tool + summary_120w response shape + full content storage.
+- BISG production wiring — SSA baby-name dataset + surname race-correlation top-decile computation. Currently expects caller to pre-compute the `surname_ssa_correlated` flag.
+- UK-EA2010 jurisdiction (Equality Act 2010 protected characteristics) — third jurisdiction expansion.
+- A2 semantic-match counsel-review loop — `citation_reviewed_by: "counsel_id"` field on rationales.
+
+### Test surface
+
+901 → **927** (+26 new tests). Zero regressions. 1 skip is pre-existing envelope-skip pattern.
+
+### Research provenance
+
+- GDPR Art. 9 special categories text: https://gdpr-info.eu/art-9-gdpr/
+- GDPR Art. 22 automated decision-making: https://gdpr-info.eu/art-22-gdpr/
+- ECJ C-634/21 Schufa ruling (2023-12-07): https://curia.europa.eu/juris/document/document.jsf?docid=280426
+- Digital Omnibus 2026-05: EU AI Act Annex III(5)(b) credit-scoring deferred to 2027-12-02.
+- AGG Germany (Allgemeines Gleichbehandlungsgesetz): https://www.gesetze-im-internet.de/agg/
+
+---
+
 ## v1.5.19 — ECOA §701 proxy detector (honest scope) + attestation binding (2026-07-08 NY)
 
 Ships Pattern B honest-scope proxy detector per the 2026-07-07 bank-counsel red-team report. Direct-mention ECOA §701 terms produce hard block; combinatorial signals (HMDA MMCT ZIP + BISG surname + non-English language preference) produce advisory FLAG only. Fed itself has no crisp solution to combinatorial proxy detection; overclaiming would kill the procurement demo.

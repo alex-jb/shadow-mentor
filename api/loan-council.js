@@ -145,10 +145,13 @@ export default async function handler(req, res) {
     // numbers, editing verbatim snippets, flipping valid_for_aa_codes)
     // breaks Ed25519 verification the same way dictionaryHash does.
     citationRegistrySha256: registryMetadata().registry_sha256,
-    // v1.5.19: bind the ECOA §701 protected-classes schema SHA-256.
-    // Post-hoc softening of the blocklist (e.g. moving a class from
-    // hard_block to advisory) breaks verification.
-    proxySchemaSha256: proxySchemaMetadata().proxy_schema_sha256,
+    // v1.5.19 + v1.5.20 B4: bind the protected-classes schema SHA-256.
+    // Jurisdiction routes to US-ECOA or EU-GDPR taxonomy. Post-hoc
+    // softening of the blocklist (e.g. moving a class from hard_block
+    // to advisory) breaks verification for that jurisdiction only.
+    proxySchemaSha256: proxySchemaMetadata({
+      jurisdiction: loan.jurisdiction ?? "US-ECOA",
+    }).proxy_schema_sha256,
   });
 
   return res.status(200).json({

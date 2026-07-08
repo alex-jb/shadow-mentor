@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "shadow://schemas/protected-classes-eu-gdpr.json",
+  "jurisdiction": "EU-GDPR",
+  "version": "2026-07-08",
+  "regulatory_anchor": "GDPR Art. 9 special categories + Art. 22 automated decision-making + ECJ C-634/21 Schufa",
+  "description": "Protected classes under GDPR Article 9 (special categories of personal data) + protections under Article 22 (automated individual decision-making). Applies alongside ECJ Schufa ruling C-634/21 (2023-12-07) which held that automated credit-scoring falls under Article 22 even when the score is only one input to a human decision. Red-team B1 caveat: same as US ECOA — combinatorial signals ship as advisory FLAG only. Fed has no crisp solution, EU DPAs have no crisp solution.",
+  "direct_mention_hard_block": [
+    { "term": "race", "class": "racial_origin", "gdpr_ref": "Art. 9(1)" },
+    { "term": "racial", "class": "racial_origin", "gdpr_ref": "Art. 9(1)" },
+    { "term": "ethnic origin", "class": "ethnic_origin", "gdpr_ref": "Art. 9(1)" },
+    { "term": "ethnicity", "class": "ethnic_origin", "gdpr_ref": "Art. 9(1)" },
+    { "term": "Herkunft", "class": "ethnic_origin", "gdpr_ref": "Art. 9(1)", "language": "de" },
+    { "term": "political opinions", "class": "political_opinion", "gdpr_ref": "Art. 9(1)" },
+    { "term": "political affiliation", "class": "political_opinion", "gdpr_ref": "Art. 9(1)" },
+    { "term": "religious beliefs", "class": "religion_belief", "gdpr_ref": "Art. 9(1)" },
+    { "term": "religion", "class": "religion_belief", "gdpr_ref": "Art. 9(1)" },
+    { "term": "philosophical beliefs", "class": "religion_belief", "gdpr_ref": "Art. 9(1)" },
+    { "term": "Religionszugehörigkeit", "class": "religion_belief", "gdpr_ref": "Art. 9(1)", "language": "de" },
+    { "term": "trade union", "class": "trade_union_membership", "gdpr_ref": "Art. 9(1)" },
+    { "term": "trade-union membership", "class": "trade_union_membership", "gdpr_ref": "Art. 9(1)" },
+    { "term": "genetic data", "class": "genetic_data", "gdpr_ref": "Art. 9(1)" },
+    { "term": "biometric data", "class": "biometric_data", "gdpr_ref": "Art. 9(1)" },
+    { "term": "health data", "class": "health", "gdpr_ref": "Art. 9(1)" },
+    { "term": "medical condition", "class": "health", "gdpr_ref": "Art. 9(1)" },
+    { "term": "sex life", "class": "sex_life", "gdpr_ref": "Art. 9(1)" },
+    { "term": "sexual orientation", "class": "sexual_orientation", "gdpr_ref": "Art. 9(1)" },
+    { "term": "sexuelle Orientierung", "class": "sexual_orientation", "gdpr_ref": "Art. 9(1)", "language": "de" }
+  ],
+  "combinatorial_advisory_signals": [
+    {
+      "signal": "postal_code_ethnic_correlation",
+      "description": "Applicant postal code falls within a district with high ethnic-minority population share per Eurostat / national census. EU equivalent of US HMDA MMCT signal. Same caveat: advisory only, not proof of discrimination.",
+      "severity": "advisory",
+      "reference": "Eurostat regional statistics; German Federal Statistical Office micro-census"
+    },
+    {
+      "signal": "surname_national_origin_correlation",
+      "description": "Applicant surname strongly correlates with a specific national origin per public naming databases (e.g. Wiktionary surname frequency lists). Advisory only.",
+      "severity": "advisory",
+      "reference": "GDPR Art. 22 automated decision-making + ECJ C-634/21 Schufa framework"
+    },
+    {
+      "signal": "residency_status",
+      "description": "Non-EU residency status recorded in application. Not itself a protected class but may correlate with national origin under Art. 9. Flag for human review.",
+      "severity": "advisory",
+      "reference": "GDPR Art. 22 + national anti-discrimination frameworks (e.g. AGG in Germany)"
+    }
+  ],
+  "regulatory_anchors": {
+    "gdpr_art_9": "https://gdpr-info.eu/art-9-gdpr/",
+    "gdpr_art_22": "https://gdpr-info.eu/art-22-gdpr/",
+    "ecj_c_634_21_schufa": "https://curia.europa.eu/juris/document/document.jsf?docid=280426",
+    "agg_germany": "https://www.gesetze-im-internet.de/agg/",
+    "eu_ai_act_credit_scoring_deferred": "Digital Omnibus 2026-05 deferred Annex III(5)(b) to 2027-12-02"
+  },
+  "honest_scope_disclosure": "This scanner catches direct-mention GDPR Art. 9 special-category terms (hard block) in German + English + surfaces three most-cited combinatorial signals as advisory FLAG. It does NOT solve combinatorial proxy detection under EU law — no EU DPA has crisp guidance and ECJ Schufa C-634/21 leaves the operationalization to national supervisors. Do NOT claim this list is exhaustive of Article 22 automated-decision risk. Human review layer remains load-bearing per red-team B1 defense. EU AI Act Annex III(5)(b) credit-scoring deadline was deferred from 2026-08-02 to 2027-12-02 by the Digital Omnibus (7 May 2026 provisional; 13 May Council confirmed) — do NOT position this as 'AI Act 2026 ready.'"
+}
