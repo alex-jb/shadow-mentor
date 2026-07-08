@@ -12,6 +12,22 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.25 — FinCEN NPRM 2026-04-07 alignment (2026-07-08 NY)
+
+Anchors the [joint FinCEN + Fed + OCC + FDIC NPRM 2026-04-07](https://www.fincen.gov/news/news-releases/fincen-proposes-rule-fundamentally-reform-financial-institution-programs), the largest BSA update since USA PATRIOT Act. Comment closed 2026-06-09. Final rule expected late 2026 / early 2027.
+
+Structural change: the pre-NPRM four-pillar framework is consolidated into a risk-based effective AML/CFT program at 31 CFR 1020.210. The Customer Due Diligence rule (31 CFR 1010.230, previously a distinct "fifth pillar") is folded into internal policies, procedures, and controls.
+
+Shadow v1.5.25 ships a stage-aware citation resolver so callers can render notice text against pre-NPRM, NPRM-proposed, or NPRM-final framing without recompiling. Every deployed instance stays 100% back-compat.
+
+- `lib/aml-kyc-voice.js` — new `NPRM_STAGES` const, `getFinCenNprmStage()`, `citationForStage(citation, stage)`, `computeAmlKycVoiceWithStage(loan, {stage})`. Statutory citations (BSA structuring 31 USC 5324, OFAC 50% rule, USA PATRIOT §326 CIP) NOT rewritten.
+- Stage selection: per-call override, or env var `SHADOW_FINCEN_NPRM_STAGE`, default `pre-nprm`.
+- `lib/schemas/citation-registry.json` — 2 new entries: `FinCEN-NPRM-2026-04-07` (press release + Sullivan & Cromwell memo grounding) + `31CFR1020.210-NPRM-proposed` (Federal Register grounding). Both AA06-valid.
+- `test/aml-kyc-nprm-alignment.test.js` — 17 contract tests. Stage identifier canon, env var read, citation-rewrite semantics per stage, statutory citations untouched, verdict + AA-code back-compat with `computeAmlKycVoice`.
+- `docs/FINCEN-NPRM-2026-04-07-ALIGNMENT.md` — old-vs-new pillar map, transition path, back-compat guarantees, attestation implications (none — verdict semantics unchanged).
+
+Test surface 1016 → 1033 (+17).
+
 ## v1.5.24 — GAICF layer 3: adverse-action language drafter (2026-07-08 NY)
 
 Anchors [Wang, Kang, Lin, Mao 2026-07-05 arXiv:2607.04103](https://arxiv.org/abs/2607.04103) — "Governing Generative AI Across Financial Institutions: An SR 26-2-Compatible Framework." Shadow already shipped GAICF layers 1 (5-voice council) and 2 (policy analysis + citation registry). Layer 3 was the last missing piece: **adverse-action language drafting**.
