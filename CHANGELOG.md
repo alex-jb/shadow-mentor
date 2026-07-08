@@ -12,6 +12,29 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.30 — Per-persona evidence partitioning (InfoDelphi) (2026-07-08 NY)
+
+Anchors [arXiv:2607.01661](https://arxiv.org/abs/2607.01661) — Li, Tao, Zhang InfoDelphi (2026-07-02). Documents 12-18% Brier improvement when council personas receive partitioned evidence rather than identical prompts. Structural defense against Kohli 2605.29800 correlated-votes pathology.
+
+- `lib/evidence-partition.js` — 5 persona × canonical field lists. Compliance sees regulatory fields ONLY; Credit sees ratios ONLY; Risk sees market-proxy time series ONLY; Advocate sees applicant narrative ONLY; Contrarian sees macro context ONLY.
+- `evidencePartitionFor(personaId, loan)` — deterministic evidence subset. Unknown persona → empty object (fail-safe closed).
+- `partitionLoanAcrossVoices(loan)` — returns all 5 partitions at once.
+- `auditPartitionLeak(personaId, partition)` — detects cross-persona field leaks.
+- `partitionSchemeHash()` — SHA-256 of the canonical scheme. Bank counsel pins this in procurement contracts.
+- `lib/attestation.js` — new append-only `evidence_partition_scheme_sha256` field. Same back-compat pattern as v1.5.8/18/19/20/23/24/28. Pre-v1.5.30 attestations verify unchanged.
+- `test/evidence-partition.test.js` — 16 contract tests. Scheme integrity, per-persona field-list correctness (no leaks), cross-persona-leak audit, determinism, fail-safe closed on unknown persona, end-to-end attestation verification (positive + tamper detection).
+
+Test surface 1084 → 1100 (+16).
+
+## v1.5.29 — GovRAMP Moderate baseline mapping (docs-only) (2026-07-08 NY)
+
+Anchors [StateRAMP-to-GovRAMP 2026 rebrand](https://betaquick.com/blog/stateramp-vs-fedramp-ai-compliance/) + [FedRAMP 20x](https://www.fedramp.gov/20x/) Moderate baseline submission window opens Q4 FY26.
+
+- `docs/GOVRAMP-MODERATE-MAP.md` — Shadow control mapping across AC / AU / IA / SC / SI families, per NIST 800-53 Rev 5. Overlap analysis with `docs/NIST-AI-600-1-MAP.md`. Explicitly lists what is NOT covered (ConMon, CP, PE, PL — state-owned bank ops side).
+- No code changes. Complements existing docs stack (`GSAR-552-239-7001-PROVENANCE.md` + `NIST-AI-600-1-MAP.md` + `PER-TENANT-KEY-ISOLATION.md`).
+
+**Bank buyer this unlocks**: state-chartered community banks (Bank of North Dakota reference case), state HFA revenue-bond programs.
+
 ## v1.5.28 — Invisible-Manipulation-Channel defense (sampling attestation) (2026-07-08 NY)
 
 Anchors [arXiv:2606.16121](https://arxiv.org/abs/2606.16121) — "Invisible Manipulation Channels in AI-Assisted Financial Advisory" (2026-06-25). Partial defense: catches silent-substitution attacks on seed, temperature, model, and provider fingerprint. Complete defense per the paper requires QRNG + TEE, which Shadow does not currently ship.
