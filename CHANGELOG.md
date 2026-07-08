@@ -12,6 +12,26 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.37 — Typed-claim envelope (Pramana, arXiv:2605.20312) (2026-07-08 NY)
+
+Anchors [arXiv:2605.20312](https://arxiv.org/abs/2605.20312) — "Pramana: A Protocol-Layer Treatment of Claim Verification in Autonomous Agent Networks" (Kadaboina, 2026-05-19). Declares the epistemic class of each Shadow decision so bank auditor knows which additional hashes to verify at replay time.
+
+- `lib/typed-claims.js` — new module.
+  - `CLAIM_TYPE` enum: PERCEPTION / INFERENCE / ANALOGY / TESTIMONY (4 classes).
+  - `AUDIT_EXPECTATION` — per-class replay expectation (`class`, `what_to_verify`, `additional_hashes_required`).
+  - `buildTypedClaimEnvelope(claimType)` — canonical envelope with `envelope_hash_sha256`.
+  - `claimTypeCommitment(claimType)` — just the hash.
+  - `classifyClaimType({scenario, loan, verdict})` — heuristic default hint. TESTIMONY precedes PERCEPTION for refuse_to_serve verdicts.
+- `lib/attestation.js` — new append-only `claim_type_sha256` field (10th). Same back-compat pattern as v1.5.8/18/19/20/23/24/28/30/32.
+- `test/typed-claims.test.js` — 17 contract tests. 4-class enum coverage, per-class audit-expectation completeness, hash uniqueness + determinism, classifier priority (TESTIMONY > PERCEPTION > INFERENCE), attestation binding HMAC + Ed25519 + tamper detection + back-compat, procurement surface.
+- `docs/TYPED-CLAIMS.md` — anchor + 4-class table + why the taxonomy matters at audit time + full 10-field aex-attestation/v1 append-only surface.
+
+**aex-attestation/v1 field surface now 10.** Wiring into `/api/deliberate` deferred to v1.5.38.
+
+**Test surface 1161 → 1178 (+17). 1178/1179 pass, 1 skip existing, 0 fail.**
+
+**Back-compat**: pre-v1.5.37 attestations do not carry the field. Their signing payloads never included it. Their signatures verify unchanged.
+
 ## v1.5.36 — refuse_to_serve wire-in + API surface + README refresh (2026-07-08 NY)
 
 Wires the v1.5.35 `refuse_to_serve` primitive into the `/api/deliberate` LBO + loan flow so bank counsel testing the API sees the distinction between `escalate` and `refuse_to_serve` at the response body level. Prior to this ship, `runLoanCouncil()` returned `escalate` for OFAC/BSA/statutory/geographic/product bars — factually wrong per arXiv:2606.29142 systematization.
