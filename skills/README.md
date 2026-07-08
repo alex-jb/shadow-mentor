@@ -8,6 +8,8 @@ Skills here are self-contained folders with a `SKILL.md` file at the root. Insta
 
 Full-catalog matrix — one skill per Shadow persona plus one for the aggregate loan-council verdict:
 
+### Persona skills (banking loan council)
+
 | Skill | What it does | Confidence weight | Block authority |
 |---|---|---|---|
 | [`shadow-loan-council`](./shadow-loan-council/SKILL.md) | Full 5-to-6 voice pure-compute verdict layer. Ed25519 attestation. | — (aggregator) | — |
@@ -16,6 +18,14 @@ Full-catalog matrix — one skill per Shadow persona plus one for the aggregate 
 | [`shadow-risk-officer`](./shadow-risk-officer/SKILL.md) | Portfolio VaR / LTV / concentration / sector. Loredana's Addendum C thresholds. | 1.00 | ✅ on VaR > 2× ceiling |
 | [`shadow-customer-advocate`](./shadow-customer-advocate/SKILL.md) | Adverse-action explanation quality per CFPB Bulletin 2024-09. | 0.85 | ❌ (escalate-only) |
 | [`shadow-macro-contrarian`](./shadow-macro-contrarian/SKILL.md) | Mandatory dissent voice — CRE + late-cycle sector risk. | 0.85 | ❌ (escalate-only) |
+
+### Cross-vertical + audit skills (v1.5.17+)
+
+| Skill | Vertical | What it does |
+|---|---|---|
+| [`shadow-attestation-verify`](./shadow-attestation-verify/SKILL.md) | audit | Verify a Shadow attestation record (Ed25519 or HMAC) without leaving Claude Desktop. Cross-language, works with Python 3.9–3.13 shadow-verify library. |
+| [`shadow-size-position`](./shadow-size-position/SKILL.md) | trading | FinPos-style position sizer. Direction is an input from an upstream Judge; sizer decides fund/skip + position_usd only. Never emits a direction. |
+| [`shadow-ds-govern`](./shadow-ds-govern/SKILL.md) | data-science | 5-voice deterministic model-risk council. Fair-ML BLOCK on EEOC 80% rule violation is unconditional. Missing metadata is REWORK, never SHIP. |
 
 **Credit Fundamentals** persona is intentionally NOT shipped as a standalone SKILL.md because its `FICO < 700 hard block` is Lora's non-negotiable policy floor (per her 2026-06-19 binding decision) — it should only run inside the full council alongside Compliance and Risk. Consumers who want a credit-only check should use `shadow-loan-council` directly.
 
