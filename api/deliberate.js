@@ -24,6 +24,16 @@ import { sizePosition } from "../lib/personas/trader-pack/risk-sizer.js";
 import { runDSCouncil } from "../lib/personas/ds-pack/run-ds-council.js";
 import { defaultStore as chainStore } from "../lib/attestation-chain-store.js";
 import { formatForSiem } from "../lib/siem-export.js";
+// v1.5.34 wire-in: heterogeneity enforcement + reproducibility manifest
+// at the API surface. Both primitives ship in v1.5.32/33; this makes
+// them visible to callers (procurement, exam workpaper) without
+// changing default behavior when the caller does not opt in.
+import {
+  enforceAndCommit,
+  DEFAULT_MIN_PROVIDERS,
+} from "../lib/heterogeneous-debate.js";
+import { buildReproducibilityManifest } from "../lib/reproducibility.js";
+import { computeDictionaryHash } from "../lib/enforce-reason-code-dictionary.js";
 
 const CLAUDE_MODEL = "claude-sonnet-4-5-20250929";
 const CLAUDE_HAIKU_MODEL = "claude-haiku-4-5-20251001";
@@ -156,7 +166,47 @@ export default async function handler(req, res) {
     return res.status(200).json(dsResponse);
   }
 
-  const { persona = "compliance", scenario = "lbo", question, context, provider = "anthropic", loan, diverse = false } = body;
+  const {
+    persona = "compliance",
+    scenario = "lbo",
+    question,
+    context,
+    provider = "anthropic",
+    loan,
+    diverse = false,
+    // v1.5.34: heterogeneity enforcement opt-in. Default false (back-compat).
+    strict_heterogeneity = false,
+    min_providers = DEFAULT_MIN_PROVIDERS,
+  } = body;
+
+  // v1.5.34: heterogeneity pre-flight gate. When the caller opts into
+  // strict mode, refuse deliberation BEFORE any LLM call if the
+  // deployment does not meet the min-provider floor. This protects
+  // bank-regulated workflows from silently accepting decisions that
+  // structurally fail the arXiv:2606.19826 adversarial-peer defense.
+  // Non-strict callers see zero behavior change.
+  if (strict_heterogeneity === true) {
+    const availableForGate = detectAvailableProviders(process.env);
+    const gate = enforceAndCommit({
+      voiceNames: ["junior", "senior", "third"],
+      availableProviders: availableForGate,
+      minProviders: min_providers,
+      seed: { persona, scenario, provider, strict_heterogeneity: true },
+    });
+    if (!gate.ok) {
+      // HTTP 428 Precondition Required — the deployment failed the
+      // caller's declared enforcement precondition. Bank counsel can
+      // pin this response class in procurement contracts.
+      return res.status(428).json({
+        error: "heterogeneity_floor_not_met",
+        reason: gate.reason,
+        min_required: gate.min_required,
+        unique_providers_used: gate.unique_providers_used,
+        providers_available_count: gate.providers_available_count,
+        anchor: "arXiv:2606.19826",
+      });
+    }
+  }
 
   // 2026-06-30 wire-in: provider="local" routes to Ollama / llama.cpp
   // OpenAI-compat endpoint (default phi4-mini @ http://127.0.0.1:11434/v1).
@@ -370,16 +420,58 @@ export default async function handler(req, res) {
       }
     }
 
+    // v1.5.34: compute heterogeneity commitment for THIS decision so
+    // it can be included in the response body AND bound into the
+    // attestation. Fires regardless of strict_heterogeneity (gate was
+    // already resolved above); this is the audit-trail record.
+    const actualProvidersSet = diverseRoutingUsed && diverseRoutingResult
+      ? [...new Set(Object.values(diverseRoutingResult.assignment).filter(Boolean))].sort()
+      : [provider];
+    const heterogeneityEnforcement = enforceAndCommit({
+      voiceNames: ["junior", "senior", "third"],
+      availableProviders: actualProvidersSet,
+      minProviders: min_providers,
+      seed: { persona, scenario, provider, actual: true },
+    });
+    response.heterogeneity_enforcement = {
+      ok: heterogeneityEnforcement.ok,
+      min_required: heterogeneityEnforcement.min_required,
+      unique_providers_used: heterogeneityEnforcement.unique_providers_used,
+      providers_used_sorted: heterogeneityEnforcement.providers_used_sorted,
+      commitment_sha256: heterogeneityEnforcement.commitment_sha256,
+      strict_mode_requested: strict_heterogeneity === true,
+      anchor: "arXiv:2606.19826",
+    };
+
     // AEX-style attestation binding request → output → model.
     // 2026-07-02 upgrade. See lib/attestation.js docstring for refs.
     // Unlike /api/loan-council which is pure-compute, /api/deliberate
     // fires actual LLM calls — the model_id here reflects the actual
     // provider/model used so an auditor can detect silent substitution.
+    // v1.5.34: bind heterogeneity_commitment_sha256 into attestation
+    // so post-hoc relaxation of min_providers breaks Ed25519 verify.
     response.attestation = buildAttestation({
       request: req.body ?? {},
       response,
       modelId: `${provider ?? "unknown"}/${model ?? "unknown"}`,
       previousHash: chainStore.getPreviousHash(),
+      heterogeneityCommitmentSha256: heterogeneityEnforcement.commitment_sha256,
+    });
+
+    // v1.5.34: reproducibility manifest per arXiv:2606.08285. Composes
+    // the existing per-decision hashes into a single 5-axis JSON block
+    // bank counsel pins in one line of an exam workpaper. Not signed
+    // itself — the manifest_hash is a fingerprint over the input state.
+    let dictionaryHashForManifest = null;
+    try { dictionaryHashForManifest = computeDictionaryHash(); } catch { /* dict optional */ }
+    response.reproducibility_manifest = buildReproducibilityManifest({
+      borrowerSnapshotHash: response.attestation.request_commitment,
+      decisionTimestampUtc: response.attestation.completed_at_utc,
+      modelId: response.attestation.model_id,
+      providersUsedSorted: actualProvidersSet,
+      nodeVersion: process.version,
+      dictionaryHash: dictionaryHashForManifest,
+      heterogeneityCommitmentHash: heterogeneityEnforcement.commitment_sha256,
     });
     // v1.5.16 cross-vertical chain — advance the shared head so the
     // next decision (banking / trading / ds) chains to this one. This

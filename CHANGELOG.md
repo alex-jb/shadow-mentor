@@ -12,6 +12,23 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.34 — /api/deliberate wire-in: strict_heterogeneity + reproducibility_manifest (2026-07-08 NY)
+
+Makes the v1.5.32 heterogeneity enforcement primitive and v1.5.33 reproducibility manifest visible at the `/api/deliberate` HTTP surface. Prior to this ship, both primitives existed in `lib/` but a compliance officer testing Postman saw nothing new — this ships the procurement-visible surface.
+
+- `api/deliberate.js` — three additions:
+  - New request-body field `strict_heterogeneity` (default `false`, back-compat). When `true`, runs `enforceAndCommit()` pre-flight before any LLM call. Fails with HTTP 428 Precondition Required + JSON body `{ error: "heterogeneity_floor_not_met", reason, min_required, unique_providers_used, providers_available_count, anchor: "arXiv:2606.19826" }` when deployment does not meet the min-provider floor.
+  - New request-body field `min_providers` (default `DEFAULT_MIN_PROVIDERS = 2`). Bank counsel can pin 3 for higher-risk lending books.
+  - New response-body block `heterogeneity_enforcement` — always emitted, includes `commitment_sha256` + `strict_mode_requested` + `providers_used_sorted` + `anchor`. Attestation now binds `heterogeneity_commitment_sha256` for every decision.
+  - New response-body block `reproducibility_manifest` — always emitted, 5-axis JSON per arXiv:2606.08285 with top-level `manifest_hash_sha256`. Bank counsel pins ONE hash in the exam workpaper.
+- `test/api-deliberate-heterogeneity.test.js` — 6 contract tests. Gate fails with 428 on single-provider + strict, gate fires for `min_providers=3` with 2 configured, back-compat default preserved, gate passes with 2+ configured, anchor citation present, gate ordering vs unknown-persona check documented.
+
+**Back-compat**: pre-v1.5.34 callers see two new response body fields (`heterogeneity_enforcement`, `reproducibility_manifest`) and one new attestation field (`heterogeneity_commitment_sha256`). Both response body additions are additive JSON. The attestation field only appears on the wire because a decision made post-v1.5.34 will always include it. Pre-v1.5.34 archived attestations verify unchanged.
+
+**Test surface 1133 → 1139 (+6). 1139/1140 pass, 1 skip existing, 0 fail.**
+
+**Procurement pitch**: single POST body change (`strict_heterogeneity: true`) flips the endpoint from advisory to enforcement. Single response field (`reproducibility_manifest.manifest_hash_sha256`) replaces 9 hashes in an exam workpaper.
+
 ## v1.5.33 — Reproducibility manifest (5-axis exam-workpaper primitive) (2026-07-08 NY)
 
 Anchors [arXiv:2606.08285](https://arxiv.org/abs/2606.08285) — "Beyond Agent Architecture: Execution Assumptions and Reproducibility in LLM-Based Trading Systems" (Yao/Zheng, 2026-06-06). Composes existing per-decision hashes into a single 5-axis JSON block bank counsel pins in one line of an exam workpaper instead of chasing 9 separate hashes across the attestation object.
