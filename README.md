@@ -6,16 +6,24 @@
 
 [![tests](https://img.shields.io/badge/tests-1161%2F1162%20passing-brightgreen)](./test) [![verdict invariance](https://img.shields.io/badge/verdict%20invariance-10%2F10%20structural%20perturbations-blue)](./test/verdict-invariance.test.js) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
 
-## What's new in v1.5.36 (2026-07-08)
+## What's new in v1.5.38 (2026-07-08)
 
-Continuing arc from v1.5.31→v1.5.36 (6 releases in one day). Ships Reg B 7/21 pivot + arXiv-anchored moats + full API surface for procurement demos.
+Continuing arc from v1.5.31→v1.5.38 (8 releases in one day). Ships Reg B 7/21 pivot + 5 arXiv-anchored moats + full API surface for procurement demos + offline demo path.
 
-- **[`v1.5.36`](./CHANGELOG.md#v1536--refuse_to_serve-wire-in--api-surface--2026-07-08-ny)** — wires `refuse_to_serve` (v1.5.35 primitive per arXiv:2606.29142) into `/api/deliberate` LBO+loan flow. Verdict promoted from `escalate` → `refuse_to_serve` when loan carries OFAC/BSA/statutory/geographic/product bar. README badge updated to 1161 tests.
+- **[`v1.5.38`](./CHANGELOG.md#v1538)** — `/api/deliberate` wire-in for `claim_type` typed-claim envelope + explicit override. New body field `claim_type` (validated fast-fail HTTP 400 before LLM call).
+- **[`v1.5.37`](./CHANGELOG.md#v1537)** — typed-claim envelope (Pramana, arXiv:2605.20312). 10th append-only field in aex-attestation/v1. Declares epistemic class (PERCEPTION / INFERENCE / ANALOGY / TESTIMONY) so bank auditor knows which additional hashes to verify at replay time.
+- **[`v1.5.36`](./CHANGELOG.md#v1536)** — wires `refuse_to_serve` (v1.5.35 primitive per arXiv:2606.29142) into `/api/deliberate` LBO+loan flow. Verdict promoted from `escalate` → `refuse_to_serve` when loan carries OFAC/BSA/statutory/geographic/product bar.
 - **[`v1.5.35`](./CHANGELOG.md#v1535)** — 6-category threat systematization + `refuse_to_serve` primitive.
 - **[`v1.5.34`](./CHANGELOG.md#v1534)** — `/api/deliberate` wire-in for strict_heterogeneity gate + reproducibility_manifest.
-- **[`v1.5.33`](./CHANGELOG.md#v1533)** — reproducibility manifest primitive.
-- **[`v1.5.32`](./CHANGELOG.md#v1532)** — heterogeneous-debate enforcement + 9th append-only attestation field.
+- **[`v1.5.33`](./CHANGELOG.md#v1533)** — reproducibility manifest primitive (arXiv:2606.08285).
+- **[`v1.5.32`](./CHANGELOG.md#v1532)** — heterogeneous-debate enforcement (arXiv:2606.19826) + 9th append-only attestation field.
 - **[`v1.5.31`](./CHANGELOG.md#v1531)** — Reg B 2026-07-21 final-rule pivot + Colorado SB 26-189 mapping. **Ships 13 days before Reg B effective date.**
+
+**aex-attestation/v1 append-only field surface: 10** (see [`docs/TYPED-CLAIMS.md`](./docs/TYPED-CLAIMS.md) for full table).
+
+**Offline demo**: [`examples/mock-deliberate.mjs`](./examples/mock-deliberate.mjs) — zero API key required, byte-for-byte the same response shape as live `/api/deliberate`. Useful for air-gapped procurement reviews + presentation fallback.
+
+**Worked case study**: [`docs/case-studies/2026-07-08-refuse-to-serve.md`](./docs/case-studies/2026-07-08-refuse-to-serve.md) — full request → response → audit walkthrough of an OFAC SDN match returning `verdict: "refuse_to_serve"`.
 
 ## What's new in v1.5.21 (2026-07-08)
 
