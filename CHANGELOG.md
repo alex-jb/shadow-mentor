@@ -12,6 +12,25 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.42 — Bayesian calibration-vs-ranking split (fixes SIVE Finding #3) (2026-07-08 NY)
+
+Anchors [arXiv:2605.27712](https://arxiv.org/abs/2605.27712) — "Prefix-Safe Bayesian Belief Tracking for LLM Reasoning Reliability: Separating Calibration from Ranking" (Song / Li / Liu, 2026-05-26). Directly fixes SIVE Finding #3 exposed in v1.5.41: `confidence-weighted-verdict.js` conflates two orthogonal signals into one `aggregated_score`, causing radically different loans to produce identical scores. **14th append-only attestation field.**
+
+- `lib/calibration-ranking-split.js` — new module.
+  - `computeCalibratedProbability(voices, weights)` — returns [0,1] Brier-auditable probability
+  - `computeRankingScore(voices, weights)` — returns unbounded ordinal for tie-breaking, scales by metric strength (FICO 780 outranks FICO 705 even when both vote approve)
+  - `computeCalibrationRankingSplit(voices, weights)` — convenience wrapper
+  - `calibrationRankingSplitCommitment(split, voices, weights)` — SHA-256 for attestation binding
+  - `auditNoConflation(decisions)` — detects Haiku uniform-0.5 pathology + lockstep drift
+- `lib/attestation.js` — new append-only `calibration_ranking_split_sha256` field. Silent swap of either output (e.g. quietly lowering calibrated_p to skirt a Brier audit) breaks Ed25519 verification.
+- `test/calibration-ranking-split.test.js` — 15 contract tests including SIVE Finding #3 regression test: obvious_approve vs borderline MUST produce different ranking_scores (v1.5.41 baseline produced identical 0.6575).
+
+**Legacy behavior unchanged**: `lib/confidence-weighted-verdict.js` untouched. Callers who want honest Brier reporting migrate to two-output API; legacy callers see zero behavior change. Wiring into `runLoanCouncil()` deferred to v1.5.43+.
+
+**Test surface 1227 → 1242 (+15). Back-compat verified.**
+
+**Dr. NGO narrative arc (2026-07-16 presentation)**: v1.5.41 SIVE exposed the bug → v1.5.42 arXiv:2605.27712 fixes it. Same session. Bank counsel opening the docs sees the honest research → engineering loop.
+
 ## v1.5.41 — SIVE persona-consistency test rig + 3 baseline findings (2026-07-08 NY)
 
 Anchors [arXiv:2607.00910](https://arxiv.org/abs/2607.00910) — "Calibrating the Instrument: Controllability of an LLM-Driven Synthetic Population" (2026-07-01). Ships 5 known-valence synthetic loan fixtures + a test rig that structurally detects variance-collapse pathologies BEFORE they hit production. **13th append-only attestation field**.
