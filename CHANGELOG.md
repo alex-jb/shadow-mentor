@@ -12,6 +12,25 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.39 — BIAN persona coverage + Norm-Shadow wedge (2026-07-08 NY)
+
+Anchors [arXiv:2607.01740](https://arxiv.org/abs/2607.01740) — "Meta-Benchmarks for Financial-Services LLM Evaluation" (2026-07-02). Maps Shadow's 5-persona council to BIAN v9 service domains — the industry-standard framing bank counsel already recognizes from Temenos / Finastra / TCS BaNCS / FIS Profile procurement RFPs. **11th append-only attestation field** in aex-attestation/v1.
+
+- `lib/bian-coverage.js` — new module.
+  - `BIAN_DOMAINS` enum (11 domains Shadow covers: Regulatory Compliance / Fair Lending / Credit Assessment / Credit Risk / Model Risk Management / Portfolio Management / Stress Testing / Market Analysis / Customer Servicing / Customer Interaction / AML-KYC-Sanctions).
+  - `PERSONA_BIAN_MAP` — 7 personas × ordered BIAN domain list, primary + additional.
+  - `getBianDomainsForPersona(persona)` / `getPersonasForBianDomain(domain)` / `bianCoverageCommitment()` / `auditBianCoverage()` / `getBianCoverageMatrix()`.
+- `lib/attestation.js` — new append-only `bian_coverage_sha256` field. Same back-compat pattern as v1.5.8/18/19/20/23/24/28/30/32/37. Pre-v1.5.39 attestations verify unchanged.
+- `test/bian-coverage.test.js` — 15 contract tests. Enum coverage, per-persona domain assignment, primary-domain invariance, unknown-persona graceful lookup, reverse-lookup by domain, hash determinism, attestation binding HMAC + Ed25519 + tamper detection + back-compat, procurement matrix output.
+- `docs/BIAN_COVERAGE.md` — anchor + 7-persona × 11-domain table + list of BIAN domains Shadow does NOT cover (honest positioning) + Norm-Shadow wedge + API surface.
+- `docs/positioning-vs-anthropic-fs.md` — added Norm AI $120M Series C context (2026-07-07 Bloomberg) + Norm Law LLP + Legal AGI Lab launches + Norm-Shadow one-sentence wedge + Fenrock AI adjacency note (YC S26 signal, integration-partner tier not competitor tier).
+
+**aex-attestation/v1 field surface now 11.** Wiring `bian_coverage_sha256` into `/api/deliberate` deferred to v1.5.40 so callers can opt in.
+
+**Test surface 1183 → 1198 (+15). 1198/1199 pass, 1 skip existing, 0 fail.**
+
+**Procurement pitch**: bank counsel opens `docs/BIAN_COVERAGE.md`, sees industry-standard framing, walks their internal governance top-to-bottom. "Norm governs contracts. Shadow governs credit decisions."
+
 ## v1.5.38 — /api/deliberate wire-in for claim_type + explicit override (2026-07-08 NY)
 
 Wires the v1.5.37 typed-claim envelope into `/api/deliberate`. Every decision now emits `claim_type_envelope` in the response body (declaring the epistemic class + audit-replay expectation + additional_hashes_required) AND binds `claim_type_sha256` into the attestation. Callers can override the heuristic default via body field `claim_type`.

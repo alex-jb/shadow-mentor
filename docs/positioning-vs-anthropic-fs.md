@@ -2,7 +2,13 @@
 
 > **What changed (2026-05-05).** Anthropic announced pre-built Financial Services agent templates (pitchbooks, KYC, month-end close), Moody's embedded as a native Claude app, and a $1.5B Goldman / Blackstone / H&F vehicle. Claude Opus 4.7 is now positioned as the "Wall Street model."
 >
-> **Why this doc exists.** The 30-bank pipeline buyer will Google "Anthropic financial agents" before signing. Shadow needs a clear "not-Anthropic" wedge that's defensible by an examiner, not a marketer.
+> **What changed (2026-07-07).** [Norm AI raised $120M Series C at $1.2B unicorn valuation](https://www.bloomberg.com/news/articles/2026-07-07/ai-legal-startup-norm-valued-at-1-2-billion-in-funding-round) (Khosla + Blackstone + Bain + Coatue + Vanguard + NY Life + TIAA + Fenwick). Bundled announcements: **Norm Law LLP** launched as "first fully AI-native law firm" with $50M Blackstone add-on and ex-Sidley Chairman Mike Schmidtberger as Chairman/Partner; **Legal AGI Lab** unveiled at Stanford FutureLaw as R&D arm. Norm's positioning is now clearly legal-services (targets law firms + GC offices).
+>
+> **The Norm-Shadow wedge (one sentence):** **Norm governs contracts. Shadow governs credit decisions.** A bank compliance officer picking between them is not making an either/or choice — they are picking which vendor governs which BIAN service domain. See [`BIAN_COVERAGE.md`](./BIAN_COVERAGE.md) for the persona → BIAN domain mapping.
+>
+> **YC S26 signal (2026-07-08 scan).** [Fenrock AI](https://fenrock.ai) automates bank back-office loan documentation ("months → minutes with audit trails"). Different layer (loan-ops workflow, not governance council) — potential integration partner, not competitor. Track on the "adjacent" tier.
+>
+> **Why this doc exists.** The 30-bank pipeline buyer will Google "Anthropic financial agents" before signing. Shadow needs a clear "not-Anthropic + not-Norm" wedge that's defensible by an examiner, not a marketer.
 
 ## Three-row positioning
 
