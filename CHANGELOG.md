@@ -12,6 +12,19 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.40 — Eticas AI Risk Taxonomy v2.0.0 coverage (2026-07-08 NY)
+
+Anchors [arXiv:2607.02201](https://arxiv.org/abs/2607.02201) — "The Eticas AI Risk Taxonomy: Open Infrastructure for Operationalizing AI Audits" (2026-07-02). Maps 12 Shadow tests to Eticas v2.0.0 subcategories with per-row NIST AI RMF + EU AI Act + ISO 42001 mappings. **12th append-only attestation field** in aex-attestation/v1.
+
+- `lib/eticas-taxonomy.js` — new module. `ETICAS_CATEGORIES` (7 supercategories) + `ETICAS_SUBCATEGORY_MAP` (12 subcategories covering 6 of Eticas v2's 10 categories) + `getEticasSubcategory` / `getSubcategoriesInCategory` / `getEticasCoverageMatrix` / `eticasTaxonomyCommitment` / `auditEticasCoverage`.
+- `lib/attestation.js` — new append-only `eticas_taxonomy_sha256` field. Same back-compat pattern as v1.5.8/18/19/20/23/24/28/30/32/37/39.
+- `test/eticas-taxonomy.test.js` — 12 contract tests.
+- `docs/ETICAS_TAXONOMY.md` — 12-row Shadow test × Eticas subcategory × NIST × EU AI Act × ISO 42001 table + honest what-we-don't-cover (Safety + Environmental + Social + Economic are NOT claimed).
+
+**Test surface 1198 → 1210 (+12). Back-compat: pre-v1.5.40 attestations verify unchanged.**
+
+**Procurement pitch**: SIEM auditor picks any of NIST AI RMF / EU AI Act / ISO 42001 / US Reg B, gets the Shadow test coverage as a filter. Regulatory pluralism for free.
+
 ## v1.5.39 — BIAN persona coverage + Norm-Shadow wedge (2026-07-08 NY)
 
 Anchors [arXiv:2607.01740](https://arxiv.org/abs/2607.01740) — "Meta-Benchmarks for Financial-Services LLM Evaluation" (2026-07-02). Maps Shadow's 5-persona council to BIAN v9 service domains — the industry-standard framing bank counsel already recognizes from Temenos / Finastra / TCS BaNCS / FIS Profile procurement RFPs. **11th append-only attestation field** in aex-attestation/v1.
