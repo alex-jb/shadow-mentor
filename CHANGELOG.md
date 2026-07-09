@@ -12,6 +12,25 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.41 — SIVE persona-consistency test rig + 3 baseline findings (2026-07-08 NY)
+
+Anchors [arXiv:2607.00910](https://arxiv.org/abs/2607.00910) — "Calibrating the Instrument: Controllability of an LLM-Driven Synthetic Population" (2026-07-01). Ships 5 known-valence synthetic loan fixtures + a test rig that structurally detects variance-collapse pathologies BEFORE they hit production. **13th append-only attestation field**.
+
+The rig exposed **3 real baseline findings** at v1.5.41 (see `docs/SIVE_BASELINE_FINDINGS.md`):
+
+1. `obvious_approve` returns `escalate` not `approve` — suggests undocumented escalation default in `run-loan-council.js`
+2. OFAC SDN match returns `escalate` not `refuse_to_serve` — `maybeRefuseToServe()` not auto-invoked by `runLoanCouncil()` (must be applied by caller per v1.5.35 doc)
+3. `obvious_approve` and `borderline_escalate` produce THE SAME `aggregated_score` of 0.6575 — real Ranking-Calibration conflation bug scoped for v1.5.42+ per arXiv:2605.27712
+
+- `lib/sive-fixtures.js` — new module. 5 canonical fixtures (obvious_approve / obvious_deny / borderline_escalate / ofac_refuse_to_serve / dictionary_canary_reject). Each has `expected_verdict` (current baseline) + `ideal_verdict` (target). `siveFixtureSetCommitment` binds the set into aex-attestation/v1.
+- `lib/attestation.js` — new append-only `sive_fixture_set_sha256` field.
+- `test/sive-fixtures.test.js` — 17 contract tests including variance-collapse detection (would catch Orallexa 6/28 Haiku uniform-0.5) + tamper detection (silent weakening of a fixture breaks Ed25519 verify).
+- `docs/SIVE_BASELINE_FINDINGS.md` — 3 findings with root cause + impact + fix scope + arXiv anchors.
+
+**Honest positioning**: Bank counsel opening this doc sees exactly what Shadow does NOT get right at v1.5.41. Alternative is discovering these pathologies at exam time.
+
+**Test surface 1210 → 1227 (+17). Back-compat verified.**
+
 ## v1.5.40 — Eticas AI Risk Taxonomy v2.0.0 coverage (2026-07-08 NY)
 
 Anchors [arXiv:2607.02201](https://arxiv.org/abs/2607.02201) — "The Eticas AI Risk Taxonomy: Open Infrastructure for Operationalizing AI Audits" (2026-07-02). Maps 12 Shadow tests to Eticas v2.0.0 subcategories with per-row NIST AI RMF + EU AI Act + ISO 42001 mappings. **12th append-only attestation field** in aex-attestation/v1.
