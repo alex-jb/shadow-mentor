@@ -1,0 +1,63 @@
+{
+  "generated_at_utc": "2026-07-10T15:04:40.253Z",
+  "seed": 20260710,
+  "n": 200,
+  "verdict_accuracy": 1,
+  "confusion_matrix": {
+    "approve→approve": 110,
+    "block→block": 35,
+    "escalate→escalate": 55
+  },
+  "per_voice_agreement_with_final": {
+    "Credit Fundamentals": 0.945,
+    "Risk Officer": 0.595,
+    "Fair Lending Compliance": 0.56,
+    "Customer Advocate": 0.55,
+    "Macro Contrarian": 0.69
+  },
+  "per_voice_confidence": {
+    "Credit Fundamentals": {
+      "mean": 0.82,
+      "min": 0.82,
+      "max": 0.82,
+      "n": 200
+    },
+    "Risk Officer": {
+      "mean": 0.78,
+      "min": 0.78,
+      "max": 0.78,
+      "n": 200
+    },
+    "Fair Lending Compliance": {
+      "mean": 0.91,
+      "min": 0.91,
+      "max": 0.91,
+      "n": 200
+    },
+    "Customer Advocate": {
+      "mean": 0.74,
+      "min": 0.74,
+      "max": 0.74,
+      "n": 200
+    },
+    "Macro Contrarian": {
+      "mean": 0.69,
+      "min": 0.69,
+      "max": 0.69,
+      "n": 200
+    }
+  },
+  "aa_code_coverage": {
+    "AA01": 35,
+    "AA02": 70,
+    "AA03": 21,
+    "AA04": 6,
+    "AA05": 2
+  },
+  "notes": [
+    "gold_verdict derived from LOAN_DEFAULTS thresholds + policy semantics per Levitchi 2026-06-19",
+    "confidence values are per-persona constants; ICAIF Section 5.3 must clarify whether Brier decomposition uses these constants or requires schema extension to emit per-class probabilities",
+    "$0 LLM cost — runLoanCouncil is pure deterministic verdict logic",
+    "reproducible: re-run with same --seed for byte-identical output"
+  ]
+}
