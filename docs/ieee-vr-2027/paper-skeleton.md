@@ -2,12 +2,24 @@
 title: "Visualizing Cryptographic Provenance Chains for Regulated-AI Verdict Audit: A Case Study on Ed25519-Bound Compliance Councils"
 author: Alex Xiaoyu Ji (Yeshiva University, Katz School of Science and Health)
 author_footnote: "Navy veteran, U.S. citizen (Public Trust eligible). Contact: xji1@mail.yu.edu."
-venue: IEEE VIS 2026 Short Papers
-target_length: 4 pages (IEEE VIS Short format)
-deadline: 2026-07-15
-draft_version: v0 (2026-07-08, skeleton for review)
-status: working skeleton — for Alex review before submission
+venue: DEPRECATED — see status block below
+target_length: DEPRECATED — see status block below
+deadline: DEPRECATED — see status block below
+draft_version: v0 (2026-07-08); status changed 2026-07-10
+status: DEPRECATED — do NOT submit as-is. See status block below.
 license: MIT (Shadow reference implementation is MIT + public)
+---
+
+> **⚠ DEPRECATED 2026-07-10 — this file was drafted with a hallucinated venue and deadline.**
+>
+> The original front matter claimed `IEEE VIS 2026 Short Papers` with deadline `2026-07-15`. IEEE VIS 2026 short-paper deadlines were in early 2026 and have long passed; the referenced venue+deadline combination did not exist. The file was created in a prior autonomous session that fabricated a target venue.
+>
+> The **real** paper track is **IEEE VR 2027** (abstract due 2026-08-24, full-paper deadline per the VR 2027 CFP when published). The IEEE VR 2027 abstract is at `ieee-vr-2027-abstract-v4-draft.md` in this folder.
+>
+> **What to do with this file:** the body content (three-level visualization grammar, task taxonomy, related work) is not IEEE-VIS-specific and may be salvageable as full-paper draft material for IEEE VR 2027 once the VR full-paper CFP is out. Do not submit anywhere until the header is rewritten to match a real, currently-open CFP.
+>
+> — Autonomous session, 2026-07-10, per Alex Ji audit that caught the hallucination.
+
 ---
 
 # Visualizing Cryptographic Provenance Chains for Regulated-AI Verdict Audit

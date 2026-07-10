@@ -25,7 +25,7 @@ Full narration is at `docs/demo-2026-07-16-narration.md` in the repo. Please ski
 
 I've rewritten the abstract to align with the pivot. The novelty claim changes from "5-persona AI council in VR" (which I think reviewers can shoot down easily) to "spatial forensic replay of cryptographically attested AI agent trajectories" (which is defensible because the chain-walk + tamper cascade genuinely has spatial structure).
 
-Draft is at `docs/ieee-vis-2026/ieee-vr-2027-abstract-v4-draft.md`. Title candidates and co-authorship placement are both open for your input. Per our 2026-06-19 agreement I want your review before any submit action.
+Draft is at `docs/ieee-vr-2027/ieee-vr-2027-abstract-v4-draft.md`. Title candidates and co-authorship placement are both open for your input. Per our 2026-06-19 agreement I want your review before any submit action.
 
 Submission deadline is 2026-08-24 so no rush this week. Sunday review works if that fits.
 

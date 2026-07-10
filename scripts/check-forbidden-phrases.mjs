@@ -95,7 +95,7 @@ const EXCLUDE_PREFIXES = [
   // IEEE paper drafts are the author's academic-track artifact and are
   // pivoting to a different framing per v3 brief. Fixing the fabrication
   // in these files is intentional next-morning work, not a mechanical sed.
-  "docs/ieee-vis-2026/",
+  "docs/ieee-vr-2027/",
 ];
 
 const INCLUDE_EXTENSIONS = new Set([".md", ".js", ".mjs", ".cjs", ".ts", ".json", ".yml", ".yaml", ".html"]);
