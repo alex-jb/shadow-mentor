@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shadow · Ambient Council Demo</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    background: #0a0a0f;
+    color: #E4E6EB;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    overflow: hidden;
+  }
+
+  /* Ambient scene: single big virtual room viewed as 171" floating screen
+     when Chrome is fullscreen on XREAL One Pro. Uses CSS 3D transforms
+     so it works identically on MacBook M5 fullscreen fallback. */
+  .stage {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    padding: 4vh 4vw;
+    perspective: 1400px;
+  }
+
+  header {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .brand {
+    font-size: 20px; letter-spacing: 4px; color: #FFA500; font-weight: 900;
+  }
+  .brand::after { content: " · Ambient Council"; color: #6B7280; font-weight: 400; letter-spacing: 1px; }
+  .status {
+    font-family: "SF Mono", ui-monospace, monospace;
+    font-size: 12px; color: #6B7280;
+  }
+  .status .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2BA560; margin-right: 6px; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: 0.4; } }
+
+  /* Question row */
+  .question {
+    padding: 24px 32px;
+    background: rgba(255, 165, 0, 0.06);
+    border-left: 4px solid #FFA500;
+    border-radius: 4px;
+    font-size: 26px;
+    line-height: 1.35;
+    max-width: 82vw;
+    margin: 0 auto;
+  }
+
+  /* Persona arc — CSS 3D translated from LayoutDescriptor positions */
+  .arc {
+    flex: 1; position: relative;
+    display: flex; align-items: center; justify-content: center;
+    transform-style: preserve-3d;
+    perspective: 1200px;
+    margin: 4vh 0;
+  }
+  .persona {
+    position: absolute;
+    width: 320px; padding: 22px 24px;
+    background: rgba(20, 22, 30, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-left-width: 3px;
+    border-radius: 10px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease, opacity 0.6s ease;
+    opacity: 0;
+  }
+  .persona.mounted { opacity: 1; }
+  .persona .name {
+    font-size: 14px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.3px;
+    margin-bottom: 8px;
+  }
+  .persona .verdict {
+    display: inline-block; padding: 4px 12px; border-radius: 3px;
+    font-size: 12px; font-weight: 800; letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .persona .verdict.approve { background: rgba(43, 165, 96, 0.16); color: #2BA560; }
+  .persona .verdict.escalate { background: rgba(229, 167, 63, 0.16); color: #E5A73F; }
+  .persona .verdict.block { background: rgba(229, 42, 90, 0.16); color: #E52A5A; }
+  .persona .verdict.refuse_to_serve { background: rgba(139, 92, 246, 0.16); color: #8B5CF6; }
+  .persona .rationale {
+    font-size: 13px; line-height: 1.55;
+    color: #A3A5AA;
+    max-height: 5.5em; overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .persona.no-council .rationale::after {
+    content: "Awaiting deliberation…";
+    color: #6B7280; font-style: italic;
+  }
+  .persona.no-council .rationale { min-height: 2em; }
+
+  /* Center verdict pill */
+  .verdict-pill {
+    position: absolute;
+    left: 50%; top: 42%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    padding: 20px 40px;
+    border-radius: 999px;
+    font-size: 36px; font-weight: 900; letter-spacing: 3px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid;
+    backdrop-filter: blur(20px);
+    opacity: 0;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .verdict-pill.mounted { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .verdict-pill.approve { border-color: #2BA560; color: #2BA560; }
+  .verdict-pill.escalate { border-color: #E5A73F; color: #E5A73F; }
+  .verdict-pill.block { border-color: #E52A5A; color: #E52A5A; }
+  .verdict-pill.refuse_to_serve { border-color: #8B5CF6; color: #8B5CF6; }
+  .verdict-pill.pending { border-color: #6B7280; color: #6B7280; font-size: 20px; letter-spacing: 4px; }
+
+  /* Context nodes rail */
+  .context {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    padding: 16px 24px;
+    background: rgba(15, 17, 22, 0.7);
+    border-radius: 8px;
+  }
+  .context .node {
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    font-family: "SF Mono", ui-monospace, monospace;
+    font-size: 12px;
+    display: flex; gap: 8px;
+  }
+  .context .node .label { color: #6B7280; }
+  .context .node .value { color: #E4E6EB; font-weight: 700; }
+  .context .node.anchor-borrower { border-left: 2px solid #3B82F6; }
+  .context .node.anchor-market { border-left: 2px solid #F59E0B; }
+  .context .node.anchor-policy { border-left: 2px solid #8B5CF6; }
+
+  footer {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: #6B7280;
+    font-family: "SF Mono", ui-monospace, monospace;
+  }
+  footer a { color: #6B7280; text-decoration: none; }
+  footer a:hover { color: #FFA500; }
+
+  /* Fullscreen toggle button */
+  .fs-btn {
+    background: rgba(255, 165, 0, 0.1);
+    border: 1px solid #FFA500;
+    color: #FFA500;
+    padding: 8px 14px;
+    font-family: inherit;
+    font-size: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
+  .fs-btn:hover { background: rgba(255, 165, 0, 0.2); }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <header>
+    <div class="brand">SHADOW</div>
+    <div>
+      <button class="fs-btn" onclick="document.documentElement.requestFullscreen()">FULLSCREEN · XREAL</button>
+      <span class="status" style="margin-left: 16px;"><span class="dot"></span><span id="status-text">initializing</span></span>
+    </div>
+  </header>
+
+  <div class="question" id="question">Loading…</div>
+
+  <div class="arc" id="arc">
+    <div class="verdict-pill pending mounted" id="verdict-pill">DELIBERATING</div>
+  </div>
+
+  <div class="context" id="context"></div>
+
+  <footer>
+    <div><span id="descriptor-info">descriptor v— · —</span></div>
+    <div>council-for-slack.vercel.app · <a href="/api/health">/api/health</a></div>
+  </footer>
+</div>
+
+<script>
+// Embedded fallback fixture — used when /api/ambient-turn is unreachable.
+// Wednesday demo fallback: even without network, page renders.
+const FALLBACK_DESCRIPTOR = {
+  descriptor_version: "1.0",
+  response_mode: "ambient",
+  question: "Should we approve this $1.5M consumer loan? FICO 780, DTI 0.20, LTV 0.60.",
+  personas: [
+    { id: "credit_fundamentals", display_name: "Credit Fundamentals", position: { x: -1.2, y: -0.2, z: -1.0 }, accent_color: "#3B82F6", verdict: "approve", rationale: "FICO 780 well above the 700 Addendum A floor; DTI 0.20 well under the 0.36 Addendum B ceiling. No principal reason cited under Reg B." },
+    { id: "risk_officer",        display_name: "Risk Officer",        position: { x: -0.6, y: -0.2, z: -1.35 }, accent_color: "#EF4444", verdict: "approve", rationale: "VaR(95%, 10d) 3.2% vs 12% Addendum C ceiling. LTV 0.60 vs 0.80 ceiling. Portfolio exposure well within budget; sustained monitoring only." },
+    { id: "fair_lending",        display_name: "Fair Lending Compliance", position: { x: 0, y: -0.2, z: -1.4 }, accent_color: "#8B5CF6", verdict: "approve", rationale: "ECOA/Reg B disparate-impact review complete. No protected-basis proxy features detected. Adverse-action reasons drawn from signed dictionary." },
+    { id: "customer_advocate",   display_name: "Customer Advocate",   position: { x: 0.6, y: -0.2, z: -1.35 }, accent_color: "#10B981", verdict: "approve", rationale: "Customer-facing explanation and adverse-action reason list reviewed against CFPB Bulletin 2024-09 plain-language readability standards; no flags." },
+    { id: "macro_contrarian",    display_name: "Macro Contrarian",    position: { x: 1.2, y: -0.2, z: -1.0 }, accent_color: "#F59E0B", verdict: "approve", rationale: "Sector = consumer_discretionary. Sector-cycle overlay and historical stress-episode correlation within Addendum C tolerance. No macro escalation." },
+  ],
+  context_nodes: [
+    { id: "fico", label: "FICO", value: "780", anchor: "borrower" },
+    { id: "dti", label: "DTI", value: "0.20", anchor: "borrower" },
+    { id: "ltv", label: "LTV", value: "0.60", anchor: "borrower" },
+    { id: "amount", label: "Loan amount", value: "$1,500,000", anchor: "borrower" },
+    { id: "sector", label: "Sector", value: "consumer discretionary", anchor: "market" },
+    { id: "rating", label: "Rating", value: "AA", anchor: "borrower" },
+  ],
+  verdict: "approve",
+  attestation_hash: null,
+};
+
+const OBVIOUS_APPROVE_LOAN = {
+  credit_score: 780, debt_to_income: 0.20, loan_to_value: 0.60,
+  amount: 1_500_000, sector: "consumer_discretionary", borrower_rating: "AA",
+  market_proxy_prices: [
+    100.0, 100.3, 100.5, 100.4, 100.7, 100.9, 101.1, 101.0,
+    101.3, 101.5, 101.6, 101.8, 102.0, 102.1, 102.3,
+  ],
+};
+
+async function fetchDescriptor() {
+  const status = document.getElementById("status-text");
+  try {
+    status.textContent = "calling /api/ambient-turn";
+    const res = await fetch("/api/ambient-turn", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        question: "Should we approve this $1.5M consumer loan? FICO 780, DTI 0.20, LTV 0.60.",
+        persona_ids: ["credit_fundamentals", "risk_officer", "fair_lending", "customer_advocate", "macro_contrarian"],
+        loan_context: OBVIOUS_APPROVE_LOAN,
+        run_council: true,
+      }),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const d = await res.json();
+    status.textContent = "live from /api/ambient-turn";
+    return d;
+  } catch (err) {
+    console.warn("live fetch failed, using fallback:", err.message);
+    status.textContent = "fallback fixture (offline)";
+    return FALLBACK_DESCRIPTOR;
+  }
+}
+
+function renderDescriptor(d) {
+  document.getElementById("question").textContent = d.question;
+  document.getElementById("descriptor-info").textContent =
+    `descriptor v${d.descriptor_version} · mode ${d.response_mode} · ${d.personas.length} personas`;
+
+  // Personas — position via CSS translate3d in a rough scaling from
+  // meters → viewport pixels. This gives the spatial feeling without
+  // needing WebXR. Chrome fullscreen on XREAL One Pro renders this
+  // as the 171-inch floating screen.
+  const arc = document.getElementById("arc");
+  arc.querySelectorAll(".persona").forEach((el) => el.remove());
+  const SCALE_X = 260;  // px per meter
+  const SCALE_Y = 200;
+  const SCALE_Z = 100;
+  for (let i = 0; i < d.personas.length; i++) {
+    const p = d.personas[i];
+    const el = document.createElement("div");
+    el.className = "persona";
+    if (!p.verdict) el.classList.add("no-council");
+    el.style.borderLeftColor = p.accent_color;
+    el.style.transform =
+      `translate3d(${p.position.x * SCALE_X}px, ${p.position.y * SCALE_Y}px, ${p.position.z * SCALE_Z}px)`;
+    el.innerHTML = `
+      <div class="name" style="color: ${p.accent_color}">${p.display_name}</div>
+      ${p.verdict ? `<div class="verdict ${p.verdict}">${p.verdict.toUpperCase().replace(/_/g, " ")}</div>` : ""}
+      <div class="rationale">${p.rationale || ""}</div>
+    `;
+    arc.appendChild(el);
+    // Stagger the mount so cards fade in one by one
+    setTimeout(() => el.classList.add("mounted"), 300 + i * 220);
+  }
+
+  // Verdict pill
+  const pill = document.getElementById("verdict-pill");
+  pill.className = "verdict-pill";
+  if (d.verdict) {
+    pill.classList.add(d.verdict, "mounted");
+    pill.textContent = d.verdict.toUpperCase().replace(/_/g, " ");
+  } else {
+    pill.classList.add("pending", "mounted");
+    pill.textContent = "DELIBERATING";
+  }
+
+  // Context nodes
+  const ctx = document.getElementById("context");
+  ctx.innerHTML = "";
+  for (const n of d.context_nodes) {
+    const el = document.createElement("div");
+    el.className = `node anchor-${n.anchor}`;
+    el.innerHTML = `<span class="label">${n.label}</span><span class="value">${n.value}</span>`;
+    ctx.appendChild(el);
+  }
+}
+
+// Boot
+fetchDescriptor().then(renderDescriptor);
+
+// Press "R" to re-fetch (live demo interrupts)
+document.addEventListener("keydown", (e) => {
+  if (e.key.toLowerCase() === "r") fetchDescriptor().then(renderDescriptor);
+});
+</script>
+</body>
+</html>

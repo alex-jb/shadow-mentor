@@ -12,6 +12,37 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.47 — Ambient Council HTTP endpoint + XREAL demo page (2026-07-09 NY)
+
+Ships the browser-facing surface of the Ambient Council Manager for the 2026-07-16 Yeshiva XREAL One Pro demo. MacBook M5 fullscreen path — no Android + no WebXR immersive-AR required.
+
+### What ships
+
+- **`POST /api/ambient-turn`** — HTTP wrapper over `runAmbientTurn()`. Body: `{question, persona_ids, loan_context?, run_council?, response_mode?}`. When `run_council: true`, calls `runLoanCouncil()` + merges verdicts into the descriptor so the browser gets one round-trip to render.
+- **`public/demo/xreal.html`** — self-contained demo page. CSS 3D transforms position the 5 persona cards in a semicircle around the reviewer. Fetches live descriptor from `/api/ambient-turn`; falls back to embedded fixture data if network fails (Wednesday-demo failure protocol). Fullscreen toggle button for the XREAL 171" projection. Press "R" to re-fetch mid-demo.
+- **`test/ambient-turn-api.test.js`** — 10 contract tests pinning request shape, 400/405/OPTIONS handling, and council-merge behavior.
+
+### Wednesday demo path
+
+1. MacBook M5 + Chrome fullscreen
+2. `shadow-mentor.vercel.app/demo/xreal.html` (or wherever the Shadow project is aliased)
+3. Chrome full-screen on the XREAL One Pro display (171" floating screen)
+4. Page fetches live descriptor + council output on load
+5. Verdict pill + 5 persona cards fade in one by one
+6. If /api unreachable, embedded fixture renders identically (offline-safe)
+
+Not required for Wednesday: WebXR immersive-AR, Android host, XREAL Eye 6DoF anchoring, gpt-realtime voice input.
+
+### Follow-ups (not in v1.5.47)
+
+- v1.5.48 — record a 60-90s mp4 walkthrough as second-layer fallback
+- v1.5.49 — Claude tool-use loop for the LLM-driven variant (v0.2 of ambient-manager)
+- v1.5.50 — WebXR immersive-AR path for Android + XREAL Eye (post-Wednesday R&D)
+
+**Test surface 1292 → 1302 (+10). Zero regressions.**
+
+---
+
 ## v1.5.46 — Ambient Council Manager v0.1 (XREAL / WebXR layout primitive) (2026-07-09 NY)
 
 Ships the deterministic layer of the Ambient Council Manager pattern ported from `xiaotianfotos/homerail` (MIT, 276⭐). This is the execution primitive Shadow needed for the 2026-07-16 Yeshiva XREAL One Pro demo — a stable JSON layout descriptor the WebXR renderer builds against without needing an LLM roundtrip.
