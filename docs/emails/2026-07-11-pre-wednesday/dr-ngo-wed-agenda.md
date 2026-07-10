@@ -20,7 +20,7 @@ Thanks again for coordinating with Dr. Nobel on the combined presentation for bo
 1. **The regulatory gap** (0:15) — SR 26-2 footnote 3 says institutions govern generative and agentic AI on their own; EU AI Act Article 12 requires event recording but the standards for what a compliant record looks like are still in draft. Two big pieces of guidance, one specification gap.
 2. **What's shipping today** (60 sec) — the 5-persona credit-decision council on the XREAL, showing a signed decision, a linked chain, and the tamper-detection cascade. This is the vertical Prof. Levitchi's BRD contribution grounds.
 3. **The pivot** (60 sec) — the same signing + chain + spatial-replay pattern generalizes to any AI agent session (Claude Code, MCP tool calls, OpenTelemetry-instrumented agents). Credit becomes the first vertical of a broader agent-evidence layer; v3.0 target is 2026-08-02 for the EU AI Act enforcement window. Two paper tracks (IEEE VR 2027 + ICAIF 2026 Milan) share the same engineering artifact.
-4. **Close: what we are not claiming** (30 sec) — tamper-evident not tamper-proof; not legally admissible (that's a lawyer's job); pre-1.0 solo project can't pass a bank's TPRM gate today, real production adoption routes through an LOS-vendor partnership.
+4. **Close: what we are not claiming** (30 sec) — tamper-evident, not tamper-proof; the record is not a form of legal evidence on its own (that's a lawyer's job to determine); pre-1.0 solo project can't pass a bank's TPRM gate today, real production adoption routes through an LOS-vendor partnership.
 
 **Backup plan** if the tether misbehaves: laptop screen shows the same demo. No content change.
 
