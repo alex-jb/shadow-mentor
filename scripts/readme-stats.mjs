@@ -24,10 +24,21 @@ function testCount() {
     maxBuffer: 32 * 1024 * 1024,
   });
   const stdout = out.stdout || "";
-  const m = stdout.match(/^ℹ tests (\d+)/m);
-  const p = stdout.match(/^ℹ pass (\d+)/m);
-  const f = stdout.match(/^ℹ fail (\d+)/m);
-  if (!m || !p || !f) throw new Error("could not parse node --test output");
+  // Node --test summary uses "ℹ tests N" on Node 24+ and "# tests N" on
+  // Node 22. Accept either. Match on the summary section only (after
+  // "1..N" TAP plan line) so we don't pick up test bodies that happen to
+  // contain the pattern.
+  const summary = stdout.split(/^1\.\.\d+$/m).pop() ?? stdout;
+  const rx = (label) => new RegExp(`^(?:ℹ|#)\\s*${label}\\s+(\\d+)`, "m");
+  const m = summary.match(rx("tests"));
+  const p = summary.match(rx("pass"));
+  const f = summary.match(rx("fail"));
+  if (!m || !p || !f) {
+    throw new Error(
+      "could not parse node --test output — tail: " +
+      JSON.stringify(stdout.slice(-500)),
+    );
+  }
   return { total: +m[1], pass: +p[1], fail: +f[1] };
 }
 
