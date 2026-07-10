@@ -1,0 +1,260 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/alex-jb/shadow-mentor/blob/main/spec/evidence-bundle.schema.json",
+  "title": "Shadow evidence bundle (v1)",
+  "description": "Session-level tamper-evident record of an AI agent's execution. A bundle contains a header (agent identity, model manifest, environment fingerprint, session lifetime, schema versions), an ordered chain of signed events, a batch root that binds them together, per-batch signatures, and optional external time anchors. Payloads (user prompts, tool inputs, file writes) are content-addressed via sha256 and referenced from event records but stored separately, so PII redaction is possible without breaking hash chains.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["bundle_version", "spec_version", "header", "events", "batch_root", "signatures"],
+  "properties": {
+    "bundle_version": {
+      "type": "integer",
+      "const": 1,
+      "description": "Bumped when the bundle schema changes. v1 is the initial public format shipped for the EU AI Act Article 12 enforcement window. Additive extensions flow through the extensions map on each event."
+    },
+    "spec_version": {
+      "type": "string",
+      "const": "shadow-evidence/v1",
+      "description": "Wire-format tag for the bundle. Distinct from bundle_version so downstream tooling can identify the format even when the schema advances."
+    },
+    "header": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "session_id",
+        "session_started_at_utc",
+        "agent",
+        "environment_fingerprint",
+        "schema_versions"
+      ],
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.:-]{8,128}$",
+          "description": "Globally unique session identifier. Recommended: UUIDv7 for time-ordered uniqueness. The identifier is bound into every event via the batch root; changing it after emission invalidates the bundle."
+        },
+        "session_started_at_utc": {
+          "type": "string",
+          "format": "date-time",
+          "description": "RFC 3339 UTC timestamp for when session_start was recorded."
+        },
+        "session_ended_at_utc": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "RFC 3339 UTC timestamp for when session_end was recorded. Null on partial bundles produced by crashed sessions."
+        },
+        "agent": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "version"],
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Human-readable agent identifier, e.g. 'claude-code', 'custom-langchain-agent'."
+            },
+            "version": {
+              "type": "string",
+              "description": "Agent version at session start. Recorded once in the header; changes mid-session are not permitted (start a new session)."
+            },
+            "identity_ref": {
+              "type": ["string", "null"],
+              "description": "Optional external identity handle for the operator running the agent (e.g. a GitHub username, a bank employee ID). Included so an auditor can bind a session to an accountable party."
+            }
+          }
+        },
+        "models": {
+          "type": "array",
+          "description": "Ordered manifest of every distinct model the agent may invoke during this session. Model calls emitted in the event chain MUST reference one of these entries. Adding a new model mid-session is permitted; append to this list and emit a session_start extension event.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["model_id"],
+            "properties": {
+              "model_id": {
+                "type": "string",
+                "description": "Provider-qualified model identifier, e.g. 'anthropic:claude-sonnet-4-6-20260101', 'openai:gpt-5-turbo-20260501'."
+              },
+              "provider": {
+                "type": "string",
+                "description": "Coarse provider name for downstream analysis (anthropic, openai, google, azure, local, etc)."
+              },
+              "sampling_params_hash": {
+                "type": ["string", "null"],
+                "pattern": "^[0-9a-f]{64}$",
+                "description": "Optional sha256 of the canonicalized sampling params (temperature, top_p, seed, etc). If present, downstream reproducibility checks can verify the params in use."
+              }
+            }
+          }
+        },
+        "environment_fingerprint": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["os", "node_version"],
+          "properties": {
+            "os": {
+              "type": "string",
+              "description": "Coarse platform identifier, e.g. 'darwin-25.3.0', 'linux-6.5.0-ubuntu', 'windows-11-26100'."
+            },
+            "node_version": {
+              "type": "string",
+              "description": "Node.js runtime version at session start. For non-Node hosts, use the analogous runtime marker (e.g. 'python-3.13.1')."
+            },
+            "hostname_hash": {
+              "type": ["string", "null"],
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "Optional sha256 of the machine hostname. Included so an auditor can correlate sessions from the same host without leaking the hostname itself."
+            }
+          }
+        },
+        "schema_versions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["bundle", "attest_core"],
+          "properties": {
+            "bundle": {
+              "type": "integer",
+              "const": 1,
+              "description": "Redundant with bundle_version at the top level; kept here so verifiers reading only the header see the version binding."
+            },
+            "attest_core": {
+              "type": "string",
+              "description": "Version of @shadow/attest-core in use when this bundle was signed. Bound so future breaking changes are detectable."
+            }
+          }
+        }
+      }
+    },
+    "events": {
+      "type": "array",
+      "description": "Ordered, gap-free sequence of signed event records. Each event's prev_hash MUST equal the sha256 of the previous event (or the session_start marker for seq=0). Any reordering, insertion, or deletion breaks the chain and is caught at verification.",
+      "items": { "$ref": "#/$defs/event" }
+    },
+    "batch_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "sha256 of the concatenation of every event's own hash, in chain order. Bank SIEM aggregate check verifies the batch root with one Ed25519 verification instead of walking N events. Design parallels attestation-batch.js (v1.5.12)."
+    },
+    "signatures": {
+      "type": "array",
+      "minItems": 1,
+      "description": "One or more signatures over the batch_root. Multiple signatures are supported so a signing daemon can rotate keys without invalidating prior evidence.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["algorithm", "key_id", "signature"],
+        "properties": {
+          "algorithm": {
+            "type": "string",
+            "enum": ["ed25519", "hmac-sha256"],
+            "description": "Signing algorithm. ed25519 (RFC 8032) is procurement-recommended. hmac-sha256 is dev / back-compat."
+          },
+          "key_id": {
+            "type": "string",
+            "description": "Opaque identifier for the key used. Auditors resolve key_id to a public key via out-of-band discovery (e.g. GET /api/attestation-info)."
+          },
+          "signature": {
+            "type": "string",
+            "description": "Base64url-encoded signature bytes."
+          },
+          "signed_at_utc": {
+            "type": ["string", "null"],
+            "format": "date-time",
+            "description": "Optional RFC 3339 UTC timestamp for when the signature was created. Auditors treat this as operator-attested rather than authoritative; external anchors (below) provide the authoritative time."
+          }
+        }
+      }
+    },
+    "external_anchors": {
+      "type": "array",
+      "description": "Optional third-party attestations of the batch_root's existence. Present when the operator wants to defeat the operator-insider adversary who otherwise controls the signing key. Each anchor sets a trust level (see docs/THREAT_MODEL.md).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "batch_root", "anchor_ref"],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": ["rfc3161-tsa", "sigstore-rekor", "custom"],
+            "description": "Anchor kind. rfc3161-tsa is an RFC 3161 timestamp token. sigstore-rekor is a Sigstore Rekor transparency-log inclusion proof. custom is reserved for pluggable extensions."
+          },
+          "batch_root": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "description": "Redundant with the top-level batch_root but included so the anchor object is self-contained and can be checked in isolation."
+          },
+          "anchor_ref": {
+            "type": "string",
+            "description": "Kind-specific reference. For rfc3161-tsa: base64url-encoded timestamp token. For sigstore-rekor: JSON of the inclusion proof."
+          },
+          "anchored_at_utc": {
+            "type": ["string", "null"],
+            "format": "date-time",
+            "description": "Optional RFC 3339 UTC timestamp claimed by the anchor. For RFC 3161 tokens this is authoritative up to TSA trust; for Rekor it is derived from the log inclusion time."
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["seq", "ts_utc", "event_type", "actor", "payload_hash", "prev_hash"],
+      "properties": {
+        "seq": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Zero-indexed sequence number. session_start is seq=0; every subsequent event increments by exactly 1. Gaps are a verification failure."
+        },
+        "ts_utc": {
+          "type": "string",
+          "format": "date-time",
+          "description": "RFC 3339 UTC timestamp for when the agent emitted this event. Not authoritative on its own — see external_anchors for verifiable time."
+        },
+        "event_type": {
+          "type": "string",
+          "enum": [
+            "session_start",
+            "user_message",
+            "model_call",
+            "model_output",
+            "tool_call",
+            "tool_result",
+            "file_read",
+            "file_write",
+            "shell_exec",
+            "network_request",
+            "human_approval",
+            "error",
+            "session_end"
+          ],
+          "description": "Event kind. The enum is frozen at bundle_version 1; new kinds require bumping to 2."
+        },
+        "actor": {
+          "type": "string",
+          "enum": ["agent", "user", "model", "tool", "system"],
+          "description": "Which side of the interaction produced this event."
+        },
+        "payload_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "sha256 hex of the canonicalized event payload. Payload content is stored separately (see payload_ref) so redaction is possible without invalidating the chain."
+        },
+        "payload_ref": {
+          "type": ["string", "null"],
+          "description": "Optional reference to where the payload content is stored. Format: 'sha256:<hex>' for content-addressed local stores. Null when the payload has been redacted (the hash still verifies chain integrity, but the content is unavailable to the auditor)."
+        },
+        "prev_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "sha256 hex of the previous event's own hash. For seq=0 (session_start), this is the sha256 of the canonicalized header. Establishes the chain."
+        },
+        "extensions": {
+          "type": "object",
+          "description": "Additive metadata bag. Extensions are signed via inclusion in payload_hash — payload canonicalization MUST include the extensions map. New event-type-specific fields flow through here without requiring a bundle_version bump.",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}
