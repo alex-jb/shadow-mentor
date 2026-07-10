@@ -1,10 +1,9 @@
 {
   "name": "@shadow/attest-core",
   "version": "2.0.0",
-  "description": "Zero-LLM-dep cryptographic evidence primitives for AI decision attestation. Ed25519 + hash chain + verifier. Source files physically live in this directory as of v2.0.0.",
+  "description": "Zero-LLM-dep cryptographic evidence primitives for AI decision attestation and agent session recording. Ed25519 signing, hash chain, batch attestation, and streaming session bundle API. Independently verifiable offline.",
   "license": "MIT",
   "author": "Alex Xiaoyu Ji <xji1@mail.yu.edu>",
-  "private": true,
   "type": "module",
   "main": "index.js",
   "exports": {
@@ -12,8 +11,20 @@
     "./attestation": "./index.js",
     "./batch": "./batch.js",
     "./chain": "./chain.js",
+    "./session": "./session.js",
     "./verify-chain": "./verify-chain.js"
   },
+  "files": [
+    "attestation.js",
+    "attestation-batch.js",
+    "attestation-chain.js",
+    "batch.js",
+    "chain.js",
+    "index.js",
+    "session.js",
+    "verify-chain.js",
+    "README.md"
+  ],
   "engines": {
     "node": ">=20"
   },
@@ -23,6 +34,23 @@
     "hash-chain",
     "evidence",
     "tamper-evident",
-    "audit"
-  ]
+    "audit",
+    "eu-ai-act",
+    "article-12",
+    "agent-recording",
+    "flight-recorder"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alex-jb/shadow-mentor.git",
+    "directory": "packages/attest-core"
+  },
+  "homepage": "https://github.com/alex-jb/shadow-mentor#readme",
+  "bugs": {
+    "url": "https://github.com/alex-jb/shadow-mentor/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
 }
