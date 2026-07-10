@@ -22,6 +22,7 @@
     "chain.js",
     "index.js",
     "session.js",
+    "store-file.js",
     "verify-chain.js",
     "README.md"
   ],

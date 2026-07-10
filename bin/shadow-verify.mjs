@@ -1,0 +1,126 @@
+#!/usr/bin/env node
+// bin/shadow-verify.mjs
+//
+// CLI companion to verify.html — verifies a Shadow evidence bundle against
+// a supplied Ed25519 public key. Exit codes are CI-friendly:
+//   0 — bundle verified
+//   1 — verification failed (bad signature, chain break, tamper, wrong key)
+//   2 — usage error (missing args / --help)
+//   3 — I/O error (file not found, unreadable, parse error)
+//
+// Usage:
+//   shadow-verify <bundle.json> --public-key <public.pem>
+//   shadow-verify <bundle.json> --public-key <public.pem> --json
+//
+// The --json flag emits a single JSON line to stdout in place of the
+// human-readable output. Non-zero exit codes match the same failure paths.
+
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { verifyBundle } from "../packages/attest-core/session.js";
+
+const USAGE = `Usage: shadow-verify <bundle.json> --public-key <public.pem> [--json]
+
+Options:
+  --public-key <path>   Path to the Ed25519 public key in PEM format (required).
+  --json                Emit a single-line JSON report instead of prose.
+  -h, --help            Print this message.
+
+Exit codes:
+  0  bundle verified
+  1  verification failed
+  2  usage error
+  3  I/O or parse error`;
+
+function parseArgs(argv) {
+  const out = { bundle: null, publicKey: null, json: false };
+  const rest = argv.slice(2);
+  for (let i = 0; i < rest.length; i++) {
+    const a = rest[i];
+    if (a === "-h" || a === "--help") return { ...out, help: true };
+    if (a === "--json") out.json = true;
+    else if (a === "--public-key") out.publicKey = rest[++i];
+    else if (a.startsWith("--")) return { ...out, error: `unknown flag ${a}` };
+    else if (!out.bundle) out.bundle = a;
+    else return { ...out, error: `unexpected extra argument ${a}` };
+  }
+  return out;
+}
+
+function die(code, message, jsonMode) {
+  if (jsonMode) {
+    process.stdout.write(JSON.stringify({ ok: false, reason: message }) + "\n");
+  } else {
+    process.stderr.write(message + "\n");
+  }
+  process.exit(code);
+}
+
+const args = parseArgs(process.argv);
+
+if (args.help) {
+  process.stdout.write(USAGE + "\n");
+  process.exit(0);
+}
+if (args.error) die(2, args.error + "\n\n" + USAGE, false);
+if (!args.bundle) die(2, "missing <bundle.json>\n\n" + USAGE, false);
+if (!args.publicKey) die(2, "missing --public-key <public.pem>\n\n" + USAGE, false);
+
+let bundle;
+try {
+  const raw = readFileSync(resolve(args.bundle), "utf8");
+  bundle = JSON.parse(raw);
+} catch (err) {
+  die(3, `failed to read/parse bundle: ${err.message}`, args.json);
+}
+
+let pubPem;
+try {
+  pubPem = readFileSync(resolve(args.publicKey), "utf8");
+} catch (err) {
+  die(3, `failed to read public key: ${err.message}`, args.json);
+}
+
+const result = verifyBundle(bundle, { publicKey: pubPem });
+
+if (args.json) {
+  const payload = {
+    ok: result.ok,
+    reason: result.reason ?? null,
+    failedSeq: result.failedSeq ?? null,
+    session_id: bundle?.header?.session_id ?? null,
+    event_count: Array.isArray(bundle?.events) ? bundle.events.length : null,
+    batch_root: bundle?.batch_root ?? null,
+    key_id: bundle?.signatures?.[0]?.key_id ?? null,
+  };
+  process.stdout.write(JSON.stringify(payload) + "\n");
+  process.exit(result.ok ? 0 : 1);
+}
+
+if (result.ok) {
+  const events = bundle.events?.length ?? 0;
+  const sessionId = bundle.header?.session_id ?? "(none)";
+  const agent = bundle.header?.agent ?
+    `${bundle.header.agent.name}@${bundle.header.agent.version}` : "(none)";
+  const keyId = bundle.signatures?.[0]?.key_id ?? "(none)";
+  const trust = Array.isArray(bundle.external_anchors) && bundle.external_anchors.length > 0
+    ? "TIME_ANCHORED (external anchor present; not verified by this tool — use a TSA/Rekor-aware verifier)"
+    : "SELF_SIGNED (no external anchor)";
+  process.stdout.write(
+    `✓ Bundle verified\n` +
+    `  session_id : ${sessionId}\n` +
+    `  agent      : ${agent}\n` +
+    `  events     : ${events}\n` +
+    `  key_id     : ${keyId}\n` +
+    `  batch_root : ${bundle.batch_root}\n` +
+    `  trust      : ${trust}\n`,
+  );
+  process.exit(0);
+}
+
+const failedSeq = result.failedSeq !== undefined ? ` (event ${result.failedSeq})` : "";
+process.stderr.write(
+  `✗ Verification failed${failedSeq}\n` +
+  `  reason : ${result.reason}\n`,
+);
+process.exit(1);
