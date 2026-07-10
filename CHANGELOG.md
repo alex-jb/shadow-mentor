@@ -12,6 +12,34 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.45 — MCP dual-envelope response primitive + 9th tool (2026-07-09 NY)
+
+Ports the `content` + `structuredContent` response pattern from **ChromeDevTools/chrome-devtools-mcp** (Apache-2.0, Google LLC) into Shadow's MCP layer. Every response now has room for two parallel views: human-readable markdown in `content[]` for the LLM caller to reason about, and typed JSON in `structuredContent` for downstream bank SIEM tooling to parse without re-parsing a stringified body.
+
+### What ships
+
+- **`mcp/response.js`** — fluent envelope builder. `createResponse().appendLine(...).setStructured({...}).build()`. Errors set via `.setError(msg, details)` — never thrown. Envelope carries a Symbol marker so dispatch can distinguish opt-in tools from legacy plain-object returns.
+- **`mcp/server.js`** — dispatch handler recognizes envelope-marked returns via `isEnvelope()` and emits them directly; legacy tools continue to be wrapped exactly as before. **Fully back-compat**.
+- **`shadow_loan_council_typed`** (new tool) — dual-envelope variant of `shadow_loan_council`. Same compute, dual response. Demonstrates the pattern for downstream tool refactors.
+- `test/mcp-response.test.js` — 15 contract tests pinning envelope shape, error path, back-compat marker.
+
+### Back-compat
+
+Every existing tool (`shadow_loan_council` through `shadow_size_position`) unchanged in behavior. Legacy `handleToolCall` signature preserved for test suite. Envelope pattern is strictly opt-in — a tool that wants dual output wraps its result with `createResponse()`.
+
+### Tool count 8 → 9
+
+- Legacy: `shadow_loan_council, shadow_risk_tools, shadow_recall, shadow_calibration, shadow_scenarios, shadow_traceability, shadow_verify_attestation, shadow_size_position`
+- New: `shadow_loan_council_typed`
+
+`api/mcp-manifest.js` `CANONICAL_TOOLS` + `lib/auth/oauth-scaffold.js` `ALL_TOOLS` + `installer/tools.json` `$tool_surface.tools` all updated. Contract tests pin the count in all 4 places so future drift surfaces immediately.
+
+**Test surface 1252 → 1267 (+15). Zero regressions.**
+
+Anchors [github.com/ChromeDevTools/chrome-devtools-mcp](https://github.com/ChromeDevTools/chrome-devtools-mcp) — Apache-2.0 pattern port.
+
+---
+
 ## v1.5.44 — SIVE Finding #1 RESOLVED (obvious_approve fixture correction) (2026-07-09 NY)
 
 Closes [SIVE Baseline Finding #1](docs/SIVE_BASELINE_FINDINGS.md) by fixture correction rather than persona-logic change.

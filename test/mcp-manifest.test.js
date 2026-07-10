@@ -13,18 +13,19 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const REPO_ROOT = join(__dirname, "..");
 
-test("buildManifest returns 8 tools (v1.5.15+ adds shadow_size_position)", () => {
+test("buildManifest returns 9 tools (v1.5.45+ adds shadow_loan_council_typed)", () => {
   const m = buildManifest();
-  assert.equal(m.tool_count, 8);
-  assert.equal(m.tools.length, 8);
+  assert.equal(m.tool_count, 9);
+  assert.equal(m.tools.length, 9);
 });
 
-test("buildManifest tools include all 8 canonical Shadow MCP tools", () => {
+test("buildManifest tools include all 9 canonical Shadow MCP tools", () => {
   const m = buildManifest();
   const names = m.tools.map((t) => t.name).sort();
   assert.deepEqual(names, [
     "shadow_calibration",
     "shadow_loan_council",
+    "shadow_loan_council_typed",
     "shadow_recall",
     "shadow_risk_tools",
     "shadow_scenarios",

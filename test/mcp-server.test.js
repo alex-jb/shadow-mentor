@@ -8,11 +8,12 @@ import { generateKeyPairSync } from "node:crypto";
 import { handleToolCall, TOOLS } from "../mcp/server.js";
 import { buildAttestation, SIGNATURE_MODES } from "../lib/attestation.js";
 
-test("MCP server exposes 8 tools (v1.5.15+ adds shadow_size_position)", () => {
-  assert.equal(TOOLS.length, 8);
+test("MCP server exposes 9 tools (v1.5.45+ adds shadow_loan_council_typed)", () => {
+  assert.equal(TOOLS.length, 9);
   const names = TOOLS.map((t) => t.name);
   for (const expected of [
     "shadow_loan_council",
+    "shadow_loan_council_typed",
     "shadow_risk_tools",
     "shadow_recall",
     "shadow_calibration",

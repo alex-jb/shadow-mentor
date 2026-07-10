@@ -181,11 +181,11 @@ test("cryptographic_evidence lists all 13 per-response attestation fields (v1.5.
 // §7 — Bill of tools (MCP-manifest SBOM equivalent)
 // ═════════════════════════════════════════════════════════════════
 
-test("bill_of_tools points at live MCP manifest endpoint + names the 8 MCP tools", () => {
+test("bill_of_tools points at live MCP manifest endpoint + names the 9 MCP tools", () => {
   const report = generateGsarReport();
   const b = report.bill_of_tools;
   assert.match(b.mcp_manifest_endpoint, /shadow-mentor-phi\.vercel\.app\/api\/mcp-manifest/);
-  assert.equal(b.tools.length, 8);
+  assert.equal(b.tools.length, 9);
   for (const t of b.tools) {
     assert.match(t, /^shadow_/);
   }

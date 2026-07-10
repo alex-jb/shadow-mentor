@@ -42,6 +42,19 @@ const CANONICAL_TOOLS = [
     latencyPercentiles: { p50_ms: 2, p95_ms: 5 },
   },
   {
+    name: "shadow_loan_council_typed",
+    description:
+      "v1.5.45 dual-envelope variant of shadow_loan_council. Returns human-readable markdown in content[] + typed structured JSON in structuredContent. LLM callers reason from markdown; downstream bank SIEM tooling parses structured payload. Ports ChromeDevTools/chrome-devtools-mcp pattern (Apache-2.0).",
+    inputSchemaKeys: ["loan"],
+    regulatoryScope: [
+      "SR 26-2 Tier 3 companion",
+      "ECOA/Reg B (12 CFR 1002)",
+      "CFPB Bulletin 2024-09",
+    ],
+    determinismClaim: "no-llm-inside-tool",
+    latencyPercentiles: { p50_ms: 3, p95_ms: 6 },
+  },
+  {
     name: "shadow_risk_tools",
     description:
       "Institutional risk primitives — VaR (historical/parametric/MC), Expected Shortfall, concentration (HHI/Gini), sector exposure, correlation, factor exposures, beta.",

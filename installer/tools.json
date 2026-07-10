@@ -81,6 +81,7 @@
     "comment": "Pinned list of MCP tools exposed by mcp/server.js. CI verifies this matches TOOLS exported by mcp/server.js.",
     "tools": [
       "shadow_loan_council",
+      "shadow_loan_council_typed",
       "shadow_risk_tools",
       "shadow_recall",
       "shadow_calibration",

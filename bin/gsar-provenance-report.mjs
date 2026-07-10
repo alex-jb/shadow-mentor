@@ -212,13 +212,14 @@ export function generateGsarReport({
       "https://shadow-mentor-phi.vercel.app/api/mcp-manifest",
     tools: [
       "shadow_loan_council",
+      "shadow_loan_council_typed",
       "shadow_risk_tools",
       "shadow_recall",
       "shadow_calibration",
       "shadow_scenarios",
       "shadow_traceability",
       "shadow_verify_attestation",
-      "shadow_verify_chain",
+      "shadow_size_position",
     ],
   };
 

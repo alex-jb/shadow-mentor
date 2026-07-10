@@ -33,6 +33,7 @@ import { PERSONA_PROMPTS, SCENARIO_CONTEXTS } from "../lib/prompts.js";
 import { TRACEABILITY } from "../lib/traceability.js";
 import { ADVERSE_ACTION_CODES, AA_SOURCES } from "../lib/schemas/adverse-action.js";
 import { verifyAttestation, SIGNATURE_MODES } from "../lib/attestation.js";
+import { createResponse, isEnvelope } from "./response.js";
 
 const TOOLS = [
   {
@@ -44,6 +45,20 @@ const TOOLS = [
         loan: {
           type: "object",
           description: "Loan dict. Required: credit_score (300..850), debt_to_income (0..2), loan_to_value (0..2), amount (>0). Optional: borrower_rating, sector, fair_lending_review_flag, adverse_action_reasons, market_proxy_prices, collateral_positions, borrower_exposure_weights."
+        }
+      },
+      required: ["loan"]
+    }
+  },
+  {
+    name: "shadow_loan_council_typed",
+    description: "v1.5.45: Dual-envelope variant of shadow_loan_council. Returns human-readable markdown in content[] AND typed structured JSON in structuredContent. LLM callers reason from the markdown; downstream bank SIEM tooling parses the structured payload without re-parsing a stringified body. Same inputs as shadow_loan_council. Ports the ChromeDevTools/chrome-devtools-mcp response pattern (Apache-2.0, Google LLC).",
+    inputSchema: {
+      type: "object",
+      properties: {
+        loan: {
+          type: "object",
+          description: "Loan dict. Same fields as shadow_loan_council. See there for details."
         }
       },
       required: ["loan"]
@@ -225,6 +240,40 @@ export function handleToolCall(name, args) {
     return runLoanCouncil(args.loan);
   }
 
+  // v1.5.45: dual-envelope variant. Same compute as shadow_loan_council;
+  // response wrapped with createResponse() so LLM caller gets legible
+  // markdown AND downstream automation gets typed structuredContent.
+  if (name === "shadow_loan_council_typed") {
+    const v = validateLoan(args.loan);
+    if (!v.valid) {
+      return createResponse()
+        .setError("invalid loan", { validation_errors: v.errors })
+        .build();
+    }
+    const council = runLoanCouncil(args.loan);
+    const verdictSummary = council.final_verdict === "approve"
+      ? `APPROVE — all ${council.voices.length} personas cleared their approve gates.`
+      : council.final_verdict === "block"
+      ? `BLOCK — hard-block gate fired (see voice rationales below).`
+      : `ESCALATE — human review required.`;
+    const builder = createResponse().appendLine(verdictSummary).appendLine("");
+    for (const voice of council.voices) {
+      const marker =
+        voice.verdict === "approve" ? "OK " :
+        voice.verdict === "block" ? "X  " :
+        "!  ";
+      builder.appendLine(`${marker}${voice.voice} — ${voice.verdict}`);
+    }
+    if (council.adverse_action_codes && council.adverse_action_codes.length > 0) {
+      builder.appendLine("");
+      builder.appendLine("Adverse-action codes (CFPB Bulletin 2024-09):");
+      for (const c of council.adverse_action_codes) {
+        builder.appendLine(`  ${c.code} — ${c.label}`);
+      }
+    }
+    return builder.setStructured(council).build();
+  }
+
   if (name === "shadow_risk_tools") {
     const result = dispatchRiskTool(args.tool, args.args ?? {});
     return { tool: args.tool, result };
@@ -368,6 +417,14 @@ async function main() {
     const { name, arguments: args } = request.params;
     try {
       const result = handleToolCall(name, args);
+      // v1.5.45: tools may opt-in to the dual-envelope pattern by
+      // returning a value built with createResponse(). The dispatch
+      // handler recognizes those and emits them directly; legacy
+      // plain-object returns get wrapped as before. See mcp/response.js.
+      if (isEnvelope(result)) {
+        const { [Symbol.for("shadow.mcp.response.v1")]: _marker, ...envelope } = result;
+        return envelope;
+      }
       return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
     } catch (err) {
       return {
