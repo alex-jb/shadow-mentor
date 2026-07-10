@@ -160,6 +160,8 @@ The operator honors a GDPR erasure request by:
 3. Setting `payload_ref` to null on the affected events.
 4. Recomputing the batch root **is not required** — the event's `payload_hash` is unchanged; only the reference is removed.
 
+**Why this works:** `payload_ref` is not part of the signed record shape. The chain hash for each event is computed over `{seq, ts_utc, event_type, actor, payload_hash, prev_hash, extensions}` — `payload_ref` is unsigned metadata. This lets the operator null it without breaking the chain, while `payload_hash` (which is signed) still binds the record to the specific content that used to be there.
+
 The verifier reports the affected events as "content redacted" and continues to verify chain integrity. An auditor sees exactly which events had content redacted and when.
 
 This is the load-bearing difference between Shadow and mutable observability: redaction is a first-class operation preserving auditability, not a shortcut that silently rewrites history.

@@ -23,3 +23,12 @@ export {
 export {
   computeAttestationHash,
 } from "./attestation-chain.js";
+
+// v3 M1.2: streaming evidence bundle API.
+export {
+  EVENT_TYPES,
+  createSession,
+  appendEvent,
+  sealSession,
+  verifyBundle,
+} from "./session.js";
