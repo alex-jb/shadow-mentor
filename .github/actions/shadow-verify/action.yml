@@ -1,0 +1,89 @@
+name: "Shadow evidence bundle verify"
+description: >
+  Verifies a Shadow evidence bundle (spec/EVIDENCE_BUNDLE.md, bundle_version 1)
+  against a supplied Ed25519 public key. Fails the run on any chain break,
+  signature mismatch, or missing input. Wraps bin/shadow-verify.mjs.
+author: "Shadow — https://github.com/alex-jb/shadow-mentor"
+branding:
+  icon: "shield"
+  color: "green"
+
+inputs:
+  bundle:
+    description: "Path to the evidence bundle JSON file (relative to workspace)."
+    required: true
+  public-key:
+    description: "Path to the Ed25519 public key in PEM format."
+    required: true
+  fail-on-mismatch:
+    description: >
+      If 'true' (default), the step fails when verification returns non-ok.
+      If 'false', the action runs verification and sets outputs but does not
+      set exit code — useful when a downstream step wants to post a comment
+      before failing.
+    required: false
+    default: "true"
+
+outputs:
+  ok:
+    description: "String 'true' or 'false' from the verifier."
+    value: ${{ steps.verify.outputs.ok }}
+  reason:
+    description: "Failure reason from the verifier, empty on success."
+    value: ${{ steps.verify.outputs.reason }}
+  failed_seq:
+    description: "Event sequence number where chain integrity broke, empty on success."
+    value: ${{ steps.verify.outputs.failed_seq }}
+  session_id:
+    description: "The session_id from the bundle header, present on both ok and non-ok."
+    value: ${{ steps.verify.outputs.session_id }}
+  event_count:
+    description: "Number of events in the bundle."
+    value: ${{ steps.verify.outputs.event_count }}
+  batch_root:
+    description: "sha256 batch root, present on both ok and non-ok."
+    value: ${{ steps.verify.outputs.batch_root }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Confirm Node 20+ available"
+      shell: bash
+      run: |
+        node -v
+        if ! node -e 'process.exit(process.versions.node.split(".")[0] >= 20 ? 0 : 1)'; then
+          echo "::error::shadow-verify requires Node 20+; found $(node -v)"
+          exit 1
+        fi
+
+    - name: "Run shadow-verify"
+      id: verify
+      shell: bash
+      run: |
+        set +e
+        REPORT=$(node "${{ github.action_path }}/../../../bin/shadow-verify.mjs" \
+          "${{ inputs.bundle }}" \
+          --public-key "${{ inputs.public-key }}" \
+          --json)
+        VERIFY_EXIT=$?
+        set -e
+
+        echo "$REPORT"
+
+        # Emit outputs (raw JSON parsing via node one-liner so this stays
+        # dependency-free — no jq needed on the runner).
+        node -e "
+          const r = JSON.parse(process.argv[1]);
+          const set = (k, v) => console.log(k + '=' + (v ?? ''));
+          set('ok', r.ok);
+          set('reason', r.reason ?? '');
+          set('failed_seq', r.failedSeq ?? '');
+          set('session_id', r.session_id ?? '');
+          set('event_count', r.event_count ?? '');
+          set('batch_root', r.batch_root ?? '');
+        " "$REPORT" >> "$GITHUB_OUTPUT"
+
+        if [ "${{ inputs.fail-on-mismatch }}" = "true" ] && [ "$VERIFY_EXIT" != "0" ]; then
+          echo "::error::shadow-verify reported non-ok. See report above."
+          exit "$VERIFY_EXIT"
+        fi
