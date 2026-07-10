@@ -1,0 +1,28 @@
+{
+  "name": "@shadow/attest-core",
+  "version": "2.0.0-rc3",
+  "description": "Zero-LLM-dep cryptographic evidence primitives for AI decision attestation. Ed25519 + hash chain + verifier. Referenced as the contract surface; source files still live in ../../lib during the v2.0 stabilization window and are re-exported from index.js.",
+  "license": "MIT",
+  "author": "Alex Xiaoyu Ji <xji1@mail.yu.edu>",
+  "private": true,
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./attestation": "./index.js",
+    "./batch": "./batch.js",
+    "./chain": "./chain.js",
+    "./verify-chain": "./verify-chain.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "attestation",
+    "ed25519",
+    "hash-chain",
+    "evidence",
+    "tamper-evident",
+    "audit"
+  ]
+}

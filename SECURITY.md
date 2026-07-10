@@ -1,47 +1,54 @@
-# Security Policy
+# Security policy
 
-> Shadow is in pre-production. The Vercel demo is intentionally non-production: it routes regulated questions through cloud Anthropic / GLM APIs for the council pattern demonstration. **Do not paste real client PII into the public demo.**
+Shadow is pre-1.0. The Vercel demo is intentionally non-production: it routes regulated questions through cloud LLM APIs for pattern demonstration. **Do not paste real client PII into the public demo.**
 
 ## Supported versions
 
-Only `main` (HEAD) is supported. Pre-1.0 tags are demo snapshots, not maintained branches.
+Only `main` and the most recent tagged release receive security fixes. Older tags are demo snapshots, not maintained branches.
 
-## Disclosure
+| Version | Supported |
+|---|---|
+| main | Yes |
+| latest tag (v2.0.0-rc\*) | Yes |
+| earlier tags | No |
 
-For any security finding — including but not limited to:
+## Reporting a vulnerability
 
-- Authentication / authorization bypass on `/api/*` endpoints
-- Prompt injection that leaks the Anthropic / GLM API key or system prompt
-- Cross-session memory contamination (one analyst's recall surfacing another's questions)
-- Hash chain forgery in `/api/recall` outputs
-- Supply-chain compromise of `@anthropic-ai/sdk`, `vercel`, or any other declared dep
-- Leakage of `ANTHROPIC_API_KEY` / `GLM_API_KEY` via response headers, error messages, or logs
+If you discover a security vulnerability in Shadow — including anything that could compromise the integrity of an attestation, the signing key material, or the tamper-evidence guarantee — please report it privately.
 
-**Email**: open a private security advisory at https://github.com/alex-jb/shadow-mentor/security/advisories — DO NOT open a public issue.
+**Preferred**: GitHub Security Advisories at https://github.com/alex-jb/shadow-mentor/security/advisories/new. Reports here are private until we jointly publish an advisory.
 
-## What is in scope
+**Alternative**: email `xji1@mail.yu.edu` with subject line `SECURITY: Shadow`. A response acknowledging receipt will be sent within 72 hours. PGP key will be published after `v2.0.0` final.
 
-- All code under `/api/`, `/lib/`, `/src/`, `/benchmark/`, `/test/`
-- Vercel deployment configuration (`vercel.json`)
-- GitHub Actions workflows (`.github/workflows/*.yml`)
-- The persona prompts in `lib/prompts.js` (prompt injection / jailbreak resistance)
+Please do NOT open a public GitHub issue for security matters. Public disclosure before a fix is available is coordinated by joint agreement.
 
-## What is out of scope
+## In scope
 
-- The public marketing demo URL acting as a non-production target. The demo has Vercel Deployment Protection in front of it by default and is rate-limited at the platform level.
-- Third-party services: Anthropic, Zhipu GLM, Vercel platform. Report to their respective security teams.
-- DOS / volumetric attacks against the public demo — Vercel platform handles this.
+- Any way an attacker could produce an attestation that verifies against a Shadow verifier without holding the corresponding private key.
+- Any way an attacker could modify an attested record without the verifier detecting the change.
+- Any way to weaken the append-only signing contract (silently downgrading a v2 attestation to a v1 shape, omitting a signed field that should be bound).
+- Any dependency vulnerability that transitively affects the crypto path in `lib/attestation.js` or `@shadow/attest-core`.
+- Any way the linked chain (`previous_hash`) could be broken, reordered, or truncated without the chain verifier detecting it.
+- Compromise of secrets in demo material. Demo bundles intentionally use ephemeral test keys; if a real key ever leaks in a shipped demo, that is in scope.
 
-## Response SLA
+## Out of scope
 
-- Acknowledgement: within 72 hours
-- Triage decision: within 7 days
-- Fix-or-mitigate for HIGH severity: within 14 days (this is a solo-founder repo, sliding window)
+- Bank-side / operator-side private-key compromise. Shadow assumes the operator protects the signing key; if the operator loses control of it, attestation cannot defend against retro-signing. See [`docs/THREAT_MODEL.md`](./docs/THREAT_MODEL.md).
+- Denial of service on the demo Vercel deployment. Shadow's evidence guarantees are offline-verifiable; the hosted endpoints are convenience surfaces, not the security perimeter.
+- Bugs in the LLM rationale layer that produce misleading prose. The rationale layer is advisory and cannot change the signed verdict.
+- Issues that require physical access to a signing device beyond what a typical operator would consider a compromise.
 
-## Bug bounty
+## Coordinated disclosure
 
-There is no formal bug bounty at this time. We'll credit reporters in `CHANGELOG.md` and the eventual security disclosure summary.
+Once a fix is available:
 
-## Production banking deployment
+1. A GitHub Security Advisory is published, crediting the reporter (with permission).
+2. A patch release is tagged.
+3. The `CHANGELOG.md` entry describes the fix and the impact.
+4. If the issue affects consumers of a published npm package, an advisory is filed via `npm audit` metadata.
 
-The on-premises Shadow deployment for a real bank goes through a separate SOC 2 / SR 11-7 / EU AI Act Article 14 review pipeline — not via this public repo's security process. Bank security teams: contact the Shadow founder directly.
+If a vulnerability is being actively exploited in a way that puts an operator's data at risk, we may publish an advisory before a patch is available so operators can take mitigating action.
+
+## Notes
+
+Shadow is a solo-maintainer, pre-1.0 project. Response times are best-effort. If a bank is planning to run Shadow in production, please open a discussion first so we can align on threat model coverage — see [`docs/THREAT_MODEL.md`](./docs/THREAT_MODEL.md).

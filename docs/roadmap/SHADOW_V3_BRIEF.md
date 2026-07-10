@@ -103,3 +103,27 @@ Priority order matters: the Claude Code adapter is the launch wedge.
 - [ ] STANDARDS_MAP.md published; claims lint green in CI
 - [ ] Replay demo runs on a real recorded session (2D + XR), tamper demo included
 - [ ] v3.0.0 tagged 2026-08-02 with Show HN draft ready
+
+---
+
+## Appendix — additional hygiene commitments (2026-07-11 update)
+
+Five items added after the initial brief. Two are v3.0 launch-blockers; three shipped in v2.0.0-rc3 as pre-M1 hygiene.
+
+### v3.0 launch-blockers (implement during M6 launch prep)
+
+1. **npm publish `--provenance`** — publish `@shadow/attest-core` and `@shadow/adapter-*` packages with `npm publish --provenance` so the published tarballs carry a Sigstore-signed build attestation. "The package that helps you prove what your agent did is itself proven at build time" is a free consistency win, and it forecloses a supply-chain critique in the first HN comment.
+
+2. **Verifier error format standardized** — every verification error emitted by `@shadow/attest-core`, the `shadow-verify` CLI, and `verify.html` MUST be a structured object with the exact shape:
+   ```
+   { seq: <event index or null>, reason: <machine-readable code>, impact: <human sentence> }
+   ```
+   The XR replay demo (X5) reads this shape verbatim for its floating captions; `verify.html` renders it in its report; the CLI prints all three fields. A drift test in `test/verifier-error-format.test.js` will pin the shape across surfaces. When ready to implement, port the current ad-hoc error strings in `lib/attestation.js` verify path to `throw` structured errors that all consumers destructure identically.
+
+### Shipped in v2.0.0-rc3 (pre-M1 hygiene)
+
+3. **SECURITY.md + disclosure channels** — GitHub Security Advisories + `xji1@mail.yu.edu`. In-scope: attestation-integrity attacks, chain-modification attacks, dependency-transitive crypto vulnerabilities. Out-of-scope: operator private-key compromise, demo endpoint DoS.
+
+4. **CI matrix expanded to Windows + macOS** — the `node` job now runs on `ubuntu-latest`, `windows-latest`, and `macos-latest`. `scripts/run-tests.mjs` replaces the bash-glob-dependent `node --test test/*.test.js` so PowerShell / cmd.exe environments do not silently skip tests.
+
+5. **README top-of-page zero-telemetry declaration** — Shadow does not phone home. Verifiable by source grep; documented on the README's status line above the fold. A recorder that silently sends usage data undermines its own trust story.

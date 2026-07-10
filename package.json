@@ -1,6 +1,9 @@
 {
   "name": "shadow-mentor",
-  "version": "2.0.0-rc2",
+  "version": "2.0.0-rc3",
+  "workspaces": [
+    "packages/*"
+  ],
   "description": "Shadow — on-device AI council and audit chain for regulated banking workflows",
   "license": "MIT",
   "author": "Alex Xiaoyu Ji <xji1@mail.yu.edu>",
@@ -15,7 +18,7 @@
   "scripts": {
     "dev": "vercel dev",
     "deploy": "vercel --prod",
-    "test": "node --test test/*.test.js",
+    "test": "node scripts/run-tests.mjs",
     "benchmark": "node benchmark/runner.js",
     "benchmark:csv": "node scripts/benchmark-csv.mjs",
     "check:tools": "node scripts/check-tools.mjs",

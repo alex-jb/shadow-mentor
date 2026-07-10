@@ -12,6 +12,29 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v2.0.0-rc3 — 2026-07-11
+
+### Added
+- `spec/attestation.schema.json` — frozen v2 JSON Schema for the attestation record. Enumerates the 8 required core fields, the 14 append-only optional bindings, and the extensions map. Any new signed field requires bumping to schema_version 3 with a back-compat test.
+- `test/attestation-schema-v2.test.js` — 7 contract tests, including a cross-check between the schema-declared field set and the actual `_signingPayload` parameters in `lib/attestation.js`. Drift between the two fails CI.
+- `packages/attest-core/` — public API contract surface for the zero-LLM-dep evidence primitives. Currently re-exports from `../../lib`; physical file move planned for v2.0.0 final. `package.json` registers the workspace.
+- `test/attest-core-contract.test.js` — 4 contract tests. Verifies exported symbol shape, walks the transitive import graph from the entry point and fails on any LLM SDK dependency, cross-checks the package.json exports map, and demonstrates that 100 synthetic external decisions attest and verify using only the attest-core surface.
+- `spec/` directory reserved for machine-readable schemas.
+- `SECURITY.md` rewritten with GitHub Security Advisories as the preferred channel + a scoped in/out-of-scope list and a coordinated-disclosure section. Discloses that operator private-key compromise is out of scope by design.
+- `scripts/run-tests.mjs` — cross-platform test runner that enumerates `test/*.test.js` in-process and invokes `node --test` on the sorted list. `npm test` now uses it so Windows PowerShell / cmd.exe pass CI without shell-glob dependency.
+- CI matrix expanded to `ubuntu-latest`, `windows-latest`, and `macos-latest` for the node job.
+- README top-of-page zero-telemetry declaration linking to `SECURITY.md`.
+- Appendix section added to `docs/roadmap/SHADOW_V3_BRIEF.md` capturing the five hygiene commitments received 2026-07-11 (npm publish `--provenance` and standardized verifier error format are v3.0 launch-blockers; SECURITY.md, CI matrix, and README zero-telemetry line ship in this release).
+
+### Changed
+- `package.json` `type` remains `module`; `workspaces` array added declaring `packages/*`; `test` script now points at `scripts/run-tests.mjs`.
+
+### Notes
+- Test surface 1302 → 1313 passing (0 failing). No API contract changes; no attestation wire-format changes.
+- Physical file move of `lib/attestation.js` and siblings into `packages/attest-core/` is scheduled for v2.0.0 final. The contract-test coverage lets that move ship without breaking downstream imports.
+
+---
+
 ## v2.0.0-rc2 — 2026-07-10
 
 ### Added

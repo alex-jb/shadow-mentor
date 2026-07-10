@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/alex-jb/shadow-mentor/blob/main/spec/attestation.schema.json",
+  "title": "Shadow attestation (v2)",
+  "description": "Frozen schema for Shadow's Ed25519-signed attestation records. Field set is closed as of Shadow v2.0.0. New signed fields require schema_version 3 and a back-compat test. All future needs are expected to flow into the `extensions` map, which is signed as an opaque blob.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "spec_version",
+    "mode",
+    "signature",
+    "request_commitment",
+    "output_commitment",
+    "model_id",
+    "completed_at_utc",
+    "key_id"
+  ],
+  "properties": {
+    "spec_version": {
+      "type": "string",
+      "const": "aex-attestation/v1",
+      "description": "Wire-format tag. Kept as v1 because the append-only pattern is preserved from v1; schema_version tracks the schema-freeze generation."
+    },
+    "schema_version": {
+      "type": "integer",
+      "const": 2,
+      "description": "Bumped when the set of signed fields changes. v2 freezes the field set enumerated below. Any new top-level field requires bumping to 3 with a documented migration."
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["hmac", "ed25519"],
+      "description": "Signing mode. hmac is symmetric (dev / back-compat). ed25519 is asymmetric (procurement-recommended)."
+    },
+    "signature": {
+      "type": "string",
+      "description": "Base64url-encoded signature. Length depends on mode."
+    },
+
+    "request_commitment": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 hex of the canonicalized request body."
+    },
+    "output_commitment": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 hex of the canonicalized response body (attestation field stripped)."
+    },
+    "model_id": {
+      "type": "string",
+      "description": "The exact model id used (e.g. claude-sonnet-4-6). Detects silent model substitution."
+    },
+    "completed_at_utc": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC 3339 UTC timestamp of decision completion."
+    },
+    "key_id": {
+      "type": "string",
+      "description": "Public identifier of the signing key. Used for key rotation."
+    },
+    "previous_hash": {
+      "type": ["string", "null"],
+      "description": "SHA-256 hex of the previous attestation's own hash. Enables cross-vertical hash chain. Null for the head of a chain."
+    },
+
+    "dictionary_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the reason-code dictionary in force at decision time. Detects post-hoc dictionary edits (v1.5.8+)."
+    },
+    "citation_registry_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the citation registry. Detects silent regulatory-citation changes (v1.5.18+)."
+    },
+    "proxy_schema_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the ECOA §701 protected-class proxy schema. Detects post-hoc softening of the blocklist (v1.5.19+)."
+    },
+    "original_content_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the pre-summarization original content when CCR (compressed content retrieval) is used. Bank counsel can verify the summary derives from what the bank actually saw (v1.5.20+)."
+    },
+    "policy_invariance_score_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the Judge Card (per arXiv:2605.06161 Policy Invariance Score). Detects post-hoc metric relaxation (v1.5.23+)."
+    },
+    "adverse_action_notice_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the GAICF-compatible adverse-action notice text (per arXiv:2607.04103 layer 3). Detects post-hoc softening of the notice (v1.5.24+)."
+    },
+    "sampling_seed_commitment_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the sampling seed committed BEFORE deliberation (per arXiv:2606.16121). Detects 'regenerate until we get the answer we want' pattern (v1.5.28+)."
+    },
+    "evidence_partition_scheme_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the evidence-partition scheme (per arXiv:2607.01661). Detects silent partition-scheme swap between decisions (v1.5.30+)."
+    },
+    "heterogeneity_commitment_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the heterogeneous-debate enforcement commitment (per arXiv:2606.19826). Detects post-hoc relaxation of min-providers requirement (v1.5.32+)."
+    },
+    "claim_type_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the Pramana typed-claim envelope (per arXiv:2605.20312). Detects silent post-hoc reclassification of claim type (v1.5.37+)."
+    },
+    "bian_coverage_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the BIAN v9 service-domain coverage matrix (v1.5.39+)."
+    },
+    "eticas_taxonomy_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the Eticas AI Risk Taxonomy v2.0.0 mapping (per arXiv:2607.02201, v1.5.40+)."
+    },
+    "sive_fixture_set_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the SIVE fixture-set commitment (per arXiv:2607.00910, v1.5.41+)."
+    },
+    "calibration_ranking_split_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the Bayesian calibration-vs-ranking split (per arXiv:2605.27712, v1.5.42+)."
+    },
+
+    "extensions": {
+      "type": "object",
+      "description": "Signed opaque map for future needs. Consumers should treat unknown extension keys as advisory. Adding a well-known key here does NOT bump schema_version. Adding a new top-level field DOES.",
+      "additionalProperties": true
+    }
+  },
+
+  "$defs": {
+    "signed_fields_v2": {
+      "description": "Enumerates the exact field names (as they appear in the wire object) that participate in the signing payload. lib/attestation.js:_signingPayload MUST accept exactly these keys (camelCase parameter shape) plus the required core. CI cross-checks this list against the code.",
+      "required_core": [
+        "spec_version",
+        "mode",
+        "request_commitment",
+        "output_commitment",
+        "model_id",
+        "completed_at_utc",
+        "previous_hash",
+        "key_id"
+      ],
+      "optional_append_only": [
+        "dictionary_hash",
+        "citation_registry_sha256",
+        "proxy_schema_sha256",
+        "original_content_hash",
+        "policy_invariance_score_sha256",
+        "adverse_action_notice_sha256",
+        "sampling_seed_commitment_sha256",
+        "evidence_partition_scheme_sha256",
+        "heterogeneity_commitment_sha256",
+        "claim_type_sha256",
+        "bian_coverage_sha256",
+        "eticas_taxonomy_sha256",
+        "sive_fixture_set_sha256",
+        "calibration_ranking_split_sha256"
+      ]
+    }
+  }
+}

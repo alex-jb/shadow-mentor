@@ -8,18 +8,24 @@ on:
 
 jobs:
   node:
-    name: node test
-    runs-on: ubuntu-latest
+    name: node test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
       - run: npm install
-      - run: node --test test/*.test.js
+      - run: npm test
       - name: README stats drift check
+        if: matrix.os == 'ubuntu-latest'
         run: node scripts/readme-stats.mjs --check
       - name: Forbidden-phrases lint
+        if: matrix.os == 'ubuntu-latest'
         run: node scripts/check-forbidden-phrases.mjs
 
   python:
