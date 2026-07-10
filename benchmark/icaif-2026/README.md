@@ -70,8 +70,29 @@ Two options for Section 5.3:
 
 Yang call 2026-07-14 Monday agenda item.
 
+## Variance envelope over 4 seeds (n=800 total decisions)
+
+Regenerate: `node scripts/icaif-variance-summary.mjs`
+
+| Metric | Envelope |
+|---|---|
+| Verdict accuracy | 1.000 ± 0.000 (constant by construction — gold labels derive from same LOAN_DEFAULTS) |
+| Credit Fundamentals agreement | 0.964 ± 0.017 |
+| Risk Officer agreement | 0.652 ± 0.040 |
+| Fair Lending agreement | 0.644 ± 0.054 |
+| Customer Advocate agreement | 0.619 ± 0.049 |
+| Macro Contrarian agreement | 0.714 ± 0.029 |
+
+The tight `std < 0.06` on per-voice agreement across independent seeds means
+the persona-independence pattern is a stable property of the framework, not
+an artifact of the class-mixture draw for any single seed. Yang can point to
+this as "the persona-diversity story survives resample".
+
+Files: `variance-envelope.json` for the raw envelope.
+
 ## Files
 
 - `loans-{seed}.jsonl` — one JSON object per synthetic loan input
 - `decisions-{seed}.jsonl` — one JSON object per council decision (voices, verdict, AA codes, dictionary check)
-- `summary-{seed}.json` — aggregate: verdict-distribution, per-voice agreement, per-voice confidence, AA coverage
+- `summary-{seed}.json` — aggregate per-seed: verdict distribution, per-voice agreement, per-voice confidence, AA coverage
+- `variance-envelope.json` — mean ± std across all seeds present in the directory
