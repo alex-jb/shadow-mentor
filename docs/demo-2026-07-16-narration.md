@@ -49,7 +49,7 @@ The paper track becomes cleaner too. IEEE VR 2027 stops being "AI council in VR"
 
 Three things it is important to be clear about.
 
-- Shadow is tamper-**evident**, not tamper-**proof**. If the operator loses control of the private key, we cannot defend against retro-signing. That is why the roadmap includes external time-anchoring — RFC 3161 timestamps or a public transparency log — so the "insider at the bank" adversary is actually defeated.
+- Shadow is tamper-**evident** — a change to any signed record is detectable at verification time, which is different from prevention. If the operator loses control of the private key, we cannot defend against retro-signing. That is why the roadmap includes external time-anchoring — RFC 3161 timestamps or a public transparency log — so the "insider at the bank" adversary is actually defeated.
 - We do not claim any regulation is satisfied. We produce evidence that supports a compliance narrative. The determination is legal work.
 - We are pre-1.0 and not audited. A solo student MIT-licensed repo does not pass a bank's third-party risk management gate today. Real production adoption in the finance vertical routes through a partnership with a loan-origination-system vendor or a fair-lending validator that has already passed that gate.
 
