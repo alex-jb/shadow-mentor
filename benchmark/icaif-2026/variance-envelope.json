@@ -1,91 +1,99 @@
 {
-  "generated_at_utc": "2026-07-10T15:20:45.075Z",
+  "generated_at_utc": "2026-07-10T15:29:51.899Z",
   "seeds": [
     20260710,
     20260711,
     20260712,
-    20260713
+    20260713,
+    20260714,
+    20260715,
+    20260716,
+    20260717,
+    20260718,
+    20260719,
+    20260720,
+    20260721
   ],
   "n_per_seed": 200,
-  "total_decisions": 800,
+  "total_decisions": 2400,
   "verdict_accuracy_envelope": {
     "mean": 1,
     "std": 0,
-    "n": 4
+    "n": 12
   },
   "verdict_class_distribution_envelope": {
     "approve": {
-      "mean": 123.75,
-      "std": 9.782,
-      "n": 4
+      "mean": 127.5833,
+      "std": 8.8266,
+      "n": 12
     },
     "escalate": {
-      "mean": 43.25,
-      "std": 7.2241,
-      "n": 4
+      "mean": 42.6667,
+      "std": 7.3182,
+      "n": 12
     },
     "block": {
-      "mean": 33,
-      "std": 4.9497,
-      "n": 4
+      "mean": 29.75,
+      "std": 5.4943,
+      "n": 12
     }
   },
   "per_voice_agreement_envelope": {
     "Credit Fundamentals": {
-      "mean": 0.9637,
-      "std": 0.0167,
-      "n": 4
+      "mean": 0.9688,
+      "std": 0.0123,
+      "n": 12
     },
     "Risk Officer": {
-      "mean": 0.6525,
-      "std": 0.0396,
-      "n": 4
+      "mean": 0.6754,
+      "std": 0.0419,
+      "n": 12
     },
     "Fair Lending Compliance": {
-      "mean": 0.6438,
-      "std": 0.0545,
-      "n": 4
+      "mean": 0.665,
+      "std": 0.0452,
+      "n": 12
     },
     "Customer Advocate": {
-      "mean": 0.6188,
-      "std": 0.0489,
-      "n": 4
+      "mean": 0.6379,
+      "std": 0.0441,
+      "n": 12
     },
     "Macro Contrarian": {
-      "mean": 0.7137,
-      "std": 0.029,
-      "n": 4
+      "mean": 0.7258,
+      "std": 0.0338,
+      "n": 12
     }
   },
   "aa_code_coverage_envelope": {
     "AA01": {
-      "mean": 33,
-      "std": 4.9497,
-      "n": 4
+      "mean": 29.75,
+      "std": 5.4943,
+      "n": 12
     },
     "AA02": {
-      "mean": 55.25,
-      "std": 8.6999,
-      "n": 4
+      "mean": 53.9167,
+      "std": 7.0882,
+      "n": 12
     },
     "AA03": {
       "mean": 17,
-      "std": 4.1833,
-      "n": 4
+      "std": 4.397,
+      "n": 12
     },
     "AA04": {
-      "mean": 5.5,
-      "std": 2.2913,
-      "n": 4
+      "mean": 4.6667,
+      "std": 2.0548,
+      "n": 12
     },
     "AA05": {
-      "mean": 5,
-      "std": 1.8708,
-      "n": 4
+      "mean": 5.4167,
+      "std": 2.5644,
+      "n": 12
     }
   },
   "notes": [
-    "Envelope computed across 4 independent seeds",
+    "Envelope computed across 12 independent seeds",
     "verdict_accuracy std is 0 by construction: gold-labels derive from the same LOAN_DEFAULTS the council uses; both apply the policy deterministically",
     "per_voice_agreement std is the signal: shows how much each persona's independence-vs-final agreement varies with sample composition",
     "per_voice_confidence std is 0 by construction: confidence is a per-persona constant; this IS the schema gap the ICAIF paper Section 3.2 must address"

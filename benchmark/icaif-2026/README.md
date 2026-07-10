@@ -70,23 +70,23 @@ Two options for Section 5.3:
 
 Yang call 2026-07-14 Monday agenda item.
 
-## Variance envelope over 4 seeds (n=800 total decisions)
+## Variance envelope over 12 seeds (n=2,400 total decisions)
 
 Regenerate: `node scripts/icaif-variance-summary.mjs`
 
 | Metric | Envelope |
 |---|---|
 | Verdict accuracy | 1.000 ± 0.000 (constant by construction — gold labels derive from same LOAN_DEFAULTS) |
-| Credit Fundamentals agreement | 0.964 ± 0.017 |
-| Risk Officer agreement | 0.652 ± 0.040 |
-| Fair Lending agreement | 0.644 ± 0.054 |
-| Customer Advocate agreement | 0.619 ± 0.049 |
-| Macro Contrarian agreement | 0.714 ± 0.029 |
+| Credit Fundamentals agreement | 0.969 ± 0.012 |
+| Macro Contrarian agreement | 0.726 ± 0.034 |
+| Risk Officer agreement | 0.675 ± 0.042 |
+| Fair Lending agreement | 0.665 ± 0.045 |
+| Customer Advocate agreement | 0.638 ± 0.044 |
 
-The tight `std < 0.06` on per-voice agreement across independent seeds means
-the persona-independence pattern is a stable property of the framework, not
-an artifact of the class-mixture draw for any single seed. Yang can point to
-this as "the persona-diversity story survives resample".
+The tight `std < 0.05` on per-voice agreement across 12 independent seeds
+means the persona-independence pattern is a stable property of the framework,
+not an artifact of the class-mixture draw for any single seed. Yang can point
+to this as "the persona-diversity story survives resample at n=2,400".
 
 Files: `variance-envelope.json` for the raw envelope.
 
