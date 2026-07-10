@@ -27,6 +27,8 @@ This document records the 3 baseline findings SIVE exposed at v1.5.41. Each is a
 
 **Fix scope.** v1.5.42+. Either (a) wire `maybeRefuseToServe()` into `runLoanCouncil()` internally with an opt-out flag for legacy callers, or (b) publish a lint rule that flags direct `runLoanCouncil()` calls without a follow-on `maybeRefuseToServe()` check. Option (a) is safer.
 
+**Status — RESOLVED in v1.5.43 (2026-07-09).** Shipped `lib/run-loan-council-gated.js` — new `runLoanCouncilGated({ loan, amlKycFindings, evidenceRef })` wrapper that short-circuits to `refuse_to_serve` before persona deliberation when a refusal category fires. Chosen approach was a **wrapper** rather than mutating `runLoanCouncil()` to preserve the SIVE Finding #2 baseline pin (contract-test evidence that pre-v1.5.43 behavior is documented). Callers opt in by importing the gated wrapper; existing callers see zero change. 10 contract tests in `test/run-loan-council-gated.test.js` pin the new behavior including the SIVE fixture regression.
+
 ## Finding #3 — Ranking-Calibration conflation in aggregated_score
 
 **Symptom.** Both `obvious_approve` (FICO 780 / DTI 0.20 / LTV 0.60) and `borderline_escalate` (FICO 705 / DTI 0.34 / LTV 0.78) produce **the same aggregated_score of 0.6575**. This is a real bug — the confidence-weighted-verdict layer conflates two orthogonal signals:

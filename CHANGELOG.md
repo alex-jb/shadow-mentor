@@ -12,6 +12,20 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.43 — refuse_to_serve gated council (fixes SIVE Finding #2) (2026-07-09 NY)
+
+Closes [SIVE Baseline Finding #2](docs/SIVE_BASELINE_FINDINGS.md) at the library level. Prior to v1.5.43, `runLoanCouncil()` returned `escalate` for OFAC/SDN-match loans, and `refuse_to_serve` routing only fired at the `/api/deliberate` HTTP boundary (wired v1.5.36). SIVE, MCP, and any downstream library caller therefore saw the wrong verdict class — `escalate` implies human review can resolve the block, but for OFAC SDN and BSA §5318(g)(2) tipping-off, human review **cannot** lawfully override.
+
+- `lib/run-loan-council-gated.js` — new `runLoanCouncilGated({ loan, amlKycFindings, evidenceRef })` wraps `runLoanCouncil` with a non-discretionary refusal gate. Short-circuits before persona deliberation when a refusal category fires (OFAC, BSA tipping-off, statutory/geographic/product ineligibility). Returns `final_verdict: "refuse_to_serve"` + full refusal envelope + empty voices array.
+- `test/run-loan-council-gated.test.js` — 10 contract tests including the SIVE Finding #2 regression pin.
+- **Back-compat**: `runLoanCouncil()` unchanged. Existing SIVE baseline test (Finding #2 pin against `runLoanCouncil`) still passes. New callers explicitly opt into the gate by importing `runLoanCouncilGated`.
+
+**Test surface 1242 → 1252 (+10). Zero regressions.**
+
+Anchors [arXiv:2606.29142](https://arxiv.org/abs/2606.29142) — Systematization of Autonomous-Agent Threats in Regulated Financial Systems.
+
+---
+
 ## v1.5.42 — Bayesian calibration-vs-ranking split (fixes SIVE Finding #3) (2026-07-08 NY)
 
 Anchors [arXiv:2605.27712](https://arxiv.org/abs/2605.27712) — "Prefix-Safe Bayesian Belief Tracking for LLM Reasoning Reliability: Separating Calibration from Ranking" (Song / Li / Liu, 2026-05-26). Directly fixes SIVE Finding #3 exposed in v1.5.41: `confidence-weighted-verdict.js` conflates two orthogonal signals into one `aggregated_score`, causing radically different loans to produce identical scores. **14th append-only attestation field.**
