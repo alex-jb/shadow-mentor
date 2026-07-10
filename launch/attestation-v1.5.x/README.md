@@ -27,7 +27,7 @@ All backed by Ed25519 (RFC 8032) asymmetric signing shipped in v1.4.0. Bank hold
 
 ## Positioning discipline
 
-- Always cite SR 26-2 (Tier 3 companion), NOT SR 11-7 (rescinded 2026-04-17)
+- Always cite SR 26-2 (footnote 3 delegation), NOT SR 11-7 (rescinded 2026-04-17)
 - Always cite GDPR Art. 22 + Schufa for EU, NOT EU AI Act (credit-scoring deferred to 2027-12-02)
 - Lead with "Anthropic ships agents, Shadow governs them" when comparing to Anthropic FS
 - FICO<700 is a hard block per Lora Levitchi's 2026-06-19 binding decision — never soften this in copy

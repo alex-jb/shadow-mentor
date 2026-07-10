@@ -38,7 +38,7 @@ import { createResponse, isEnvelope } from "./response.js";
 const TOOLS = [
   {
     name: "shadow_loan_council",
-    description: "Run Loredana Levitchi's 5-voice loan-origination council on a structured loan dict. Pure compute, no LLM call, ~1-5ms latency. Returns final_verdict (block | escalate | approve), the 5 voice rationales, the risk_packet (VaR / ES / concentration / sector exposure), and the BR thresholds applied. Best when the user wants a deterministic risk verdict that's auditable for SR 11-7 / ECOA / Reg B.",
+    description: "Run Loredana Levitchi's 5-voice loan-origination council on a structured loan dict. Pure compute, no LLM call, ~1-5ms latency. Returns final_verdict (block | escalate | approve), the 5 voice rationales, the risk_packet (VaR / ES / concentration / sector exposure), and the BR thresholds applied. Best when the user wants a deterministic risk verdict that's auditable under ECOA/Reg B specific-principal-reason requirements.",
     inputSchema: {
       type: "object",
       properties: {
@@ -266,7 +266,7 @@ export function handleToolCall(name, args) {
     }
     if (council.adverse_action_codes && council.adverse_action_codes.length > 0) {
       builder.appendLine("");
-      builder.appendLine("Adverse-action codes (CFPB Bulletin 2024-09):");
+      builder.appendLine("Adverse-action codes (CFPB Circular 2026-03):");
       for (const c of council.adverse_action_codes) {
         builder.appendLine(`  ${c.code} — ${c.label}`);
       }

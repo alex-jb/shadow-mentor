@@ -62,7 +62,7 @@ Answers GSAR requirement (2) "data origins." Shadow explicitly declares:
 - **Shadow training data**: none. Shadow does not train models.
 - **Persona prompts source**: `lib/prompts.js` — hand-authored, citation-grounded, Ed25519-signed per attestation
 - **Regulatory citations source**: `lib/schemas/citation-registry.json` — primary-source URLs (federalreserve.gov, cfpb.gov, ecfr.gov, sec.gov, fincen.gov)
-- **Reason codes source**: `lib/schemas/reason-code-dictionary.json` — CFPB Bulletin 2024-09 aligned + Loredana Levitchi BRD Addenda A/B/C
+- **Reason codes source**: `lib/schemas/reason-code-dictionary.json` — CFPB Circular 2026-03 aligned + Loredana Levitchi BRD Addenda A/B/C
 - **Model training cutoffs**: enumerated per provider, sourced from published model cards
 
 ### §4. Risk assessments
@@ -70,7 +70,7 @@ Answers GSAR requirement (2) "data origins." Shadow explicitly declares:
 Answers GSAR requirement (3) "risk assessments." Each risk area names a specific document + test-file path:
 
 - **NIST AI 600-1 GenAI Profile** → `docs/NIST-AI-600-1-MAP.md`
-- **SR 26-2 Tier 3 companion positioning** → not-primary-model-risk-mgmt
+- **SR 26-2 footnote 3 delegation positioning** → not-primary-model-risk-mgmt
 - **Reg B / ECOA §701 adverse action** → `docs/CITATION_MAP.md` AA01-AA06 triples
 - **BSA / AML** → `lib/aml-kyc-voice.js` opt-in 6th persona voice
 - **GDPR Art. 22 + Schufa C-634/21** → EU-GDPR citation registry entries

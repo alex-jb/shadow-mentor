@@ -243,5 +243,5 @@ If the human reviewer denies, the adverse-action notice writes itself. If the re
 - `lib/attestation.js` — Ed25519 attestation
 - `lib/diverse-caller.js` — per-voice diverse routing
 - `bin/verify-attestation.mjs` — public verifier CLI
-- README § "Regulatory positioning (2026 H2)" — SR 26-2 Tier 3 + GDPR Art. 22 + CFPB 2026-07-21 defense
+- README § "Regulatory positioning (2026 H2)" — SR 26-2 (GenAI/agentic AI carved out by footnote 3) + GDPR Art. 22 + CFPB 2026-07-21 defense
 - `docs/soc2-readiness.md` — 35-control map against AICPA Trust Service Criteria

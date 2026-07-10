@@ -16,7 +16,7 @@ Data-science teams inside banks + insurers ship models under three overlapping r
 
 1. **SR 26-2 Tier 1 (Traditional Models)** — the trained scikit-learn / XGBoost / statsmodels artifact — full effective challenge required. Well-covered by ModelOp / Credo AI / Holistic AI.
 2. **SR 26-2 Tier 2 (Non-Model Tools)** — feature engineering DAGs, Great Expectations checks, sklearn `Pipeline` objects. General governance only.
-3. **SR 26-2 Tier 3 (Excluded Innovations)** — LLM-in-the-loop pipelines: RAG-augmented scorecards, LLM-generated features, LLM code that writes Pyspark/Snowpark. **Explicitly carved out.** This is the Shadow gap.
+3. **SR 26-2 (GenAI/agentic AI carved out by footnote 3) (Excluded Innovations)** — LLM-in-the-loop pipelines: RAG-augmented scorecards, LLM-generated features, LLM code that writes Pyspark/Snowpark. **Explicitly carved out.** This is the Shadow gap.
 
 The DS-pack governs the **Tier 3 boundary** — the moment when a data scientist inside a bank prompts Claude / GPT to write feature-engineering code, or asks an LLM to justify why a specific model + threshold combination clears Reg B disparate-impact.
 

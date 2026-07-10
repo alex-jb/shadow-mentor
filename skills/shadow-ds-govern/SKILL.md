@@ -91,7 +91,7 @@ If verdict is REWORK, ship-review is paused. The rationale names which voice fai
 ## Non-goals
 
 - Not a model-training tool. Consumes MLflow / Weights & Biases / manual metadata.
-- Not a full model-risk management framework. Focuses on the boundary conditions SR 26-2 Tier 3 explicitly carved out — LLM-in-the-loop feature engineering and generated pipeline code.
+- Not a full model-risk management framework. Focuses on the boundary conditions SR 26-2 (GenAI/agentic AI carved out by footnote 3) explicitly carved out — LLM-in-the-loop feature engineering and generated pipeline code.
 - Not a regulator. This is Shadow's opinion; the bank's compliance officer makes the final call.
 
 ## Reference

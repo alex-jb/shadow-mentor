@@ -198,7 +198,7 @@ An n=200 synthetic loan-decision test corpus is generated from Shadow v1.5.23 te
 
 [24] XREAL Inc. XREAL One Pro technical specifications, 2026.
 
-[25] Consumer Financial Protection Bureau. Bulletin 2024-09: Model traceability for adverse action explanations, 2024.
+[25] Consumer Financial Protection Bureau. Circular 2026-03: Model traceability for adverse action explanations, 2024.
 
 [26] Y. Weng, Z. Feng, and R. Xie. Beyond accuracy: Policy invariance as a reliability test for LLM safety judges. *arXiv:2605.06161*, 2026.
 

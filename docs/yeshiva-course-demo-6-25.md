@@ -178,7 +178,7 @@ in council response cites BRD vs Addendum sources verbatim. This is the
 Separation Principle, named author Loredana C. Levitchi (MIT 2026-06-19).
 
 Open `lib/schemas/adverse-action.js`. Show AA01-05 codes mapped to CFPB
-Bulletin 2024-09. These are what banking regulators actually require
+Circular 2026-03. These are what banking regulators actually require
 when a loan gets blocked.
 
 ## Questions for Hieu (have ready)

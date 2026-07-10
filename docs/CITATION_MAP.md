@@ -1,6 +1,6 @@
 # Regulatory Citation × Persona × Test Map
 
-**Version:** 1.2 · **Generated:** 2026-07-06 · **Last updated:** 2026-07-08 (Reg B final rule pivot + Colorado SB 26-189 column) · **Framework:** SR 26-2 Tier 3 companion control (effective 2026-04-17) + Reg B final rule (effective 2026-07-21)
+**Version:** 1.2 · **Generated:** 2026-07-06 · **Last updated:** 2026-07-08 (Reg B final rule pivot + Colorado SB 26-189 column) · **Framework:** SR 26-2 footnote 3 delegation control (effective 2026-04-17) + Reg B final rule (effective 2026-07-21)
 
 **Authority:**
 - Loredana C. Levitchi — BRD + Addenda A/B/C banking domain grounding, regulatory citation review, 4-layer procurement structure (2026-07-06 Test Stack contribution)
@@ -8,7 +8,7 @@
 
 **Purpose:** This document is the procurement-audience map from Shadow's runtime personas to (1) the specific regulatory citations each voice is tested against and (2) the exact test files that exercise each citation. Bank counsel opening the repo can trace a regulatory obligation to a Shadow persona to a runtime test, all in one traversal.
 
-**How to read this document:** every row is a triple `<persona, citation, test file>` and represents a defended invariant. If a bank auditor asks *"does Shadow's Fair Lending Compliance voice test the CFPB Bulletin 2024-09 model-traceability requirement?"* the answer is row-lookup, not code archaeology.
+**How to read this document:** every row is a triple `<persona, citation, test file>` and represents a defended invariant. If a bank auditor asks *"does Shadow's Fair Lending Compliance voice test the CFPB Circular 2026-03 model-traceability requirement?"* the answer is row-lookup, not code archaeology.
 
 **Also available as `docs/CITATION_MAP.csv`** for procurement counsel who want to filter / sort / import into a GRC system.
 
@@ -39,7 +39,7 @@ The 4-layer structure gives counsel four different navigation paths for four dif
 | **Credit Fundamentals** | Underwriter — evaluate borrower creditworthiness against institutional floors | AA01, AA02 | Addendum A (Credit Policy) + Addendum B (DTI Policy) |
 | **Risk Officer** | Portfolio VaR + concentration + LTV — institutional-side risk appetite | AA03, AA04 | Addendum C (LTV Policy) + Risk Appetite Note |
 | **Fair Lending Compliance** | ECOA / Reg B disparate-impact + adverse-action notice compliance | AA05 | BRD Governance Controls (ECOA / Reg B integration) |
-| **Customer Advocate** | Adverse-action explanation quality + borrower-facing readability | (escalates all) | CFPB Bulletin 2024-09 (model traceability) |
+| **Customer Advocate** | Adverse-action explanation quality + borrower-facing readability | (escalates all) | CFPB Circular 2026-03 (model traceability) |
 | **Macro Contrarian** | Sector cycle + recession sensitivity — devil's advocate | (none) | Institutional risk appetite note (sector-cycle overlay) |
 | **AML/KYC Investigator** (opt-in) | AML / Sanctions / KYC — regulatory eligibility | AA06 | BSA + USA PATRIOT §326 + FinCEN CDD (31 CFR 1010.230) + OFAC 50% rule |
 
@@ -64,7 +64,7 @@ The AML/KYC voice is opt-in: it attaches only when the loan payload contains `am
 | **ECOA** | Equal Credit Opportunity Act — prohibited-basis analysis | Fair Lending Compliance | `test/run-loan-council.test.js` | 15 |
 | **Reg B (12 CFR 1002)** | ECOA implementing regulation — adverse action notice requirements | Fair Lending Compliance | `test/reason-code-dictionary.test.js` + `test/run-loan-council.test.js` | 17 + 15 |
 | **Reg B adverse-action codes AA01-AA06** | Signed reason-code dictionary — post-hoc dictionary swap breaks attestation verification (v1.5.8) | Fair Lending Compliance + Credit + Risk + AML/KYC | `test/dictionary-hash-binding.test.js` + `test/reason-code-dictionary.test.js` | (bound) + 17 |
-| **CFPB Bulletin 2024-09** | Model-traceability for adverse-action explanations | Customer Advocate | `test/traceability-reproducibility.test.js` | 14 |
+| **CFPB Circular 2026-03** | Model-traceability for adverse-action explanations | Customer Advocate | `test/traceability-reproducibility.test.js` | 14 |
 | **Protected-class proxy blocklist** | 15-item ECOA proxy attribute blocklist enforced in `lib/enforce-reason-code-dictionary.js` | All 6 | `test/reason-code-dictionary.test.js` | 17 |
 | **Reg B final rule (effective 2026-07-21)** | Eliminates federal disparate-impact "effects test"; narrows discouragement; restricts SPCPs. **§1002.9(b)(2) specificity + prohibited-basis disparate treatment unchanged.** See `docs/REG-B-2026-07-21-FINAL-RULE.md`. Runtime behavior unchanged; threat model reposition documented. | All 6 | `test/reason-code-dictionary.test.js` + `test/dictionary-hash-binding.test.js` | 17 + (bound) |
 
@@ -108,7 +108,7 @@ The AML/KYC voice is opt-in: it attaches only when the loan payload contains `am
 
 | Citation | Full name | Persona-independent | Primary test file(s) | Test count |
 |---|---|---|---|---|
-| **RFC 8032 (Ed25519)** | Edwards-Curve Digital Signature Algorithm — SR 26-2 Tier 3 attestation binding | (all decisions) | `test/attestation-ed25519.test.js` + `test/attestation.test.js` | 13 + 20 |
+| **RFC 8032 (Ed25519)** | Edwards-Curve Digital Signature Algorithm — SR 26-2 (GenAI/agentic AI carved out by footnote 3) attestation binding | (all decisions) | `test/attestation-ed25519.test.js` + `test/attestation.test.js` | 13 + 20 |
 | **Dictionary-hash binding (v1.5.8)** | Reason-code dictionary SHA-256 signed into every attestation payload — post-hoc dictionary edit breaks verification | (all decisions) | `test/dictionary-hash-binding.test.js` | (dedicated file) |
 | **Hash-chain integrity (v1.5.10)** | `previous_hash` chain — detects reordering / insertion / truncation / edit-cascade | (all decisions) | `test/attestation-chain.test.js` | 22 |
 | **Schema-runtime coherence (v1.5.11)** | Persona L1/L2/L3 thresholds pinned against runtime `LOAN_DEFAULTS` — silent prompt drift blocked | All 6 | `test/schema-runtime-coherence.test.js` | 48 |
@@ -132,7 +132,7 @@ The AML/KYC voice is opt-in: it attaches only when the loan payload contains `am
 | **Credit Fundamentals** | ✅ | ✅ | — | ✅ (via reason codes) | (roadmap) | ✅ | ✅ |
 | **Risk Officer** | ✅ | ✅ (LTV via AA03/AA04) | — | ✅ | (roadmap) | ✅ | ✅ |
 | **Fair Lending Compliance** | ✅ | ✅ (primary) | — | ✅ (primary) | (roadmap) | ✅ | ✅ |
-| **Customer Advocate** | ✅ (Bulletin 2024-09) | ✅ | — | ✅ (Schufa case) | (roadmap) | ✅ | ✅ |
+| **Customer Advocate** | ✅ (Circular 2026-03) | ✅ | — | ✅ (Schufa case) | (roadmap) | ✅ | ✅ |
 | **Macro Contrarian** | ✅ | — | — | — | (roadmap) | ✅ | ✅ |
 | **AML/KYC Investigator** (opt-in) | ✅ | ✅ (AA06) | ✅ (primary) | — | — | ✅ | ✅ |
 
@@ -159,7 +159,7 @@ Full test surface: run `npm test` at repository root. All 668 tests currently pa
 
 **For grad-school co-authors / academic collaborators:** this document is a live-updated appendix to any paper citing Shadow's runtime coverage. Please add a citation to `docs/CITATION_MAP.md` (this file) in the paper's methods section so reviewers can trace the empirical claim to the specific test file.
 
-**For Lora specifically:** every row in Section 2 flows from your BRD + Addenda A/B/C. The rows we discussed on 2026-06-19 (FICO 700 hard block, DTI 0.36 escalate, Tier 3 SR 26-2 companion positioning) are all in Section 2.1 and 2.2. The dictionary-hash binding (v1.5.8) closes the Reg B post-hoc dictionary edit gap you flagged. The AML/KYC voice (v1.4.0) is opt-in per your July 2026 feedback that BSA §5318(g)(2) tipping-off must NOT be triggered when the loan payload doesn't declare `aml_flags[]` or `kyc_status`.
+**For Lora specifically:** every row in Section 2 flows from your BRD + Addenda A/B/C. The rows we discussed on 2026-06-19 (FICO 700 hard block, DTI 0.36 escalate, SR 26-2 footnote 3 delegation positioning) are all in Section 2.1 and 2.2. The dictionary-hash binding (v1.5.8) closes the Reg B post-hoc dictionary edit gap you flagged. The AML/KYC voice (v1.4.0) is opt-in per your July 2026 feedback that BSA §5318(g)(2) tipping-off must NOT be triggered when the loan payload doesn't declare `aml_flags[]` or `kyc_status`.
 
 If any row is *missing*, mis-classified, or needs a stronger citation — please annotate this file directly and I will iterate. This map is the artifact bank auditors will read before they read the code.
 

@@ -166,7 +166,7 @@ test("effective independent vote count: 5 voices cite ≥4 distinct regulatory a
     if (/Addendum C/.test(r)) anchorFamilies.add("Addendum C");
     if (/BRD/.test(r)) anchorFamilies.add("BRD");
     if (/Reg B|Regulation B|§1002/i.test(r)) anchorFamilies.add("Reg B");
-    if (/CFPB Circular|Bulletin 2024-09/i.test(r)) anchorFamilies.add("CFPB Circular/Bulletin");
+    if (/CFPB Circular|Circular 2026-03/i.test(r)) anchorFamilies.add("CFPB Circular/Bulletin");
     if (/SR 26-2|SR 11-7/i.test(r)) anchorFamilies.add("Fed SR");
     if (/CRE|sector|late-cycle|Historic stress/i.test(r)) anchorFamilies.add("Macro/sector");
   }

@@ -33,7 +33,7 @@
     {
       "when": "consumer-facing model with Fair-ML BLOCK",
       "must_contain": "AA05",
-      "reason": "Named invariant #3: AA05 fires when Fair-ML BLOCK fires for consumer-facing models (CFPB Bulletin 2024-09 integration)"
+      "reason": "Named invariant #3: AA05 fires when Fair-ML BLOCK fires for consumer-facing models (CFPB Circular 2026-03 integration)"
     },
     {
       "when": "PSI > 0.25 on features",

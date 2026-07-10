@@ -1,6 +1,6 @@
 # Shadow v1.5.18 — 60-second Loom script
 
-**Audience:** Bank counsel / compliance officer / procurement head at a mid-tier US bank. Assume they know Reg B / CFPB Bulletin 2024-09 / SR 26-2 but have NEVER seen Shadow before.
+**Audience:** Bank counsel / compliance officer / procurement head at a mid-tier US bank. Assume they know Reg B / CFPB Circular 2026-03 / SR 26-2 but have NEVER seen Shadow before.
 
 **Constraint:** Exactly 60 seconds. Kill everything that doesn't cite either a CFR section or a real number. Alex records once, no re-shoots.
 
@@ -96,7 +96,7 @@ Terminal fills with the Compliance Officer voice rationale. Highlight the two li
 
 ## What NOT to say (per red-team A2 defense)
 
-- Never "required by SR 26-2" — say "SR 26-2 Tier 3 companion positioning"
+- Never "required by SR 26-2" — say "SR 26-2 footnote 3 delegation positioning"
 - Never "solves protected-class proxy detection" — Fed itself has no crisp solution
 - Never "Anthropic couldn't do this" — competitor-punching sounds insecure
 - Never "AI-native" — banking counsel hears buzzword

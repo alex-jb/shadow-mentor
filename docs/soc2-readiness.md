@@ -32,7 +32,7 @@ If a control below shows a green ✅ with a file:line reference, an auditor can 
 
 | Control | Status | Evidence |
 |---|---|---|
-| CC2.1 Internal + external communication of objectives | ✅ enforced | [`README.md`](../README.md) + [`README.zh-CN.md`](../README.zh-CN.md) bilingual; SR 26-2 Tier 3 positioning explicit |
+| CC2.1 Internal + external communication of objectives | ✅ enforced | [`README.md`](../README.md) + [`README.zh-CN.md`](../README.zh-CN.md) bilingual; SR 26-2 (GenAI/agentic AI carved out by footnote 3) positioning explicit |
 | CC2.2 Communication of responsibilities | ✅ enforced | [`CONTRIBUTING.md`](../CONTRIBUTING.md), [`SECURITY.md`](../SECURITY.md), [`CODE_OF_CONDUCT.md`](../CODE_OF_CONDUCT.md) |
 | CC2.3 Communication with external parties | ✅ enforced | GitHub Issues + [`SECURITY.md`](../SECURITY.md) 72h ack SLA |
 

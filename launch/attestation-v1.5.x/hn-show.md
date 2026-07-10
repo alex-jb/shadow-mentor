@@ -77,7 +77,7 @@ A: The `key_id` field in every attestation supports rotation — old records ver
 A: Read `bin/attestation-acceptance-demo.mjs` — 165 lines, no dependencies beyond Node stdlib. The 4 subprocess tests in `test/attestation-acceptance-demo.test.js` assert the demo output contains "output commitment mismatch" specifically, so a silent no-op-ification of step 6 (tamper detection) would fail CI.
 
 **Q: What about SR 11-7 / EU AI Act?**
-A: SR 11-7 was rescinded 2026-04-17 in favor of SR 26-2, which explicitly puts GenAI/agentic AI in Tier 3 (out of scope pending future rulemaking). Shadow is positioned as a Tier 3 companion control. EU AI Act credit-scoring is deferred to 2027-12-02 (Digital Omnibus 2026-05); the enforceable EU regime today is GDPR Art. 22 + Schufa (C-634/21). Positioning honestly.
+A: SR 11-7 was rescinded 2026-04-17 and superseded by SR 26-2. SR 26-2 excludes deterministic rule-based processes from the "model" definition and carves generative and agentic AI out of scope (footnote 3), delegating governance to the institution's own risk management practices. Shadow's verdict engine falls in the excluded rule-based class. EU AI Act credit-scoring is deferred to 2027-12-02 (Digital Omnibus 2026-05); the enforceable EU regime today is GDPR Art. 22 + Schufa (C-634/21). Positioning honestly.
 
 **Q: Is this actually novel or is it just JWT-with-extra-steps?**
 A: The dispatch surface story (same primitive under CLI + MCP + HTTP + CI recipe) is the point. Other attestation implementations either lock you into their SDK or make you shell out. Shadow's contract is: bank pipelines pick whichever surface fits their workflow; response shape is identical between MCP and HTTP so audit-trail comparability holds regardless.

@@ -23,7 +23,7 @@ The load-bearing pieces of Shadow's positioning are unchanged:
 
 - **§1002.9(b)(2) "specific principal reasons" requirement is unchanged.** Every adverse-action notice must still cite the specific principal reasons for the denial. Template phrases like "internal standards" or "credit scoring model" fail this bar. Shadow's reason-code dictionary + AA-code-per-persona architecture is the direct answer to this requirement.
 - **CFPB Circular 2022-03 is unchanged.** Denials cannot cite reasons the creditor cannot explain. Shadow's dictionary-hash-binding + citation-registry chain preserves this invariant.
-- **CFPB Bulletin 2024-09 is unchanged.** Model traceability for adverse-action explanations remains required. Shadow's hash-chain + per-decision Ed25519 attestation preserves this.
+- **CFPB Circular 2026-03 is unchanged.** Model traceability for adverse-action explanations remains required. Shadow's hash-chain + per-decision Ed25519 attestation preserves this.
 - **Prohibited-basis discrimination is unchanged.** ECOA still prohibits denial on the basis of race, color, religion, national origin, sex, marital status, age, receipt of public assistance, or good-faith exercise of Consumer Credit Protection Act rights. Shadow's protected-class proxy blocklist enforces this at the feature layer.
 
 ## 3. Where Shadow's positioning shifts

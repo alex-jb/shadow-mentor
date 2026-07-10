@@ -1,6 +1,6 @@
 ---
 name: shadow-mentor
-description: 5-voice AI compliance council for regulated loan origination. 6 MCP tools (loan_council / risk_tools / recall / calibration / scenarios / traceability). FICO < 700 is a hardcoded JS conditional with pinned tests. Strict-JSON enum verdicts. AA01–AA05 adverse-action codes per CFPB Bulletin 2024-09. MCPTox / OX Security 2026 named-threat coverage mechanically tested.
+description: 5-voice AI compliance council for regulated loan origination. 6 MCP tools (loan_council / risk_tools / recall / calibration / scenarios / traceability). FICO < 700 is a hardcoded JS conditional with pinned tests. Strict-JSON enum verdicts. AA01–AA05 adverse-action codes per CFPB Circular 2026-03. MCPTox / OX Security 2026 named-threat coverage mechanically tested.
 version: 1.2.0
 license: MIT
 authors:
@@ -34,7 +34,7 @@ Six MCP tools that turn an LLM chat into a procurement-defensible loan-originati
 - `shadow_scenarios` — Surface enumeration (5 personas × 4 scenarios × 4 device clients × 2 providers)
 - `shadow_traceability` — Source attribution for any threshold (BRD vs Addendum vs Risk Appetite Note) per CFPB / ECOA / SR 26-2
 
-All tools run in-process. No network call from inside the tool body. AA01–AA05 adverse-action codes match CFPB Bulletin 2024-09.
+All tools run in-process. No network call from inside the tool body. AA01–AA05 adverse-action codes match CFPB Circular 2026-03.
 
 ## Why a bank's procurement team can grep it in 10 minutes
 

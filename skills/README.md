@@ -16,7 +16,7 @@ Full-catalog matrix — one skill per Shadow persona plus one for the aggregate 
 | [`shadow-compliance-officer`](./shadow-compliance-officer/SKILL.md) | CFPB / SR 26-2 / ECOA / Reg B / Fair Housing. Refuses to auto-approve without human review. | 1.20 | ✅ on fair_lending flag |
 | [`shadow-aml-kyc-investigator`](./shadow-aml-kyc-investigator/SKILL.md) | BSA / OFAC / USA PATRIOT §326 / FinCEN CDD / FATF. **ACAMS 2026 procurement lane.** | 1.20 | ✅ on sanctions/CIP |
 | [`shadow-risk-officer`](./shadow-risk-officer/SKILL.md) | Portfolio VaR / LTV / concentration / sector. Loredana's Addendum C thresholds. | 1.00 | ✅ on VaR > 2× ceiling |
-| [`shadow-customer-advocate`](./shadow-customer-advocate/SKILL.md) | Adverse-action explanation quality per CFPB Bulletin 2024-09. | 0.85 | ❌ (escalate-only) |
+| [`shadow-customer-advocate`](./shadow-customer-advocate/SKILL.md) | Adverse-action explanation quality per CFPB Circular 2026-03. | 0.85 | ❌ (escalate-only) |
 | [`shadow-macro-contrarian`](./shadow-macro-contrarian/SKILL.md) | Mandatory dissent voice — CRE + late-cycle sector risk. | 0.85 | ❌ (escalate-only) |
 
 ### Cross-vertical + audit skills (v1.5.17+)

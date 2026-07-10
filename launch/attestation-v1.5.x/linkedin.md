@@ -26,7 +26,7 @@ Over the last 48 hours I shipped six releases on my Shadow project (open source,
 
 • **One-command acceptance demo** — `npm run demo:attestation` runs the whole chain from a fresh clone in ~250ms. Six green checkmarks or a red X with the exact failure mode named.
 
-**Positioning is honest**: SR 26-2 Tier 3 companion (SR 11-7 was rescinded April 2026), GDPR Art. 22 + Schufa for EU (not EU AI Act — credit-scoring deferred to Dec 2027), CFPB Bulletin 2024-09 model-traceability. Full 543 test pass with a subprocess smoke test wired to the acceptance demo so any regression breaks CI.
+**Positioning is honest**: SR 26-2 footnote 3 delegation (SR 11-7 was rescinded April 2026), GDPR Art. 22 + Schufa for EU (not EU AI Act — credit-scoring deferred to Dec 2027), CFPB Circular 2026-03 model-traceability. Full 543 test pass with a subprocess smoke test wired to the acceptance demo so any regression breaks CI.
 
 If your compliance function is evaluating AI-driven decisioning tooling and the "how do we independently verify" question is stuck — I'd be interested in a 20-minute conversation about where the surface friction actually lives.
 

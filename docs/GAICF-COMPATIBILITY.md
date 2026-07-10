@@ -2,7 +2,7 @@
 
 **Reference**: [Wang, Kang, Lin, Mao 2026-07-05 arXiv:2607.04103](https://arxiv.org/abs/2607.04103) "Governing Generative AI Across Financial Institutions: An SR 26-2-Compatible Framework for Generative AI Risk Control"
 
-The GAICF (Generative AI Control Framework) proposal names three governance layers that any SR 26-2 Tier 3 GenAI system in a regulated bank should have. Shadow ships all three as of v1.5.24. This document maps each layer to the specific Shadow module + test file so a procurement reviewer can pin each requirement to a passing contract test.
+The GAICF (Generative AI Control Framework) proposal names three governance layers that any SR 26-2 (GenAI/agentic AI carved out by footnote 3) GenAI system in a regulated bank should have. Shadow ships all three as of v1.5.24. This document maps each layer to the specific Shadow module + test file so a procurement reviewer can pin each requirement to a passing contract test.
 
 ## The three layers
 

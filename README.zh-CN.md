@@ -28,7 +28,7 @@
 
 2026 年的两次监管转向改变了 Shadow 的定位框架。**弃用 "SR 11-7 compliant" 的措辞**,新的姿势是:
 
-- **SR 26-2 Tier 3 companion control**。SR 11-7 于 2026-04-17 被 Fed / OCC / FDIC 联合撤回;SR 26-2 明确把 GenAI / agentic AI 排出 Tier 3 范围。Shadow 是 SR 26-2 明确不管的这一类的治理层。对应 Treasury FS AI RMF(2026-02)230 项控制目标里的 40+ 项。
+- **SR 26-2 footnote 3 delegation control**。SR 11-7 于 2026-04-17 被 Fed / OCC / FDIC 联合撤回;SR 26-2 明确把 GenAI / agentic AI 排出 Tier 3 范围。Shadow 是 SR 26-2 明确不管的这一类的治理层。对应 Treasury FS AI RMF(2026-02)230 项控制目标里的 40+ 项。
 - **欧盟侧:GDPR Art. 22 + Schufa(C-634/21),不是 AI Act 2026**。Digital Omnibus 把 Annex III(5)(b) 信用评分类的截止从 2026-08-02 → 2027-12-02。Schufa 今天就可以执行;Shadow 的人工复核 + 审计链直接映射 Art. 22 "关于逻辑的有意义信息" + "人工介入"要求。
 - **CFPB 2026-07-21 规则变更**。Reg B 下的 disparate-impact 被收窄,但 adverse-action 通知 / disparate-treatment / Fair Housing Act / 州总检察官执法都保持可诉。Shadow 的[签名 reason-code dictionary](./lib/schemas/reason-code-dictionary.json) 是防御性姿势 — 银行法律签这份字典,而不是签 LLM 输出。
 
@@ -132,7 +132,7 @@ Shadow v1.1.1 集成了 **Loredana C. Levitchi**(叶史瓦大学 + William Pater
 - Shadow Agentic Capability Benchmark **v0.3.3** runner — **87 ± 3 (n=6) 综合分** (受 HF "Is it agentic enough?" 启发);compliance × LBO anchor cell **100/100 n=3 稳定**
 - **8 个 JSON 端点 live**: `/api/deliberate` (POST, +loan body 加 verdict) · `/api/loan-council` (POST, 纯计算 5-voice 规则层,Lora Mode A) · `/api/recall` · `/api/calibration` · `/api/scenarios` · `/api/health` · `/api/badge` (shields.io) · `/api/version` (git SHA audit pin)
 - **Levitchi Mode A 集成 ship 完 + 收紧 (v1.1.1)**:typed risk tools (VaR / ES / concentration / sector / correlation / beta) + 5-voice verdict resolver (block > escalate > approve) + loan 输入 schema 带 BR 阈值 (FICO 700 / DTI 0.36 / LTV 0.80 / VaR 0.12 @ 95%/10d) pin 在 drift-detection 测试里。**v1.1.1: FICO < 700 是 hard block**(不是 escalate)per Levitchi 政策澄清 —— 信用资格底线不可让步。
-- **采购级 citation chain (v1.1+)**:每个 `/api/deliberate` 响应都 inline 返回 `traceability` dict,把每个阈值映射回 BRD vs Addendum vs Risk Appetite Note 来源。AA01-05 adverse-action codes 对齐 CFPB Bulletin 2024-09 model-traceability 要求。`enforceAnalysisOnly()` regex guardrail 在 council 输出边界 catch LLM 幻觉的交易执行词。14 个契约测试守 provenance。
+- **采购级 citation chain (v1.1+)**:每个 `/api/deliberate` 响应都 inline 返回 `traceability` dict,把每个阈值映射回 BRD vs Addendum vs Risk Appetite Note 来源。AA01-05 adverse-action codes 对齐 CFPB Circular 2026-03 model-traceability 要求。`enforceAnalysisOnly()` regex guardrail 在 council 输出边界 catch LLM 幻觉的交易执行词。14 个契约测试守 provenance。
 - 770/771 测试绿;GitHub Actions CI 连续 15+ commits 绿
 - **跨垂类 persona pack (v0.2.1 LIVE)** —— `lib/personas/trader-pack/` Risk Sizer 已接入 `POST /api/deliberate`(请求体 `{"mode": "trading", "trade": {...}}`)+ `shadow_size_position` 作为 MCP 第 8 个 tool(analyst 在 Cursor / Claude Desktop 里直接 sizing trade,不用 curl)。Trading verdict 也用同一个 Ed25519 签名 key + payload 格式。7 纯 JS 契约测试 + 11 HTTP 边界测试守 FinPos "never emit direction" 铁律。v0.4 会补跨垂类 hash-chain 连续性。
 - **第三垂类 LIVE (ds-pack v0.2)** —— `lib/personas/ds-pack/` 5-voice 确定性治理议会(Data Steward / Model Validator / Fair-ML Auditor / Reproducibility Critic / Ops Realist)已接入 `POST /api/deliberate`(请求体 `{"mode": "ds", "ds": {...}}`)。纯计算 —— 无需 LLM。Fair-ML 在 EEOC 80% 规则触发时永远 BLOCK 覆盖其他 voice。Ed25519 签名与 banking 共用同一 key。13 纯 JS 契约测试 + 9 HTTP 边界测试。**三个 vertical 现已端到端共享同一 attestation 面。**

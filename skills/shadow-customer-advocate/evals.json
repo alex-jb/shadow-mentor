@@ -2,11 +2,11 @@
   "$schema": "https://addyosmani.com/agent-skills/evals.schema.json",
   "skill": "shadow-customer-advocate",
   "version": "1.0.0",
-  "description": "Trigger + expectation evals for the Customer Advocate persona. Escalate-only voice — no block authority. Adverse-action explanation quality gate per CFPB Bulletin 2024-09.",
+  "description": "Trigger + expectation evals for the Customer Advocate persona. Escalate-only voice — no block authority. Adverse-action explanation quality gate per CFPB Circular 2026-03.",
   "trigger": {
     "positive": [
       { "prompt": "Rewrite this denial letter so a customer at 8th-grade reading level can understand it", "reason": "Customer-facing prose quality" },
-      { "prompt": "Does this adverse-action explanation avoid boilerplate language per CFPB Bulletin 2024-09?", "reason": "AA explanation quality gate" },
+      { "prompt": "Does this adverse-action explanation avoid boilerplate language per CFPB Circular 2026-03?", "reason": "AA explanation quality gate" },
       { "prompt": "How would you explain FICO<700 hard block to a first-time applicant?", "reason": "Customer-facing translation of policy" }
     ],
     "negative": [

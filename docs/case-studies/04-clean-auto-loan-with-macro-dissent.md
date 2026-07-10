@@ -118,7 +118,7 @@ By this rule, ANY escalate → escalate. So why is the final_verdict `approve`?
 
 **Answer: Macro Contrarian is intentionally not treated as an escalate-authoritative voice in this deployment's rule set.** In production, banks configure whether Contrarian's dissent forces escalate or is treated as advisory-only. This deployment treats it as advisory-only — the Contrarian's role is to name the elephant in the room, not to gatekeep. The simple resolver here evaluates escalate authority filtered by voice policy.
 
-If the bank wants Contrarian dissent to force escalate, they flip a rule flag. The synthetic response above reflects the more common "dissent is advisory" configuration used by most banks that adopted Shadow (per the SR 26-2 Tier 3 companion positioning — dissent is a governance signal, not a decision gate).
+If the bank wants Contrarian dissent to force escalate, they flip a rule flag. The synthetic response above reflects the more common "dissent is advisory" configuration used by most banks that adopted Shadow (per the SR 26-2 footnote 3 delegation positioning — dissent is a governance signal, not a decision gate).
 
 ### The confidence-weighted verdict agrees at aggregated_score: 0.53
 

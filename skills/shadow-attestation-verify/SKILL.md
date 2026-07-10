@@ -52,7 +52,7 @@ Calls `shadow_verify_attestation` with the four inputs and returns:
 
 ## The named invariant
 
-**Dictionary hash is bound into the signing payload since v1.5.8.** If the reason-code dictionary was swapped between decision time and verification time, the signature will not verify — even with the correct key. This closes the "post-hoc dictionary edit" gap under Reg B / CFPB Bulletin 2024-09.
+**Dictionary hash is bound into the signing payload since v1.5.8.** If the reason-code dictionary was swapped between decision time and verification time, the signature will not verify — even with the correct key. This closes the "post-hoc dictionary edit" gap under Reg B / CFPB Circular 2026-03.
 
 ## Approval boundary
 

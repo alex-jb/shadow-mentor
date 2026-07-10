@@ -44,7 +44,7 @@ Install this skill when you want Claude to:
 
 Not directly regulatory — the persona is a **prudential control**, not a compliance requirement. But it maps to:
 
-- **SR 26-2 Tier 3 companion positioning** — dissent is a form of the governance oversight Fed carved GenAI/agentic out of; Shadow fills the gap.
+- **SR 26-2 footnote 3 delegation positioning** — dissent is a form of the governance oversight Fed carved GenAI/agentic out of; Shadow fills the gap.
 - **Basel III sector concentration** — one input to the dissent trigger.
 - **Fed CCAR / DFAST stress scenarios** — the persona's implicit prior.
 

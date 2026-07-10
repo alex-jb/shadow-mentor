@@ -34,9 +34,9 @@ const CANONICAL_TOOLS = [
       "Run 5-voice loan-origination council on a structured loan dict. Pure compute. Returns final_verdict (block | escalate | approve), voice rationales, risk_packet, applied thresholds.",
     inputSchemaKeys: ["loan"],
     regulatoryScope: [
-      "SR 26-2 Tier 3 companion",
+      "SR 26-2 footnote 3 delegation",
       "ECOA/Reg B (12 CFR 1002)",
-      "CFPB Bulletin 2024-09",
+      "CFPB Circular 2026-03",
     ],
     determinismClaim: "no-llm-inside-tool",
     latencyPercentiles: { p50_ms: 2, p95_ms: 5 },
@@ -47,9 +47,9 @@ const CANONICAL_TOOLS = [
       "v1.5.45 dual-envelope variant of shadow_loan_council. Returns human-readable markdown in content[] + typed structured JSON in structuredContent. LLM callers reason from markdown; downstream bank SIEM tooling parses structured payload. Ports ChromeDevTools/chrome-devtools-mcp pattern (Apache-2.0).",
     inputSchemaKeys: ["loan"],
     regulatoryScope: [
-      "SR 26-2 Tier 3 companion",
+      "SR 26-2 footnote 3 delegation",
       "ECOA/Reg B (12 CFR 1002)",
-      "CFPB Bulletin 2024-09",
+      "CFPB Circular 2026-03",
     ],
     determinismClaim: "no-llm-inside-tool",
     latencyPercentiles: { p50_ms: 3, p95_ms: 6 },
@@ -59,7 +59,7 @@ const CANONICAL_TOOLS = [
     description:
       "Institutional risk primitives — VaR (historical/parametric/MC), Expected Shortfall, concentration (HHI/Gini), sector exposure, correlation, factor exposures, beta.",
     inputSchemaKeys: ["tool", "params"],
-    regulatoryScope: ["BRD Risk Core Specification", "SR 26-2 Tier 3"],
+    regulatoryScope: ["BRD Risk Core Specification", "SR 26-2 (GenAI/agentic AI carved out by footnote 3)"],
     determinismClaim: "no-llm-inside-tool",
     latencyPercentiles: { p50_ms: 1, p95_ms: 3 },
   },
@@ -96,7 +96,7 @@ const CANONICAL_TOOLS = [
       "Source attribution for any benchmark rule (BRD vs Addendum vs Risk Appetite Note) with governance-layer classification.",
     inputSchemaKeys: ["rule"],
     regulatoryScope: [
-      "CFPB Bulletin 2024-09",
+      "CFPB Circular 2026-03",
       "ECOA/Reg B",
       "SR 26-2",
       "GDPR Art. 22",

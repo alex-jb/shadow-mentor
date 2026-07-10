@@ -43,7 +43,7 @@ Five council personas each emit a signed confidence value on every decision:
 1. **Credit Fundamentals** — probability the applicant meets institutional credit floor (FICO ≥ 700, DTI ≤ 0.36).
 2. **Risk Officer** — probability the loan fits portfolio VaR + LTV ceilings.
 3. **Fair Lending Compliance** — probability ECOA / Reg B compliance is achievable given the applicant's protected-class profile.
-4. **Customer Advocate** — probability the borrower-facing adverse action explanation meets CFPB Bulletin 2024-09 readability standards.
+4. **Customer Advocate** — probability the borrower-facing adverse action explanation meets CFPB Circular 2026-03 readability standards.
 5. **Macro Contrarian** — probability the sector's cycle position argues against origination.
 
 Each probability is post-hoc calibrated against realized outcomes (loan performance 90 days after origination) via temperature scaling (Guo et al. 2017) with a monthly refit. The council also emits a *disagreement-weighted composite* whose calibration is measured separately (this is where the interesting statistical decisions live — how to weight five potentially-miscalibrated forecasters into one aggregate).

@@ -6,7 +6,7 @@
   "generated_at_utc": "2026-07-02T00:00:00Z",
   "framework": "Anthropic Claude Constitution v2 (3-layer)",
   "authority": "Loredana C. Levitchi (BRD + Addenda A/B/C) + Alex Xiaoyu Ji (schema mapping)",
-  "regulatory_frame": "SR 26-2 Tier 3 companion control (effective 2026-04-17)",
+  "regulatory_frame": "SR 26-2 footnote 3 delegation control (effective 2026-04-17)",
 
   "L1_universal": {
     "$comment": "Layer 1 — shared across ALL 6 voices. Universal helpful/honest/harmless per Anthropic 2026 principles.",
@@ -91,7 +91,7 @@
         ]
       },
       "L3_thresholds": {
-        "source_document": "CFPB Bulletin 2024-09 model-traceability",
+        "source_document": "CFPB Circular 2026-03 model-traceability",
         "escalate_on_any_aa_reason": true
       },
       "adverse_action_codes": []

@@ -16,7 +16,7 @@ Every benchmark expected term is attributed to one of three governance layers. M
 | 10-day horizon | BRD Risk Packet Methodology | Institutional risk framework | `LOAN_DEFAULTS.var_horizon_days` |
 | 95% confidence | BRD Risk Packet Methodology | Institutional risk framework | `LOAN_DEFAULTS.var_confidence` |
 | Analysis-only / no-trade invariant | BRD Governance Controls | Institutional risk framework | `lib/audit-guardrail.js::enforceAnalysisOnly` |
-| ECOA / Reg B integration | CFPB Bulletin 2024-09 + BRD Governance | Regulatory | Fair Lending Compliance voice + AA05 |
+| ECOA / Reg B integration | CFPB Circular 2026-03 + BRD Governance | Regulatory | Fair Lending Compliance voice + AA05 |
 | SR 11-7 effective challenge | Federal Reserve Model Risk Mgmt | Regulatory | benchmark rubric + Risk Officer voice |
 
 This is the source separation that makes the Shadow benchmark procurement-defensible. Examiners can audit any cited rule back to the correct depth — institutional / product-line / calibration / regulatory — without conflation.

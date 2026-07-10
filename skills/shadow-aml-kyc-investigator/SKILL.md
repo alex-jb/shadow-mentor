@@ -74,7 +74,7 @@ Install this skill when you want Claude to:
 4. **FinCEN CDD 31 CFR 1010.230** — beneficial-ownership + PEP screening.
 5. **FATF** — high-risk jurisdiction lists.
 6. **FinCEN GTOs** — Geographic Targeting Orders (metro-specific, quarterly).
-7. **CFPB Bulletin 2024-09** — model-traceability for AML denials.
+7. **CFPB Circular 2026-03** — model-traceability for AML denials.
 
 ## Install
 

@@ -12,6 +12,28 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v2.0.0-rc1 — 2026-07-10
+
+### Changed
+- README rewritten to describe one product: the audit-evidence layer for AI-assisted credit decisions. Legacy README archived at `docs/archive/README-v1-legacy.md`.
+- Regulatory framing corrected. SR 26-2 references now cite the guidance's own language (footnote 3 carve-out for generative and agentic AI; deterministic rule-based processes excluded from the model definition on page 3) instead of a fabricated tier taxonomy. The 2026-07-21 Reg B final rule is described as narrowing federal disparate-impact exposure, not creating urgency. State fair-lending regimes, CFPB Circular 2026-03, FHA private-litigation exposure, and GDPR Art. 22 + Schufa are the operative anchors.
+- Adverse-action citation updated from "CFPB Bulletin 2024-09" (not a real document) to "CFPB Circular 2026-03" (2026-05-05, current). Historical predecessors Circular 2022-03 and Circular 2023-03 referenced as such.
+
+### Added
+- `docs/ARCHITECTURE.md` — resolves the prior README contradiction between "pure-compute verdicts" and "5-persona LLM council." Two layers: deterministic verdict engine, LLM-backed rationale layer. Attestation binds both.
+- `scripts/readme-stats.mjs` — regenerates the version / test count / attestation field count / release tag count block in the README from source of truth. `--check` mode gates CI.
+- CI job that runs `scripts/readme-stats.mjs --check` on every push and PR.
+
+### Removed
+- Manufactured urgency framing tied to the 2026-07-21 Reg B effective date.
+- Invented regulatory shorthand ("Tier 3 companion control") from user-facing surfaces. The concept was never present in SR 26-2.
+
+### Notes for downstream consumers
+- No API contract changes. No attestation schema changes. Test count went from 1252 to 1302 passing; no failures.
+- Attestation schema is not yet frozen. The freeze is planned for v2.0.0 alongside the `packages/attest-core` split. Until then, treat the schema as pre-1.0.
+
+---
+
 ## v1.5.47 — Ambient Council HTTP endpoint + XREAL demo page (2026-07-09 NY)
 
 Ships the browser-facing surface of the Ambient Council Manager for the 2026-07-16 Yeshiva XREAL One Pro demo. MacBook M5 fullscreen path — no Android + no WebXR immersive-AR required.
@@ -337,10 +359,10 @@ Anchors [arXiv:2606.19826](https://arxiv.org/abs/2606.19826) — "Heterogeneous 
 Anchors [Federal Register 2026-04-22 · Equal Credit Opportunity Act (Regulation B) final rule](https://www.federalregister.gov/documents/2026/04/22/2026-07804/equal-credit-opportunity-act-regulation-b) effective **2026-07-21** (13 days from ship). Ships 13 days before the effective date so bank counsel reviewing Shadow for Q3 procurement sees the correct post-7/21 positioning, not stale pre-rule framing.
 
 **What the final rule changes:** eliminates federal disparate-impact "effects test"; narrows discouragement; restricts SPCPs.
-**What the final rule does NOT change:** §1002.9(b)(2) specificity; CFPB Circular 2022-03; CFPB Bulletin 2024-09; ECOA prohibited-basis disparate-treatment liability. Every Shadow runtime invariant remains valid.
+**What the final rule does NOT change:** §1002.9(b)(2) specificity; CFPB Circular 2022-03; CFPB Circular 2026-03; ECOA prohibited-basis disparate-treatment liability. Every Shadow runtime invariant remains valid.
 
 - `docs/REG-B-2026-07-21-FINAL-RULE.md` — new procurement-audience document. Sections: what changes / what does NOT change / where Shadow repositions / state-AG defense (NY/CA/CO/IL/MA/WA) / Colorado SB 26-189 obligation mapping (pre-use notice · 30-day AA notice · human review · data correction) / what bank counsel should do before 2026-07-21 / test evidence unchanged.
-- `docs/CITATION_MAP.md` — v1.2. Added Reg B final rule row to Section 2.2 and new Section 2.2.1 for state-AI / algorithmic-decisioning laws (Colorado SB 26-189 + NY/CA/IL/MA/WA state UDAP + fair-lending). Framework header updated to reference both SR 26-2 Tier 3 and the Reg B final rule.
+- `docs/CITATION_MAP.md` — v1.2. Added Reg B final rule row to Section 2.2 and new Section 2.2.1 for state-AI / algorithmic-decisioning laws (Colorado SB 26-189 + NY/CA/IL/MA/WA state UDAP + fair-lending). Framework header updated to reference both SR 26-2 (GenAI/agentic AI carved out by footnote 3) and the Reg B final rule.
 - `lib/enforce-reason-code-dictionary.js` — updated header docstring with v1.5.31 threat-model pivot commentary. `enforceNoProtectedClassProxies()` error message now cites both ECOA prohibited-basis disparate-treatment (federal, unchanged) AND state-AG disparate-impact enforcement (NY/CA/CO/IL/MA/WA, unaffected by federal narrowing).
 - `lib/schemas/reason-code-dictionary.json` — `$comment_2` extended with post-effective-date references, state-AG defense rationale, and Colorado SB 26-189 obligation-to-artifact mapping. Dictionary contents unchanged; `dictionary_hash` will roll (bank counsel re-signs) but this is expected and correct — the file legitimately changed.
 
@@ -621,7 +643,7 @@ Ships the procurement-discipline batch surfaced by the 3-agent deep-research pas
 
 ### Added
 
-- **`lib/schemas/citation-registry.json`** — 11 CFR / USC / CFPB / Fed SR / FinCEN / FFIEC entries with verbatim regulatory snippets, source URLs, effective dates, sunset dates, and `valid_for_aa_codes` for semantic gating. 5 entries `verbatim_verified: true` (§1002.9(b)(2), §1002.6(b), 15 USC 1691(a), CFPB Circular 2023-03, SR 26-2 Tier 3, 31 CFR 1010.410); 6 pending Loredana verification before external procurement use.
+- **`lib/schemas/citation-registry.json`** — 11 CFR / USC / CFPB / Fed SR / FinCEN / FFIEC entries with verbatim regulatory snippets, source URLs, effective dates, sunset dates, and `valid_for_aa_codes` for semantic gating. 5 entries `verbatim_verified: true` (§1002.9(b)(2), §1002.6(b), 15 USC 1691(a), CFPB Circular 2023-03, SR 26-2 (GenAI/agentic AI carved out by footnote 3), 31 CFR 1010.410); 6 pending Loredana verification before external procurement use.
 - **`lib/citation-registry.js`** — 8 helpers: `normalizeCitation`, `isValidCitation` (A1 defense), `isValidForAA` (A2 defense), `isCitationCurrent` (A3 defense — SR 11-7 rescinded 2026-04-17 returns false), `getCitation`, `citationsForAA`, `verifiedCitations`, `registryMetadata`.
 - **`lib/citation-scanner.js`** — 6-pattern extraction (CFR / USC / Reg B / ECOA / SR / CFPB Circular + Bulletin / FFIEC). `scanCouncilCoverage(voices)` returns per-voice `{resolved_ids, unresolved}` for the audit envelope.
 - **Ed25519 attestation payload binds `citation_registry_sha256`** — same conditional append-only pattern as v1.5.8 `dictionary_hash`. Post-hoc registry edit breaks verification. Pre-v1.5.18 attestations verify byte-identically.
@@ -647,7 +669,7 @@ Every RFP claim uses "cryptographically enforces §1010.410 integrity" or "proph
 - B4 EU jurisdiction — Schufa / GDPR Art. 22 protected-class taxonomy separate from ECOA §701.
 - A2 semantic-match counsel-review loop — full defense requires Loredana `citation_reviewed_by: "counsel_id"` field.
 - D1/D3 runtime eval attestation + model version drift check — needs `bin/eval-runtime.mjs` against live `/api/deliberate`.
-- 6 pending `verbatim_verified: false` registry entries (Circular 2022-03, Bulletin 2024-09, SR 11-7, 31 CFR 1010.230, FFIEC IS Booklet) — Loredana verification round.
+- 6 pending `verbatim_verified: false` registry entries (Circular 2022-03, Circular 2026-03, SR 11-7, 31 CFR 1010.230, FFIEC IS Booklet) — Loredana verification round.
 - Pattern C `original_content_hash` — deferred until v1.5.20 CCR mode ships.
 
 ### Test surface
@@ -719,7 +741,7 @@ Bundles v1.5.12 through v1.5.15 shipped over the 2026-07-06 evening → 2026-07-
 
 ### v1.5.14 — Persona professionalization (2026-07-06)
 
-Rewrote all 5 loan-council voice rationales in the language a real Fed / CFPB examiner uses. Fair Lending cites the FFIEC three-step framework; Compliance cites CFPB Circular 2022-03 + Reg B §1002.6/9; Risk cites SR 26-2 materiality + effective challenge; Customer Advocate cites CFPB Bulletin 2024-09; Macro Contrarian cites historical stress episodes (2008 CMBS, 2020 SVB, 2023 Signature). No LLM prompt changes — this is deterministic rationale-text upgrades in `lib/run-loan-council.js` per the 2026-07-06 4-agent deep research on primary regulatory sources.
+Rewrote all 5 loan-council voice rationales in the language a real Fed / CFPB examiner uses. Fair Lending cites the FFIEC three-step framework; Compliance cites CFPB Circular 2022-03 + Reg B §1002.6/9; Risk cites SR 26-2 materiality + effective challenge; Customer Advocate cites CFPB Circular 2026-03; Macro Contrarian cites historical stress episodes (2008 CMBS, 2020 SVB, 2023 Signature). No LLM prompt changes — this is deterministic rationale-text upgrades in `lib/run-loan-council.js` per the 2026-07-06 4-agent deep research on primary regulatory sources.
 
 ### v1.5.13 — `POST /api/spatial-render` for Flow ingestion (2026-07-06)
 
@@ -1072,7 +1094,7 @@ Second half of the 2026-07-02 shipping cluster + a distribution + benchmark scaf
   - `shadow-compliance-officer` (weight 1.20, CFPB / SR 26-2 / ECOA / Reg B / FHA)
   - `shadow-aml-kyc-investigator` (weight 1.20, BSA / OFAC / PATRIOT §326 / FinCEN CDD / FATF)
   - `shadow-risk-officer` (weight 1.00, Basel III / Addendum C Risk Appetite Note)
-  - `shadow-customer-advocate` (weight 0.85, CFPB Bulletin 2024-09, escalate-only)
+  - `shadow-customer-advocate` (weight 0.85, CFPB Circular 2026-03, escalate-only)
   - `shadow-macro-contrarian` (weight 0.85, arxiv 2601.19921 diversity theory, escalate-only)
 
   Credit Fundamentals intentionally NOT shipped as standalone — its FICO<700 hard block is Lora's non-negotiable policy floor per her 2026-06-19 binding decision, only valid inside the full council.
@@ -1134,7 +1156,7 @@ Continuation of the v1.3.0 cluster earlier the same day. 3 more lib modules ship
 - RFC 8032 EdDSA (Ed25519 signing)
 - ACAMS Assembly Hollywood 2026 (AML procurement lane signal)
 - BSA 31 USC 5311 + 5324, OFAC SDN + 50% rule, USA PATRIOT Act §326, FinCEN CDD 31 CFR 1010.230
-- CFPB Bulletin 2024-09 model-traceability (AML denials must cite specific rule)
+- CFPB Circular 2026-03 model-traceability (AML denials must cite specific rule)
 - Anthropic 10 finance-agents launch 2026-05-06 (RIABiz) — Shadow's positioning line
 - arXiv:2509.11035 Free-MAD (provider diversity as first-class defense)
 - Aegis (Justin0504) v0.2.0 2026-06-29 — Ed25519 signing pattern
@@ -1173,7 +1195,7 @@ The pre-existing `final_verdict`, `voices[]`, `risk_packet`, `traceability`, `th
 
 ### Regulatory positioning shift (baked into every commit message)
 
-- **SR 11-7 REPLACED by SR 26-2 on 2026-04-17.** Fed/OCC/FDIC jointly rescinded SR 11-7 + OCC 2011-12. SR 26-2 explicitly carves GenAI/agentic AI out of Tier 3. Shadow's positioning: "SR 26-2 Tier 3 companion control" — governance for the class Fed won't govern.
+- **SR 11-7 REPLACED by SR 26-2 on 2026-04-17.** Fed/OCC/FDIC jointly rescinded SR 11-7 + OCC 2011-12. SR 26-2 explicitly carves GenAI/agentic AI out of Tier 3. Shadow's positioning: "SR 26-2 footnote 3 delegation control" — governance for the class Fed won't govern.
 - **EU AI Act credit-scoring deadline pushed from 2026-08-02 → 2027-12-02** via Digital Omnibus (May 2026). Retire "AI Act 2026-ready" copy. New EU frame: GDPR Art. 22 + Schufa (C-634/21) — enforceable today.
 - **CFPB final rule effective 2026-07-21** narrowed disparate-impact under Reg B but adverse-action notice requirements + Fair Housing Act + state AGs still apply. The reason-code dictionary is the defensive posture.
 

@@ -22,11 +22,11 @@
     {
       "when": "adverse action drafted",
       "must_contain_any": ["AA01", "AA02", "AA03", "AA04", "AA05"],
-      "reason": "Every adverse-action notice maps to a registered AA code per CFPB Bulletin 2024-09"
+      "reason": "Every adverse-action notice maps to a registered AA code per CFPB Circular 2026-03"
     },
     {
       "when": "regulatory citation emitted",
-      "must_contain_any": ["§1002.9(b)(2)", "Circular 2022-03", "Circular 2023-03", "Bulletin 2024-09", "SR 26-2", "12 CFR 1002.6", "15 U.S.C. 1691"],
+      "must_contain_any": ["§1002.9(b)(2)", "Circular 2022-03", "Circular 2023-03", "Circular 2026-03", "SR 26-2", "12 CFR 1002.6", "15 U.S.C. 1691"],
       "reason": "Every regulatory claim must anchor to a section resolvable in lib/schemas/citation-registry.json (red-team A1 defense)"
     },
     {
@@ -39,7 +39,7 @@
       "when": "fair_lending_review_flag=true",
       "must_contain": "human review",
       "must_not_contain_any": ["approve", "auto-approve"],
-      "reason": "AA05 requires human review per CFPB Bulletin 2024-09"
+      "reason": "AA05 requires human review per CFPB Circular 2026-03"
     },
     {
       "when": "SR 11-7 mentioned",

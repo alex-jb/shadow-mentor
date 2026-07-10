@@ -17,6 +17,8 @@ jobs:
           node-version: "22"
       - run: npm install
       - run: node --test test/*.test.js
+      - name: README stats drift check
+        run: node scripts/readme-stats.mjs --check
 
   python:
     name: python (${{ matrix.python-version }})

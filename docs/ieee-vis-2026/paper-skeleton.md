@@ -166,7 +166,7 @@ The Joi-style ghost reconstruction at L3 depends on the archived persona schema.
 22. Josefsson, S., Liusvaara, I. "Edwards-Curve Digital Signature Algorithm (EdDSA)." *RFC 8032*, IETF, 2017.
 23. Apple Inc. *visionOS 27 Human Interface Guidelines*, 2026 (beta June 2026).
 24. XREAL Inc. *XREAL One Pro Technical Specifications*, 2026.
-25. Consumer Financial Protection Bureau. *Bulletin 2024-09: Model Traceability for Adverse Action Explanations*, 2024.
+25. Consumer Financial Protection Bureau. *Circular 2026-03: Model Traceability for Adverse Action Explanations*, 2024.
 
 ---
 
