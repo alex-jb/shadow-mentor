@@ -40,7 +40,8 @@ function testFiles() {
 
 
 function signedFieldCount() {
-  const src = readFileSync(join(REPO_ROOT, "lib/attestation.js"), "utf-8");
+  // v2.0.0: source lives in packages/attest-core/attestation.js; lib/ path is a shim.
+  const src = readFileSync(join(REPO_ROOT, "packages/attest-core/attestation.js"), "utf-8");
   const sig = src.match(/function _signingPayload\(\{([^}]+)\}/);
   if (!sig) throw new Error("could not locate _signingPayload signature");
   const params = sig[1].split(",").map((s) => s.trim()).filter(Boolean);

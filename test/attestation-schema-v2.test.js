@@ -27,7 +27,10 @@ import {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, "..");
 const SCHEMA_PATH = join(REPO_ROOT, "spec", "attestation.schema.json");
-const ATTESTATION_SRC_PATH = join(REPO_ROOT, "lib", "attestation.js");
+// v2.0.0: source moved from lib/attestation.js to packages/attest-core/attestation.js.
+// The lib/ path is now a re-export shim; the real _signingPayload signature lives
+// in the new location.
+const ATTESTATION_SRC_PATH = join(REPO_ROOT, "packages", "attest-core", "attestation.js");
 
 const schema = JSON.parse(readFileSync(SCHEMA_PATH, "utf-8"));
 const attestationSrc = readFileSync(ATTESTATION_SRC_PATH, "utf-8");

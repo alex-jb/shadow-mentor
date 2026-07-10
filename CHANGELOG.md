@@ -12,6 +12,20 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v2.0.0 — 2026-07-10
+
+### Changed
+- **Physical file move.** `lib/attestation.js`, `lib/attestation-chain.js`, and `lib/attestation-batch.js` are now sourced from `packages/attest-core/`. The lib/ paths are back-compat shims that re-export from the new location. Every existing consumer keeps working; new code should import from `@shadow/attest-core` (or the local relative path `packages/attest-core/`). The shims will be removed in a future major version.
+- `packages/attest-core/index.js`, `batch.js`, and `chain.js` now import from local relative paths instead of the `../../lib` back-reference.
+- `test/attestation-schema-v2.test.js` and `scripts/readme-stats.mjs` read the schema-source signature from the new `packages/attest-core/attestation.js` location.
+
+### Notes
+- Test surface 1313/1313 passing (0 failing, 1 skipped). Acceptance demo `npm run demo:attestation` verifies all 6 steps end-to-end including tamper detection. Forbidden-phrases lint clean across 347 scanned files.
+- Attestation wire format unchanged; existing signed records still verify without change.
+- `test/attest-core-contract.test.js` continues to enforce zero LLM SDK dependencies in the transitive import graph.
+
+---
+
 ## v2.0.0-rc3 — 2026-07-11
 
 ### Added

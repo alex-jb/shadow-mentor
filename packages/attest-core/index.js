@@ -2,17 +2,14 @@
 // ─────────────────────────────────────────────────────────────────
 // @shadow/attest-core — public API contract surface.
 //
-// This package intentionally re-exports from ../../lib during the
-// v2.0.0-rc → v2.0.0 stabilization window. A dedicated CI test
-// (test/attest-core-contract.test.js) verifies:
+// v2.0.0 (2026-07-10): source files now physically live in this
+// directory. lib/attestation.js and lib/attestation-chain.js are
+// back-compat shims that re-export from here.
 //
+// A dedicated CI test (test/attest-core-contract.test.js) verifies:
 //   1. Every symbol re-exported below actually resolves.
 //   2. None of the source files reachable from this entry point
 //      import any LLM SDK (anthropic, openai, google-genai, etc).
-//
-// After v2.0.0 the physical files will be moved into this directory
-// and lib/ will re-export in the opposite direction. That flip is
-// invisible to consumers because they import from this package.
 //
 // ─────────────────────────────────────────────────────────────────
 
@@ -21,8 +18,8 @@ export {
   SIGNATURE_MODES,
   buildAttestation,
   verifyAttestation,
-} from "../../lib/attestation.js";
+} from "./attestation.js";
 
 export {
   computeAttestationHash,
-} from "../../lib/attestation-chain.js";
+} from "./attestation-chain.js";

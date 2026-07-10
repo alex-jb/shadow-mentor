@@ -9,10 +9,10 @@ Shadow signs each credit decision — verdict, adverse-action reason codes, mode
 **Zero telemetry.** Shadow does not phone home. No usage pings, no crash reports, no analytics — from either the library or the CLI verifiers. Verify by grepping the source: neither `@shadow/attest-core` nor any CLI in `bin/` opens an outbound socket to a Shadow-controlled host. Security policy: [`SECURITY.md`](./SECURITY.md).
 
 <!-- readme-stats:begin -->
-**Version**: 2.0.0-rc3
+**Version**: 2.0.0
 **Tests**: 1313/1314 passing (0 failing)
 **Attestation signed fields**: 21 parameters, 14 append-only conditional bindings
-**Release tags**: 54
+**Release tags**: 55
 <!-- readme-stats:end -->
 
 Numbers above are regenerated from source by `node scripts/readme-stats.mjs --write`. CI blocks pushes where they drift.

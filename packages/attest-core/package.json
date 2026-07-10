@@ -1,7 +1,7 @@
 {
   "name": "@shadow/attest-core",
-  "version": "2.0.0-rc3",
-  "description": "Zero-LLM-dep cryptographic evidence primitives for AI decision attestation. Ed25519 + hash chain + verifier. Referenced as the contract surface; source files still live in ../../lib during the v2.0 stabilization window and are re-exported from index.js.",
+  "version": "2.0.0",
+  "description": "Zero-LLM-dep cryptographic evidence primitives for AI decision attestation. Ed25519 + hash chain + verifier. Source files physically live in this directory as of v2.0.0.",
   "license": "MIT",
   "author": "Alex Xiaoyu Ji <xji1@mail.yu.edu>",
   "private": true,
