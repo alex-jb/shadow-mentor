@@ -12,6 +12,29 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.44 — SIVE Finding #1 RESOLVED (obvious_approve fixture correction) (2026-07-09 NY)
+
+Closes [SIVE Baseline Finding #1](docs/SIVE_BASELINE_FINDINGS.md) by fixture correction rather than persona-logic change.
+
+**Root cause diagnosed.** `obvious_approve` was returning `escalate` for two reasons, both structural:
+
+1. **Macro Contrarian persona** always escalates on `sector: commercial_real_estate` per Lora's late-cycle regime policy (`lib/run-loan-council.js:138-144`). This isn't a bug — it's an intentional Addendum C conservatism rule. But the fixture used CRE, so the persona structurally could never approve.
+2. **Risk Officer persona** escalates when historical VaR breaches the Addendum C ceiling. The fixture omitted `market_proxy_prices`, so `normalizeLoan()` filled in a synthetic stressed sequence that pushed VaR over the ceiling.
+
+**Fix**: correct the fixture so it embodies the actual "obvious approve" shape.
+- `sector: "commercial_real_estate"` → `sector: "consumer_discretionary"` (no CRE regime escalation)
+- Add favorable `market_proxy_prices` (low-volatility uptrend so VaR clears the ceiling)
+
+Both persona voices now correctly land at approve. All 5 personas unanimous approve → `final_verdict: "approve"`. Test pins the unanimous verdict, so any future persona-logic drift that would silently pull `obvious_approve` back to escalate will surface immediately.
+
+**Persona logic unchanged**: `runLoanCouncil()` behavior for other loans is bit-identical to v1.5.43. The persona conservatism rules (CRE escalation, VaR ceiling) are preserved — bank counsel's policy stays intact.
+
+**Test surface 1252 → 1252 (fixture change + test update, no net change). Zero regressions.**
+
+Anchors [arXiv:2607.00910](https://arxiv.org/abs/2607.00910) — SIVE (characterize the instrument before using it to test the theory).
+
+---
+
 ## v1.5.43 — refuse_to_serve gated council (fixes SIVE Finding #2) (2026-07-09 NY)
 
 Closes [SIVE Baseline Finding #2](docs/SIVE_BASELINE_FINDINGS.md) at the library level. Prior to v1.5.43, `runLoanCouncil()` returned `escalate` for OFAC/SDN-match loans, and `refuse_to_serve` routing only fired at the `/api/deliberate` HTTP boundary (wired v1.5.36). SIVE, MCP, and any downstream library caller therefore saw the wrong verdict class — `escalate` implies human review can resolve the block, but for OFAC SDN and BSA §5318(g)(2) tipping-off, human review **cannot** lawfully override.

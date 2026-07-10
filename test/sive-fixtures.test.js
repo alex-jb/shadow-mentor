@@ -47,15 +47,23 @@ test("Every SIVE fixture loan validates against loan schema", () => {
 });
 
 
-test("SIVE obvious_approve: current baseline verdict is escalate (BASELINE FINDING #1)", () => {
-  // Ideal: approve. Current: escalate. Documented in
-  // docs/SIVE_BASELINE_FINDINGS.md as a follow-up refactor target.
-  // Test pins current behavior; drift from this baseline is
-  // detected via CI, so an accidental improvement OR regression
-  // both surface as a signal.
+test("SIVE obvious_approve: verdict is approve (Finding #1 RESOLVED v1.5.44)", () => {
+  // v1.5.44: SIVE Finding #1 closed by fixture correction. The prior
+  // fixture used sector=commercial_real_estate + no market prices,
+  // which structurally escalated 2 of 5 personas (Macro Contrarian
+  // always escalates CRE per Lora late-cycle policy; Risk Officer
+  // escalates on the synthetic stressed default price series). New
+  // fixture uses sector=consumer + favorable price series so all 5
+  // personas clear their approve gates. This is what "obvious approve"
+  // was always supposed to mean.
   const loan = getSiveLoan("obvious_approve");
   const council = runLoanCouncil(loan);
-  assert.equal(council.final_verdict, "escalate");
+  assert.equal(council.final_verdict, "approve");
+  // Every voice should approve — obvious means unanimous.
+  for (const v of council.voices) {
+    assert.equal(v.verdict, "approve",
+      `${v.voice} verdict = ${v.verdict}, expected approve`);
+  }
 });
 
 

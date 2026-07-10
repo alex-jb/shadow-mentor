@@ -17,6 +17,8 @@ This document records the 3 baseline findings SIVE exposed at v1.5.41. Each is a
 
 **Fix scope.** v1.5.42+. Trace the escalate path in `run-loan-council.js` back to its origin. Either the escalate condition is intentional (document it) or it's a bug (fix it). Currently the escalation-vs-approve boundary is untraceable without reading 200+ lines of council code.
 
+**Status — RESOLVED in v1.5.44 (2026-07-09) by fixture correction.** Traced: two personas structurally escalated `obvious_approve` — (a) Macro Contrarian always escalates `sector: commercial_real_estate` per Lora's late-cycle regime policy, (b) Risk Officer escalates on synthetic-stressed default `market_proxy_prices` when the fixture omits them. Both persona rules are intentional and stay unchanged. Fixture was renamed to `consumer_discretionary` sector and given a favorable price series so all 5 personas clear their approve gates. This is what "obvious approve" was always supposed to mean — unanimous. Test pins unanimity so any future drift surfaces immediately.
+
 ## Finding #2 — OFAC SDN match returns escalate, not refuse_to_serve
 
 **Symptom.** A loan with `aml_flags: ["OFAC_SDN_MATCH"]` returns `verdict: "escalate"` from `runLoanCouncil()`. The verdict should be `refuse_to_serve` per v1.5.35 (arXiv:2606.29142).
