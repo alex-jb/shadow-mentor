@@ -24,11 +24,14 @@ export {
   computeAttestationHash,
 } from "./attestation-chain.js";
 
-// v3 M1.2: streaming evidence bundle API.
+// v3 M1.2: streaming evidence bundle API + crash-recovery.
 export {
   EVENT_TYPES,
   createSession,
   appendEvent,
   sealSession,
+  sealPartialBundle,
+  recoverSession,
   verifyBundle,
 } from "./session.js";
+export { createFileStore, listSessionFiles } from "./store-file.js";

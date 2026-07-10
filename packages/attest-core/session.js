@@ -6,10 +6,14 @@
 // Each append extends the hash chain in memory; sealSession signs
 // the batch root and returns a bundle matching spec/evidence-bundle.schema.json.
 //
-// This module deliberately does NOT persist to disk. Persistence + signer-
-// daemon integration + crash recovery ship in a follow-up chunk. What ships
-// here is the pure primitive: given a stream of events, produce a signed
-// evidence bundle whose chain, batch root, and signature all verify.
+// v3 M1.2 shipped in-memory primitive. Crash-recovery via an optional
+// JSONL append store (2026-07-10): pass `store` to createSession and every
+// header/event/seal write is durable. On process crash, `recoverSession`
+// reads the store back and returns a session that can be either resumed
+// (if it wasn't sealed) or sealed post-hoc via `sealPartialBundle` to
+// produce a verifiable evidence bundle covering everything up to the
+// crash. Store interface is minimal: {appendLine(text), readLines()}.
+// Default FileStore lives in packages/attest-core/store-file.js.
 //
 // Design constraints (mirror spec/EVIDENCE_BUNDLE.md):
 //   - Event type enum is frozen at 13 kinds.
@@ -92,6 +96,7 @@ function signedShape(event) {
  * @param {string} [params.startedAtUtc] — override; default is new Date().toISOString()
  * @param {string} [params.signingAlgorithm] — "ed25519" (default) or "hmac-sha256" (future)
  * @param {object} [params.attestCoreVersion] — override for tests
+ * @param {object} [params.store]        — durable append store {appendLine, readLines}. When provided, every header/event/seal write is persisted synchronously; a mid-session crash leaves a JSONL log that recoverSession can rebuild into a verifiable partial bundle.
  * @returns {object} session state
  */
 export function createSession(params) {
@@ -105,6 +110,7 @@ export function createSession(params) {
     startedAtUtc,
     signingAlgorithm = "ed25519",
     attestCoreVersion = ATTEST_CORE_VERSION,
+    store = null,
   } = params ?? {};
 
   if (!agent || typeof agent !== "object") throw new Error("createSession: agent required");
@@ -146,7 +152,7 @@ export function createSession(params) {
 
   const headerHash = headerSeedHash(header);
 
-  return {
+  const session = {
     _sealed: false,
     header,
     events: [],
@@ -157,7 +163,14 @@ export function createSession(params) {
       keyId,
       privateKey: normalizePrivateKey(privateKey),
     },
+    _store: store,
   };
+
+  if (store) {
+    store.appendLine(JSON.stringify({ kind: "header", header }));
+  }
+
+  return session;
 }
 
 /**
@@ -204,6 +217,10 @@ export function appendEvent(session, event) {
   const ownHash = sha256Hex(canonicalBytes(signedShape(record)));
   session.events.push(record);
   session._lastEventHash = ownHash;
+
+  if (session._store) {
+    session._store.appendLine(JSON.stringify({ kind: "event", event: record }));
+  }
 
   return Object.freeze({ ...record });
 }
@@ -267,6 +284,151 @@ export function sealSession(session, options = {}) {
   };
 
   session._sealed = true;
+
+  if (session._store) {
+    session._store.appendLine(JSON.stringify({
+      kind: "seal",
+      batch_root: batchRoot,
+      signatures: bundle.signatures,
+      session_ended_at_utc: endedAtUtc,
+    }));
+  }
+
+  return bundle;
+}
+
+/**
+ * Recover a session from a durable store after a crash. Reads all lines,
+ * reconstructs the in-memory session state, and returns it. The returned
+ * session is either:
+ *   - resumable (session._sealed === false, seal line was never written):
+ *     more appendEvent + sealSession calls will work as normal.
+ *   - already sealed (seal line found): sealSession will throw, but the
+ *     bundle already exists on disk and can be reassembled by the caller.
+ *
+ * Recovery does NOT require the caller to pass agent/models/environment
+ * again — those are read from the header line. The caller MUST pass the
+ * signing privateKey (matching the header.schema_versions.attest_core
+ * and header.session_id) so future events can sign, and so
+ * sealPartialBundle can produce a valid signature.
+ *
+ * @param {object} params
+ * @param {object} params.store — same store shape as createSession
+ * @param {string|object} params.privateKey — Ed25519 private key for future signs
+ * @returns {object} recovered session state
+ */
+export function recoverSession(params) {
+  const { store, privateKey } = params ?? {};
+  if (!store) throw new Error("recoverSession: store required");
+  if (!privateKey) throw new Error("recoverSession: privateKey required");
+
+  const lines = store.readLines();
+  if (!Array.isArray(lines) || lines.length === 0) {
+    throw new Error("recoverSession: store is empty");
+  }
+
+  let header = null;
+  const events = [];
+  let sealLine = null;
+
+  for (const line of lines) {
+    if (!line || !line.trim()) continue;
+    let obj;
+    try {
+      obj = JSON.parse(line);
+    } catch (err) {
+      throw new Error(`recoverSession: malformed line: ${err.message}`);
+    }
+    if (obj.kind === "header") {
+      if (header) throw new Error("recoverSession: duplicate header line");
+      header = obj.header;
+    } else if (obj.kind === "event") {
+      events.push(obj.event);
+    } else if (obj.kind === "seal") {
+      sealLine = obj;
+    }
+    // Unknown kinds are ignored so future additive extensions are safe.
+  }
+
+  if (!header) throw new Error("recoverSession: no header line found");
+
+  // Reconstruct chain state by walking the persisted events.
+  let lastHash = headerSeedHash(header);
+  for (const ev of events) {
+    lastHash = sha256Hex(canonicalBytes(signedShape(ev)));
+  }
+
+  const session = {
+    _sealed: sealLine !== null,
+    header,
+    events,
+    _headerHash: headerSeedHash(header),
+    _lastEventHash: lastHash,
+    _signing: {
+      algorithm: "ed25519",
+      keyId: sealLine?.signatures?.[0]?.key_id ??
+        header.recovered_from_key_id ?? "recovered",
+      privateKey: normalizePrivateKey(privateKey),
+    },
+    _store: store,
+    _recoveredSeal: sealLine,
+  };
+
+  return session;
+}
+
+/**
+ * Produce a signed evidence bundle from a session that never received a
+ * session_end (e.g. the process crashed). Unlike sealSession, this does
+ * NOT auto-append session_end — the caller acknowledges the record is
+ * partial. The bundle verifies against the chain up to the crash, and
+ * bundle.header.session_ended_at_utc is set to null so an auditor sees
+ * the partial-record posture.
+ *
+ * @param {object} session — recovered session
+ * @param {object} [options]
+ * @param {string} [options.keyId] — override key_id in the signature block
+ */
+export function sealPartialBundle(session, options = {}) {
+  if (!session || typeof session !== "object") throw new Error("sealPartialBundle: session required");
+  if (session._sealed) throw new Error("sealPartialBundle: session already sealed");
+  if (session.events.length === 0) throw new Error("sealPartialBundle: no events to seal");
+
+  const eventHashes = session.events.map(e => sha256Hex(canonicalBytes(signedShape(e))));
+  const batchRoot = sha256Hex(Buffer.concat(eventHashes.map(h => Buffer.from(h, "hex"))));
+  const signature = signEd25519(session._signing.privateKey, Buffer.from(batchRoot, "hex"));
+
+  const keyId = options.keyId ?? session._signing.keyId;
+  session.header.session_ended_at_utc = null; // partial → no clean end time
+
+  const bundle = {
+    bundle_version: BUNDLE_VERSION,
+    spec_version: SPEC_VERSION,
+    header: session.header,
+    events: session.events,
+    batch_root: batchRoot,
+    signatures: [
+      {
+        algorithm: session._signing.algorithm,
+        key_id: keyId,
+        signature,
+        signed_at_utc: new Date().toISOString(),
+      },
+    ],
+  };
+
+  session._sealed = true;
+
+  if (session._store) {
+    session._store.appendLine(JSON.stringify({
+      kind: "seal",
+      batch_root: batchRoot,
+      signatures: bundle.signatures,
+      session_ended_at_utc: null,
+      partial: true,
+    }));
+  }
+
   return bundle;
 }
 
