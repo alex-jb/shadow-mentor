@@ -6,7 +6,7 @@ Shadow signs each credit decision — verdict, adverse-action reason codes, mode
 
 **Status**: pre-1.0. Not audited. Not a compliance product — it produces evidence that supports a compliance narrative.
 
-**Zero telemetry.** Shadow does not phone home. No usage pings, no crash reports, no analytics — from either the library or the CLI verifiers. Verify by grepping the source: neither `@shadow/attest-core` nor any CLI in `bin/` opens an outbound socket to a Shadow-controlled host. Security policy: [`SECURITY.md`](./SECURITY.md).
+**Zero telemetry.** Shadow does not phone home. No usage pings, no crash reports, no analytics — from either the library or the CLI verifiers. Verify by grepping the source: neither `shadow-attest-core` nor any CLI in `bin/` opens an outbound socket to a Shadow-controlled host. Security policy: [`SECURITY.md`](./SECURITY.md).
 
 <!-- readme-stats:begin -->
 **Version**: 2.0.0
@@ -38,7 +38,7 @@ Spec: [`spec/EVIDENCE_BUNDLE.md`](./spec/EVIDENCE_BUNDLE.md) · schema: [`spec/e
 **Shipping today (M1 + M2.3 + M4):**
 
 ```js
-import { createSession, appendEvent, sealSession, verifyBundle } from "@shadow/attest-core";
+import { createSession, appendEvent, sealSession, verifyBundle } from "shadow-attest-core";
 
 const session = createSession({
   agent: { name: "claude-code", version: "1.2.3" },

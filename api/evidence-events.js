@@ -5,7 +5,7 @@
 // signed, chain-verified bundle matching spec/evidence-bundle.schema.json.
 //
 // Stateless — the server holds no session state between requests. The
-// caller accumulates events in-process (via @shadow/attest-core, an OTel
+// caller accumulates events in-process (via shadow-attest-core, an OTel
 // pipeline, or a custom emitter), then POSTs the whole session for signing.
 //
 // Server holds the Ed25519 signing key via SHADOW_ATTESTATION_ED25519_PRIVATE_KEY.
@@ -31,7 +31,7 @@
 // Response 200:
 //   {
 //     "bundle": { bundle_version: 1, spec_version: "shadow-evidence/v1", ... },
-//     "verify_hint": "verify with @shadow/attest-core verifyBundle or verify.html"
+//     "verify_hint": "verify with shadow-attest-core verifyBundle or verify.html"
 //   }
 //
 // Response 400 on any structural validation failure (missing session/events,
@@ -146,6 +146,6 @@ export default async function handler(req, res) {
 
   return res.status(200).json({
     bundle,
-    verify_hint: "verify offline with @shadow/attest-core verifyBundle() or the drag-in verify.html at the repo root",
+    verify_hint: "verify offline with shadow-attest-core verifyBundle() or the drag-in verify.html at the repo root",
   });
 }

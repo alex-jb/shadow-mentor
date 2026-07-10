@@ -109,7 +109,7 @@ The `@shadow/adapter-otel` package (M2.2, week 2) ingests OTel spans and emits e
 
 ## Signing model
 
-Signing reuses `@shadow/attest-core` primitives without change:
+Signing reuses `shadow-attest-core` primitives without change:
 
 1. Each event is canonicalized (stable-order JSON) and its own sha256 hash computed.
 2. The event's `prev_hash` is set to the previous event's own hash (or `sha256(canonical(header))` for `seq=0`).

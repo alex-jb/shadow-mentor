@@ -1,4 +1,4 @@
-# @shadow/attest-core
+# shadow-attest-core
 
 Zero-LLM-dep cryptographic evidence primitives for AI decision attestation and agent session recording.
 
@@ -23,7 +23,7 @@ CI enforces the "zero LLM deps" invariant via [`test/attest-core-contract.test.j
 ## Install
 
 ```bash
-npm install @shadow/attest-core
+npm install shadow-attest-core
 ```
 
 Node.js `>= 20` (uses the built-in `node:crypto` Ed25519 API).
@@ -38,7 +38,7 @@ import {
   buildAttestation,
   verifyAttestation,
   computeAttestationHash,
-} from "@shadow/attest-core";
+} from "shadow-attest-core";
 
 // v3 M1.2 streaming session API
 import {
@@ -47,18 +47,18 @@ import {
   appendEvent,
   sealSession,
   verifyBundle,
-} from "@shadow/attest-core";
+} from "shadow-attest-core";
 
 // Optional sub-entries
-import { computeBatchRootHash } from "@shadow/attest-core/batch";
-import { computeAttestationHash } from "@shadow/attest-core/chain";
+import { computeBatchRootHash } from "shadow-attest-core/batch";
+import { computeAttestationHash } from "shadow-attest-core/chain";
 ```
 
 ## Quickstart: per-decision attestation
 
 ```js
 import { generateKeyPairSync } from "node:crypto";
-import { buildAttestation, verifyAttestation } from "@shadow/attest-core";
+import { buildAttestation, verifyAttestation } from "shadow-attest-core";
 
 const { publicKey, privateKey } = generateKeyPairSync("ed25519");
 
@@ -83,7 +83,7 @@ const result = verifyAttestation(attestation,
 
 ```js
 import { generateKeyPairSync } from "node:crypto";
-import { createSession, appendEvent, sealSession, verifyBundle } from "@shadow/attest-core";
+import { createSession, appendEvent, sealSession, verifyBundle } from "shadow-attest-core";
 
 const { publicKey, privateKey } = generateKeyPairSync("ed25519");
 

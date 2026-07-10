@@ -32,7 +32,7 @@ Debug observability (LangSmith/Langfuse/Datadog) tells engineers *why the agent 
 
 ### M1.2 attest-core additions
 - `createSession()`, `appendEvent()`, `sealSession()` streaming API (events signed as they occur, not at session end — a crashed session must still yield a valid partial chain; add a crash-recovery test).
-- Publish `@shadow/attest-core` and `@shadow/evidence` to npm (scoped, MIT). Python verifier package mirrors read/verify only.
+- Publish `shadow-attest-core` and `@shadow/evidence` to npm (scoped, MIT). Python verifier package mirrors read/verify only.
 - Acceptance: 10k-event synthetic session seals and verifies in < 5s; kill -9 mid-session leaves a verifiable partial bundle; mutating any payload byte or reordering any event fails verification with a precise error (seq + reason).
 
 ---
@@ -112,9 +112,9 @@ Five items added after the initial brief. Two are v3.0 launch-blockers; three sh
 
 ### v3.0 launch-blockers (implement during M6 launch prep)
 
-1. **npm publish `--provenance`** — publish `@shadow/attest-core` and `@shadow/adapter-*` packages with `npm publish --provenance` so the published tarballs carry a Sigstore-signed build attestation. "The package that helps you prove what your agent did is itself proven at build time" is a free consistency win, and it forecloses a supply-chain critique in the first HN comment.
+1. **npm publish `--provenance`** — publish `shadow-attest-core` and `@shadow/adapter-*` packages with `npm publish --provenance` so the published tarballs carry a Sigstore-signed build attestation. "The package that helps you prove what your agent did is itself proven at build time" is a free consistency win, and it forecloses a supply-chain critique in the first HN comment.
 
-2. **Verifier error format standardized** — every verification error emitted by `@shadow/attest-core`, the `shadow-verify` CLI, and `verify.html` MUST be a structured object with the exact shape:
+2. **Verifier error format standardized** — every verification error emitted by `shadow-attest-core`, the `shadow-verify` CLI, and `verify.html` MUST be a structured object with the exact shape:
    ```
    { seq: <event index or null>, reason: <machine-readable code>, impact: <human sentence> }
    ```

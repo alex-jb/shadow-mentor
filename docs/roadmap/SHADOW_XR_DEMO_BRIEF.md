@@ -40,7 +40,7 @@
 ## X5 — Tamper demo state machine
 
 - States: `PRISTINE → TAMPERED → (reset) PRISTINE`. Trigger: presenter beat `5` or menu item. Never triggerable by accidental single keypress (requires beat key or two-step menu).
-- Effect: mutate one predetermined `file_write` payload in the in-memory working copy → run the real verifier (the same `@shadow/attest-core` verify function — not a simulation) → animate: tampered block edges flash to red over 0.4s, then downstream blocks dim sequentially at 24 blocks/s with a traveling "crack" sound-free visual pulse; floating caption (in-scene, 3s persist): exact verifier error, e.g. `payload_hash mismatch at seq 23 (file_write); chain broken for 24 downstream events`.
+- Effect: mutate one predetermined `file_write` payload in the in-memory working copy → run the real verifier (the same `shadow-attest-core` verify function — not a simulation) → animate: tampered block edges flash to red over 0.4s, then downstream blocks dim sequentially at 24 blocks/s with a traveling "crack" sound-free visual pulse; floating caption (in-scene, 3s persist): exact verifier error, e.g. `payload_hash mismatch at seq 23 (file_write); chain broken for 24 downstream events`.
 - The caption text must come from the verifier's structured error object, not hardcoded strings — this proves in code review that the demo runs the real verification path.
 - Reset (`0`): restore pristine bundle, blocks re-brighten in reverse order (the "healing" replay is visually satisfying and reinforces determinism).
 

@@ -27,7 +27,7 @@ Please do NOT open a public GitHub issue for security matters. Public disclosure
 - Any way an attacker could produce an attestation that verifies against a Shadow verifier without holding the corresponding private key.
 - Any way an attacker could modify an attested record without the verifier detecting the change.
 - Any way to weaken the append-only signing contract (silently downgrading a v2 attestation to a v1 shape, omitting a signed field that should be bound).
-- Any dependency vulnerability that transitively affects the crypto path in `lib/attestation.js` or `@shadow/attest-core`.
+- Any dependency vulnerability that transitively affects the crypto path in `lib/attestation.js` or `shadow-attest-core`.
 - Any way the linked chain (`previous_hash`) could be broken, reordered, or truncated without the chain verifier detecting it.
 - Compromise of secrets in demo material. Demo bundles intentionally use ephemeral test keys; if a real key ever leaks in a shipped demo, that is in scope.
 

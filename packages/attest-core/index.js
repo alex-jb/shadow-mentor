@@ -1,6 +1,6 @@
 // packages/attest-core/index.js
 // ─────────────────────────────────────────────────────────────────
-// @shadow/attest-core — public API contract surface.
+// shadow-attest-core — public API contract surface.
 //
 // v2.0.0 (2026-07-10): source files now physically live in this
 // directory. lib/attestation.js and lib/attestation-chain.js are

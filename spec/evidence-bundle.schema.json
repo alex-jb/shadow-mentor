@@ -118,7 +118,7 @@
             },
             "attest_core": {
               "type": "string",
-              "description": "Version of @shadow/attest-core in use when this bundle was signed. Bound so future breaking changes are detectable."
+              "description": "Version of shadow-attest-core in use when this bundle was signed. Bound so future breaking changes are detectable."
             }
           }
         }

@@ -1,5 +1,5 @@
 // test/attest-core-contract.test.js
-// v2.0.0-rc3 contract tests for @shadow/attest-core.
+// v2.0.0-rc3 contract tests for shadow-attest-core.
 //
 // Two invariants:
 //   1. Every symbol the package's index.js re-exports resolves at runtime.
@@ -131,7 +131,7 @@ test("attest-core transitive import graph has zero LLM SDK deps", () => {
 
 test("attest-core package.json exports the documented sub-entries", () => {
   const pkg = JSON.parse(readFileSync(PKG_PATH, "utf-8"));
-  assert.equal(pkg.name, "@shadow/attest-core");
+  assert.equal(pkg.name, "shadow-attest-core");
   assert.equal(pkg.type, "module");
   assert.equal(pkg.main, "index.js");
   for (const p of [".", "./attestation", "./batch", "./chain", "./verify-chain"]) {
