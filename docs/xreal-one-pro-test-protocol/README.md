@@ -1,6 +1,15 @@
-# XREAL One Pro Test Protocol — Shadow × Yeshiva U (v2, Ambient Council-aligned)
+# XREAL One Pro Test Protocol — Shadow × Yeshiva U
 
-**Version:** 2.0 · **Prepared:** 2026-07-07 (post 4-agent full-web deep research + design pivot to Ambient Council v3)
+> **2026-07-11 update — read this first.** The Wednesday 2026-07-16 capstone demo path was simplified after the XREAL One Pro documentation review: the glasses are treated as a **6DoF-anchored 171" virtual display** driven from MacBook M5 over USB-C DP-Alt, **not** as an immersive WebXR runtime. The current `demo/xreal.html` renders in Chrome fullscreen on that display; no WebXR immersive session is entered. This is the *actual* path for the capstone demo. The user-study track (Quest 3 immersive WebXR) is post-capstone and separate.
+>
+> The rest of this document was prepared 2026-07-07 for a more ambitious path and remains as a reference for the Ambient Council v3 immersive experiment. Fold in whichever sections still apply; ignore the WebXR-immersive-mandatory sections for Wednesday.
+
+**Wednesday morning pre-flight**: [`docs/wednesday-preflight-2026-07-16.md`](../wednesday-preflight-2026-07-16.md).
+**Narration script**: [`docs/demo-2026-07-16-narration.md`](../demo-2026-07-16-narration.md).
+
+---
+
+**Version (historical):** 2.0 · **Prepared:** 2026-07-07 (post 4-agent full-web deep research + design pivot to Ambient Council v3)
 **Supersedes:** v1.0 (2026-07-06) — which assumed standalone rendering + persona semicircle. Both assumptions were wrong.
 **Hardware:** XREAL One Pro ($599, Lora purchased 2026-07-06) + **XREAL Eye add-on ($99, ORDER NOW)** + Android phone (Pixel 9 Pro / Samsung S24) or MacBook Pro as USB-C tether host
 **Software backend:** Shadow v1.5.14 (`github.com/alex-jb/shadow-mentor`, MIT, public, 706/707 tests)
