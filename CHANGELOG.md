@@ -12,6 +12,34 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v1.5.46 — Ambient Council Manager v0.1 (XREAL / WebXR layout primitive) (2026-07-09 NY)
+
+Ships the deterministic layer of the Ambient Council Manager pattern ported from `xiaotianfotos/homerail` (MIT, 276⭐). This is the execution primitive Shadow needed for the 2026-07-16 Yeshiva XREAL One Pro demo — a stable JSON layout descriptor the WebXR renderer builds against without needing an LLM roundtrip.
+
+### What ships
+
+- **`lib/ambient-manager.js`** —
+  - `PERSONA_CATALOG` — frozen registry of 6 canonical Shadow personas + accent colors + domains.
+  - `computeSemicircleLayout(n)` — n personas placed in a widening arc, positions in meters relative to the reviewer's head. Arc widens from 120° (n=3) to 160° (n=6).
+  - `runAmbientTurn({question, persona_ids, loan_context, council_output, response_mode})` — deterministic Manager turn. Given explicit persona selection + optional loan context + optional council output, returns the LayoutDescriptor. Unknown persona_ids throw so the renderer cannot hallucinate personas Shadow doesn't ship.
+  - `ambientToolCatalog()` — 5-tool Anthropic tool-use schema (`select_personas`, `stage_loan_question`, `place_context_node`, `finalize_layout`, `finish`). Reserved for the v0.2 LLM tool-use loop.
+  - `buildAmbientSystemPrompt({response_mode, loan_context})` — prompt builder (not a static string) so per-session context threads through cleanly. Prompt bytes are procurement-audit-visible via attestation binding downstream.
+- `test/ambient-manager.test.js` — 25 contract tests pinning the layout geometry, persona validation, council-output merge, tool catalog, and prompt builder.
+
+### What did NOT get ported from homerail
+
+The homerail Manager Agent has 24 tools including `run_shell_command`, DAG-orchestrator surface, and TOML wire-format widgets. All three are wrong for banking procurement (Vanta / SOC 2 fail on manager-level shell primitives; Shadow's attestation is already the byte-canonical layer). Shadow's ambient-manager keeps only the 5 tools that produce layout descriptors.
+
+### v0.2 preview (not shipping in v1.5.46)
+
+The Claude tool-use loop that reads the tool catalog + emits `layoutSink.addNode / finalize` events. When shipped, it will call `runAmbientTurn()` under the hood.
+
+**Test surface 1267 → 1292 (+25). Zero regressions.**
+
+Anchors [xiaotianfotos/homerail](https://github.com/xiaotianfotos/homerail) — MIT pattern port + [docs/xreal-one-pro-test-protocol/README.md](docs/xreal-one-pro-test-protocol/README.md) Phase A1 requirement.
+
+---
+
 ## v1.5.45 — MCP dual-envelope response primitive + 9th tool (2026-07-09 NY)
 
 Ports the `content` + `structuredContent` response pattern from **ChromeDevTools/chrome-devtools-mcp** (Apache-2.0, Google LLC) into Shadow's MCP layer. Every response now has room for two parallel views: human-readable markdown in `content[]` for the LLM caller to reason about, and typed JSON in `structuredContent` for downstream bank SIEM tooling to parse without re-parsing a stringified body.
