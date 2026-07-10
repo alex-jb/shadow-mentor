@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shadow evidence bundle — offline verifier</title>
+  <meta name="description" content="Offline WebCrypto verifier for Shadow v3 evidence bundles. Works from a USB stick. Zero network calls." />
+  <style>
+    :root {
+      --bg: #0b0d10;
+      --panel: #14181e;
+      --panel-border: #232830;
+      --text: #e6e6e6;
+      --dim: #8a92a0;
+      --ok: #4ade80;
+      --bad: #ef4444;
+      --warn: #fbbf24;
+      --accent: #60a5fa;
+      --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 40px 20px; min-height: 100vh;
+      background: var(--bg); color: var(--text);
+      font: 15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    .wrap { max-width: 800px; margin: 0 auto; }
+    header { margin-bottom: 24px; }
+    h1 { margin: 0 0 8px; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+    .sub { color: var(--dim); font-size: 14px; }
+    .sub code { font-family: var(--mono); color: var(--text); }
+
+    .drop {
+      border: 1.5px dashed var(--panel-border);
+      background: var(--panel);
+      border-radius: 12px;
+      padding: 48px 24px;
+      text-align: center;
+      transition: border-color 120ms, background 120ms;
+    }
+    .drop.active { border-color: var(--accent); background: #172232; }
+    .drop h2 { margin: 0 0 8px; font-size: 16px; font-weight: 500; }
+    .drop p { margin: 0; color: var(--dim); font-size: 13px; }
+    .drop input[type="file"] { display: none; }
+    .drop label {
+      display: inline-block; margin-top: 12px;
+      padding: 8px 16px; border-radius: 8px;
+      background: var(--accent); color: #0b0d10; cursor: pointer;
+      font-size: 13px; font-weight: 500;
+    }
+
+    .keyrow {
+      margin-top: 16px; padding: 16px;
+      background: var(--panel); border: 1px solid var(--panel-border);
+      border-radius: 12px;
+    }
+    .keyrow label { display: block; margin-bottom: 8px; font-size: 13px; color: var(--dim); }
+    .keyrow textarea {
+      width: 100%; min-height: 100px; padding: 10px;
+      background: var(--bg); color: var(--text); border: 1px solid var(--panel-border);
+      border-radius: 8px; font-family: var(--mono); font-size: 12px; resize: vertical;
+    }
+
+    .result {
+      margin-top: 24px; padding: 24px;
+      border-radius: 12px; border: 1px solid var(--panel-border);
+      background: var(--panel);
+    }
+    .result.ok { border-color: var(--ok); }
+    .result.bad { border-color: var(--bad); }
+    .result.warn { border-color: var(--warn); }
+    .verdict { font-size: 18px; font-weight: 600; margin: 0 0 8px; }
+    .verdict.ok { color: var(--ok); }
+    .verdict.bad { color: var(--bad); }
+    .verdict.warn { color: var(--warn); }
+    .reason { color: var(--dim); font-size: 14px; margin: 0 0 16px; }
+    .reason code { font-family: var(--mono); color: var(--text); }
+
+    dl.meta { display: grid; grid-template-columns: 180px 1fr; gap: 4px 16px; margin: 0; font-size: 13px; }
+    dl.meta dt { color: var(--dim); }
+    dl.meta dd { margin: 0; font-family: var(--mono); word-break: break-all; }
+
+    .footer {
+      margin-top: 40px; padding-top: 20px;
+      border-top: 1px solid var(--panel-border);
+      color: var(--dim); font-size: 12px;
+    }
+    .footer code { font-family: var(--mono); color: var(--text); }
+    .footer a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Shadow evidence bundle verifier</h1>
+      <p class="sub">Verifies a signed evidence bundle produced by <code>@shadow/attest-core</code>. Runs entirely in your browser via WebCrypto. Zero network calls. Zero build step. Works from a USB stick.</p>
+    </header>
+
+    <div class="drop" id="drop">
+      <h2>Drop an evidence bundle here</h2>
+      <p>...or click to browse. Bundle is a JSON file matching <code>bundle_version: 1</code> shape.</p>
+      <input type="file" id="file" accept="application/json,.json,.bundle" />
+      <label for="file">Choose file</label>
+    </div>
+
+    <div class="keyrow">
+      <label for="pubkey">Ed25519 public key (PEM format) — required if the bundle does not embed one:</label>
+      <textarea id="pubkey" placeholder="-----BEGIN PUBLIC KEY-----&#10;MCowBQYDK2VwAyEA...&#10;-----END PUBLIC KEY-----"></textarea>
+    </div>
+
+    <div id="result"></div>
+
+    <div class="footer">
+      Bundle format: <code>shadow-evidence/v1</code> · spec at <code>spec/EVIDENCE_BUNDLE.md</code> · repo at <a href="https://github.com/alex-jb/shadow-mentor" target="_blank" rel="noopener">github.com/alex-jb/shadow-mentor</a><br />
+      This page contains no third-party scripts, no analytics, no fonts loaded from a CDN. Save it locally and it keeps working forever.
+    </div>
+  </div>
+
+<script>
+"use strict";
+
+// ── Canonicalize (mirror of packages/attest-core/attestation.js `canonicalize`) ──
+function canonicalize(value) {
+  if (value === null || typeof value !== "object") return JSON.stringify(value);
+  if (Array.isArray(value)) return "[" + value.map(canonicalize).join(",") + "]";
+  const keys = Object.keys(value).sort();
+  return "{" + keys.map(k => JSON.stringify(k) + ":" + canonicalize(value[k])).join(",") + "}";
+}
+
+// ── SHA-256 hex ──
+async function sha256Hex(bytes) {
+  const buf = await crypto.subtle.digest("SHA-256", bytes);
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+function canonicalBytes(value) {
+  return new TextEncoder().encode(canonicalize(value));
+}
+
+// ── Chain-seed hash — same normalization as packages/attest-core/session.js ──
+async function headerSeedHash(header) {
+  const normalized = { ...header, session_ended_at_utc: null };
+  return sha256Hex(canonicalBytes(normalized));
+}
+
+// payload_ref is unsigned metadata — see spec/EVIDENCE_BUNDLE.md §Redaction.
+function signedShape(event) {
+  const { payload_ref, ...rest } = event;
+  return rest;
+}
+
+// ── hex → Uint8Array ──
+function hexToBytes(hex) {
+  const out = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < out.length; i++) out[i] = parseInt(hex.substr(i * 2, 2), 16);
+  return out;
+}
+
+// ── base64url → Uint8Array ──
+function b64urlToBytes(s) {
+  const padded = s.replace(/-/g, "+").replace(/_/g, "/") + "==".slice(0, (4 - s.length % 4) % 4);
+  const bin = atob(padded);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+// ── PEM parse → SPKI ArrayBuffer ──
+function pemToSpki(pem) {
+  const cleaned = pem.replace(/-----BEGIN [^-]+-----|-----END [^-]+-----|\s+/g, "");
+  const bin = atob(cleaned);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out.buffer;
+}
+
+// ── Verify bundle ──
+async function verifyBundle(bundle, publicKeyPem) {
+  if (!bundle || typeof bundle !== "object") return { ok: false, reason: "not a JSON object" };
+  if (bundle.bundle_version !== 1) return { ok: false, reason: `unsupported bundle_version ${bundle.bundle_version}` };
+  if (!Array.isArray(bundle.events)) return { ok: false, reason: "events must be an array" };
+  if (!Array.isArray(bundle.signatures) || bundle.signatures.length === 0) return { ok: false, reason: "signatures missing" };
+
+  const seed = await headerSeedHash(bundle.header);
+  let expectedPrev = seed;
+  const eventHashes = [];
+
+  for (let i = 0; i < bundle.events.length; i++) {
+    const ev = bundle.events[i];
+    if (ev.seq !== i) return { ok: false, reason: `sequence gap at index ${i}`, failedSeq: i };
+    if (ev.prev_hash !== expectedPrev) return { ok: false, reason: "prev_hash mismatch", failedSeq: i };
+    const own = await sha256Hex(canonicalBytes(signedShape(ev)));
+    eventHashes.push(own);
+    expectedPrev = own;
+  }
+
+  // Compute batch_root = sha256(concatenated event hashes).
+  const concat = new Uint8Array(eventHashes.length * 32);
+  eventHashes.forEach((h, i) => concat.set(hexToBytes(h), i * 32));
+  const batchRoot = await sha256Hex(concat);
+  if (batchRoot !== bundle.batch_root) return { ok: false, reason: "batch_root mismatch" };
+
+  const sig = bundle.signatures[0];
+  if (sig.algorithm !== "ed25519") return { ok: false, reason: `unsupported signature algorithm "${sig.algorithm}"` };
+  if (!publicKeyPem) return { ok: false, reason: "public key required — paste the PEM below and re-drop the bundle" };
+
+  let key;
+  try {
+    key = await crypto.subtle.importKey(
+      "spki",
+      pemToSpki(publicKeyPem),
+      { name: "Ed25519" },
+      false,
+      ["verify"],
+    );
+  } catch (err) {
+    return { ok: false, reason: `public key import failed: ${err.message}` };
+  }
+
+  const sigBytes = b64urlToBytes(sig.signature);
+  const batchRootBytes = hexToBytes(batchRoot);
+  const sigOk = await crypto.subtle.verify({ name: "Ed25519" }, key, sigBytes, batchRootBytes);
+  if (!sigOk) return { ok: false, reason: "signature verification failed" };
+
+  const trustLevel = Array.isArray(bundle.external_anchors) && bundle.external_anchors.length > 0
+    ? "TIME_ANCHORED (external anchor present — not verified by this offline tool)"
+    : "SELF_SIGNED (no external anchor)";
+
+  return {
+    ok: true,
+    trustLevel,
+    eventCount: bundle.events.length,
+    sessionId: bundle.header.session_id,
+    agent: `${bundle.header.agent.name}@${bundle.header.agent.version}`,
+    batchRoot,
+    keyId: sig.key_id,
+  };
+}
+
+// ── UI wiring ──
+const drop = document.getElementById("drop");
+const fileInput = document.getElementById("file");
+const pubkeyInput = document.getElementById("pubkey");
+const resultEl = document.getElementById("result");
+
+async function handleFile(file) {
+  const text = await file.text();
+  let bundle;
+  try {
+    bundle = JSON.parse(text);
+  } catch (err) {
+    renderResult({ ok: false, reason: `not valid JSON: ${err.message}` });
+    return;
+  }
+  const result = await verifyBundle(bundle, pubkeyInput.value.trim());
+  renderResult(result, bundle);
+}
+
+function renderResult(result, bundle) {
+  const cls = result.ok ? "ok" : "bad";
+  const verdictText = result.ok ? "✓ Bundle verified" : "✗ Verification failed";
+
+  let meta = "";
+  if (result.ok) {
+    meta = `
+      <dl class="meta">
+        <dt>Trust level</dt><dd>${escapeHtml(result.trustLevel)}</dd>
+        <dt>Session ID</dt><dd>${escapeHtml(result.sessionId ?? "-")}</dd>
+        <dt>Agent</dt><dd>${escapeHtml(result.agent ?? "-")}</dd>
+        <dt>Event count</dt><dd>${result.eventCount}</dd>
+        <dt>Key ID</dt><dd>${escapeHtml(result.keyId ?? "-")}</dd>
+        <dt>batch_root</dt><dd>${escapeHtml(result.batchRoot ?? "-")}</dd>
+      </dl>
+    `;
+  } else if (bundle) {
+    const failed = result.failedSeq !== undefined ? ` (failed at event ${result.failedSeq})` : "";
+    meta = `
+      <dl class="meta">
+        <dt>Bundle version</dt><dd>${bundle.bundle_version ?? "?"}</dd>
+        <dt>Session ID</dt><dd>${escapeHtml(bundle.header?.session_id ?? "-")}</dd>
+        <dt>Event count</dt><dd>${Array.isArray(bundle.events) ? bundle.events.length : "?"}${failed}</dd>
+      </dl>
+    `;
+  }
+
+  resultEl.innerHTML = `
+    <div class="result ${cls}">
+      <p class="verdict ${cls}">${verdictText}</p>
+      <p class="reason">${escapeHtml(result.reason ?? (result.ok ? "Chain intact, batch_root matches, Ed25519 signature verified against the supplied public key." : ""))}</p>
+      ${meta}
+    </div>
+  `;
+}
+
+function escapeHtml(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  }[c]));
+}
+
+// Drag-drop
+["dragenter", "dragover"].forEach(ev => {
+  drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("active"); });
+});
+["dragleave", "drop"].forEach(ev => {
+  drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("active"); });
+});
+drop.addEventListener("drop", async e => {
+  const file = e.dataTransfer?.files?.[0];
+  if (file) handleFile(file);
+});
+fileInput.addEventListener("change", e => {
+  const file = e.target.files?.[0];
+  if (file) handleFile(file);
+});
+
+// Also react on public-key text change if a bundle was already dropped.
+let lastBundleFile = null;
+const origHandle = handleFile;
+async function handleFileMemo(file) {
+  lastBundleFile = file;
+  await origHandle(file);
+}
+Object.assign(window, { verifyBundle }); // expose for manual poking in devtools
+
+pubkeyInput.addEventListener("input", () => {
+  if (lastBundleFile) origHandle(lastBundleFile);
+});
+</script>
+</body>
+</html>
