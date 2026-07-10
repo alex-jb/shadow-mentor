@@ -12,12 +12,36 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
 
+## v2.0.0-rc2 — 2026-07-10
+
+### Added
+- `scripts/check-forbidden-phrases.mjs` — line-based lint that fails CI on invented regulatory shorthand and overclaimed language. Covers ten patterns including invented tier taxonomies, a fabricated CFPB bulletin number, evidentiary overclaims, and unverified compliance certifications. Run `node scripts/check-forbidden-phrases.mjs --list-only` for the full list.
+- `docs/roadmap/SHADOW_V3_BRIEF.md` — external strategic brief driving the planned v3 pivot to a general agent evidence layer. Not yet acted on.
+- `docs/roadmap/SHADOW_XR_DEMO_BRIEF.md` — XREAL One Pro demo track specification for the July capstone and the IEEE VR paper.
+- README roadmap section pointing at both briefs.
+
+### Changed
+- `bin/gsar-provenance-report.mjs` field `sr_26_2_tier_3_positioning` renamed to `sr_26_2_positioning` and rewritten to cite the guidance's own footnote-3 language.
+- `lib/schemas/citation-registry.json` SR-26-2 subsection label rewritten to cite the guidance's own footnote-3 language on the generative and agentic AI carve-out.
+- CHANGELOG entries describing prior fabrications rewritten so they describe the removal abstractly, without repeating the fabricated tokens in prose (matches the forbidden-phrases lint).
+- Historical v1.5.8 release title corrected to use the tamper-evidence framing consistent with what the code actually provides (attestation reveals tampering; it does not prevent it).
+
+### Removed
+- `lib/personas/ds-pack/README.md` — DS-pack persona identity was one of the legacy identities the v2.0.0-rc1 README rewrite retired. README moved to `docs/archive/personas/ds-pack-README.md`; code paths unchanged.
+- Stale pandoc HTML renders (`docs/CITATION_MAP.html`, `docs/PRESENTATION-2026-07-16-DR-NGO.html`, `docs/columbia-walkthrough/README.html`, `docs/ieee-vis-2026/paper-full-v1.html`, `docs/ieee-vis-2026/paper-skeleton.html`, `docs/strategy/roadmap-2026-2028.html`). Regenerate from source MD as needed for presentations.
+
+### Notes
+- IEEE VS paper drafts under `docs/ieee-vis-2026/` still contain `Tier 1 / Tier 3` framing tied to the earlier positioning. Exempted from the forbidden-phrases lint pending the v3 pivot's paper rewrite. Flagged for next-session work.
+- Test surface unchanged (1302/1303 passing, 0 failing). No API contract changes.
+
+---
+
 ## v2.0.0-rc1 — 2026-07-10
 
 ### Changed
 - README rewritten to describe one product: the audit-evidence layer for AI-assisted credit decisions. Legacy README archived at `docs/archive/README-v1-legacy.md`.
 - Regulatory framing corrected. SR 26-2 references now cite the guidance's own language (footnote 3 carve-out for generative and agentic AI; deterministic rule-based processes excluded from the model definition on page 3) instead of a fabricated tier taxonomy. The 2026-07-21 Reg B final rule is described as narrowing federal disparate-impact exposure, not creating urgency. State fair-lending regimes, CFPB Circular 2026-03, FHA private-litigation exposure, and GDPR Art. 22 + Schufa are the operative anchors.
-- Adverse-action citation updated from "CFPB Bulletin 2024-09" (not a real document) to "CFPB Circular 2026-03" (2026-05-05, current). Historical predecessors Circular 2022-03 and Circular 2023-03 referenced as such.
+- Adverse-action citation replaced with `CFPB Circular 2026-03` (2026-05-05, current). Prior copy referenced a bulletin number that did not correspond to any actual CFPB document.
 
 ### Added
 - `docs/ARCHITECTURE.md` — resolves the prior README contradiction between "pure-compute verdicts" and "5-persona LLM council." Two layers: deterministic verdict engine, LLM-backed rationale layer. Attestation binds both.
@@ -26,7 +50,7 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ### Removed
 - Manufactured urgency framing tied to the 2026-07-21 Reg B effective date.
-- Invented regulatory shorthand ("Tier 3 companion control") from user-facing surfaces. The concept was never present in SR 26-2.
+- Invented regulatory shorthand describing a tier that does not appear in SR 26-2. Replaced with citations to the guidance's own footnote 3 (delegation of governance for generative and agentic AI to institutional risk-management practices).
 
 ### Notes for downstream consumers
 - No API contract changes. No attestation schema changes. Test count went from 1252 to 1302 passing; no failures.
@@ -855,7 +879,7 @@ ACAMS Assembly Hollywood 2026 signals AML/KYC is the fastest procurement lane at
 
 ---
 
-## v1.5.8 — `dictionary_hash` binding attestation → tamper-proof Reg B reason codes (2026-07-05 NY)
+## v1.5.8 — `dictionary_hash` binding attestation → tamper-evident Reg B reason codes (2026-07-05 NY)
 
 Closes Reg B's highest-stakes moat. The signed reason-code dictionary at `lib/schemas/reason-code-dictionary.json` is what bank counsel signs off on — bank counsel does NOT sign LLM output. Before v1.5.8, a downstream could swap the dictionary between signature time and audit time and no attestation would notice. That's a Reg B violation waiting to happen.
 

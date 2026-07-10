@@ -4,13 +4,13 @@ A cryptographic audit-evidence layer for AI-assisted credit decisions.
 
 Shadow signs each credit decision — verdict, adverse-action reason codes, model manifest, dictionary hash — with Ed25519, chains them together with SHA-256, and lets a third party verify months later that the decision was not silently rewritten. The verdict engine itself is deterministic rules; the LLM personas produce prose rationale for human reviewers but cannot change the verdict.
 
-**Status**: pre-1.0. Not audited. Not a certified compliance product.
+**Status**: pre-1.0. Not audited. Not a compliance product — it produces evidence that supports a compliance narrative.
 
 <!-- readme-stats:begin -->
-**Version**: 2.0.0-rc1
+**Version**: 2.0.0-rc2
 **Tests**: 1302/1303 passing (0 failing)
 **Attestation signed fields**: 21 parameters, 14 append-only conditional bindings
-**Release tags**: 52
+**Release tags**: 53
 <!-- readme-stats:end -->
 
 Numbers above are regenerated from source by `node scripts/readme-stats.mjs --write`. CI blocks pushes where they drift.
@@ -89,6 +89,11 @@ MIT. See [`LICENSE`](./LICENSE).
 
 Alex Xiaoyu Ji (author).
 Loredana C. Levitchi — regulatory-domain review and BRD authorship for the risk / credit-policy / adverse-action modules; source basis Mode A BRD + Addenda A/B/C + Risk Appetite Note, MIT-licensed merge per 2026-06-19 explicit grant.
+
+## Roadmap
+
+- `docs/roadmap/SHADOW_V3_BRIEF.md` — pivot from credit-decision audit to a general **agent evidence layer** ("flight recorder for AI agents"). v3.0 target 2026-08-02 (EU AI Act Annex III enforcement window). This roadmap supersedes the credit-only framing above; the current README describes what ships today.
+- `docs/roadmap/SHADOW_XR_DEMO_BRIEF.md` — XREAL One Pro / WebXR demo track for capstone + IEEE VR paper.
 
 ## Contact
 

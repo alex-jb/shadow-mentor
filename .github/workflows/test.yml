@@ -19,6 +19,8 @@ jobs:
       - run: node --test test/*.test.js
       - name: README stats drift check
         run: node scripts/readme-stats.mjs --check
+      - name: Forbidden-phrases lint
+        run: node scripts/check-forbidden-phrases.mjs
 
   python:
     name: python (${{ matrix.python-version }})

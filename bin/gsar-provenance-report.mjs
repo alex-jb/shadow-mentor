@@ -115,7 +115,7 @@ export function generateGsarReport({
     regulatory_citations_source:
       "lib/schemas/citation-registry.json — primary-source URLs (federalreserve.gov, cfpb.gov, ecfr.gov, sec.gov)",
     reason_codes_source:
-      "lib/schemas/reason-code-dictionary.json — CFPB Bulletin 2024-09 aligned + Loredana Levitchi BRD Addenda A/B/C",
+      "lib/schemas/reason-code-dictionary.json — CFPB Circular 2026-03 aligned + Loredana Levitchi BRD Addenda A/B/C",
     model_training_cutoffs: {
       anthropic_claude_sonnet: "January 2025 per Anthropic model card",
       anthropic_claude_haiku: "January 2025 per Anthropic model card",
@@ -127,7 +127,7 @@ export function generateGsarReport({
   // ── §4. Risk assessments ─────────────────────────────────────
   const riskAssessments = {
     nist_ai_600_1_mapping: "docs/NIST-AI-600-1-MAP.md",
-    sr_26_2_tier_3_positioning: "Companion control, not primary model risk mgmt",
+    sr_26_2_positioning: "SR 26-2 footnote 3 delegates governance of generative and agentic AI to institutional risk-management practices; SR 26-2 also excludes deterministic rule-based processes from the 'model' definition (page 3). Shadow's verdict engine falls in the excluded rule-based class; the LLM rationale layer falls in the carved-out generative-AI class.",
     reg_b_ecoa_701_adverse_action:
       "docs/CITATION_MAP.md AA01-AA06 → §1002.9(b)(2) triples",
     bsa_aml: "lib/aml-kyc-voice.js opt-in 6th persona voice",
