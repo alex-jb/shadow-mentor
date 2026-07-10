@@ -4,7 +4,23 @@
 
 > **5-到-6 voice 的 AI 合规议会,面向受监管的贷款业务。** 用 5 笔历史决策编码你银行的贷款政策。毫秒级得到一个 signed + attestation-bound 的 verdict。跑在你的 VPC。5 分钟通过 MCP 装进 Claude Desktop / Cursor / OpenCode。
 
-[![tests](https://img.shields.io/badge/tests-1227%2F1228%20passing-brightgreen)](./test) [![verdict invariance](https://img.shields.io/badge/verdict%20invariance-10%2F10%20structural%20perturbations-blue)](./test/verdict-invariance.test.js) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+[![tests](https://img.shields.io/badge/tests-1371%2F1372%20passing-brightgreen)](./test) [![verdict invariance](https://img.shields.io/badge/verdict%20invariance-10%2F10%20structural%20perturbations-blue)](./test/verdict-invariance.test.js) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
+
+## v2.0.0 + v3 evidence layer(2026-07-10)
+
+**v2.0.0 已 tag + release** — attest-core kernel 物理移到 `packages/attest-core/`(零 LLM 依赖),`lib/attestation*.js` 变成 back-compat shim。1371 tests 全绿。
+
+**v3 evidence bundle**(agent flight recorder,目标 ship 2026-08-02 EU AI Act Article 12 生效窗口)进度:
+
+- ✅ **M1.1** evidence bundle 规格 + JSON Schema(`spec/EVIDENCE_BUNDLE.md`, `spec/evidence-bundle.schema.json`)
+- ✅ **M1.2** 流式 session API(`createSession` / `appendEvent` / `sealSession` / `recoverSession` / `sealPartialBundle`)+ 崩溃恢复 + 10k-event 性能验收(69ms 实测 vs 5s 目标,72× 富余)
+- ✅ **M2.3** 通用 HTTP ingest(`POST /api/evidence/events`)
+- ✅ **M4** 离线验证器三件套:
+  - `verify.html` — WebCrypto 单文件浏览器验证,零网络零构建,USB 优盘可用
+  - `bin/shadow-verify.mjs` CLI + `npm run verify:bundle`
+  - `.github/actions/shadow-verify/` — 可复用 composite GitHub Action
+
+规格 + 完整 API + 使用示例见 [English README](./README.md#v3-evidence-bundle--flight-recorder-for-ai-agents)。
 
 ## v1.5.41 更新(2026-07-08)
 

@@ -10,9 +10,9 @@ Shadow signs each credit decision — verdict, adverse-action reason codes, mode
 
 <!-- readme-stats:begin -->
 **Version**: 2.0.0
-**Tests**: 1313/1314 passing (0 failing)
+**Tests**: 1371/1372 passing (0 failing)
 **Attestation signed fields**: 21 parameters, 14 append-only conditional bindings
-**Release tags**: 55
+**Release tags**: 56
 <!-- readme-stats:end -->
 
 Numbers above are regenerated from source by `node scripts/readme-stats.mjs --write`. CI blocks pushes where they drift.
@@ -28,6 +28,47 @@ npm run demo:attestation
 ```
 
 The demo generates an Ed25519 keypair, signs 3 loan decisions, verifies them, then mutates one byte and shows the verifier detect the tamper. No external LLM calls, no API keys required.
+
+## v3 evidence bundle — flight recorder for AI agents
+
+Shadow v3 (in progress, target ship 2026-08-02) generalizes the per-decision attestation into a **session-level evidence bundle**: one signed, hash-chained record of what an AI agent did, independently verifiable offline. The credit-decision vertical becomes the first reference implementation; the same primitive covers Claude Code sessions, MCP tool calls, or any OpenTelemetry-instrumented agent.
+
+Spec: [`spec/EVIDENCE_BUNDLE.md`](./spec/EVIDENCE_BUNDLE.md) · schema: [`spec/evidence-bundle.schema.json`](./spec/evidence-bundle.schema.json).
+
+**Shipping today (M1 + M2.3 + M4):**
+
+```js
+import { createSession, appendEvent, sealSession, verifyBundle } from "@shadow/attest-core";
+
+const session = createSession({
+  agent: { name: "claude-code", version: "1.2.3" },
+  models: [{ model_id: "anthropic:claude-sonnet-4-6", provider: "anthropic" }],
+  environmentFingerprint: { os: "darwin-25.3.0", node_version: process.version },
+  keyId: "prod-2026-Q3",
+  privateKey,
+});
+
+appendEvent(session, { event_type: "user_message", actor: "user", payload: { text: "..." } });
+appendEvent(session, { event_type: "tool_call",    actor: "agent", payload: { tool: "grep" } });
+appendEvent(session, { event_type: "tool_result",  actor: "tool",  payload: { hits: 0 } });
+
+const bundle = sealSession(session);
+// bundle is signed, chained, verifiable offline
+```
+
+Verify a bundle three different ways:
+
+- **Browser** — drag any `bundle.json` into [`verify.html`](./verify.html). Zero network, zero build step, works from a USB stick. Includes a matching key-in / green-red UI for auditor workflows.
+- **CLI** — `npm run verify:bundle -- <bundle.json> --public-key <public.pem>` (aka `node bin/shadow-verify.mjs`). CI-friendly exit codes: `0` verified, `1` failed, `2` usage, `3` I/O.
+- **GitHub Action** — [`.github/actions/shadow-verify`](./.github/actions/shadow-verify) composite action. Wire it into a PR workflow and any bundle change that breaks the chain fails the merge.
+
+**v3 M1.2 acceptance criteria (all met):**
+
+- 10,000-event session seals + verifies in **69 ms** on an M-series MacBook (5 s target, 72× under)
+- Kill -9 mid-session leaves a JSONL log that `recoverSession` + `sealPartialBundle` turn into a valid partial bundle
+- Any byte-tamper / event reorder / event deletion fails verification with a precise `{failedSeq, reason}`
+
+Payloads are content-addressed and stored separately from event records, so a GDPR erasure request nulls the `payload_ref` without invalidating the chain (`payload_hash` stays; the store empties).
 
 ## Architecture
 
@@ -53,14 +94,19 @@ Shadow does not claim SR 26-2 applicability. The Fed/OCC/FDIC 2026-04-17 interag
 
 ## API surface
 
+Credit-decision vertical (v1.5.x → v2.0.0, shipped):
+
 - `POST /api/loan-council` — verdict-engine only. Pure compute. No LLM call. Deterministic.
 - `POST /api/deliberate` — verdict + rationale. Calls the LLM for the persona prose. Returns the same verdict as `/api/loan-council` for the same input.
-- `POST /api/attest` — sign an arbitrary decision payload. See [T6 spec](./docs/roadmap/T6-attest-core.md) — planned for v2.0.0.
 - `POST /api/verify-attestation` — verify a signed decision.
 - `POST /api/verify-chain` — walk a chain and report tamper detection.
 - `GET /api/health` — liveness.
 - `GET /api/attestation-info` — public key discovery.
 - `GET /api/mcp-manifest` — SBOM of the MCP tool surface.
+
+v3 evidence bundle (M2.3, shipped 2026-07-10):
+
+- `POST /api/evidence/events` — generic HTTP ingest for evidence bundles. Accepts a full session (header + ordered event list) in one JSON body, returns a signed + chain-verified bundle matching `spec/EVIDENCE_BUNDLE.md`. Stateless; server holds the Ed25519 signing key via `SHADOW_ATTESTATION_ED25519_PRIVATE_KEY`.
 
 ## MCP integration
 
@@ -94,7 +140,25 @@ Loredana C. Levitchi — regulatory-domain review and BRD authorship for the ris
 
 ## Roadmap
 
-- `docs/roadmap/SHADOW_V3_BRIEF.md` — pivot from credit-decision audit to a general **agent evidence layer** ("flight recorder for AI agents"). v3.0 target 2026-08-02 (EU AI Act Annex III enforcement window). This roadmap supersedes the credit-only framing above; the current README describes what ships today.
+**v3 evidence layer — status vs [`docs/roadmap/SHADOW_V3_BRIEF.md`](./docs/roadmap/SHADOW_V3_BRIEF.md)** (target ship 2026-08-02, EU AI Act Article 12 enforcement window):
+
+| Milestone | Status | Where |
+|---|---|---|
+| M1.1 evidence bundle spec + JSON Schema | ✅ shipped | `spec/EVIDENCE_BUNDLE.md`, `spec/evidence-bundle.schema.json` |
+| M1.2 streaming API (`createSession` / `appendEvent` / `sealSession`) | ✅ shipped | `packages/attest-core/session.js` |
+| M1.2 crash-recovery + FileStore | ✅ shipped | `packages/attest-core/store-file.js`, `recoverSession` + `sealPartialBundle` |
+| M1.2 10k-event perf (< 5 s target) | ✅ 69 ms actual | `test/session-perf-10k.test.js` |
+| M2.1 Claude Code hooks adapter | 🚧 next | `packages/adapter-claude-code/` (planned) |
+| M2.2 OpenTelemetry GenAI adapter | 🚧 planned | `packages/adapter-otel/` (planned) |
+| M2.3 generic HTTP ingest | ✅ shipped | `api/evidence-events.js` |
+| M3 external anchoring (RFC 3161 + Rekor) | 🚧 planned | — |
+| M4 verify.html static offline verifier | ✅ shipped | [`verify.html`](./verify.html), [`.github/actions/shadow-verify`](./.github/actions/shadow-verify) |
+| M4 shadow-verify CLI + GitHub Action | ✅ shipped | `bin/shadow-verify.mjs`, `.github/actions/shadow-verify/` |
+| M5 forensic replay (2D + XR) | 🚧 planned | — |
+| M6 docs + launch narrative | 🚧 planned | — |
+
+**Other roadmap documents:**
+
 - `docs/roadmap/SHADOW_XR_DEMO_BRIEF.md` — XREAL One Pro / WebXR demo track for capstone + IEEE VR paper.
 
 ## Contact
