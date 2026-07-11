@@ -49,9 +49,20 @@ import {
   verifyBundle,
 } from "shadow-attest-core";
 
+// v3 M3 external anchoring — RFC 3161 TSA + Sigstore Rekor
+import {
+  TRUST_LEVELS,
+  trustLevelRank,
+  requestTimestamp,
+  verifyRfc3161Anchor,
+  verifyCmsSignature,
+  validateCmsCertChain,
+  submitRekorEntry,
+  verifyRekorAnchor,
+} from "shadow-attest-core";
+
 // Optional sub-entries
 import { computeBatchRootHash } from "shadow-attest-core/batch";
-import { computeAttestationHash } from "shadow-attest-core/chain";
 ```
 
 ## Quickstart: per-decision attestation
@@ -121,6 +132,82 @@ const result = verifyBundle(bundle, { publicKey });
 - 10,000-event synthetic session end-to-end (append + seal + verify) completes in **~69ms on an M-series MacBook** — 72× under the SHADOW_V3_BRIEF acceptance target of 5s. See [`../../test/session-perf-10k.test.js`](../../test/session-perf-10k.test.js).
 - Mid-chain tampering (mutated `payload_hash`, event reorder, or event deletion) is detected with the exact `failedSeq` reported.
 - GDPR erasure pattern (null `payload_ref`, keep `payload_hash`) preserves chain integrity — see redaction section of [`../../spec/EVIDENCE_BUNDLE.md`](../../spec/EVIDENCE_BUNDLE.md).
+
+## v3 M3 external anchoring — trust levels
+
+A signed bundle is only as strong as the assumption that the operator's signing
+key wasn't used to silently rewrite history. External anchoring closes that
+gap by binding the bundle to a third party.
+
+Five trust levels, ranked lowest to highest:
+
+| Level | What it means | Adversary defeated |
+|---|---|---|
+| `SELF_SIGNED` | Ed25519 signature verifies + hash chain intact | External tamperer (A1). Operator with the private key can still rewrite. |
+| `TIME_ANCHORED_STRUCTURAL` | RFC 3161 TSA anchor's messageImprint matches batch_root | A1. A2 (operator-insider) narrowed — response bytes match, but TSA signature not verified. |
+| `LOG_ANCHORED_STRUCTURAL` | Sigstore Rekor entry body's payload hash matches batch_root | A1. A2 narrowed — Rekor received the entry, inclusion + SET not verified. |
+| `TIME_ANCHORED` | Plus TSA's CMS SignedData signature verifies (optionally against a CA trust store) | A2 defeated for tampering after `genTime`. |
+| `LOG_ANCHORED` | Plus Rekor inclusion proof + SET signature verify | A2 defeated + publicly witnessed. Even a compromised operator can't silently rewrite. |
+
+**A3 (agent-itself, lying at emission time) is not defeated by any level.** See
+[`../../docs/THREAT_MODEL.md`](../../docs/THREAT_MODEL.md) for the full
+adversary catalog.
+
+### Anchor a batch to a free RFC 3161 TSA
+
+```js
+import { requestTimestamp, verifyBundle, TRUST_LEVELS } from "shadow-attest-core";
+
+// After sealSession returns a bundle...
+const anchor = await requestTimestamp({
+  batchRootHex: bundle.batch_root,
+  tsaUrl: "https://freetsa.org/tsr",  // or any RFC 3161-compliant TSA
+});
+bundle.external_anchors = [anchor];
+
+// Verify with anchor check
+const result = verifyBundle(bundle, {
+  publicKey,
+  checkAnchors: "full",             // "structural" | "full" | false
+  caTrustStorePem: [/* PEM CA root(s) */],  // optional; omit for structural chain
+});
+// result.trustLevel === TRUST_LEVELS.TIME_ANCHORED (or TIME_ANCHORED_STRUCTURAL on fallback)
+```
+
+### Anchor a batch to Sigstore Rekor (publicly witnessed)
+
+```js
+import { submitRekorEntry, verifyBundle, TRUST_LEVELS } from "shadow-attest-core";
+
+// Requires the current Rekor public key. Fetch once:
+//   curl https://rekor.sigstore.dev/api/v1/log/publicKey
+const rekorPubKey = /* the PEM string above */;
+
+const anchor = await submitRekorEntry({
+  batchRootHex: bundle.batch_root,
+  signatureBase64: bundle.signatures[0].signature,
+  publicKeyPem,  // the same Ed25519 pubkey your bundle was signed with
+});
+bundle.external_anchors.push(anchor);
+
+const result = verifyBundle(bundle, {
+  publicKey,
+  checkAnchors: "full",
+  rekorPubKey,
+});
+// result.trustLevel === TRUST_LEVELS.LOG_ANCHORED
+```
+
+### CLI
+
+```bash
+npx shadow-verify bundle.json \
+  --public-key operator.pub.pem \
+  --check-anchors full \
+  --ca-trust /etc/ssl/certs/ca-certificates.crt
+```
+
+Exit codes: 0 verified · 1 verification failed · 2 usage error · 3 I/O error.
 
 ## Zero telemetry
 
