@@ -95,7 +95,7 @@ The v3 threat model asks: *given a bundle at rest, what adversary can make the v
 |---|:-:|:-:|:-:|
 | `SELF_SIGNED` | DEFEATED by hash chain + Ed25519 signature | not defeated | not defeated |
 | `TIME_ANCHORED_STRUCTURAL` (v3 M3 sprint 1, shipped 2026-07-10) | DEFEATED | *narrowed* — see §6.3 | not defeated |
-| `TIME_ANCHORED` (v3 M3 sprint 2, shipped 2026-07-11) | DEFEATED | DEFEATED for tampering after T (subject to CA trust) | not defeated |
+| `TIME_ANCHORED` (v3 M3 sprint 2, shipped 2026-07-11) | DEFEATED | DEFEATED for tampering after T. Without `caTrustStorePem` this is conditional on the embedded cert being genuine; sprint 4 removes that condition when a trust store is passed. | not defeated |
 | `LOG_ANCHORED_STRUCTURAL` (v3 M3 sprint 3, shipped 2026-07-11) | DEFEATED | *narrowed* — Rekor received an entry with matching payload hash, but inclusion proof + SET signature are not verified | not defeated |
 | `LOG_ANCHORED` (v3 M3 sprint 3, shipped 2026-07-11) | DEFEATED | DEFEATED for tampering after T + publicly witnessed (subject to Rekor key trust) | not defeated |
 

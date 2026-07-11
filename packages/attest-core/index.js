@@ -45,6 +45,7 @@ export {
   requestTimestamp,
   verifyRfc3161Anchor,
   verifyCmsSignature,
+  validateCmsCertChain,
   buildRekorHashedrekordEntry,
   submitRekorEntry,
   canonicalizeJson,

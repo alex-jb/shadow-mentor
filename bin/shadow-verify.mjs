@@ -19,17 +19,24 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { verifyBundle } from "../packages/attest-core/session.js";
 
-const USAGE = `Usage: shadow-verify <bundle.json> --public-key <public.pem> [--json] [--check-anchors <mode>]
+const USAGE = `Usage: shadow-verify <bundle.json> --public-key <public.pem> [--json] [--check-anchors <mode>] [--ca-trust <path>]
 
 Options:
   --public-key <path>      Path to the Ed25519 public key in PEM format (required).
   --json                   Emit a single-line JSON report instead of prose.
   --check-anchors <mode>   Verify bundle.external_anchors[]. Modes:
-                             "structural" — messageImprint match only (sprint 1);
+                             "structural" — messageImprint / body-hash match only;
                                             elevates trust to TIME_ANCHORED_STRUCTURAL
-                             "full"       — also CMS SignedData signature verify (sprint 2);
-                                            elevates to TIME_ANCHORED on success
+                                            or LOG_ANCHORED_STRUCTURAL
+                             "full"       — also CMS SignedData / Rekor inclusion+SET
+                                            verify; elevates to TIME_ANCHORED /
+                                            LOG_ANCHORED on success
                            Omitted or "off" leaves trust at SELF_SIGNED (default).
+  --ca-trust <path>        (Sprint 4) PEM file of trusted root CAs used to walk the
+                           TSA cert chain from the CMS token. Without this, TIME_ANCHORED
+                           implies "signature verifies against the embedded cert" but
+                           the cert's authority is unproven. With this, the chain is
+                           validated to a caller-supplied root.
   -h, --help               Print this message.
 
 Exit codes:
@@ -39,13 +46,14 @@ Exit codes:
   3  I/O or parse error`;
 
 function parseArgs(argv) {
-  const out = { bundle: null, publicKey: null, json: false, checkAnchors: false };
+  const out = { bundle: null, publicKey: null, json: false, checkAnchors: false, caTrust: null };
   const rest = argv.slice(2);
   for (let i = 0; i < rest.length; i++) {
     const a = rest[i];
     if (a === "-h" || a === "--help") return { ...out, help: true };
     if (a === "--json") out.json = true;
     else if (a === "--public-key") out.publicKey = rest[++i];
+    else if (a === "--ca-trust") out.caTrust = rest[++i];
     else if (a === "--check-anchors") {
       const mode = rest[++i];
       if (mode === "off" || mode === undefined) out.checkAnchors = false;
@@ -57,6 +65,17 @@ function parseArgs(argv) {
     else return { ...out, error: `unexpected extra argument ${a}` };
   }
   return out;
+}
+
+// Split a PEM bundle file into individual PEM blocks. --ca-trust may point
+// at a file with multiple concatenated CERTIFICATE blocks (system CA bundle
+// pattern). Empty input returns [].
+function splitPemBundle(text) {
+  const blocks = [];
+  const re = /-----BEGIN CERTIFICATE-----[\s\S]+?-----END CERTIFICATE-----/g;
+  let m;
+  while ((m = re.exec(text)) !== null) blocks.push(m[0]);
+  return blocks;
 }
 
 function die(code, message, jsonMode) {
@@ -93,7 +112,24 @@ try {
   die(3, `failed to read public key: ${err.message}`, args.json);
 }
 
-const result = verifyBundle(bundle, { publicKey: pubPem, checkAnchors: args.checkAnchors });
+let caTrustStorePem;
+if (args.caTrust) {
+  try {
+    const bundle = readFileSync(resolve(args.caTrust), "utf8");
+    caTrustStorePem = splitPemBundle(bundle);
+    if (caTrustStorePem.length === 0) {
+      die(3, `--ca-trust file contains no CERTIFICATE blocks`, args.json);
+    }
+  } catch (err) {
+    die(3, `failed to read --ca-trust file: ${err.message}`, args.json);
+  }
+}
+
+const result = verifyBundle(bundle, {
+  publicKey: pubPem,
+  checkAnchors: args.checkAnchors,
+  ...(caTrustStorePem ? { caTrustStorePem } : {}),
+});
 
 if (args.json) {
   const payload = {

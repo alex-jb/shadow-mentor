@@ -472,7 +472,7 @@ function cryptoRandomHex(byteLen) {
  * @returns {{ok: boolean, reason?: string, failedSeq?: number, trustLevel?: string, anchors?: object[]}}
  */
 export function verifyBundle(bundle, params) {
-  const { publicKey, checkAnchors = false, rekorPubKey } = params ?? {};
+  const { publicKey, checkAnchors = false, rekorPubKey, caTrustStorePem } = params ?? {};
   if (!publicKey) return { ok: false, reason: "publicKey required" };
   if (!bundle || typeof bundle !== "object") return { ok: false, reason: "bundle required" };
   if (bundle.bundle_version !== BUNDLE_VERSION) {
@@ -533,6 +533,7 @@ export function verifyBundle(bundle, params) {
           anchor,
           expectedBatchRootHex: batchRoot,
           verifyCms: wantFull,
+          caTrustStorePem,
         });
       } else if (anchor.kind === "rekor") {
         r = verifyRekorAnchor({

@@ -415,21 +415,21 @@ export function parseTimestampResponse(bytes) {
 
   // Extract CMS pieces needed for signature verification. Certificates,
   // CRLs, and signerInfos live after encapContentInfo in SignedData.
-  let certificateDer = null;
+  const certificatesDer = [];
   let signerInfoBytes = null;
   while (sdPos < signedData.next) {
     const tlv = derReadTLV(buf, sdPos);
     if (tlv.tag === 0xa0) {
       // [0] IMPLICIT certificates — SET/SEQUENCE OF CertificateChoices.
-      // For sprint-2 CMS verification we take the FIRST X.509 certificate
-      // (tag SEQUENCE) found here as the signer cert. Real chain
-      // validation would walk all of them + a trusted CA list.
+      // Sprint 4: extract ALL X.509 certificate SEQUENCEs so chain
+      // validation can walk leaf → intermediates → root. The first cert
+      // is treated as the signer's leaf (sprint 2 behavior preserved via
+      // certificatesDer[0]).
       let cpos = tlv.contentStart;
       while (cpos < tlv.next) {
         const cert = derReadTLV(buf, cpos);
         if (cert.tag === TAG_SEQUENCE) {
-          certificateDer = buf.slice(cpos, cert.next);
-          break;
+          certificatesDer.push(buf.slice(cpos, cert.next));
         }
         cpos = cert.next;
       }
@@ -478,7 +478,8 @@ export function parseTimestampResponse(bytes) {
       tokenBytes,
       // Sprint 2 pieces — may be null on synthetic TSRs used in tests.
       tstInfoBytes,
-      certificateDer,
+      certificateDer: certificatesDer[0] ?? null,
+      certificatesDer,
       signerInfoBytes,
     },
   };
@@ -562,21 +563,39 @@ function parseSignerInfo(buf) {
  * §6.3 for the honest posture around what a valid CMS signature does and
  * does not imply.
  *
+ * Sprint 4: caTrustStorePem[] enables real chain validation. When provided,
+ * this function walks leaf → embedded intermediates → a caller-supplied root
+ * CA and reports caChainValidated:true only if a full chain terminates at a
+ * trust-store root. Without a trust store, caChainValidated is null (the
+ * sprint 2 posture — signature verified against the embedded cert whose
+ * ownership is unproven).
+ *
  * @param {object} params
  * @param {Buffer} params.eContentBytes — the DER-encoded TSTInfo bytes
- * @param {Buffer} params.certificateDer — the signer's X.509 certificate DER
+ * @param {Buffer} [params.certificateDer] — legacy: the signer's X.509 leaf DER (sprint 2)
+ * @param {Buffer[]} [params.certificatesDer] — sprint 4: all embedded certs; [0] is the leaf
  * @param {Buffer} params.signerInfoBytes — the SignerInfo SEQUENCE bytes
- * @returns {{ok: boolean, reason?: string, signerSubject?: string}}
+ * @param {string[]} [params.caTrustStorePem] — sprint 4: PEM-encoded root CA certs
+ * @returns {{ok: boolean, reason?: string, signerSubject?: string, caChainValidated?: boolean|null, chainFailReason?: string, chainAnchorSubject?: string}}
  */
 export function verifyCmsSignature(params) {
-  const { eContentBytes, certificateDer, signerInfoBytes } = params ?? {};
+  const {
+    eContentBytes,
+    certificateDer,
+    certificatesDer,
+    signerInfoBytes,
+    caTrustStorePem,
+  } = params ?? {};
   if (!eContentBytes) return { ok: false, reason: "eContentBytes required" };
-  if (!certificateDer) return { ok: false, reason: "certificateDer required" };
+  const allCerts = Array.isArray(certificatesDer) && certificatesDer.length > 0
+    ? certificatesDer
+    : (certificateDer ? [certificateDer] : []);
+  if (allCerts.length === 0) return { ok: false, reason: "certificateDer or certificatesDer required" };
   if (!signerInfoBytes) return { ok: false, reason: "signerInfoBytes required" };
 
   let cert;
   try {
-    cert = new X509Certificate(certificateDer);
+    cert = new X509Certificate(allCerts[0]);
   } catch (err) {
     return { ok: false, reason: `certificate parse failed: ${err.message}` };
   }
@@ -632,7 +651,131 @@ export function verifyCmsSignature(params) {
   }
   if (!sigOk) return { ok: false, reason: "CMS signature verification failed" };
 
-  return { ok: true, signerSubject: cert.subject };
+  // Sprint 4: optional CA chain validation. If a trust store is not
+  // supplied, caChainValidated is reported as null so callers can tell
+  // "operator did not opt in" apart from "opted in and passed".
+  let caChainValidated = null;
+  let chainFailReason;
+  let chainAnchorSubject;
+  if (Array.isArray(caTrustStorePem) && caTrustStorePem.length > 0) {
+    const chainResult = validateCmsCertChain({
+      leafCert: cert,
+      intermediateDers: allCerts.slice(1),
+      trustStorePems: caTrustStorePem,
+    });
+    caChainValidated = chainResult.ok;
+    if (chainResult.ok) {
+      chainAnchorSubject = chainResult.anchorSubject;
+    } else {
+      chainFailReason = chainResult.reason;
+    }
+  }
+
+  return {
+    ok: true,
+    signerSubject: cert.subject,
+    caChainValidated,
+    ...(chainAnchorSubject ? { chainAnchorSubject } : {}),
+    ...(chainFailReason ? { chainFailReason } : {}),
+  };
+}
+
+/**
+ * Walk an X.509 certificate chain from a leaf, through embedded
+ * intermediates, terminating at a caller-supplied trust-store root.
+ *
+ * Node's X509Certificate.checkIssued() confirms name-chaining (issuer of
+ * the child equals subject of the parent); X509Certificate.verify(pub)
+ * confirms the child's signature was produced with the parent's key.
+ * Together those match the sub-check that RFC 5280 §6 formalizes.
+ *
+ * Sprint 4 scope: name-chain + signature-chain + validity-period check.
+ * Out of scope for this sprint: CRL/OCSP revocation, name constraints,
+ * policy processing, keyUsage/extKeyUsage enforcement. Callers who need
+ * revocation should pair this with an OCSP responder query at the sealing
+ * side.
+ *
+ * @param {object} params
+ * @param {X509Certificate} params.leafCert
+ * @param {Buffer[]} params.intermediateDers
+ * @param {string[]} params.trustStorePems
+ * @returns {{ok: true, anchorSubject: string, chainLength: number}|{ok: false, reason: string}}
+ */
+export function validateCmsCertChain(params) {
+  const { leafCert, intermediateDers = [], trustStorePems } = params ?? {};
+  if (!leafCert) return { ok: false, reason: "leafCert required" };
+  if (!Array.isArray(trustStorePems) || trustStorePems.length === 0) {
+    return { ok: false, reason: "trustStorePems must be a non-empty array" };
+  }
+
+  let intermediates;
+  try {
+    intermediates = intermediateDers.map((d) => new X509Certificate(d));
+  } catch (err) {
+    return { ok: false, reason: `intermediate parse failed: ${err.message}` };
+  }
+  let roots;
+  try {
+    roots = trustStorePems.map((pem) => new X509Certificate(pem));
+  } catch (err) {
+    return { ok: false, reason: `trust-store parse failed: ${err.message}` };
+  }
+
+  const now = Date.now();
+  const seenFingerprints = new Set();
+  let current = leafCert;
+  let chainLength = 1;
+
+  for (let step = 0; step < 16; step++) {
+    const fp = current.fingerprint256;
+    if (seenFingerprints.has(fp)) {
+      return { ok: false, reason: "certificate loop detected" };
+    }
+    seenFingerprints.add(fp);
+
+    // Validity window check on every cert in the chain.
+    const notBefore = Date.parse(current.validFrom);
+    const notAfter = Date.parse(current.validTo);
+    if (Number.isFinite(notBefore) && now < notBefore) {
+      return { ok: false, reason: `cert not yet valid: ${current.subject}` };
+    }
+    if (Number.isFinite(notAfter) && now > notAfter) {
+      return { ok: false, reason: `cert expired: ${current.subject}` };
+    }
+
+    // Termination: current cert issued by a root in the trust store.
+    for (const root of roots) {
+      // Self-signed root case: current fingerprint matches a trusted root.
+      if (root.fingerprint256 === current.fingerprint256) {
+        return { ok: true, anchorSubject: root.subject, chainLength };
+      }
+      if (current.checkIssued(root)) {
+        let signatureOk = false;
+        try { signatureOk = current.verify(root.publicKey); } catch { /* fall through */ }
+        if (signatureOk) {
+          return { ok: true, anchorSubject: root.subject, chainLength: chainLength + 1 };
+        }
+      }
+    }
+
+    // Walk to an embedded intermediate. Skip the current cert itself in
+    // case the leaf appears in the intermediates array too.
+    let parent = null;
+    for (const inter of intermediates) {
+      if (inter.fingerprint256 === current.fingerprint256) continue;
+      if (current.checkIssued(inter)) {
+        let signatureOk = false;
+        try { signatureOk = current.verify(inter.publicKey); } catch { /* fall through */ }
+        if (signatureOk) { parent = inter; break; }
+      }
+    }
+    if (!parent) {
+      return { ok: false, reason: `no trusted issuer for "${current.subject}"` };
+    }
+    current = parent;
+    chainLength++;
+  }
+  return { ok: false, reason: "chain exceeded 16 steps" };
 }
 
 // ── HTTP client (Node built-in fetch) ─────────────────────────
@@ -725,7 +868,7 @@ export async function requestTimestamp(params) {
  * @returns {{ok: true, genTimeIso: string, trustLevel: string, cmsSignerSubject?: string, cmsFailReason?: string} | {ok: false, reason: string}}
  */
 export function verifyRfc3161Anchor(params) {
-  const { anchor, expectedBatchRootHex, verifyCms = false } = params ?? {};
+  const { anchor, expectedBatchRootHex, verifyCms = false, caTrustStorePem } = params ?? {};
   if (!anchor) return { ok: false, reason: "anchor required" };
   if (anchor.kind !== "rfc3161-tsa") return { ok: false, reason: `wrong kind "${anchor.kind}"` };
   if (!expectedBatchRootHex) return { ok: false, reason: "expectedBatchRootHex required" };
@@ -774,8 +917,9 @@ export function verifyRfc3161Anchor(params) {
     }
     const cmsResult = verifyCmsSignature({
       eContentBytes: parsed.tstInfo.tstInfoBytes,
-      certificateDer: parsed.tstInfo.certificateDer,
+      certificatesDer: parsed.tstInfo.certificatesDer,
       signerInfoBytes: parsed.tstInfo.signerInfoBytes,
+      caTrustStorePem,
     });
     if (!cmsResult.ok) {
       return {
@@ -785,11 +929,25 @@ export function verifyRfc3161Anchor(params) {
         cmsFailReason: cmsResult.reason,
       };
     }
+    // Sprint 4: if a trust store was provided AND chain failed, honestly
+    // demote to STRUCTURAL with a chainFailReason. Sig verified against
+    // an untrusted cert is not stronger than "TSA-shaped bytes matched".
+    if (Array.isArray(caTrustStorePem) && caTrustStorePem.length > 0
+        && cmsResult.caChainValidated !== true) {
+      return {
+        ok: true,
+        genTimeIso: parsed.tstInfo.genTimeIso,
+        trustLevel: TRUST_LEVELS.TIME_ANCHORED_STRUCTURAL,
+        cmsFailReason: cmsResult.chainFailReason ?? "CA chain validation failed",
+      };
+    }
     return {
       ok: true,
       genTimeIso: parsed.tstInfo.genTimeIso,
       trustLevel: TRUST_LEVELS.TIME_ANCHORED,
       cmsSignerSubject: cmsResult.signerSubject,
+      caChainValidated: cmsResult.caChainValidated,
+      ...(cmsResult.chainAnchorSubject ? { chainAnchorSubject: cmsResult.chainAnchorSubject } : {}),
     };
   }
 
