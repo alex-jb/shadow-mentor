@@ -10,6 +10,25 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### npm publish of `shadow-attest-core@2.0.0` — 2026-07-11
+
+**Package is LIVE:** `npm install shadow-attest-core` returns v2.0.0 including
+all of M1 evidence bundle + M3 sprint 1-4 external anchoring + the CLI wrappers
+described below.
+
+Landmines caught during first-publish (`~/.claude/projects/-Users-alexji-Desktop-vibex/memory/reference_npm_publish_landmines_2026_07_11.md`):
+
+- npm Granular Access Tokens cannot create new package names (must first-publish
+  from operator laptop, without provenance signing). CI publish workflow
+  (`.github/workflows/publish-attest-core.yml`) will produce provenance-signed
+  tarballs starting at v2.0.1+.
+- WebAuthn-only npm 2FA breaks CI `--otp=` flag; operator must either add
+  Authenticator App as a second 2FA method or publish via `--auth-type=web`
+  from laptop.
+
+Tarball checksum published: `33b68fe17959a90dacafb34133e62808f6b9ce2b`
+Integrity: `sha512-zT7xoDZ3SaWFeFK04qCyzlGiWENXYjwwXHaqKpFcqaZQH66WSFv5bVjm5HixzRRbi7RLyDgchQauKiJtTHdvGQ==`
+
 ### v3 M3 sprint 4 — CA trust store for CMS chain validation — 2026-07-11 (`d8aa7df`)
 
 **Removes the honest asterisk on `TIME_ANCHORED`.** Sprint 2 shipped CMS signature

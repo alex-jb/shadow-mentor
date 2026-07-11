@@ -29,6 +29,16 @@ npm run demo:attestation
 
 The demo generates an Ed25519 keypair, signs 3 loan decisions, verifies them, then mutates one byte and shows the verifier detect the tamper. No external LLM calls, no API keys required.
 
+### Or install from npm
+
+The core primitives ship as [`shadow-attest-core`](https://www.npmjs.com/package/shadow-attest-core) on npm:
+
+```bash
+npm install shadow-attest-core
+```
+
+Includes all of M1 (evidence bundle) + M3 (external anchoring: RFC 3161 TSA + Sigstore Rekor + CA trust store) + M4 (offline verify) as of v2.0.0 (published 2026-07-11 from operator laptop; provenance-signed releases start at v2.0.1+ via the CI publish workflow).
+
 ## v3 evidence bundle — flight recorder for AI agents
 
 Shadow v3 (in progress, target ship 2026-08-02) generalizes the per-decision attestation into a **session-level evidence bundle**: one signed, hash-chained record of what an AI agent did, independently verifiable offline. The credit-decision vertical becomes the first reference implementation; the same primitive covers Claude Code sessions, MCP tool calls, or any OpenTelemetry-instrumented agent.
