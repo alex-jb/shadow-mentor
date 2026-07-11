@@ -107,12 +107,12 @@ best-of-mcp-servers                  project-based-learning
 |---|---|---|
 | alex-jb.github.io | 2,789 (7.6 years) | 0★, dead GH Pages, no traffic |
 
-### PARK — need Alex judgment (2)
+### KEEP — Alex confirmed 2026-07-11 (2)
 
-| repo | days idle | ★ | question |
+| repo | days idle | ★ | question resolved |
 |---|---|---|---|
-| vibex-video-extractor | 29 | 0 | still used by vibex proper? or superseded? |
-| vibex-video-decoder-skill | 29 | 0 | same — used or superseded? |
+| vibex-video-extractor | 29 | 0 | Alex confirmed "keep" — still part of vibex feature surface |
+| vibex-video-decoder-skill | 29 | 0 | Alex confirmed "keep" — Claude skill wrapper for extractor |
 
 ### PRIVATE — no action (8, already correctly private)
 
