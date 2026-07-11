@@ -32,7 +32,7 @@
 //   - RFC 5652 (Cryptographic Message Syntax)
 //   - RFC 5280 (X.509 certificate profile) — for sprint 2 signature check
 
-import { createHash, verify as cryptoVerify, X509Certificate } from "node:crypto";
+import { createHash, createPublicKey, verify as cryptoVerify, X509Certificate } from "node:crypto";
 
 // ── Trust-level enum ──────────────────────────────────────────
 
@@ -50,9 +50,32 @@ export const TRUST_LEVELS = Object.freeze({
   // sprint 2 ships; declared here so callers can pattern-match on the
   // full enum today.
   TIME_ANCHORED: "TIME_ANCHORED",
-  // Sprint 2 target: chain intact + Sigstore Rekor inclusion proof.
+  // Sprint 3 exits: chain intact + Rekor entry body's payloadHash matches
+  // the bundle's batch_root. Log-operator received the entry; inclusion
+  // proof + SET signature not yet verified.
+  LOG_ANCHORED_STRUCTURAL: "LOG_ANCHORED_STRUCTURAL",
+  // Sprint 3 target: chain intact + Rekor inclusion proof against the
+  // published tree head + SET signature verified with a caller-supplied
+  // Rekor public key. Publicly witnessed — a bundle at this level cannot
+  // be silently rewritten by a compromised operator alone.
   LOG_ANCHORED: "LOG_ANCHORED",
 });
+
+// Rekor trust rank: SELF < TIME_STRUCTURAL < LOG_STRUCTURAL < TIME_ANCHORED
+// < LOG_ANCHORED. LOG_STRUCTURAL ranks above TIME_STRUCTURAL because a
+// public log accepting an entry is a stronger claim than an unverified
+// TSA response blob (which could be an operator-signed replay).
+const TRUST_RANK = new Map([
+  [TRUST_LEVELS.SELF_SIGNED, 0],
+  [TRUST_LEVELS.TIME_ANCHORED_STRUCTURAL, 1],
+  [TRUST_LEVELS.LOG_ANCHORED_STRUCTURAL, 2],
+  [TRUST_LEVELS.TIME_ANCHORED, 3],
+  [TRUST_LEVELS.LOG_ANCHORED, 4],
+]);
+
+export function trustLevelRank(level) {
+  return TRUST_RANK.get(level) ?? 0;
+}
 
 // ── ASN.1 DER helpers ─────────────────────────────────────────
 
@@ -774,5 +797,367 @@ export function verifyRfc3161Anchor(params) {
     ok: true,
     genTimeIso: parsed.tstInfo.genTimeIso,
     trustLevel: TRUST_LEVELS.TIME_ANCHORED_STRUCTURAL,
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────
+// v3 M3 sprint 3 — Sigstore Rekor transparency-log adapter.
+// ─────────────────────────────────────────────────────────────────
+//
+// Rekor is a public append-only transparency log for signed artifacts
+// (sigstore.dev). Submitting a Shadow evidence bundle's batch_root + signature
+// to Rekor yields an entry that is publicly witnessed: even a compromised
+// Shadow operator cannot silently rewrite history without also compromising
+// the Rekor log itself (which is monitored by third parties).
+//
+// Structural verification (LOG_ANCHORED_STRUCTURAL): parse the Rekor entry
+// body and confirm its embedded payload hash matches the bundle's batch_root.
+// This proves "the operator submitted a matching hash to a log endpoint";
+// it does NOT prove inclusion in the actual tree or authenticity of the
+// response.
+//
+// Full verification (LOG_ANCHORED): also verify (a) the RFC 9162 inclusion
+// proof against the tree root hash returned in the response, and (b) the
+// Signed Entry Timestamp (SET) — a Rekor-signed statement binding
+// (body, logID, logIndex, integratedTime) — using a caller-supplied Rekor
+// public key. Fresh Rekor pubkey: `curl https://rekor.sigstore.dev/api/v1/log/publicKey`.
+//
+// Design constraints (same discipline as sprint 1/2):
+//   - Zero external dependencies. All Merkle math + JSON canonicalization
+//     implemented inline.
+//   - No hard-coded Rekor pubkey. Rotation is a real operational risk;
+//     caller must supply the current pubkey PEM. verifyRekorAnchor with
+//     mode:"full" throws a clear error if pubkey missing.
+//   - The client function submitRekorEntry does network I/O; callers must
+//     opt in. Tests use captured fixtures rather than live network calls
+//     (parallel to the freetsa test policy).
+//
+// References:
+//   - RFC 9162 Certificate Transparency 2.0 (tree hash format + inclusion proof)
+//   - Sigstore Rekor API v1 (github.com/sigstore/rekor/blob/main/openapi.yaml)
+
+/**
+ * Build the canonicalized hashedrekord v0.0.1 entry body for a bundle.
+ *
+ * @param {object} params
+ * @param {string} params.batchRootHex — bundle.batch_root (hex).
+ * @param {string} params.signatureBase64 — bundle signature (base64).
+ * @param {string} params.publicKeyPem — Ed25519 public key PEM used to sign.
+ * @returns {{body: string, hashedrekord: object}} — body is base64 of canonical JSON.
+ */
+export function buildRekorHashedrekordEntry({ batchRootHex, signatureBase64, publicKeyPem }) {
+  if (!batchRootHex || !signatureBase64 || !publicKeyPem) {
+    throw new Error("buildRekorHashedrekordEntry: batchRootHex + signatureBase64 + publicKeyPem all required");
+  }
+  const hashedrekord = {
+    apiVersion: "0.0.1",
+    kind: "hashedrekord",
+    spec: {
+      data: {
+        hash: { algorithm: "sha256", value: batchRootHex.toLowerCase() },
+      },
+      signature: {
+        content: signatureBase64,
+        publicKey: { content: Buffer.from(publicKeyPem, "utf8").toString("base64") },
+      },
+    },
+  };
+  const canonical = canonicalizeJson(hashedrekord);
+  return { body: Buffer.from(canonical, "utf8").toString("base64"), hashedrekord };
+}
+
+/**
+ * Submit a hashedrekord entry to a Rekor instance. Returns the anchor object
+ * ready to embed in bundle.external_anchors.
+ *
+ * NETWORK — opt-in. Callers, not tests, invoke this.
+ *
+ * @param {object} params
+ * @param {string} params.batchRootHex
+ * @param {string} params.signatureBase64
+ * @param {string} params.publicKeyPem — Ed25519 signer key (bundle signer).
+ * @param {string} [params.rekorUrl] — default "https://rekor.sigstore.dev"
+ * @param {number} [params.timeoutMs] — default 15000
+ * @returns {Promise<object>} — anchor object with kind:"rekor"
+ */
+export async function submitRekorEntry({
+  batchRootHex,
+  signatureBase64,
+  publicKeyPem,
+  rekorUrl = "https://rekor.sigstore.dev",
+  timeoutMs = 15000,
+}) {
+  const { hashedrekord } = buildRekorHashedrekordEntry({
+    batchRootHex,
+    signatureBase64,
+    publicKeyPem,
+  });
+  const abort = new AbortController();
+  const t = setTimeout(() => abort.abort(), timeoutMs);
+  let resp;
+  try {
+    resp = await fetch(`${rekorUrl.replace(/\/$/, "")}/api/v1/log/entries`, {
+      method: "POST",
+      headers: { "content-type": "application/json", accept: "application/json" },
+      body: JSON.stringify(hashedrekord),
+      signal: abort.signal,
+    });
+  } finally {
+    clearTimeout(t);
+  }
+  if (!resp.ok) {
+    const bodyText = await resp.text().catch(() => "");
+    throw new Error(`Rekor POST failed: HTTP ${resp.status} ${bodyText.slice(0, 200)}`);
+  }
+  const respJson = await resp.json();
+  const uuid = Object.keys(respJson)[0];
+  if (!uuid) throw new Error("Rekor response missing entry uuid");
+  const entry = respJson[uuid];
+  return {
+    kind: "rekor",
+    logUrl: rekorUrl,
+    uuid,
+    logIndex: entry.logIndex,
+    logID: entry.logID,
+    integratedTime: entry.integratedTime,
+    body: entry.body,
+    inclusionProof: entry.verification?.inclusionProof ?? null,
+    signedEntryTimestamp: entry.verification?.signedEntryTimestamp ?? null,
+  };
+}
+
+/**
+ * RFC 8785–ish canonical JSON stringify for the subset used here (objects
+ * with string keys, strings, integers, arrays, booleans, null; no floats,
+ * no Unicode surrogates). Keys sorted lexicographically at every level.
+ */
+export function canonicalizeJson(v) {
+  if (v === null) return "null";
+  if (typeof v === "boolean") return v ? "true" : "false";
+  if (typeof v === "number") {
+    if (!Number.isFinite(v)) throw new Error("canonicalizeJson: non-finite number");
+    if (!Number.isInteger(v)) throw new Error("canonicalizeJson: only integers supported");
+    return String(v);
+  }
+  if (typeof v === "string") return JSON.stringify(v);
+  if (Array.isArray(v)) return "[" + v.map(canonicalizeJson).join(",") + "]";
+  if (typeof v === "object") {
+    const keys = Object.keys(v).sort();
+    const parts = keys.map((k) => JSON.stringify(k) + ":" + canonicalizeJson(v[k]));
+    return "{" + parts.join(",") + "}";
+  }
+  throw new Error(`canonicalizeJson: unsupported type ${typeof v}`);
+}
+
+/**
+ * Extract the payload SHA-256 hash from a base64-encoded Rekor hashedrekord
+ * body. Returns null if the body is malformed or not a hashedrekord.
+ *
+ * @param {string} bodyBase64
+ * @returns {{algorithm: string, hex: string}|null}
+ */
+export function extractRekorPayloadHash(bodyBase64) {
+  try {
+    const raw = Buffer.from(bodyBase64, "base64").toString("utf8");
+    const parsed = JSON.parse(raw);
+    if (parsed?.kind !== "hashedrekord") return null;
+    const h = parsed?.spec?.data?.hash;
+    if (!h?.algorithm || !h?.value) return null;
+    return { algorithm: String(h.algorithm), hex: String(h.value).toLowerCase() };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * RFC 9162 §2.1.3 inner-node hash: SHA-256(0x01 || left || right).
+ */
+function hashChildren(left, right) {
+  return createHash("sha256").update(Buffer.from([0x01])).update(left).update(right).digest();
+}
+
+/**
+ * RFC 9162 §2.1.3 leaf hash: SHA-256(0x00 || raw_body_bytes).
+ * Rekor's leaf-hash input is the base64-decoded body bytes.
+ */
+export function rekorLeafHash(bodyBase64) {
+  const raw = Buffer.from(bodyBase64, "base64");
+  return createHash("sha256").update(Buffer.from([0x00])).update(raw).digest();
+}
+
+/**
+ * Verify an RFC 9162 inclusion proof.
+ *
+ * Ported from the widely-audited pattern used by sigstore-js and
+ * transparency-dev/merkle (Go). Returns true only when the reconstructed
+ * root matches expectedRootHex AND the proof was fully consumed with the
+ * subtree-size counter reaching zero.
+ *
+ * @param {object} params
+ * @param {number} params.leafIndex — 0-based
+ * @param {number} params.treeSize — must be > leafIndex
+ * @param {string[]} params.hashesHex — sibling hashes bottom-up (hex)
+ * @param {string} params.expectedRootHex — hex-encoded expected root
+ * @param {Buffer} params.leafHash — 32-byte SHA-256 leaf hash
+ * @returns {boolean}
+ */
+export function verifyInclusionProof({ leafIndex, treeSize, hashesHex, expectedRootHex, leafHash }) {
+  if (!Number.isInteger(leafIndex) || !Number.isInteger(treeSize)) return false;
+  if (leafIndex < 0 || treeSize <= 0 || leafIndex >= treeSize) return false;
+  if (leafHash.length !== 32) return false;
+  // Single-leaf tree: no siblings expected, leaf IS root.
+  if (treeSize === 1) {
+    return hashesHex.length === 0 && leafHash.equals(Buffer.from(expectedRootHex, "hex"));
+  }
+  let fn = leafIndex;
+  let sn = treeSize - 1;
+  let r = leafHash;
+  for (const hHex of hashesHex) {
+    const h = Buffer.from(hHex, "hex");
+    if (h.length !== 32) return false;
+    if (sn === 0) return false;
+    if ((fn & 1) === 1 || fn === sn) {
+      r = hashChildren(h, r);
+      while ((fn & 1) === 0 && fn !== 0) {
+        fn = Math.floor(fn / 2);
+        sn = Math.floor(sn / 2);
+      }
+    } else {
+      r = hashChildren(r, h);
+    }
+    fn = Math.floor(fn / 2);
+    sn = Math.floor(sn / 2);
+  }
+  return sn === 0 && r.equals(Buffer.from(expectedRootHex, "hex"));
+}
+
+/**
+ * Verify the Rekor Signed Entry Timestamp (SET). The SET is an ECDSA
+ * signature by Rekor over the canonical JSON of {body, integratedTime,
+ * logID, logIndex}.
+ *
+ * @param {object} params
+ * @param {object} params.anchor — must contain body/integratedTime/logID/logIndex/signedEntryTimestamp
+ * @param {string|Buffer|KeyObject} params.rekorPubKey — PEM/KeyObject
+ * @returns {{ok: boolean, reason?: string}}
+ */
+export function verifyRekorSet({ anchor, rekorPubKey }) {
+  if (!anchor?.signedEntryTimestamp) {
+    return { ok: false, reason: "anchor missing signedEntryTimestamp" };
+  }
+  const canonical = canonicalizeJson({
+    body: anchor.body,
+    integratedTime: anchor.integratedTime,
+    logID: anchor.logID,
+    logIndex: anchor.logIndex,
+  });
+  const sig = Buffer.from(anchor.signedEntryTimestamp, "base64");
+  let keyObj;
+  try {
+    keyObj = rekorPubKey && typeof rekorPubKey === "object" && rekorPubKey.type
+      ? rekorPubKey
+      : createPublicKey(rekorPubKey);
+  } catch (err) {
+    return { ok: false, reason: `Rekor pubkey parse failed: ${err.message}` };
+  }
+  const ok = cryptoVerify("sha256", Buffer.from(canonical, "utf8"), keyObj, sig);
+  return ok ? { ok: true } : { ok: false, reason: "SET signature verification failed" };
+}
+
+/**
+ * Verify a Rekor anchor object. Two modes:
+ *   - Structural (default): confirm entry body payload-hash matches
+ *     expectedBatchRootHex. Elevates to LOG_ANCHORED_STRUCTURAL.
+ *   - Full: also verify inclusion proof + SET signature with rekorPubKey.
+ *     Elevates to LOG_ANCHORED on success. On partial failure, falls back
+ *     to LOG_ANCHORED_STRUCTURAL with a diagnostic.
+ *
+ * @param {object} params
+ * @param {object} params.anchor
+ * @param {string} params.expectedBatchRootHex
+ * @param {boolean} [params.verifyFull]
+ * @param {string|Buffer|KeyObject} [params.rekorPubKey] — required if verifyFull
+ * @returns {{ok: boolean, reason?: string, trustLevel?: string, ...}}
+ */
+export function verifyRekorAnchor({ anchor, expectedBatchRootHex, verifyFull = false, rekorPubKey } = {}) {
+  if (!anchor || anchor.kind !== "rekor") {
+    return { ok: false, reason: "anchor.kind must be 'rekor'" };
+  }
+  if (!anchor.body) return { ok: false, reason: "anchor missing body" };
+  const payload = extractRekorPayloadHash(anchor.body);
+  if (!payload) return { ok: false, reason: "rekor body is not a parseable hashedrekord" };
+  if (payload.algorithm !== "sha256") {
+    return { ok: false, reason: `unsupported payload hash algorithm "${payload.algorithm}"` };
+  }
+  if (payload.hex !== expectedBatchRootHex.toLowerCase()) {
+    return { ok: false, reason: "rekor payload hash does not match batch_root" };
+  }
+
+  if (!verifyFull) {
+    return {
+      ok: true,
+      trustLevel: TRUST_LEVELS.LOG_ANCHORED_STRUCTURAL,
+      logIndex: anchor.logIndex,
+      integratedTime: anchor.integratedTime,
+    };
+  }
+
+  if (!rekorPubKey) {
+    return {
+      ok: true,
+      trustLevel: TRUST_LEVELS.LOG_ANCHORED_STRUCTURAL,
+      logIndex: anchor.logIndex,
+      integratedTime: anchor.integratedTime,
+      fullFailReason: "rekorPubKey option required for full verification",
+    };
+  }
+
+  // Inclusion proof
+  const ip = anchor.inclusionProof;
+  if (!ip?.rootHash || !Array.isArray(ip?.hashes) ||
+      !Number.isInteger(ip?.logIndex) || !Number.isInteger(ip?.treeSize)) {
+    return {
+      ok: true,
+      trustLevel: TRUST_LEVELS.LOG_ANCHORED_STRUCTURAL,
+      logIndex: anchor.logIndex,
+      integratedTime: anchor.integratedTime,
+      fullFailReason: "anchor missing or malformed inclusionProof",
+    };
+  }
+  const leaf = rekorLeafHash(anchor.body);
+  const inclOk = verifyInclusionProof({
+    leafIndex: ip.logIndex,
+    treeSize: ip.treeSize,
+    hashesHex: ip.hashes,
+    expectedRootHex: ip.rootHash,
+    leafHash: leaf,
+  });
+  if (!inclOk) {
+    return {
+      ok: true,
+      trustLevel: TRUST_LEVELS.LOG_ANCHORED_STRUCTURAL,
+      logIndex: anchor.logIndex,
+      integratedTime: anchor.integratedTime,
+      fullFailReason: "inclusion proof failed to reproduce rootHash",
+    };
+  }
+
+  // SET
+  const setResult = verifyRekorSet({ anchor, rekorPubKey });
+  if (!setResult.ok) {
+    return {
+      ok: true,
+      trustLevel: TRUST_LEVELS.LOG_ANCHORED_STRUCTURAL,
+      logIndex: anchor.logIndex,
+      integratedTime: anchor.integratedTime,
+      fullFailReason: setResult.reason,
+    };
+  }
+
+  return {
+    ok: true,
+    trustLevel: TRUST_LEVELS.LOG_ANCHORED,
+    logIndex: anchor.logIndex,
+    integratedTime: anchor.integratedTime,
   };
 }

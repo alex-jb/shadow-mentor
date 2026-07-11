@@ -124,8 +124,10 @@ if (result.ok) {
     ? "RFC 3161 anchor's messageImprint matches; TSA signature NOT verified (pass --check-anchors full to attempt)"
     : trust === "TIME_ANCHORED"
     ? "RFC 3161 anchor's TSA signature verifies; A2 operator-insider defeated for events after genTime"
+    : trust === "LOG_ANCHORED_STRUCTURAL"
+    ? "Sigstore Rekor entry body matches batch_root; inclusion proof + SET NOT verified (pass --check-anchors full to attempt)"
     : trust === "LOG_ANCHORED"
-    ? "Sigstore Rekor inclusion proof verifies; publicly witnessed"
+    ? "Sigstore Rekor inclusion proof + SET signature verify; publicly witnessed"
     : "";
   const anchorsLine = Array.isArray(result.anchors) && result.anchors.length > 0
     ? `  anchors    : ${result.anchors.length} (${result.anchors.map(a => `${a.kind}=${a.ok ? "ok" : "no"}`).join(", ")})\n`

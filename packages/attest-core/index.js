@@ -36,12 +36,21 @@ export {
 } from "./session.js";
 export { createFileStore, listSessionFiles } from "./store-file.js";
 
-// v3 M3 sprint 1 + 2: external anchoring.
+// v3 M3 sprint 1 + 2 + 3: external anchoring (RFC 3161 TSA + Sigstore Rekor).
 export {
   TRUST_LEVELS,
+  trustLevelRank,
   buildTimestampRequest,
   parseTimestampResponse,
   requestTimestamp,
   verifyRfc3161Anchor,
   verifyCmsSignature,
+  buildRekorHashedrekordEntry,
+  submitRekorEntry,
+  canonicalizeJson,
+  extractRekorPayloadHash,
+  rekorLeafHash,
+  verifyInclusionProof,
+  verifyRekorSet,
+  verifyRekorAnchor,
 } from "./anchors.js";

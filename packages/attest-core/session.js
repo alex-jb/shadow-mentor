@@ -32,7 +32,7 @@ import {
   verify as cryptoVerify,
 } from "node:crypto";
 import { canonicalize } from "./attestation.js";
-import { TRUST_LEVELS, verifyRfc3161Anchor } from "./anchors.js";
+import { TRUST_LEVELS, trustLevelRank, verifyRfc3161Anchor, verifyRekorAnchor } from "./anchors.js";
 
 // Frozen event enum. If this list changes, bump bundle_version.
 export const EVENT_TYPES = Object.freeze([
@@ -462,12 +462,17 @@ function cryptoRandomHex(byteLen) {
  * @param {string|object} params.publicKey — Ed25519 public key (PEM or KeyObject)
  * @param {boolean|"structural"|"full"} [params.checkAnchors] — anchor verification mode:
  *   - false (default): don't verify anchors; trustLevel stays SELF_SIGNED
- *   - true or "structural": messageImprint match only; trustLevel elevates to TIME_ANCHORED_STRUCTURAL
- *   - "full": also verifies CMS SignedData signature over the token; trustLevel elevates to TIME_ANCHORED on success, TIME_ANCHORED_STRUCTURAL on CMS-fail with diagnostic reason
+ *   - true or "structural": messageImprint match only for TSA anchors, body-hash
+ *     match for Rekor anchors; elevates to TIME_ANCHORED_STRUCTURAL / LOG_ANCHORED_STRUCTURAL
+ *   - "full": also verifies CMS SignedData signature (TSA) and inclusion proof
+ *     + SET (Rekor); elevates to TIME_ANCHORED / LOG_ANCHORED on success, falls
+ *     back to structural on partial failure with a diagnostic reason
+ * @param {string|object} [params.rekorPubKey] — required for Rekor "full" mode.
+ *   Fetch current key: `curl https://rekor.sigstore.dev/api/v1/log/publicKey`
  * @returns {{ok: boolean, reason?: string, failedSeq?: number, trustLevel?: string, anchors?: object[]}}
  */
 export function verifyBundle(bundle, params) {
-  const { publicKey, checkAnchors = false } = params ?? {};
+  const { publicKey, checkAnchors = false, rekorPubKey } = params ?? {};
   if (!publicKey) return { ok: false, reason: "publicKey required" };
   if (!bundle || typeof bundle !== "object") return { ok: false, reason: "bundle required" };
   if (bundle.bundle_version !== BUNDLE_VERSION) {
@@ -522,20 +527,27 @@ export function verifyBundle(bundle, params) {
 
   if (anchorsEnabled && Array.isArray(bundle.external_anchors) && bundle.external_anchors.length > 0) {
     for (const anchor of bundle.external_anchors) {
+      let r;
       if (anchor.kind === "rfc3161-tsa") {
-        const r = verifyRfc3161Anchor({
+        r = verifyRfc3161Anchor({
           anchor,
           expectedBatchRootHex: batchRoot,
           verifyCms: wantFull,
         });
-        anchorResults.push({ kind: anchor.kind, ...r });
-        if (r.ok && r.trustLevel === TRUST_LEVELS.TIME_ANCHORED) {
-          trustLevel = TRUST_LEVELS.TIME_ANCHORED;
-        } else if (r.ok && trustLevel === TRUST_LEVELS.SELF_SIGNED) {
-          trustLevel = TRUST_LEVELS.TIME_ANCHORED_STRUCTURAL;
-        }
+      } else if (anchor.kind === "rekor") {
+        r = verifyRekorAnchor({
+          anchor,
+          expectedBatchRootHex: batchRoot,
+          verifyFull: wantFull,
+          rekorPubKey,
+        });
       } else {
         anchorResults.push({ kind: anchor.kind, ok: false, reason: "anchor kind not yet supported" });
+        continue;
+      }
+      anchorResults.push({ kind: anchor.kind, ...r });
+      if (r.ok && r.trustLevel && trustLevelRank(r.trustLevel) > trustLevelRank(trustLevel)) {
+        trustLevel = r.trustLevel;
       }
     }
   }
