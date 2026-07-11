@@ -460,7 +460,10 @@ function cryptoRandomHex(byteLen) {
  * @param {object} bundle
  * @param {object} params
  * @param {string|object} params.publicKey — Ed25519 public key (PEM or KeyObject)
- * @param {boolean} [params.checkAnchors] — when true, verify any bundle.external_anchors[] entries and elevate the reported trustLevel accordingly. Default false so existing callers see unchanged behavior. Sprint 1 supports RFC 3161 structural verification only (messageImprint match + genTime extraction; TSA signature check lands in sprint 2).
+ * @param {boolean|"structural"|"full"} [params.checkAnchors] — anchor verification mode:
+ *   - false (default): don't verify anchors; trustLevel stays SELF_SIGNED
+ *   - true or "structural": messageImprint match only; trustLevel elevates to TIME_ANCHORED_STRUCTURAL
+ *   - "full": also verifies CMS SignedData signature over the token; trustLevel elevates to TIME_ANCHORED on success, TIME_ANCHORED_STRUCTURAL on CMS-fail with diagnostic reason
  * @returns {{ok: boolean, reason?: string, failedSeq?: number, trustLevel?: string, anchors?: object[]}}
  */
 export function verifyBundle(bundle, params) {
@@ -508,19 +511,31 @@ export function verifyBundle(bundle, params) {
   );
   if (!sigOk) return { ok: false, reason: "signature verification failed" };
 
-  // v3 M3 sprint 1: report trust level. Default SELF_SIGNED. If the caller
-  // opts into checkAnchors AND any RFC 3161 anchor structurally verifies
-  // against the batch_root, elevate to TIME_ANCHORED_STRUCTURAL.
+  // v3 M3 sprint 1 + 2: report trust level. Default SELF_SIGNED. If the
+  // caller opts into checkAnchors, walk external_anchors and elevate.
+  //   - "structural" / true: messageImprint match only → TIME_ANCHORED_STRUCTURAL
+  //   - "full": also CMS SignedData signature verify → TIME_ANCHORED on success
   let trustLevel = TRUST_LEVELS.SELF_SIGNED;
   const anchorResults = [];
-  if (checkAnchors && Array.isArray(bundle.external_anchors) && bundle.external_anchors.length > 0) {
+  const wantFull = checkAnchors === "full";
+  const anchorsEnabled = checkAnchors === true || checkAnchors === "structural" || wantFull;
+
+  if (anchorsEnabled && Array.isArray(bundle.external_anchors) && bundle.external_anchors.length > 0) {
     for (const anchor of bundle.external_anchors) {
       if (anchor.kind === "rfc3161-tsa") {
-        const r = verifyRfc3161Anchor({ anchor, expectedBatchRootHex: batchRoot });
+        const r = verifyRfc3161Anchor({
+          anchor,
+          expectedBatchRootHex: batchRoot,
+          verifyCms: wantFull,
+        });
         anchorResults.push({ kind: anchor.kind, ...r });
-        if (r.ok) trustLevel = TRUST_LEVELS.TIME_ANCHORED_STRUCTURAL;
+        if (r.ok && r.trustLevel === TRUST_LEVELS.TIME_ANCHORED) {
+          trustLevel = TRUST_LEVELS.TIME_ANCHORED;
+        } else if (r.ok && trustLevel === TRUST_LEVELS.SELF_SIGNED) {
+          trustLevel = TRUST_LEVELS.TIME_ANCHORED_STRUCTURAL;
+        }
       } else {
-        anchorResults.push({ kind: anchor.kind, ok: false, reason: "anchor kind not yet supported by sprint 1 verifier" });
+        anchorResults.push({ kind: anchor.kind, ok: false, reason: "anchor kind not yet supported" });
       }
     }
   }

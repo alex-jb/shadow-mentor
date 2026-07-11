@@ -95,8 +95,8 @@ The v3 threat model asks: *given a bundle at rest, what adversary can make the v
 |---|:-:|:-:|:-:|
 | `SELF_SIGNED` | DEFEATED by hash chain + Ed25519 signature | not defeated | not defeated |
 | `TIME_ANCHORED_STRUCTURAL` (v3 M3 sprint 1, shipped 2026-07-10) | DEFEATED | *narrowed* — see §6.3 | not defeated |
-| `TIME_ANCHORED` (v3 M3 sprint 2, planned) | DEFEATED | DEFEATED for tampering after T | not defeated |
-| `LOG_ANCHORED` (v3 M3 sprint 2, planned) | DEFEATED | DEFEATED for tampering after T + public witness | not defeated |
+| `TIME_ANCHORED` (v3 M3 sprint 2, shipped 2026-07-11) | DEFEATED | DEFEATED for tampering after T (subject to CA trust) | not defeated |
+| `LOG_ANCHORED` (v3 M3 sprint 3, planned) | DEFEATED | DEFEATED for tampering after T + public witness | not defeated |
 
 **A3 is not defeated by any trust level shipped or planned.** Shadow does not implement runtime integrity attestation of the agent process itself. Defeating A3 requires TEEs, remote-attestation, or independent watchdogs — outside Shadow's scope. Shadow records what the agent says it did; if the agent lies, the record faithfully preserves the lie.
 

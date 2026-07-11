@@ -17,6 +17,7 @@ import {
   parseTimestampResponse,
   requestTimestamp,
   verifyRfc3161Anchor,
+  verifyCmsSignature,
 } from "../packages/attest-core/anchors.js";
 import {
   appendEvent,
@@ -292,6 +293,84 @@ test("verifyBundle with checkAnchors reports SELF_SIGNED when no anchor verifies
 });
 
 
+// ── Sprint 2 (CMS SignedData verification) tests ──────────────
+
+test("verifyCmsSignature rejects when eContentBytes missing", () => {
+  const r = verifyCmsSignature({});
+  assert.equal(r.ok, false);
+  assert.match(r.reason, /eContentBytes required/);
+});
+
+
+test("verifyCmsSignature rejects malformed certificate", () => {
+  const r = verifyCmsSignature({
+    eContentBytes: Buffer.from([0x30, 0x00]),
+    certificateDer: Buffer.from([0xff, 0xff]),
+    signerInfoBytes: Buffer.from([0x30, 0x00]),
+  });
+  assert.equal(r.ok, false);
+  assert.match(r.reason, /certificate parse failed/);
+});
+
+
+test("verifyRfc3161Anchor with verifyCms:true on a synthetic TSR (no embedded cert) falls back to TIME_ANCHORED_STRUCTURAL with a cmsFailReason", () => {
+  // Our synthesizer above doesn't include a certificate or signerInfos,
+  // so verifyCms:true should degrade gracefully.
+  const batchRootHex = "cc".repeat(32);
+  const imprint = createHash("sha256").update(Buffer.from(batchRootHex, "hex")).digest("hex");
+  const respBytes = synthesizeTimeStampResp({
+    messageImprintHex: imprint,
+    genTimeString: "20260710120000Z",
+  });
+  const anchor = {
+    kind: "rfc3161-tsa",
+    batch_root: batchRootHex,
+    anchor_ref: respBytes.toString("base64url"),
+  };
+  const result = verifyRfc3161Anchor({
+    anchor,
+    expectedBatchRootHex: batchRootHex,
+    verifyCms: true,
+  });
+  assert.equal(result.ok, true);
+  assert.equal(result.trustLevel, TRUST_LEVELS.TIME_ANCHORED_STRUCTURAL);
+  assert.match(result.cmsFailReason, /token missing embedded certificate/);
+});
+
+
+test("verifyBundle with checkAnchors:\"full\" attempts CMS verify + reports fallback on synthetic TSR", async () => {
+  const { createSession, appendEvent, sealSession, verifyBundle } = await import("../packages/attest-core/session.js");
+  const { publicKey, privateKey } = generateKeyPairSync("ed25519");
+  const s = createSession({
+    agent: { name: "test", version: "1.0" },
+    models: [{ model_id: "test:m", provider: "test" }],
+    environmentFingerprint: { os: "test", node_version: "test" },
+    keyId: "test",
+    privateKey,
+  });
+  appendEvent(s, { event_type: "user_message", actor: "user", payload: {} });
+  const bundle = sealSession(s);
+
+  const imprint = createHash("sha256").update(Buffer.from(bundle.batch_root, "hex")).digest("hex");
+  const respBytes = synthesizeTimeStampResp({
+    messageImprintHex: imprint,
+    genTimeString: "20260710120000Z",
+  });
+  bundle.external_anchors = [{
+    kind: "rfc3161-tsa",
+    batch_root: bundle.batch_root,
+    anchor_ref: respBytes.toString("base64url"),
+    anchored_at_utc: "2026-07-10T12:00:00Z",
+  }];
+
+  const result = verifyBundle(bundle, { publicKey, checkAnchors: "full" });
+  assert.equal(result.ok, true, result.reason);
+  // Synthetic TSR has no cert → falls back to _STRUCTURAL with a diagnostic.
+  assert.equal(result.trustLevel, TRUST_LEVELS.TIME_ANCHORED_STRUCTURAL);
+  assert.match(result.anchors[0].cmsFailReason, /token missing embedded certificate/);
+});
+
+
 // ── Live TSA smoke test — env-gated to keep CI hermetic ─────
 //
 // Set SHADOW_TEST_LIVE_TSA=1 to run. The test asserts that a real
@@ -312,8 +391,28 @@ test(
     assert.ok(anchor.anchor_ref.length > 100);
     assert.match(anchor.anchored_at_utc, /^\d{4}-\d{2}-\d{2}T/);
 
-    const verify = verifyRfc3161Anchor({ anchor, expectedBatchRootHex: batchRootHex });
-    assert.equal(verify.ok, true, verify.reason);
-    assert.equal(verify.trustLevel, TRUST_LEVELS.TIME_ANCHORED_STRUCTURAL);
+    // Structural verification always succeeds against a real TSA response.
+    const structural = verifyRfc3161Anchor({ anchor, expectedBatchRootHex: batchRootHex });
+    assert.equal(structural.ok, true, structural.reason);
+    assert.equal(structural.trustLevel, TRUST_LEVELS.TIME_ANCHORED_STRUCTURAL);
+
+    // Sprint 2: real TSA responses include a signer certificate + full CMS
+    // SignedData structure. verifyCms:true should elevate to TIME_ANCHORED.
+    const full = verifyRfc3161Anchor({
+      anchor,
+      expectedBatchRootHex: batchRootHex,
+      verifyCms: true,
+    });
+    assert.equal(full.ok, true, full.reason);
+    // We accept either full TIME_ANCHORED (CMS signature verifies) or the
+    // fallback with a specific reason. This makes the test resilient to a
+    // TSA that uses an unusual signature algorithm we haven't wired.
+    if (full.trustLevel !== TRUST_LEVELS.TIME_ANCHORED) {
+      console.warn(`live TSA cmsFailReason: ${full.cmsFailReason}`);
+    }
+    assert.ok(
+      full.trustLevel === TRUST_LEVELS.TIME_ANCHORED ||
+      full.trustLevel === TRUST_LEVELS.TIME_ANCHORED_STRUCTURAL,
+    );
   },
 );

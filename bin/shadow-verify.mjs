@@ -19,12 +19,18 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { verifyBundle } from "../packages/attest-core/session.js";
 
-const USAGE = `Usage: shadow-verify <bundle.json> --public-key <public.pem> [--json]
+const USAGE = `Usage: shadow-verify <bundle.json> --public-key <public.pem> [--json] [--check-anchors <mode>]
 
 Options:
-  --public-key <path>   Path to the Ed25519 public key in PEM format (required).
-  --json                Emit a single-line JSON report instead of prose.
-  -h, --help            Print this message.
+  --public-key <path>      Path to the Ed25519 public key in PEM format (required).
+  --json                   Emit a single-line JSON report instead of prose.
+  --check-anchors <mode>   Verify bundle.external_anchors[]. Modes:
+                             "structural" — messageImprint match only (sprint 1);
+                                            elevates trust to TIME_ANCHORED_STRUCTURAL
+                             "full"       — also CMS SignedData signature verify (sprint 2);
+                                            elevates to TIME_ANCHORED on success
+                           Omitted or "off" leaves trust at SELF_SIGNED (default).
+  -h, --help               Print this message.
 
 Exit codes:
   0  bundle verified
@@ -33,13 +39,19 @@ Exit codes:
   3  I/O or parse error`;
 
 function parseArgs(argv) {
-  const out = { bundle: null, publicKey: null, json: false };
+  const out = { bundle: null, publicKey: null, json: false, checkAnchors: false };
   const rest = argv.slice(2);
   for (let i = 0; i < rest.length; i++) {
     const a = rest[i];
     if (a === "-h" || a === "--help") return { ...out, help: true };
     if (a === "--json") out.json = true;
     else if (a === "--public-key") out.publicKey = rest[++i];
+    else if (a === "--check-anchors") {
+      const mode = rest[++i];
+      if (mode === "off" || mode === undefined) out.checkAnchors = false;
+      else if (mode === "structural" || mode === "full") out.checkAnchors = mode;
+      else return { ...out, error: `unknown --check-anchors mode "${mode}" (want off/structural/full)` };
+    }
     else if (a.startsWith("--")) return { ...out, error: `unknown flag ${a}` };
     else if (!out.bundle) out.bundle = a;
     else return { ...out, error: `unexpected extra argument ${a}` };
@@ -81,7 +93,7 @@ try {
   die(3, `failed to read public key: ${err.message}`, args.json);
 }
 
-const result = verifyBundle(bundle, { publicKey: pubPem });
+const result = verifyBundle(bundle, { publicKey: pubPem, checkAnchors: args.checkAnchors });
 
 if (args.json) {
   const payload = {
@@ -92,6 +104,8 @@ if (args.json) {
     event_count: Array.isArray(bundle?.events) ? bundle.events.length : null,
     batch_root: bundle?.batch_root ?? null,
     key_id: bundle?.signatures?.[0]?.key_id ?? null,
+    trust_level: result.trustLevel ?? null,
+    anchors: result.anchors ?? null,
   };
   process.stdout.write(JSON.stringify(payload) + "\n");
   process.exit(result.ok ? 0 : 1);
@@ -103,9 +117,19 @@ if (result.ok) {
   const agent = bundle.header?.agent ?
     `${bundle.header.agent.name}@${bundle.header.agent.version}` : "(none)";
   const keyId = bundle.signatures?.[0]?.key_id ?? "(none)";
-  const trust = Array.isArray(bundle.external_anchors) && bundle.external_anchors.length > 0
-    ? "TIME_ANCHORED (external anchor present; not verified by this tool — use a TSA/Rekor-aware verifier)"
-    : "SELF_SIGNED (no external anchor)";
+  const trust = result.trustLevel ?? "SELF_SIGNED";
+  const trustNote = trust === "SELF_SIGNED"
+    ? "chain intact + signature valid; operator could still have re-signed history"
+    : trust === "TIME_ANCHORED_STRUCTURAL"
+    ? "RFC 3161 anchor's messageImprint matches; TSA signature NOT verified (pass --check-anchors full to attempt)"
+    : trust === "TIME_ANCHORED"
+    ? "RFC 3161 anchor's TSA signature verifies; A2 operator-insider defeated for events after genTime"
+    : trust === "LOG_ANCHORED"
+    ? "Sigstore Rekor inclusion proof verifies; publicly witnessed"
+    : "";
+  const anchorsLine = Array.isArray(result.anchors) && result.anchors.length > 0
+    ? `  anchors    : ${result.anchors.length} (${result.anchors.map(a => `${a.kind}=${a.ok ? "ok" : "no"}`).join(", ")})\n`
+    : "";
   process.stdout.write(
     `✓ Bundle verified\n` +
     `  session_id : ${sessionId}\n` +
@@ -113,7 +137,8 @@ if (result.ok) {
     `  events     : ${events}\n` +
     `  key_id     : ${keyId}\n` +
     `  batch_root : ${bundle.batch_root}\n` +
-    `  trust      : ${trust}\n`,
+    `  trust      : ${trust}${trustNote ? ` — ${trustNote}` : ""}\n` +
+    anchorsLine,
   );
   process.exit(0);
 }

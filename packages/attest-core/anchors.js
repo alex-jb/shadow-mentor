@@ -32,7 +32,7 @@
 //   - RFC 5652 (Cryptographic Message Syntax)
 //   - RFC 5280 (X.509 certificate profile) — for sprint 2 signature check
 
-import { createHash } from "node:crypto";
+import { createHash, verify as cryptoVerify, X509Certificate } from "node:crypto";
 
 // ── Trust-level enum ──────────────────────────────────────────
 
@@ -79,6 +79,30 @@ const HASH_ALG_BY_OID = new Map([
 const OID_BY_HASH_ALG = new Map([
   ["sha256", OID_SHA256],
   ["sha1", OID_SHA1],
+]);
+
+// CMS signed-attribute OIDs (RFC 5652 §11).
+const OID_CONTENT_TYPE_ATTR = "1.2.840.113549.1.9.3";
+const OID_MESSAGE_DIGEST_ATTR = "1.2.840.113549.1.9.4";
+const OID_SIGNING_TIME_ATTR = "1.2.840.113549.1.9.5";
+
+// Signature algorithm OIDs the TSA might use to sign its token.
+// Node's crypto.verify() infers the algorithm class from the key object;
+// we pass the digest name it expects (e.g. "sha256"). Ed25519 is a special
+// case — its verify call uses `null` as the digest name.
+const SIG_ALG_HANDLERS = new Map([
+  // RSA-SSA PKCS#1 v1.5
+  ["1.2.840.113549.1.1.11", { digest: "sha256", kind: "rsa" }], // sha256WithRSAEncryption
+  ["1.2.840.113549.1.1.12", { digest: "sha384", kind: "rsa" }], // sha384WithRSAEncryption
+  ["1.2.840.113549.1.1.13", { digest: "sha512", kind: "rsa" }], // sha512WithRSAEncryption
+  ["1.2.840.113549.1.1.5",  { digest: "sha1",   kind: "rsa" }], // sha1WithRSAEncryption (legacy)
+  ["1.2.840.113549.1.1.1",  { digest: null,     kind: "rsa" }], // rsaEncryption — digest per signedAttrs
+  // ECDSA
+  ["1.2.840.10045.4.3.2",   { digest: "sha256", kind: "ecdsa" }], // ecdsa-with-SHA256
+  ["1.2.840.10045.4.3.3",   { digest: "sha384", kind: "ecdsa" }], // ecdsa-with-SHA384
+  ["1.2.840.10045.4.3.4",   { digest: "sha512", kind: "ecdsa" }], // ecdsa-with-SHA512
+  // EdDSA
+  ["1.3.101.112",           { digest: null,     kind: "ed25519" }],
 ]);
 
 /**
@@ -336,7 +360,9 @@ export function parseTimestampResponse(bytes) {
     throw new Error("parseTimestampResponse: SignedData not SEQUENCE");
   }
 
-  // Walk into SignedData: version, digestAlgorithms, encapContentInfo, ...
+  // Walk into SignedData: version, digestAlgorithms, encapContentInfo,
+  // [0] IMPLICIT certificates (optional), [1] IMPLICIT crls (optional),
+  // signerInfos SET.
   let sdPos = signedData.contentStart;
   // Skip version (INTEGER).
   const sdVersion = derReadTLV(buf, sdPos);
@@ -348,6 +374,7 @@ export function parseTimestampResponse(bytes) {
   // encapContentInfo — SEQUENCE { eContentType OID, eContent [0] EXPLICIT OCTET STRING }
   const encap = derReadTLV(buf, sdPos);
   if (encap.tag !== TAG_SEQUENCE) throw new Error("parseTimestampResponse: encapContentInfo not SEQUENCE");
+  sdPos = encap.next;
   const eContentType = derReadOid(buf, encap.contentStart);
   if (eContentType.value !== OID_TSTINFO) {
     throw new Error(`parseTimestampResponse: expected TSTInfo OID, got ${eContentType.value}`);
@@ -362,6 +389,38 @@ export function parseTimestampResponse(bytes) {
   }
   const tstInfoBytes = buf.slice(tstInfoOctet.contentStart, tstInfoOctet.next);
   const tokenBytes = buf.slice(contentInfo.contentStart - (contentInfo.contentStart - pos), contentInfo.next);
+
+  // Extract CMS pieces needed for signature verification. Certificates,
+  // CRLs, and signerInfos live after encapContentInfo in SignedData.
+  let certificateDer = null;
+  let signerInfoBytes = null;
+  while (sdPos < signedData.next) {
+    const tlv = derReadTLV(buf, sdPos);
+    if (tlv.tag === 0xa0) {
+      // [0] IMPLICIT certificates — SET/SEQUENCE OF CertificateChoices.
+      // For sprint-2 CMS verification we take the FIRST X.509 certificate
+      // (tag SEQUENCE) found here as the signer cert. Real chain
+      // validation would walk all of them + a trusted CA list.
+      let cpos = tlv.contentStart;
+      while (cpos < tlv.next) {
+        const cert = derReadTLV(buf, cpos);
+        if (cert.tag === TAG_SEQUENCE) {
+          certificateDer = buf.slice(cpos, cert.next);
+          break;
+        }
+        cpos = cert.next;
+      }
+    } else if (tlv.tag === 0xa1) {
+      // [1] IMPLICIT crls — skip; sprint 2 does not consult CRLs.
+    } else if (tlv.tag === TAG_SET) {
+      // signerInfos SET OF SignerInfo. We take the first for sprint 2.
+      const firstSignerInfo = derReadTLV(buf, tlv.contentStart);
+      if (firstSignerInfo.tag === TAG_SEQUENCE) {
+        signerInfoBytes = buf.slice(tlv.contentStart, firstSignerInfo.next);
+      }
+    }
+    sdPos = tlv.next;
+  }
 
   // Parse TSTInfo.
   const tstInfoSeq = derReadTLV(tstInfoBytes, 0);
@@ -394,8 +453,163 @@ export function parseTimestampResponse(bytes) {
       genTimeIso: genTime.value,
       serialNumber: serial.value,
       tokenBytes,
+      // Sprint 2 pieces — may be null on synthetic TSRs used in tests.
+      tstInfoBytes,
+      certificateDer,
+      signerInfoBytes,
     },
   };
+}
+
+// ── CMS SignedData signature verification (sprint 2) ──────────
+
+/**
+ * Parse a SignerInfo TLV blob and return the fields needed to verify.
+ * @param {Buffer} buf — DER SignerInfo SEQUENCE bytes (outer SEQUENCE included)
+ * @returns {{digestAlgorithmOid: string, signedAttrsDerForSig: Buffer|null, messageDigestAttr: Buffer|null, signatureAlgorithmOid: string, signature: Buffer}}
+ */
+function parseSignerInfo(buf) {
+  const outer = derReadTLV(buf, 0);
+  if (outer.tag !== TAG_SEQUENCE) throw new Error("parseSignerInfo: outer not SEQUENCE");
+  let p = outer.contentStart;
+
+  // version INTEGER
+  const version = derReadTLV(buf, p); p = version.next;
+  // sid — either issuerAndSerialNumber SEQUENCE OR [0] IMPLICIT subjectKeyIdentifier.
+  const sid = derReadTLV(buf, p); p = sid.next;
+  // digestAlgorithm AlgorithmIdentifier
+  const dAlg = derReadTLV(buf, p); p = dAlg.next;
+  const dAlgOid = derReadOid(buf, dAlg.contentStart);
+
+  // signedAttrs [0] IMPLICIT SET OF Attribute — OPTIONAL
+  let signedAttrsDerForSig = null;
+  let messageDigestAttr = null;
+  const tlv1 = derReadTLV(buf, p);
+  if (tlv1.tag === 0xa0) {
+    // Re-encode as SET (0x31) with the same length + content per RFC 5652 §5.4
+    // "The IMPLICIT [0] tag in the signedAttrs is not used for the DER encoding,
+    //  rather an EXPLICIT SET OF tag is used."
+    const setDer = Buffer.concat([
+      Buffer.from([TAG_SET]),
+      derEncodeLength(tlv1.length),
+      buf.slice(tlv1.contentStart, tlv1.next),
+    ]);
+    signedAttrsDerForSig = setDer;
+
+    // Walk attributes to find messageDigest.
+    let apos = tlv1.contentStart;
+    while (apos < tlv1.next) {
+      const attr = derReadTLV(buf, apos);
+      if (attr.tag !== TAG_SEQUENCE) { apos = attr.next; continue; }
+      const attrOid = derReadOid(buf, attr.contentStart);
+      const attrValues = derReadTLV(buf, attrOid.next);
+      if (attrValues.tag !== TAG_SET) { apos = attr.next; continue; }
+      if (attrOid.value === OID_MESSAGE_DIGEST_ATTR) {
+        const digestOctet = derReadOctetString(buf, attrValues.contentStart);
+        messageDigestAttr = digestOctet.value;
+      }
+      apos = attr.next;
+    }
+    p = tlv1.next;
+  }
+
+  // signatureAlgorithm AlgorithmIdentifier
+  const sAlg = derReadTLV(buf, p); p = sAlg.next;
+  const sAlgOid = derReadOid(buf, sAlg.contentStart);
+
+  // signature OCTET STRING
+  const sig = derReadOctetString(buf, p);
+
+  return {
+    digestAlgorithmOid: dAlgOid.value,
+    signedAttrsDerForSig,
+    messageDigestAttr,
+    signatureAlgorithmOid: sAlgOid.value,
+    signature: sig.value,
+  };
+}
+
+/**
+ * Verify the CMS SignedData signature over a parsed TSTInfo (eContent),
+ * using the certificate embedded in the CMS structure. Returns { ok, reason? }.
+ *
+ * Scope note (sprint 2): the certificate is used AS-IS from the CMS; this
+ * function does NOT walk a trust chain to a root CA. Real deployments
+ * should pair this with an operator-managed trust store; see docs/THREAT_MODEL.md
+ * §6.3 for the honest posture around what a valid CMS signature does and
+ * does not imply.
+ *
+ * @param {object} params
+ * @param {Buffer} params.eContentBytes — the DER-encoded TSTInfo bytes
+ * @param {Buffer} params.certificateDer — the signer's X.509 certificate DER
+ * @param {Buffer} params.signerInfoBytes — the SignerInfo SEQUENCE bytes
+ * @returns {{ok: boolean, reason?: string, signerSubject?: string}}
+ */
+export function verifyCmsSignature(params) {
+  const { eContentBytes, certificateDer, signerInfoBytes } = params ?? {};
+  if (!eContentBytes) return { ok: false, reason: "eContentBytes required" };
+  if (!certificateDer) return { ok: false, reason: "certificateDer required" };
+  if (!signerInfoBytes) return { ok: false, reason: "signerInfoBytes required" };
+
+  let cert;
+  try {
+    cert = new X509Certificate(certificateDer);
+  } catch (err) {
+    return { ok: false, reason: `certificate parse failed: ${err.message}` };
+  }
+  const publicKey = cert.publicKey;
+
+  let signerInfo;
+  try {
+    signerInfo = parseSignerInfo(signerInfoBytes);
+  } catch (err) {
+    return { ok: false, reason: `SignerInfo parse failed: ${err.message}` };
+  }
+
+  const sigAlg = SIG_ALG_HANDLERS.get(signerInfo.signatureAlgorithmOid);
+  if (!sigAlg) return { ok: false, reason: `unsupported signatureAlgorithm ${signerInfo.signatureAlgorithmOid}` };
+  const digestInfo = HASH_ALG_BY_OID.get(
+    // Map the signer's digestAlgorithm OID.
+    signerInfo.digestAlgorithmOid,
+  );
+  if (!digestInfo) return { ok: false, reason: `unsupported digestAlgorithm ${signerInfo.digestAlgorithmOid}` };
+
+  // If signedAttrs is present, verify that the messageDigest attribute
+  // equals the hash of eContent, then sign over the DER-encoded SET
+  // (with tag 0x31, not the IMPLICIT [0] 0xa0).
+  let dataToVerify;
+  if (signerInfo.signedAttrsDerForSig) {
+    if (!signerInfo.messageDigestAttr) {
+      return { ok: false, reason: "signedAttrs present but messageDigest attribute missing" };
+    }
+    const expectedDigest = createHash(digestInfo.name).update(eContentBytes).digest();
+    if (!expectedDigest.equals(signerInfo.messageDigestAttr)) {
+      return { ok: false, reason: "signedAttrs.messageDigest does not match hash(eContent)" };
+    }
+    dataToVerify = signerInfo.signedAttrsDerForSig;
+  } else {
+    // No signedAttrs — sign eContent directly. This is rare for TSAs
+    // but allowed by RFC 5652.
+    dataToVerify = Buffer.from(eContentBytes);
+  }
+
+  const digestName = sigAlg.digest;
+  let sigOk;
+  try {
+    sigOk = cryptoVerify(
+      // Node picks the algorithm from the key type + this digest name.
+      // Ed25519 requires the digest name to be null.
+      digestName,
+      dataToVerify,
+      publicKey,
+      signerInfo.signature,
+    );
+  } catch (err) {
+    return { ok: false, reason: `cryptoVerify threw: ${err.message}` };
+  }
+  if (!sigOk) return { ok: false, reason: "CMS signature verification failed" };
+
+  return { ok: true, signerSubject: cert.subject };
 }
 
 // ── HTTP client (Node built-in fetch) ─────────────────────────
@@ -468,18 +682,27 @@ export async function requestTimestamp(params) {
 /**
  * Verify an RFC 3161 anchor against an expected bundle batch_root.
  *
- * Sprint 1: structural verification only — checks that the messageImprint
- * in the parsed TSTInfo equals sha256(batch_root_bytes) (or sha1, per the
- * anchor's algorithm), and extracts genTime. Does NOT verify the CMS
- * SignedData signature on the token. That is sprint 2.
+ * Sprint 1 default (verifyCms: false): structural verification only —
+ * checks that the messageImprint in the parsed TSTInfo equals
+ * sha256(batch_root_bytes) (or sha1, per the anchor's algorithm), and
+ * extracts genTime. Reports trustLevel TIME_ANCHORED_STRUCTURAL.
+ *
+ * Sprint 2 opt-in (verifyCms: true): additionally verifies the CMS
+ * SignedData signature over the TSTInfo using the certificate embedded
+ * in the token. Reports trustLevel TIME_ANCHORED on success; falls back
+ * to TIME_ANCHORED_STRUCTURAL on CMS-verify failure with a diagnostic
+ * reason. Does NOT walk a certificate trust chain to a root CA — the
+ * caller's operator must pair this with a trust store; see
+ * docs/THREAT_MODEL.md §6.3.
  *
  * @param {object} params
  * @param {object} params.anchor — one entry from bundle.external_anchors
  * @param {string} params.expectedBatchRootHex — bundle.batch_root
- * @returns {{ok: true, genTimeIso: string, trustLevel: "TIME_ANCHORED_STRUCTURAL"} | {ok: false, reason: string}}
+ * @param {boolean} [params.verifyCms] — attempt full CMS signature verify
+ * @returns {{ok: true, genTimeIso: string, trustLevel: string, cmsSignerSubject?: string, cmsFailReason?: string} | {ok: false, reason: string}}
  */
 export function verifyRfc3161Anchor(params) {
-  const { anchor, expectedBatchRootHex } = params ?? {};
+  const { anchor, expectedBatchRootHex, verifyCms = false } = params ?? {};
   if (!anchor) return { ok: false, reason: "anchor required" };
   if (anchor.kind !== "rfc3161-tsa") return { ok: false, reason: `wrong kind "${anchor.kind}"` };
   if (!expectedBatchRootHex) return { ok: false, reason: "expectedBatchRootHex required" };
@@ -511,6 +734,40 @@ export function verifyRfc3161Anchor(params) {
     .digest();
   if (!expectedDigest.equals(parsed.tstInfo.messageImprintHash)) {
     return { ok: false, reason: "messageImprint does not match sha256(batch_root)" };
+  }
+
+  // Sprint 2: attempt CMS SignedData signature verification if requested
+  // AND the token contains the pieces needed (certificate + SignerInfo).
+  // Fall back to TIME_ANCHORED_STRUCTURAL on failure so the caller sees a
+  // clear diagnostic without the top-level verify going false.
+  if (verifyCms) {
+    if (!parsed.tstInfo.certificateDer || !parsed.tstInfo.signerInfoBytes) {
+      return {
+        ok: true,
+        genTimeIso: parsed.tstInfo.genTimeIso,
+        trustLevel: TRUST_LEVELS.TIME_ANCHORED_STRUCTURAL,
+        cmsFailReason: "token missing embedded certificate or SignerInfo",
+      };
+    }
+    const cmsResult = verifyCmsSignature({
+      eContentBytes: parsed.tstInfo.tstInfoBytes,
+      certificateDer: parsed.tstInfo.certificateDer,
+      signerInfoBytes: parsed.tstInfo.signerInfoBytes,
+    });
+    if (!cmsResult.ok) {
+      return {
+        ok: true,
+        genTimeIso: parsed.tstInfo.genTimeIso,
+        trustLevel: TRUST_LEVELS.TIME_ANCHORED_STRUCTURAL,
+        cmsFailReason: cmsResult.reason,
+      };
+    }
+    return {
+      ok: true,
+      genTimeIso: parsed.tstInfo.genTimeIso,
+      trustLevel: TRUST_LEVELS.TIME_ANCHORED,
+      cmsSignerSubject: cmsResult.signerSubject,
+    };
   }
 
   return {
