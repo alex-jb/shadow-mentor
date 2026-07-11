@@ -14,14 +14,72 @@
 
 ## [Unreleased]
 
-下一步规划:
-- macOS 原生应用 POC(ScreenCaptureKit + 本地 Phi-4-mini + AppKit overlay)
-- 5 分钟 Loom 录制(按彩排脚本)
-- 30-目标冷邮件轮次(7 月)— 需要 Loom URL 替换
-- SOC 2 Type 1 准备 checklist
-- shadow.io 域名采购(相比备选)
-- IEEE VR 2027 abstract v1(与 Loredana C. Levitchi 共同第一作者)
-- 完整版 bin/install.mjs,消费 installer/tools.json + 根据检测到的 MCP host 自动写配置
+> 说明:v1.3.0 → v2.0.0 之间的历史条目未同步至本文,请参考英文版 [`CHANGELOG.md`](./CHANGELOG.md)。以下从 v3 M3(external anchoring)重新恢复中文同步。
+
+### v3 M3 sprint 4 — CMS 证书链验证的 CA 信任库 — 2026-07-11 (`d8aa7df`)
+
+**去掉 `TIME_ANCHORED` 的诚实星号。** Sprint 2 上线了 CMS 签名验证,但留了一个未证明的前提:"签名对着嵌入的证书通过"并没说这个证书是不是真的。Sprint 4 让操作方提供信任库,verifier 走完整链,只有 leaf 真的终止在受信 root 时才升到 `TIME_ANCHORED`。
+
+- 新增 `validateCmsCertChain({leafCert, intermediateDers, trustStorePems})` —
+  用 Node 的 `X509Certificate.checkIssued()` + `.verify()` 走链。终止条件:当前 cert 直接由信任库根签发(sig verify),或本身就是自签根(fingerprint 匹配)。每一步都检查有效期窗口。防环。16 步上限。
+- `parseTimestampResponse` 现在返回 `certificatesDer: Buffer[]`(所有嵌入证书)。保留 `certificateDer` = `[0]` 做后向兼容。
+- `verifyCmsSignature` 接受 `caTrustStorePem[]`,返回 `caChainValidated: true|false|null`(没传信任库时为 null)。
+- `verifyRfc3161Anchor` 现在会在传了信任库但链不终止时**降级**到 `TIME_ANCHORED_STRUCTURAL`,附 `chainFailReason`。对着不受信证书通过的签名不比"structural"更强。
+- CLI `--ca-trust <path>` 接受系统 CA bundle 格式。
+- `test/anchors-ca-trust.test.js` 8 个新测试,openssl subprocess 每个测试单独生成根 → leaf 链;没 openssl 时链验证测试 clean skip。
+
+明确非目标:CRL/OCSP 撤销、name-constraints、policy processing、keyUsage/extKeyUsage。
+
+### v3 M3 sprint 3 — Sigstore Rekor 适配器 — 2026-07-11 (`3b4f332`)
+
+**M3 里程碑闭合。** 除 RFC 3161 之外的公开透明日志锚定。`LOG_ANCHORED` 的 bundle 不能被单一被攻破的操作方悄悄改写;entry 已被 Rekor 的 Merkle 树公开见证。
+
+- 新信任等级:`LOG_ANCHORED_STRUCTURAL`(Rekor body 载荷 hash 与 batch_root 匹配)和 `LOG_ANCHORED`(还验证 inclusion proof + SET 签名)。信任排序 via `trustLevelRank()`:SELF < TIME_STRUCTURAL < LOG_STRUCTURAL < TIME_ANCHORED < LOG_ANCHORED。
+- 零外部依赖。Canonical JSON、RFC 9162 Merkle 包含证明、Rekor SET verifier 全部 inline。
+- 不硬编码 Rekor 公钥。调用方自己传当前 PEM(`curl https://rekor.sigstore.dev/api/v1/log/publicKey`)。
+- 新导出:`submitRekorEntry`、`buildRekorHashedrekordEntry`、`extractRekorPayloadHash`、`rekorLeafHash`、`verifyInclusionProof`、`verifyRekorSet`、`verifyRekorAnchor`、`canonicalizeJson`。
+- `test/anchors-rekor.test.js` 23 个新测试。Live smoke gated on `SHADOW_TEST_LIVE_REKOR=1`。
+- CLI 报告 Rekor 专属的信任等级说明。
+
+### v3 M3 sprint 2 — CMS SignedData 签名验证 — 2026-07-11 (`fbcf4d2`)
+
+**Bundle 升级到 `TIME_ANCHORED`。** Sprint 1 上线了结构化 messageImprint 匹配;sprint 2 验证 TSA 对 TSTInfo eContent 的 CMS SignedData 签名。
+
+- 新 `SIG_ALG_HANDLERS` Map 覆盖 8 个签名算法 OID(RSA sha256/384/512/sha1、ECDSA sha256/384/512、Ed25519)。
+- `parseTimestampResponse` 走 SignedData 尾部(certificates、CRLs、signerInfos)。
+- `parseSignerInfo` + `verifyCmsSignature` 处理 RFC 5652 §5.4 的 IMPLICIT [0] → SET 重编码。
+- `verifyRfc3161Anchor` 获得 `verifyCms:true`;成功升到 `TIME_ANCHORED`,失败回落到 `TIME_ANCHORED_STRUCTURAL` 带 `cmsFailReason`。
+- `verifyBundle` `checkAnchors` 三态:`false` / `"structural"` / `"full"`。
+- CLI `--check-anchors <mode>`。
+
+### v3 M3 sprint 1 — RFC 3161 TSA 客户端 + 结构化验证器 — 2026-07-10 (`13487cb`)
+
+- 零依赖 ASN.1 DER 助手,针对 TimeStampReq / TimeStampResp / TSTInfo。
+- `requestTimestamp({batchRootHex, tsaUrl})` fetch 客户端。
+- `verifyRfc3161Anchor()` 结构化验证。
+- 新 `TRUST_LEVELS` 枚举。
+- `verifyBundle` `checkAnchors:true` 升到 `TIME_ANCHORED_STRUCTURAL`。
+- Live TSA smoke test gated on `SHADOW_TEST_LIVE_TSA=1`。
+
+### 威胁模型
+
+`docs/THREAT_MODEL.md` §6.2 信任等级矩阵已同步四个 sprint。`TIME_ANCHORED` 的 A2 defeat 写明:**没**传 `caTrustStorePem` 时是"以嵌入证书为真"为条件的;**传了**则无条件。
+
+### 测试
+
+Session 开始 1313 → 1417 通过(+104 跨四个 sprint,0 fail,3 skipped — 全部 live-network opt-in)。
+
+### 上一批 [Unreleased] 计划(已过时,保留供参考)
+
+下面这些 bullet 是 v1.2.0 时期的下一步规划,大部分已经完成或战略上被 v3 evidence-layer pivot 取代。当前的下一步在 `docs/roadmap/SHADOW_V3_BRIEF.md` 里:
+
+- ~~macOS 原生应用 POC~~(v3 不做,聚焦 evidence layer)
+- ~~5 分钟 Loom 录制~~ → 现在是 M6 的 2 分钟 screencast(`docs/launch/v3.0.0/screencast-script.md`)
+- 30-目标冷邮件轮次(7 月)— **待 v3.0.0 tag 后**
+- SOC 2 Type 1 准备 checklist — **待 v3.0.0 tag 后**
+- shadow.io 域名采购 — **待定**
+- IEEE VR 2027 abstract — 已进 v4 草稿
+- 完整版 bin/install.mjs — v3 不做,由 `npx shadow-record init`(M2.1 adapter)取代
 
 ---
 

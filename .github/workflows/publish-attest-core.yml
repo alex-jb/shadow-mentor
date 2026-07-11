@@ -1,0 +1,111 @@
+name: publish shadow-attest-core
+
+# Publishes packages/attest-core/ to npm with provenance
+# (Sigstore-signed build attestation). Triggers:
+#   - Manual: workflow_dispatch (safer for the first publish)
+#   - Automatic: push tag matching `attest-core-v*` (e.g. attest-core-v2.0.1)
+#
+# Requires the NPM_TOKEN secret to be set. See docs/NPM_PUBLISH.md.
+#
+# Design decisions:
+#   - Tag prefix `attest-core-v*` is deliberately package-specific so the
+#     top-level v3.0.0 launch tag does NOT trigger a publish. Publishing
+#     is an intentional action, not a side effect of tagging the whole repo.
+#   - id-token: write is required for provenance signing per Sigstore.
+#   - Node 22 matches the main test workflow.
+#   - Tests must pass on the checked-out ref before publish is allowed.
+#     If npm test fails, publish does not run.
+#   - Concurrency is limited to one publish at a time to avoid a race
+#     between manual + tag triggers landing simultaneously.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (--dry-run flag on npm publish)"
+        required: false
+        default: "true"
+        type: choice
+        options: ["true", "false"]
+  push:
+    tags:
+      - "attest-core-v*"
+
+concurrency:
+  group: publish-attest-core
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write # provenance signing
+
+jobs:
+  publish:
+    name: publish to npm
+    runs-on: ubuntu-latest
+    environment: npm-publish
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Full test suite (safety gate)
+        run: npm test
+
+      - name: Forbidden-phrases lint (safety gate)
+        run: node scripts/check-forbidden-phrases.mjs
+
+      - name: Verify package.json coherence
+        working-directory: packages/attest-core
+        run: |
+          echo "Package: $(node -p 'require(\"./package.json\").name')@$(node -p 'require(\"./package.json\").version')"
+          echo "Files array:"
+          node -p 'require("./package.json").files.join("\n")'
+          echo ""
+          echo "Confirming every file in files[] actually exists on disk:"
+          for f in $(node -p 'require("./package.json").files.join(" ")'); do
+            if [ ! -f "$f" ]; then
+              echo "MISSING: $f"; exit 1
+            else
+              echo "  OK: $f"
+            fi
+          done
+
+      - name: npm publish --provenance
+        working-directory: packages/attest-core
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.dry_run }}" = "true" ]; then
+            echo "DRY RUN — pack only, no upload"
+            npm publish --provenance --access public --dry-run
+          else
+            npm publish --provenance --access public
+          fi
+
+      - name: Verify published tarball includes anchors.js
+        if: github.event_name != 'workflow_dispatch' || inputs.dry_run == 'false'
+        working-directory: packages/attest-core
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          # Pull the freshly published tarball back and grep for anchors.js.
+          # Guards against a future package.json edit that drops files[]
+          # entries without a test noticing.
+          NAME=$(node -p 'require("./package.json").name')
+          VERSION=$(node -p 'require("./package.json").version')
+          echo "Verifying $NAME@$VERSION tarball contents..."
+          npm view "$NAME@$VERSION" dist.tarball | xargs -I {} curl -sSLo /tmp/pkg.tgz "{}"
+          tar -tzf /tmp/pkg.tgz | grep -E 'package/anchors\.js$' || {
+            echo "FAIL: anchors.js missing from published tarball"; exit 1
+          }
+          echo "OK: anchors.js present in published tarball"
