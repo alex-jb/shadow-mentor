@@ -8,7 +8,7 @@ The rules are additive to `CLAUDE.md` and to the alex-brain feedback memories. I
 
 1. **Never send anything outbound.** No email, no npm publish, no Show HN, no PR body posted to a public issue tracker, no Devpost submission, no Slack message, no calendar event. Drafts only. Human hand on every trigger. This includes: `npm publish`, `gh pr create --draft` posts, `gh release create` with the `--notes` file already reviewed but not the message body newly composed in-session, any curl to a webhook.
 2. **Never touch frozen schemas.** `spec/attestation.schema.json` is v2 frozen. `spec/evidence-bundle.schema.json` is v1 frozen. New signed fields require a `schema_version` bump and a migration test. Field-set changes are a breaking action requiring human sign-off.
-3. **Never modify the Wednesday 2026-07-16 demo path.** Until Wednesday EOD, do not edit:
+3. **Never modify the Wednesday 2026-07-16 demo path.** _Sunsets 2026-07-16 EOD NY. After that date this rule is inactive without any commit; ignore it._ Until Wednesday EOD, do not edit:
     - `demo/xreal.html` and any assets it references at runtime
     - `docs/demo-2026-07-16-narration.md`
     - `docs/demo-2026-07-16-narration-tight.md`
@@ -17,7 +17,7 @@ The rules are additive to `CLAUDE.md` and to the alex-brain feedback memories. I
     - `bin/attestation-acceptance-demo.mjs`
     - `verify.html`
     Additive tests, new sibling documents, and fixtures under `verify-fixtures/` are allowed.
-4. **Never remove back-compat shims.** `lib/attestation*.js` shims stay through at least v3.0.0. Removing them is a breaking API change requiring human sign-off.
+4. **Never remove back-compat shims.** `lib/attestation*.js` shims stay through at least v3.0.0. _Sunsets on the v3.0.0 git tag. Removal after that tag is still a breaking API change but is no longer categorically forbidden — treat as a deliberate deprecation with human sign-off._ Removing them is a breaking API change requiring human sign-off.
 5. **Never bypass the forbidden-phrases lint.** Not in denial-by-quotation form. Not inside markdown escape sequences (`tamper-**proof**` counts). Not in commit messages. Not in CHANGELOG entries describing removals. Reword to describe what Shadow IS.
 
 ## Session-shape rules

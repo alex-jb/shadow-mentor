@@ -205,6 +205,18 @@ Read `docs/AUTONOMOUS_SESSION_RULES.md` in full. Key ones:
   bulletin numbers, competitor pricing, statistics, or venue deadlines. If
   you cite something, it must be verifiable.
 
+**Sunset dates on time-boxed rules.** Some rules have explicit expiry — read
+`docs/AUTONOMOUS_SESSION_RULES.md` for the authoritative list. As of this
+handoff (2026-07-11):
+- Rule 3 (Wednesday demo-path freeze) sunsets **2026-07-16 EOD NY**. After
+  that date the frozen path list becomes editable without further ceremony.
+- Rule 4 (back-compat shims) sunsets on the **v3.0.0 git tag**. After that
+  point shim removal is still a breaking change but no longer categorically
+  forbidden.
+
+Rules without a sunset date are perpetual. If you find a rule that looks
+time-boxed but lacks an explicit expiry, ask before acting; do not infer.
+
 ---
 
 ## 6. Design invariants (do not break)
@@ -228,10 +240,18 @@ Read `docs/AUTONOMOUS_SESSION_RULES.md` in full. Key ones:
 
 ## 7. How to verify what shipped
 
+**Baseline discipline.** Run the full suite at the START of your session to
+establish a green baseline, and again at the END before signing off. Both
+result lines go into the session debrief. The exact numbers matter: if you
+start on 1417/1420 and end on 1420/1423 you added 3 tests; if you start on
+1417/1420 and end on 1416/1420 you regressed one and need to explain why.
+Do not paraphrase ("all green"); paste the actual `ℹ tests / pass / fail /
+skipped` block.
+
 ```bash
 git log --oneline -10                           # last 10 commits
 gh run list --limit 5                           # last 5 CI runs
-npm test 2>&1 | tail -10                        # 1417/1420 passing expected
+npm test 2>&1 | tail -10                        # start-of-session baseline; expect 1417/1420
 node bin/shadow-verify.mjs --help               # CLI help incl. --check-anchors + --ca-trust
 ```
 

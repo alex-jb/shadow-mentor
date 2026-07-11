@@ -16,6 +16,7 @@
     "./verify-chain": "./verify-chain.js"
   },
   "files": [
+    "anchors.js",
     "attestation.js",
     "attestation-batch.js",
     "attestation-chain.js",
