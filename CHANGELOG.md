@@ -10,6 +10,93 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### v3 M3 sprint 4 — CA trust store for CMS chain validation — 2026-07-11 (`d8aa7df`)
+
+**Removes the honest asterisk on `TIME_ANCHORED`.** Sprint 2 shipped CMS signature
+verification but left an unproven assumption: "signature verifies against the
+embedded cert" said nothing about whether that cert was genuine. Sprint 4 lets
+operators supply a trust store; the verifier walks the chain and only elevates
+to `TIME_ANCHORED` when the leaf actually terminates at a trusted root.
+
+- Added `validateCmsCertChain({leafCert, intermediateDers, trustStorePems})` —
+  walks the chain via Node's `X509Certificate.checkIssued()` + `.verify()`.
+  Termination: current cert directly issued by a trust-store root (sig-verify),
+  or is a self-signed root itself (fingerprint match). Validity window checked
+  at every step. Loop detection. 16-step ceiling.
+- `parseTimestampResponse` now returns `certificatesDer: Buffer[]` (all embedded
+  certs). Preserves `certificateDer` = `[0]` for back-compat.
+- `verifyCmsSignature` accepts `caTrustStorePem[]` and reports
+  `caChainValidated: true|false|null` (null when no store passed).
+- `verifyRfc3161Anchor` now DEMOTES to `TIME_ANCHORED_STRUCTURAL` with a
+  `chainFailReason` if a trust store is passed but the chain does not
+  terminate at a trusted root. A sig verified against an untrusted cert is
+  not stronger than "structural."
+- CLI `--ca-trust <path>` accepts a system-style PEM bundle.
+- 8 new tests in `test/anchors-ca-trust.test.js` — openssl subprocess
+  generates a fresh root → leaf chain per test; skips cleanly if openssl
+  is unavailable.
+
+Out of scope: CRL/OCSP revocation, name-constraints, policy processing,
+keyUsage/extKeyUsage.
+
+### v3 M3 sprint 3 — Sigstore Rekor adapter — 2026-07-11 (`3b4f332`)
+
+**Closes M3 milestone.** Public transparency-log anchoring alongside RFC 3161.
+A bundle at `LOG_ANCHORED` cannot be silently rewritten by a compromised operator
+alone; the entry is publicly witnessed in Rekor's Merkle tree.
+
+- New trust levels: `LOG_ANCHORED_STRUCTURAL` (Rekor body payload-hash
+  matches batch_root) and `LOG_ANCHORED` (also inclusion proof + SET
+  signature verified). Trust ranking via `trustLevelRank()`:
+  SELF < TIME_STRUCTURAL < LOG_STRUCTURAL < TIME_ANCHORED < LOG_ANCHORED.
+- Zero external dependencies. Canonical JSON, RFC 9162 Merkle inclusion
+  proof, and Rekor SET verifier all inline.
+- No hard-coded Rekor pubkey. Caller supplies current PEM
+  (`curl https://rekor.sigstore.dev/api/v1/log/publicKey`).
+- New exports: `submitRekorEntry`, `buildRekorHashedrekordEntry`,
+  `extractRekorPayloadHash`, `rekorLeafHash`, `verifyInclusionProof`,
+  `verifyRekorSet`, `verifyRekorAnchor`, `canonicalizeJson`.
+- 23 new tests in `test/anchors-rekor.test.js`. Live smoke gated on
+  `SHADOW_TEST_LIVE_REKOR=1`.
+- CLI reports Rekor-specific trust-level notes.
+
+### v3 M3 sprint 2 — CMS SignedData signature verification — 2026-07-11 (`fbcf4d2`)
+
+**Bundles now elevate to `TIME_ANCHORED`.** Sprint 1 shipped structural
+messageImprint matching; sprint 2 verifies the TSA's CMS SignedData signature
+over the TSTInfo eContent.
+
+- New `SIG_ALG_HANDLERS` Map covering 8 signature-algorithm OIDs
+  (RSA sha256/384/512/sha1, ECDSA sha256/384/512, Ed25519).
+- `parseTimestampResponse` walks the SignedData tail (certificates, CRLs,
+  signerInfos).
+- `parseSignerInfo` + `verifyCmsSignature` handle IMPLICIT [0] → SET
+  re-encoding per RFC 5652 §5.4.
+- `verifyRfc3161Anchor` gains `verifyCms:true`; elevates to `TIME_ANCHORED`
+  on success, falls back to `TIME_ANCHORED_STRUCTURAL` with `cmsFailReason`.
+- `verifyBundle` `checkAnchors` tri-state: `false` / `"structural"` / `"full"`.
+- CLI `--check-anchors <mode>`.
+
+### v3 M3 sprint 1 — RFC 3161 TSA client + structural verifier — 2026-07-10 (`13487cb`)
+
+- Zero-dep ASN.1 DER helpers for TimeStampReq / TimeStampResp / TSTInfo.
+- `requestTimestamp({batchRootHex, tsaUrl})` fetch client.
+- `verifyRfc3161Anchor()` structural verification.
+- New `TRUST_LEVELS` enum.
+- `verifyBundle` `checkAnchors:true` elevates to `TIME_ANCHORED_STRUCTURAL`.
+- Live TSA smoke test gated on `SHADOW_TEST_LIVE_TSA=1`.
+
+### Threat model
+
+`docs/THREAT_MODEL.md` §6.2 trust-level matrix updated to reflect all four
+sprints. `TIME_ANCHORED` A2 defeat is spelled out as conditional on the
+embedded cert being genuine WITHOUT `caTrustStorePem`, unconditional WITH it.
+
+### Tests
+
+Session start 1313 → 1417 passing (+104 across the four sprints, 0 fail, 3
+skipped — all live-network opt-ins).
+
 ---
 
 ## v2.0.0 — 2026-07-10
