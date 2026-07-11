@@ -12,6 +12,7 @@
     "./batch": "./batch.js",
     "./chain": "./chain.js",
     "./session": "./session.js",
+    "./anchors": "./anchors.js",
     "./verify-chain": "./verify-chain.js"
   },
   "files": [

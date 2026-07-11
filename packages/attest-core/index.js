@@ -35,3 +35,12 @@ export {
   verifyBundle,
 } from "./session.js";
 export { createFileStore, listSessionFiles } from "./store-file.js";
+
+// v3 M3 sprint 1: external anchoring.
+export {
+  TRUST_LEVELS,
+  buildTimestampRequest,
+  parseTimestampResponse,
+  requestTimestamp,
+  verifyRfc3161Anchor,
+} from "./anchors.js";

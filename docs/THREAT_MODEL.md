@@ -72,3 +72,66 @@ Every T1-T6 row has a named test file. Every test in each file runs in CI on eve
 | T6 reproducibility | `test/reproducibility.test.js` (13) |
 
 Total v1.5.35 addition: 14 tests. Test surface 1139 → 1153.
+
+---
+
+## 6. v3 evidence-layer threat model (2026-07-10 addendum, Shadow v2.0.0+)
+
+Sections 1-5 above cover the **credit-decision-council vertical** threat model: agent-in-the-loop threats T1-T6 that a compliance council layer must defend against at decision time. This section covers a distinct threat model — the **evidence-bundle format itself**, per `docs/roadmap/SHADOW_V3_BRIEF.md`.
+
+The v3 threat model asks: *given a bundle at rest, what adversary can make the verifier report a false positive?* The answer depends on which trust level the verifier is reporting.
+
+### 6.1 The three adversaries
+
+**A1. External tamperer.** Someone who has read access to a bundle at rest, wants to alter what it says, and does not have the operator's private signing key.
+
+**A2. Operator-insider.** Someone with legitimate access to the operator's private signing key. Can produce a valid Ed25519 signature over any content they choose.
+
+**A3. Agent-itself.** The LLM agent that produced an event in the first place, deciding at emission time to falsify what it did. Different from A1 because the falsification happens *before* signature emission, not after.
+
+### 6.2 Trust levels and which adversary each defeats
+
+| Trust level | A1 external tamperer | A2 operator-insider | A3 agent-itself |
+|---|:-:|:-:|:-:|
+| `SELF_SIGNED` | DEFEATED by hash chain + Ed25519 signature | not defeated | not defeated |
+| `TIME_ANCHORED_STRUCTURAL` (v3 M3 sprint 1, shipped 2026-07-10) | DEFEATED | *narrowed* — see §6.3 | not defeated |
+| `TIME_ANCHORED` (v3 M3 sprint 2, planned) | DEFEATED | DEFEATED for tampering after T | not defeated |
+| `LOG_ANCHORED` (v3 M3 sprint 2, planned) | DEFEATED | DEFEATED for tampering after T + public witness | not defeated |
+
+**A3 is not defeated by any trust level shipped or planned.** Shadow does not implement runtime integrity attestation of the agent process itself. Defeating A3 requires TEEs, remote-attestation, or independent watchdogs — outside Shadow's scope. Shadow records what the agent says it did; if the agent lies, the record faithfully preserves the lie.
+
+### 6.3 Sprint 1 posture: TIME_ANCHORED_STRUCTURAL is narrower than TIME_ANCHORED
+
+Sprint 1 reports `TIME_ANCHORED_STRUCTURAL` when an RFC 3161 anchor is present and its `messageImprint` matches the bundle's `batch_root`. **What sprint 1 does not check:** the CMS SignedData signature on the TSA's TimeStampToken.
+
+**Practical consequence:** an A2 adversary who fabricates a TSR by hand (without a real TSA signature) can pass sprint-1 verification. Sprint 2 adds full CMS SignedData verification against a configurable CA trust list.
+
+**Recommendation:** operators serious about the A2 threat model should treat `TIME_ANCHORED_STRUCTURAL` as *"anchor claim present but not cryptographically enforced"* until sprint 2 ships. The trust-level name is deliberately verbose so it does not read as `TIME_ANCHORED`.
+
+### 6.4 Off-scope / non-defeated adversaries in the v3 evidence layer
+
+1. **A3 agent-itself lying at emission time.** Runtime integrity attestation outside scope.
+2. **Payload-store deletion after redaction.** Once a `payload_ref` is nulled, content is gone. GDPR erasure working as designed.
+3. **Private key exfiltration + retroactive re-signing before sprint-2 anchoring ships.** External anchoring in sprint 2 defeats this for events after T; for events before T, external anchoring cannot help.
+4. **Nation-state actor with concurrent access to signing key + TSA + Rekor operator.** If the same adversary compromises all three, no trust level defeats them. Out of scope.
+5. **Verifier-side software integrity.** If the verifier itself has been tampered with, its verdict is worthless. Operators serious about this should pin verifier binaries by hash.
+6. **eIDAS-qualified timestamp posture.** A Qualified Trust Service Provider (QTSP) under eIDAS Article 42 provides stronger legal weight than a plain RFC 3161 TSA. Shadow's anchor interface is pluggable; specific QTSP integration is out of scope for v3.0 launch.
+
+### 6.5 What operators should ask themselves
+
+1. **Which of A1 / A2 / A3 is the actual threat model your regulator or customer requires you to defend against?** Match against the trust-level table in §6.2.
+2. **Is `TIME_ANCHORED_STRUCTURAL` sufficient for your posture in the interim (2026-07-10 to sprint-2 release)?** If not, do not report `TIME_ANCHORED_STRUCTURAL` as satisfying an A2 threat model.
+3. **Where does the private signing key live?** The A2 defeat depends on the key being outside the agent process.
+4. **What is your response when a verifier reports `SELF_SIGNED` on a bundle that was supposed to be anchored?** A missing anchor is not necessarily an attack — it can be a TSA outage. Document the runbook.
+
+### 6.6 Test evidence for §6
+
+| Concern | Tests |
+|---|---|
+| ASN.1 DER encoding round-trip | `test/anchors-rfc3161.test.js` (structural) |
+| TimeStampResp parsing | `test/anchors-rfc3161.test.js` (synthesizer + parser) |
+| Anchor structural verification | `test/anchors-rfc3161.test.js` (matching + mismatched paths) |
+| Trust-level integration into verifyBundle | `test/anchors-rfc3161.test.js` (SELF_SIGNED default + TIME_ANCHORED_STRUCTURAL elevation) |
+| Live TSA smoke (env-gated) | `test/anchors-rfc3161.test.js` (skipped unless `SHADOW_TEST_LIVE_TSA=1`) |
+
+Sprint 1 addition: 11 tests + 1 env-gated. Test surface 1371 → 1383 (11 in CI, 12 including live).
