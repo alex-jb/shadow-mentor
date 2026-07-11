@@ -22,13 +22,22 @@ on:
   workflow_dispatch:
     inputs:
       dry_run:
-        description: "Dry run (--dry-run flag on npm publish)"
+        description: "Dry run (--dry-run flag on npm publish); no OTP needed"
         required: false
         default: "true"
         type: choice
         options: ["true", "false"]
+      otp:
+        description: "npm 6-digit OTP from authenticator; REQUIRED when dry_run=false. Granular access tokens require OTP per publish; classic Automation tokens (which bypass OTP) are being sunset per npm's 2026-07 policy."
+        required: false
+        default: ""
+        type: string
   push:
     tags:
+      # Tag-triggered publishes require a classic Automation token in
+      # NPM_TOKEN because there is no way to interactively provide OTP at
+      # tag time. If NPM_TOKEN is a granular token, tag publishes will
+      # fail with EOTP; use workflow_dispatch with the otp input instead.
       - "attest-core-v*"
 
 concurrency:
@@ -80,15 +89,38 @@ jobs:
             fi
           done
 
+      - name: Validate OTP presence for real publish
+        if: github.event_name == 'workflow_dispatch' && inputs.dry_run == 'false'
+        run: |
+          if [ -z "${{ inputs.otp }}" ]; then
+            echo "::error::dry_run=false requires the otp input (6-digit code from your authenticator)."
+            echo "::error::Fire again with: gh workflow run publish-attest-core.yml -F dry_run=false -F otp=NNNNNN"
+            exit 1
+          fi
+          if ! [[ "${{ inputs.otp }}" =~ ^[0-9]{6}$ ]]; then
+            echo "::error::otp must be exactly 6 digits, got '${{ inputs.otp }}'"
+            exit 1
+          fi
+
       - name: npm publish --provenance
         working-directory: packages/attest-core
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_OTP: ${{ inputs.otp }}
         run: |
+          # dry_run=true: no OTP, no upload; verifies packaging + files[].
+          # dry_run=false: --otp forwards the 6-digit code from the workflow
+          # input to npm registry. TOTP codes are 30-second windows; npm
+          # accepts the previous window too (~60s total). Time from workflow
+          # queue to this step is ~40-50s, so fire with a FRESH code.
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.dry_run }}" = "true" ]; then
             echo "DRY RUN — pack only, no upload"
             npm publish --provenance --access public --dry-run
+          elif [ -n "$NPM_OTP" ]; then
+            npm publish --provenance --access public --otp="$NPM_OTP"
           else
+            # Tag-trigger path (no OTP available). Requires an Automation
+            # token in NPM_TOKEN; will EOTP-fail on granular tokens.
             npm publish --provenance --access public
           fi
 

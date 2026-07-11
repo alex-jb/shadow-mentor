@@ -31,18 +31,26 @@ at `npm publish` with an authentication error.
 
 ## First publish (recommended path)
 
+npm's Granular Access Tokens (the current default) require an OTP on every
+publish. The workflow accepts a `otp` input for that. If you happen to have
+a classic Automation token in `NPM_TOKEN`, the OTP is not needed — but npm
+is sunsetting Automation tokens (Jan 2027 for direct publishing per the
+banner on npmjs.com token pages).
+
 ```bash
 # 1. Local dry-run to catch packaging mistakes before hitting the wire.
 cd packages/attest-core
 npm publish --dry-run
 # Read the tarball contents. Confirm anchors.js is present.
 
-# 2. Trigger the workflow manually with dry_run=true.
+# 2. Trigger the workflow manually with dry_run=true (no OTP needed).
 gh workflow run publish-attest-core.yml -F dry_run=true
 gh run watch # confirm green
 
-# 3. Trigger again with dry_run=false.
-gh workflow run publish-attest-core.yml -F dry_run=false
+# 3. Trigger real publish with a FRESH OTP.
+#    Open your npm authenticator, copy the 6-digit code, fire within 15s
+#    so the code stays valid through the workflow queue + test gate + publish.
+gh workflow run publish-attest-core.yml -F dry_run=false -F otp=123456
 gh run watch
 
 # 4. Confirm on npmjs.com.
