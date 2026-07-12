@@ -1,14 +1,24 @@
 {
   "name": "@shadow/adapter-claude-code",
-  "version": "0.1.0-wip",
+  "version": "0.1.0",
   "private": true,
-  "description": "Claude Code hooks adapter for shadow-attest-core. Every Claude Code session becomes a signed, hash-chained evidence bundle. WIP — implementation lands 2026-07-12 weekend after research grounding in code.claude.com/docs/en/hooks was completed 2026-07-12.",
+  "description": "Claude Code hooks adapter for shadow-attest-core. Every Claude Code session becomes a signed, hash-chained evidence bundle you can hand an auditor. Verified against code.claude.com hooks reference 2026-07-12. Alex-validated on live session: pending.",
   "license": "MIT",
   "author": "Alex Xiaoyu Ji <xji1@mail.yu.edu>",
   "type": "module",
   "engines": {
     "node": ">=20"
   },
+  "bin": {
+    "shadow-record": "bin/shadow-record.mjs"
+  },
+  "main": "lib/mapping.js",
+  "files": [
+    "bin/shadow-record.mjs",
+    "bin/init.mjs",
+    "lib/mapping.js",
+    "README.md"
+  ],
   "dependencies": {
     "shadow-attest-core": "^2.0.0"
   },
