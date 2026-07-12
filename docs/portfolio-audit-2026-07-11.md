@@ -189,9 +189,27 @@ Archived list (in execution order):
 
 ## Follow-up decisions still pending Alex
 
-1. `vibex-video-extractor` + `vibex-video-decoder-skill` — still used or superseded? PARKED, not archived tonight.
+1. ~~`vibex-video-extractor` + `vibex-video-decoder-skill` — still used or superseded?~~ **Resolved 2026-07-11: Alex confirmed KEEP.**
 2. **36 visible is above the 12 target.** The remaining 33 KEEPs are thesis-aligned; further reduction requires cutting from the SFOS agent-* stack (8 agents), which would break the "10-agent" claim. Recommended path: enforce the 12-count via A2 pins (present 6 flagships prominently), keep 33 KEEPs discoverable but not featured.
-3. A1/A2/A4/A5 not yet started — waiting for Alex's confirmation to proceed after reviewing this audit.
+3. ~~A1/A2/A4/A5 not yet started~~ **A4 executed 2026-07-12: 37/37 KEEP repo descriptions rewritten per formula. See §A4 execution log below.**
+
+## A4 execution log — 2026-07-12
+
+Batch executed via `/tmp/execute-a4-descriptions.py` calling `gh repo edit --description` per repo. All 37 KEEP + fork-with-PR descriptions rewritten to `[quantified capability] + [artifact form] + [host/compat matrix]` formula. Char counts 83-185, GitHub UI-safe.
+
+**Strategic reframes (5):**
+- `shadow-mentor` — banking-vertical → evidence-layer positioning (matches v3 pivot + npm publish 2026-07-11)
+- `awesome-mcp-servers` fork — bookmark → "3 open PRs to punkpeye upstream" (contribution evidence)
+- `skills` fork — bookmark → "PR #1275 to anthropics upstream" (contribution evidence)
+- `council-for-slack-2026` — dropped stale "targets 7/13" date, positioned as submission
+- `council-diff` — added TS/pip sibling + provider matrix per formula
+
+**Tightening (32):** each got explicit host/compat (pip · MCP · MIT · Claude Code skill · Next.js 16 · etc.) + quantified capability. No repositioning, just formula compliance.
+
+Remaining P0 items:
+- A1 profile README + bio (needs `alex-jb/alex-jb` special repo created)
+- A2 pin curation (GitHub UI, 6 pins per brief)
+- A5 trading disclaimers + secret scan
 
 ## Reversibility
 
