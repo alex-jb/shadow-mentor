@@ -207,9 +207,44 @@ Batch executed via `/tmp/execute-a4-descriptions.py` calling `gh repo edit --des
 **Tightening (32):** each got explicit host/compat (pip · MCP · MIT · Claude Code skill · Next.js 16 · etc.) + quantified capability. No repositioning, just formula compliance.
 
 Remaining P0 items:
-- A1 profile README + bio (needs `alex-jb/alex-jb` special repo created)
-- A2 pin curation (GitHub UI, 6 pins per brief)
-- A5 trading disclaimers + secret scan
+- ~~A5 trading disclaimers + secret scan~~ **A5 executed 2026-07-12: see below**
+- A1 profile README + bio **drafted 2026-07-12 to `docs/PROFILE_README_DRAFT.md`** (Alex copies into `alex-jb/alex-jb` when he creates that special repo)
+- A2 pin curation (GitHub UI, 6 pins per brief — see PROFILE_README_DRAFT.md §GitHub UI actions for the pin order)
+
+## A5 execution log — 2026-07-12
+
+### Secret scan (35 KEEP repos, 2 forks skipped)
+
+- 33 repos: GitHub secret scanning enabled + **0 open alerts**
+- 2 repos: secret scanning was disabled — **NOW ENABLED** via `gh api PATCH`:
+  - `shadow-mentor` — enabled 2026-07-12
+  - `council-for-slack-2026` — enabled 2026-07-12
+- Local grep on `shadow-mentor` for common token prefixes (sk-ant-, sk-, ghp_, gho_, npm_, AKIA): **zero matches** across .js/.mjs/.ts/.py/.json/.env/.yml files.
+
+**Result: 0 secrets currently committed anywhere in the KEEP set.**
+
+### Trading disclaimers (6 market-facing repos)
+
+Added `## ⚠️ Educational research, not financial advice` block near top of
+README on:
+- orallexa-ai-trading-agent
+- spacex-ipo-tracker
+- capstone-orallexa-calibration
+- memory-wall-tracker
+- whocalleditright
+- polymarket-brier-skill
+
+Script: `/tmp/execute-a5-disclaimers.sh` (idempotent — re-runs skip repos that
+already have the block). Verified live on orallexa-ai-trading-agent README.
+
+Boilerplate:
+> This repository is published for educational and research purposes.
+> Nothing here is investment, trading, or financial advice. The models,
+> signals, and outputs shown are experimental and may be wrong. Past
+> performance does not predict future results. Do not use any output as
+> the basis for a real trading, investment, or hedging decision without
+> independent professional verification. The author accepts no liability
+> for losses.
 
 ## Reversibility
 
