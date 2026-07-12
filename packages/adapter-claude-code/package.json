@@ -1,0 +1,29 @@
+{
+  "name": "@shadow/adapter-claude-code",
+  "version": "0.1.0-wip",
+  "private": true,
+  "description": "Claude Code hooks adapter for shadow-attest-core. Every Claude Code session becomes a signed, hash-chained evidence bundle. WIP — implementation lands 2026-07-12 weekend after research grounding in code.claude.com/docs/en/hooks was completed 2026-07-12.",
+  "license": "MIT",
+  "author": "Alex Xiaoyu Ji <xji1@mail.yu.edu>",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "shadow-attest-core": "^2.0.0"
+  },
+  "keywords": [
+    "claude-code",
+    "hooks",
+    "evidence",
+    "attestation",
+    "ed25519",
+    "hash-chain",
+    "adapter"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alex-jb/shadow-mentor.git",
+    "directory": "packages/adapter-claude-code"
+  }
+}

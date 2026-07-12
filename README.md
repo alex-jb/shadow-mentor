@@ -1,8 +1,18 @@
 # Shadow
 
-A cryptographic audit-evidence layer for AI-assisted credit decisions.
+**A cryptographic evidence layer for AI agents.** Every session becomes a signed, hash-chained record you can hand an auditor. Verify offline with a single HTML file.
 
-Shadow signs each credit decision — verdict, adverse-action reason codes, model manifest, dictionary hash — with Ed25519, chains them together with SHA-256, and lets a third party verify months later that the decision was not silently rewritten. The verdict engine itself is deterministic rules; the LLM personas produce prose rationale for human reviewers but cannot change the verdict.
+> *Same wire, opposite guarantee.* `claude-mem` is memory for the agent. Shadow is evidence for the auditor. Both hook the same Claude Code events. Different jobs.
+
+**Why now** — three external signals converged 2026-07:
+
+- **Anthropic Claude Code v2.1.205 (2026-07)** added auto-mode rules preventing tampering with session transcript files — Anthropic itself now treats session integrity as a first-class concern. Shadow ships the receipt for the integrity Anthropic quietly acknowledged. [changelog](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)
+- **Terry Tao publicly used a coding agent to rebuild an app (2026-07-11)** — a Fields medalist blessing the category means the "are AI coding tools serious?" argument is over. What comes next is trust and auditability. [terrytao.wordpress.com](https://terrytao.wordpress.com/2026/07/11/old-and-new-apps-via-modern-coding-agents/)
+- **arxiv 2606.04990 — "From Agent Traces to Trust" survey** frames *execution provenance + evidence tracing* as the emerging trust primitive for LLM agents. Shadow ships the working code for the category the literature just named. [arxiv](https://arxiv.org/html/2606.04990v1)
+
+**First vertical**: AI-assisted credit decisions. Shadow signs each decision — verdict, adverse-action reason codes, model manifest, dictionary hash — with Ed25519, chains them with SHA-256, and lets a third party verify months later that the decision was not silently rewritten. The verdict engine itself is deterministic rules; the LLM personas produce prose rationale for human reviewers but cannot change the verdict.
+
+**Second vertical (in progress, target 2026-08-02)**: session-level evidence bundles via `@shadow/adapter-claude-code` — every Claude Code session auto-produces a signed bundle. See [`packages/adapter-claude-code/`](./packages/adapter-claude-code/).
 
 **Status**: pre-1.0. Not audited. Not a compliance product — it produces evidence that supports a compliance narrative.
 
