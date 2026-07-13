@@ -28,6 +28,68 @@ body { min-height: 100vh; display: flex; flex-direction: column; }
    before a bundle is loaded. */
 [hidden] { display: none !important; }
 
+/* ── XREAL One Pro in-glasses mode (?xreal=1) ────────────────
+   Research anchor: 2026-07-13 · XREAL One Pro delivers ~33 PPD via
+   birdbath optics (Sony 0.55" micro-OLED, 1920×1080 per eye, 57°
+   diagonal FOV, ~4m fixed focal plane). Tunings below match Nielsen
+   Norman's 40-char AR text ceiling + WCAG AAA contrast + fixed-focal-
+   plane motion advice. See docs/wed-demo-checklist-2026-07-16.md
+   §"XREAL research findings" for source URLs. */
+[data-xreal="true"] {
+  /* Body text floor: ~30 arcmin at typical viewing distance. */
+  --xreal-body: 17px;
+  --xreal-mono: 14px;
+  --xreal-label: 12px;
+  --xreal-heading: 20px;
+  /* Higher-contrast palette. #E8ECF3 not pure white (#FFF blooms). */
+  --bg: #0B0F1A;
+  --fg: #E8ECF3;
+  --fg-mute: #A6B1C0;
+  --line: #2A3241;
+  --accent: #A0E0FF;  /* boosted signal cyan for brightness */
+  --tamper: #FF7A96;
+}
+
+body[data-xreal="true"] {
+  font-size: var(--xreal-body);
+  -webkit-font-smoothing: antialiased;
+}
+[data-xreal="true"] .stage {
+  max-width: 1120px;   /* narrower column: fits sweet spot of 57° FOV */
+}
+[data-xreal="true"] .hdr-title { font-size: var(--xreal-heading); font-weight: 600; }
+[data-xreal="true"] .tl-label { font-size: var(--xreal-body); font-weight: 500; letter-spacing: 0.01em; }
+[data-xreal="true"] .tl-summary { font-size: var(--xreal-mono); }
+[data-xreal="true"] .tl-seq { font-size: var(--xreal-label); }
+[data-xreal="true"] .tl-icon { font-size: 22px; }
+[data-xreal="true"] .tl-row { padding: 14px 18px; }
+
+[data-xreal="true"] .verdict { font-size: var(--xreal-body); }
+[data-xreal="true"] .verdict-state { font-size: var(--xreal-body); padding: 4px 14px; }
+[data-xreal="true"] .btn { font-size: var(--xreal-body); padding: 8px 18px; font-weight: 500; }
+
+[data-xreal="true"] .insp-type { font-size: var(--xreal-heading); }
+[data-xreal="true"] .insp-field-val { font-size: var(--xreal-mono); }
+[data-xreal="true"] .insp-field-key { font-size: var(--xreal-label); }
+[data-xreal="true"] .insp-json { font-size: var(--xreal-mono); line-height: 1.6; }
+
+[data-xreal="true"] .caption { font-size: var(--xreal-body); padding: 18px 22px; }
+[data-xreal="true"] .caption-key { font-size: var(--xreal-label); }
+[data-xreal="true"] .caption-val { line-height: 1.55; }
+
+[data-xreal="true"] .hdr-badge { font-size: var(--xreal-label); padding: 3px 10px; }
+
+/* Kill vergence-accommodation conflict on fixed 4m focal plane.
+   Cap animation to a hard 150ms; anything slower reads as depth
+   change and hurts. */
+[data-xreal="true"] * {
+  transition-duration: 150ms !important;
+  animation-duration: 400ms !important;
+}
+[data-xreal="true"] .tl-row.tampered.flash {
+  animation-duration: 300ms !important;
+}
+
 /* ── header ─────────────────────────────────────────────── */
 .hdr {
   display: flex; align-items: center; justify-content: space-between;

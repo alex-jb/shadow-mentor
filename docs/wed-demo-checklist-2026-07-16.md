@@ -123,17 +123,30 @@ institution colludes to rewrite', LOG_ANCHORED. Shadow ships all three."
 
 ### 5 · XREAL flourish (2-3 min, hardware)
 
-Only after the story is told. Plug in XREAL One Pro (USB-C DP-Alt to
-Mac). Get a mirrored display in glass.
+Only after the story is told. Plug XREAL One Pro USB-C into any Mac
+port (no adapter, no software install — Nebula for Mac was
+discontinued 2026, all display config is native macOS + on-glass
+buttons). System Settings → Displays → Mirror + set 60 Hz.
 
-Show the same replay demo through the glasses. The tampered-event
-cascade reads legibly in AR. Don't oversell — it's the same 2D UI,
-just spatial. That's the point.
+Open the replay in xreal mode:
+```
+open "http://localhost:8765/index.html?xreal=1"
+```
+The `?xreal=1` param already bumps fonts + contrast + caps motion for
+33 PPD birdbath optics (the "90 PPD" spec you'll see in some places
+is wrong — actual is 1920÷57° ≈ 33 PPD). Cmd-+ once or twice for
+comfort. Show the tampered-event cascade through the glasses.
 
 **Say**: "Same evidence, same verifier, same signing key — the auditor
-can walk around it. When we ship the 3D chain-corridor next quarter,
-it'll be this same JSON, this same crypto, just rendered as a spatial
-chain of blocks you can step through."
+gets a 171-inch virtual monitor with the chain-break visualization
+front and center. When we ship the 3D chain-corridor next quarter,
+this JSON, this crypto, rendered as a spatial chain of blocks you can
+step through. Today: 2D but in-glasses."
+
+**Do NOT** promise WebXR immersive-ar in this demo — that path doesn't
+work on macOS Chrome (confirmed 2026-07-13 research). It's an
+Android/ARCore-only WebXR path. The XREAL Eye add-on unlocks cameras
+for 6DoF but isn't required for a tamper-button demo.
 
 ### 6 · Close (60 sec)
 

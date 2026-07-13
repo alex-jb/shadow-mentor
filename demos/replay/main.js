@@ -3,11 +3,28 @@
 // docs/spec/m5-replay-2d-design.md.
 //
 // Runs directly from `file://`. No build. No CDN. No network.
+//
+// URL params:
+//   ?xreal=1  — activate in-glasses legibility tuning (2026-07-13 research):
+//     - Bigger fonts (33 PPD birdbath optics floor)
+//     - Higher contrast (never pure white; #E8ECF3 target)
+//     - Narrower content column (≤ 68ch, Nielsen Norman AR ceiling)
+//     - Reduced motion (fixed ~4m focal plane, avoid vergence-accommodation
+//       conflict)
+//     Set the flag by opening `index.html?xreal=1` or by paying the Chrome
+//     cmdline zoom cost:  open -na "Google Chrome" --args --force-device-scale-factor=1.25
 
 import { verifyBundleInBrowser } from "./verify-browser.js";
 import { renderTimeline, selectRow, applyTamperVisual, clearTamperVisual } from "./timeline.js";
 import { renderInspector, renderInspectorEmpty } from "./inspector.js";
 import { clonePristine, runTamperCycle } from "./tamper.js";
+
+// Read URL params before anything renders. `?xreal=1` flips a body attribute
+// that a matching CSS rule ([data-xreal="true"]) uses for the overrides.
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get("xreal") === "1") {
+  document.body.setAttribute("data-xreal", "true");
+}
 
 const el = {
   drop: document.getElementById("drop"),

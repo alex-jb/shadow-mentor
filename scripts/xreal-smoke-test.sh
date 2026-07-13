@@ -46,23 +46,41 @@ echo "  server: http://localhost:$PORT/index.html"
 echo
 
 # ─── Step 4: open the demo in the default browser ────────
-echo "→ Step 4/6: opening M5 replay in default browser"
-open "http://localhost:$PORT/index.html"
+echo "→ Step 4/6: opening M5 replay in default browser (xreal=1 mode)"
+# `?xreal=1` activates the in-glasses legibility overrides in styles.css:
+# bigger fonts, higher contrast, motion capped for 33 PPD birdbath optics.
+# For persistent 125% device zoom without Cmd-+, use:
+#   open -na "Google Chrome" --args --force-device-scale-factor=1.25 \
+#     "http://localhost:$PORT/index.html?xreal=1"
+open "http://localhost:$PORT/index.html?xreal=1"
 sleep 1
 echo
 
 # ─── Step 5: XREAL One Pro connection checklist ──────────
 echo "→ Step 5/6: XREAL One Pro connection (manual)"
 cat <<'EOF'
-  1. Plug XREAL One Pro USB-C cable into the Mac.
-  2. macOS should recognize the glasses as an external display.
-  3. Confirm mirror-mode is on (System Settings → Displays → Arrangement →
-     "Mirror Displays" checkbox ON).
-  4. Wear the glasses. The M5 replay tab should be visible in-lens.
-  5. If text is not legible at reading distance:
-     - Cmd-+ two or three times to zoom in the browser
-     - The XREAL default is ~90 PPD; adjust Mac display scaling under
-       System Settings → Displays → Larger Text if needed
+  1. Plug XREAL One Pro USB-C cable into ANY Mac USB-C port.
+     (Confirmed 2026-07-13: no adapter needed on M1-M4, DP-Alt Mode auto.)
+     (There is NO XREAL software to install on macOS. Nebula for Mac was
+     discontinued. All display config is native macOS + on-glass buttons.)
+  2. macOS should recognize the glasses as a standard external 1920×1080
+     display, 120 Hz.
+  3. Confirm mirror-mode: System Settings → Displays → click the XREAL
+     display → "Use as:" → Mirror Built-in Display.
+  4. Force 60 Hz to avoid stereo-mismatch double-vision:
+     System Settings → Displays → Refresh Rate → 60 Hz.
+  5. Wear the glasses. The M5 replay tab should be a 171" virtual window.
+  6. Legibility fixes (in priority order):
+     a. The ?xreal=1 URL param already bumps fonts + contrast — verified.
+     b. Cmd-+ two extra times gets you to comfortable reading zoom
+        (birdbath optics deliver ~33 PPD, not 90 as some sources claim).
+     c. Electrochromic auto-dim can darken in bright rooms; hold the
+        right-temple Quick Button to override.
+     d. WebXR immersive-ar does NOT work on macOS Chrome (confirmed
+        2026-07-13). Your demo renders as a flat browser window in-lens,
+        which is what you want for a Tamper-button demo anyway.
+  7. XREAL Eye ($99 add-on) NOT required for this demo. It unlocks
+     cameras + 6DoF anchoring for spatial capture, not text legibility.
 EOF
 echo
 
