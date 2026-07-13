@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shadow — evidence replay</title>
+<link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+<header class="hdr">
+  <div class="hdr-brand">
+    <span class="hdr-dot"></span>
+    <span class="hdr-title">Shadow — evidence replay</span>
+  </div>
+  <div class="hdr-meta" id="hdr-meta">
+    <span class="hdr-badge">no bundle loaded</span>
+  </div>
+</header>
+
+<main class="stage">
+  <!-- ─── STEP 1: drop a bundle ────────────────────────────── -->
+  <section class="drop" id="drop">
+    <div class="drop-box" id="drop-box" tabindex="0">
+      <div class="drop-icon">⬇</div>
+      <div class="drop-title">Drop <code>.json</code> bundle here</div>
+      <div class="drop-sub">
+        or <button class="drop-pick" id="drop-pick" type="button">choose a file</button>
+      </div>
+      <input type="file" id="drop-input" accept=".json,.bundle,application/json" hidden />
+      <p class="drop-note">
+        Everything runs locally in this tab. No network. No upload. Close the tab and it's gone.
+      </p>
+    </div>
+
+    <details class="drop-key">
+      <summary>Public key (optional — required for verify)</summary>
+      <p class="drop-key-hint">
+        Paste the signer's Ed25519 public key in PEM format
+        (<code>-----BEGIN PUBLIC KEY-----</code>). Without it the timeline still
+        renders but the Tamper demo can't run.
+      </p>
+      <textarea id="pub-key" rows="6" spellcheck="false"
+        placeholder="-----BEGIN PUBLIC KEY-----&#10;...&#10;-----END PUBLIC KEY-----"></textarea>
+    </details>
+  </section>
+
+  <!-- ─── STEP 2: timeline + inspector + tamper ──────────────
+       Hidden until a bundle is loaded. -->
+  <section class="workshop" id="workshop" hidden>
+    <div class="controls">
+      <div class="verdict" id="verdict">
+        <span class="verdict-label">Verify</span>
+        <span class="verdict-state" id="verdict-state">pending</span>
+      </div>
+      <div class="controls-actions">
+        <button id="btn-tamper" class="btn btn-danger" type="button">
+          Tamper &amp; verify
+        </button>
+        <button id="btn-reset" class="btn" type="button" disabled>
+          Reset
+        </button>
+      </div>
+    </div>
+
+    <div class="split">
+      <ol class="timeline" id="timeline" aria-label="Event timeline"></ol>
+      <aside class="inspector" id="inspector">
+        <div class="inspector-empty">
+          Select an event on the left to inspect.
+        </div>
+      </aside>
+    </div>
+
+    <div class="caption" id="tamper-caption" hidden aria-live="polite"></div>
+  </section>
+</main>
+
+<script type="module" src="./main.js"></script>
+</body>
+</html>

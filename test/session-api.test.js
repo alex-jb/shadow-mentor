@@ -29,11 +29,21 @@ function baseHeaderParams() {
 }
 
 
-test("EVENT_TYPES enum has exactly the 13 spec kinds and is frozen", () => {
-  assert.equal(EVENT_TYPES.length, 13);
+test("EVENT_TYPES enum contains the 13 spec kinds + 5 M2.1 adapter kinds and is frozen", () => {
+  // 13 original spec kinds + 5 hook-specific kinds added for the Claude
+  // Code adapter (M2.1, 2026-07-13): prompt, tool_error, subagent_stop,
+  // turn_end, pre_compact. See packages/attest-core/session.js for the
+  // rationale — hook semantics that user_message + error + model_output
+  // can't express cleanly.
+  assert.equal(EVENT_TYPES.length, 18);
   assert.ok(EVENT_TYPES.includes("session_start"));
   assert.ok(EVENT_TYPES.includes("model_call"));
   assert.ok(EVENT_TYPES.includes("session_end"));
+  assert.ok(EVENT_TYPES.includes("prompt"));
+  assert.ok(EVENT_TYPES.includes("tool_error"));
+  assert.ok(EVENT_TYPES.includes("subagent_stop"));
+  assert.ok(EVENT_TYPES.includes("turn_end"));
+  assert.ok(EVENT_TYPES.includes("pre_compact"));
   assert.ok(Object.isFrozen(EVENT_TYPES));
 });
 
