@@ -4,11 +4,15 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { generateKeyPairSync } from "node:crypto";
 
-import handler from "../api/evidence-events.js";
+import handler from "../api/evidence/events.js";
 import { verifyBundle } from "../packages/attest-core/session.js";
 
-function mockReq(body = {}, method = "POST") {
-  return { method, body, headers: { "content-type": "application/json" } };
+function mockReq(body = {}, method = "POST", extraHeaders = {}) {
+  return {
+    method,
+    body,
+    headers: { "content-type": "application/json", ...extraHeaders },
+  };
 }
 
 function mockRes() {
@@ -193,6 +197,103 @@ test("evidence-events sets no-store cache header", async () => {
     const res = mockRes();
     await handler(mockReq(validBody), res);
     assert.equal(res.headers["Cache-Control"], "no-store");
+  } finally {
+    env.restore();
+  }
+});
+
+
+// F2 — DoS defense: too many events → 413.
+test("evidence-events returns 413 when events array exceeds MAX_EVENTS_PER_REQUEST", async () => {
+  const env = setKeyEnv();
+  try {
+    const events = Array.from({ length: 5001 }).map(() => ({
+      event_type: "tool_call",
+      actor: "agent",
+      payload: {},
+    }));
+    const res = mockRes();
+    await handler(mockReq({ session: validBody.session, events }), res);
+    assert.equal(res.statusCode, 413);
+    assert.match(res.body.error, /too many events/);
+    assert.equal(res.body.max_events_per_request, 5000);
+    assert.equal(res.body.got, 5001);
+  } finally {
+    env.restore();
+  }
+});
+
+
+// F3 — Idempotency-Key derives a stable session_id when body doesn't specify one.
+test("evidence-events derives session_id from Idempotency-Key header", async () => {
+  const env = setKeyEnv();
+  try {
+    const key = "user-supplied-retry-key-abc123";
+    // strip explicit session_id from body so the derivation kicks in.
+    const { session_id: _drop, ...sessionNoId } = validBody.session;
+    void _drop;
+    const body = { session: sessionNoId, events: validBody.events };
+
+    const res1 = mockRes();
+    await handler(mockReq(body, "POST", { "idempotency-key": key }), res1);
+    assert.equal(res1.statusCode, 200, JSON.stringify(res1.body));
+    const sid1 = res1.body.session_id;
+    assert.ok(sid1, "expected top-level session_id on response");
+
+    // Retry with same key + same body → same derived session_id.
+    const res2 = mockRes();
+    await handler(mockReq(body, "POST", { "idempotency-key": key }), res2);
+    assert.equal(res2.statusCode, 200);
+    assert.equal(res2.body.session_id, sid1, "same key must produce same session_id");
+  } finally {
+    env.restore();
+  }
+});
+
+
+// F3 — body session_id wins over Idempotency-Key header (Stripe convention).
+test("evidence-events body session_id wins over Idempotency-Key header", async () => {
+  const env = setKeyEnv();
+  try {
+    const explicitId = "explicit-session-id-from-caller";
+    const body = {
+      session: { ...validBody.session, session_id: explicitId },
+      events: validBody.events,
+    };
+    const res = mockRes();
+    await handler(mockReq(body, "POST", { "idempotency-key": "some-other-key" }), res);
+    assert.equal(res.statusCode, 200);
+    assert.equal(res.body.session_id, explicitId);
+  } finally {
+    env.restore();
+  }
+});
+
+
+// F4 — top-level session_id mirror for common tooling.
+test("evidence-events response includes top-level session_id matching bundle header", async () => {
+  const env = setKeyEnv();
+  try {
+    const res = mockRes();
+    await handler(mockReq(validBody), res);
+    assert.equal(res.statusCode, 200);
+    assert.ok(res.body.session_id, "expected top-level session_id");
+    assert.equal(res.body.session_id, res.body.bundle.header.session_id);
+  } finally {
+    env.restore();
+  }
+});
+
+
+// F7 — X-Shadow-Bundle-Version + X-Shadow-Session-Id response headers.
+test("evidence-events sets X-Shadow-Bundle-Version and X-Shadow-Session-Id response headers", async () => {
+  const env = setKeyEnv();
+  try {
+    const res = mockRes();
+    await handler(mockReq(validBody), res);
+    assert.equal(res.statusCode, 200);
+    assert.equal(res.headers["X-Shadow-Bundle-Version"], "1");
+    assert.equal(res.headers["X-Shadow-Session-Id"], res.body.session_id);
   } finally {
     env.restore();
   }

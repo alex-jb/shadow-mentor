@@ -19,37 +19,56 @@
 //       "models": [{ "model_id": "...", "provider": "..." }],
 //       "environment_fingerprint": { "os": "...", "node_version": "..." },
 //       "key_id": "prod-2026-Q3",
-//       "session_id": "..."          // optional, else random
+//       "session_id": "..."          // optional; else random or Idempotency-Key-derived
 //     },
 //     "events": [
 //       { "event_type": "user_message", "actor": "user", "payload": {...} },
-//       { "event_type": "model_call", "actor": "model", "payload": {...} },
+//       { "event_type": "model_call",   "actor": "model", "payload": {...} },
 //       ...
 //     ]
 //   }
 //
-// Response 200:
-//   {
-//     "bundle": { bundle_version: 1, spec_version: "shadow-evidence/v1", ... },
-//     "verify_hint": "verify with shadow-attest-core verifyBundle or verify.html"
-//   }
+// Request headers of note:
+//   - Idempotency-Key: <string> — Stripe-style. When session.session_id is
+//     absent, the server derives one from SHA-256(Idempotency-Key)[:32] so
+//     retries with the same key + same body produce byte-identical bundles.
+//     Explicit session.session_id in the body always wins over the header.
 //
-// Response 400 on any structural validation failure (missing session/events,
-// unknown event_type, unknown actor, or invalid header shape).
+// Response 200:
+//   Body:
+//     {
+//       "bundle": { bundle_version: 1, ... },
+//       "session_id": "<mirror of bundle.header.session_id for correlation>",
+//       "verify_hint": "..."
+//     }
+//   Headers:
+//     X-Shadow-Bundle-Version: 1       (bundle wire-format version)
+//     X-Shadow-Session-Id: <session_id>
+//
+// Response 400 — structural validation failed.
+// Response 413 — events array exceeds MAX_EVENTS_PER_REQUEST.
+// Response 500 — server signing key not configured.
 
+import { createHash } from "node:crypto";
 import {
   createSession,
   appendEvent,
   sealSession,
   EVENT_TYPES,
-} from "../packages/attest-core/session.js";
+} from "../../packages/attest-core/session.js";
 
+const MAX_EVENTS_PER_REQUEST = 5000;
+const BUNDLE_WIRE_VERSION = "1";
 const ALLOWED_ACTORS = new Set(["agent", "user", "model", "tool", "system"]);
+
+function deriveSessionIdFromIdempotencyKey(key) {
+  return createHash("sha256").update(String(key)).digest("hex").slice(0, 32);
+}
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, Idempotency-Key");
   res.setHeader("Cache-Control", "no-store");
 
   if (req.method === "OPTIONS") return res.status(200).end();
@@ -83,8 +102,26 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "events array must contain at least one event" });
   }
 
+  // F2 — DoS defense: reject oversized event batches BEFORE structural loops.
+  if (eventList.length > MAX_EVENTS_PER_REQUEST) {
+    return res.status(413).json({
+      error: "too many events in one request",
+      max_events_per_request: MAX_EVENTS_PER_REQUEST,
+      got: eventList.length,
+      remediation: "split the session into multiple requests or use partial-bundle sealing library-side",
+    });
+  }
+
   // Structural validation before we bother signing.
-  const { agent, models, environment_fingerprint, key_id, session_id, started_at_utc } = sessionInput;
+  const {
+    agent,
+    models,
+    environment_fingerprint,
+    key_id,
+    session_id: bodySessionId,
+    started_at_utc,
+  } = sessionInput;
+
   if (!agent || !agent.name || !agent.version) {
     return res.status(400).json({ error: "session.agent.name and session.agent.version required" });
   }
@@ -113,6 +150,14 @@ export default async function handler(req, res) {
     }
   }
 
+  // F3 — Idempotency-Key → session_id derivation (only when body doesn't
+  // specify session_id explicitly). Body wins over header per Stripe convention.
+  let effectiveSessionId = bodySessionId;
+  const idempotencyKey = req.headers?.["idempotency-key"];
+  if (!effectiveSessionId && idempotencyKey) {
+    effectiveSessionId = deriveSessionIdFromIdempotencyKey(idempotencyKey);
+  }
+
   let bundle;
   try {
     const s = createSession({
@@ -121,7 +166,7 @@ export default async function handler(req, res) {
       environmentFingerprint: environment_fingerprint,
       keyId: key_id ?? KEY_ID_DEFAULT,
       privateKey: PRIVATE_KEY_PEM,
-      sessionId: session_id,
+      sessionId: effectiveSessionId,
       startedAtUtc: started_at_utc,
     });
 
@@ -144,8 +189,15 @@ export default async function handler(req, res) {
     });
   }
 
+  // F4 + F7 — mirror session_id at top level for client correlation + version
+  // header so clients don't have to parse the body to know wire-format age.
+  const finalSessionId = bundle?.header?.session_id ?? null;
+  res.setHeader("X-Shadow-Bundle-Version", BUNDLE_WIRE_VERSION);
+  if (finalSessionId) res.setHeader("X-Shadow-Session-Id", finalSessionId);
+
   return res.status(200).json({
     bundle,
+    session_id: finalSessionId,
     verify_hint: "verify offline with shadow-attest-core verifyBundle() or the drag-in verify.html at the repo root",
   });
 }

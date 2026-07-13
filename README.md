@@ -170,7 +170,7 @@ Loredana C. Levitchi — regulatory-domain review and BRD authorship for the ris
 | M1.2 10k-event perf (< 5 s target) | ✅ 69 ms actual | `test/session-perf-10k.test.js` |
 | M2.1 Claude Code hooks adapter | 🚧 next | `packages/adapter-claude-code/` (planned) |
 | M2.2 OpenTelemetry GenAI adapter | 🚧 planned | `packages/adapter-otel/` (planned) |
-| M2.3 generic HTTP ingest | ✅ shipped | `api/evidence-events.js` |
+| M2.3 generic HTTP ingest | ✅ shipped | `api/evidence/events.js` |
 | M3 external anchoring (RFC 3161 + Rekor) | 🚧 planned | — |
 | M4 verify.html static offline verifier | ✅ shipped | [`verify.html`](./verify.html), [`.github/actions/shadow-verify`](./.github/actions/shadow-verify) |
 | M4 shadow-verify CLI + GitHub Action | ✅ shipped | `bin/shadow-verify.mjs`, `.github/actions/shadow-verify/` |
