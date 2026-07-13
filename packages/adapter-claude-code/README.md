@@ -84,12 +84,41 @@ npx @shadow/adapter-claude-code init
 ```
 
 Every subsequent Claude Code session auto-produces
-`~/.shadow/sessions/<session_id>.bundle` on `SessionEnd`. Verify with:
+`~/.shadow/sessions/<session_id>/bundle.json` on `SessionEnd`. Verify with:
 
 ```bash
-npx shadow-verify ~/.shadow/sessions/<id>.bundle \
+npx shadow-verify ~/.shadow/sessions/<id>/bundle.json \
   --public-key ~/.shadow/keys/public.pem
 ```
+
+### Fallback when `SessionEnd` didn't fire
+
+Ctrl+D, network kill, or an OS-level SIGKILL means the `SessionEnd` hook
+never runs, so no seal is written. The store still has every event that
+made it to disk — you can seal manually:
+
+```bash
+shadow-record seal <session_id>            # normal seal, auto-appends session_end
+shadow-record seal <session_id> --partial  # partial seal, session_ended_at_utc: null
+```
+
+Running `seal` twice is idempotent — the second invocation rebuilds
+`bundle.json` from the persisted seal line without re-signing.
+
+### PATH gotcha for hooks
+
+Claude Code spawns hooks via `/bin/sh`, which does **not** inherit your
+zsh/bash shell PATH. If you install this package via `npm link` and your
+`shadow-record` binary lives in a shell-only path (like
+`~/.local/bin`), every hook will fail silently with
+`shadow-record: command not found`. Two fixes:
+
+- Wire the hook command to an **absolute** path, e.g.
+  `command: "/usr/local/bin/node /abs/path/to/bin/shadow-record.mjs hook PostToolUse"`.
+- Or put `shadow-record` somewhere `/bin/sh` finds by default (`/usr/local/bin`).
+
+`shadow-record init` writes the hook config with the resolved absolute
+path so this doesn't bite fresh installs.
 
 ---
 

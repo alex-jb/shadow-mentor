@@ -12,8 +12,10 @@
 // ─────────────────────────────────────────────────────────────────
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync, chmodSync } from "node:fs";
-import { join, dirname } from "node:path";
+import { join, dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { homedir } from "node:os";
+import { execSync } from "node:child_process";
 import { generateKeyPairSync } from "node:crypto";
 
 const HOOK_EVENTS = [
@@ -64,16 +66,44 @@ function loadSettings() {
   }
 }
 
+/**
+ * Resolve the absolute paths for `node` and `bin/shadow-record.mjs` so the
+ * hook command works when Claude Code spawns it via `/bin/sh`, which does
+ * NOT inherit the user's shell PATH. Without this, every hook silently
+ * fails with `shadow-record: command not found`.
+ */
+function resolveHookCommand() {
+  const scriptPath = resolve(
+    dirname(fileURLToPath(import.meta.url)),
+    "shadow-record.mjs",
+  );
+  let nodePath = process.execPath;
+  // If we can find `node` on PATH via `which`, prefer that (more portable
+  // when this package is installed globally). Fall back to process.execPath.
+  try {
+    const which = execSync("command -v node", { encoding: "utf8" }).trim();
+    if (which) nodePath = which;
+  } catch { /* noop — fall back to process.execPath */ }
+  return { nodePath, scriptPath };
+}
+
 function wireHooks(settings) {
   settings.hooks = settings.hooks ?? {};
   let added = 0;
   let alreadyPresent = 0;
+  let upgraded = 0;
+
+  const { nodePath, scriptPath } = resolveHookCommand();
+  const cmdFor = (event) => `${nodePath} ${scriptPath} hook ${event}`;
+  // Old-style bare `shadow-record hook X` — /bin/sh can't find this if the
+  // binary isn't in /usr/local/bin. We rewrite these to the absolute form.
+  const isLegacyBare = (c) => typeof c === "string" && c.startsWith("shadow-record ");
 
   for (const event of HOOK_EVENTS) {
     settings.hooks[event] = settings.hooks[event] ?? [];
-    const wantCmd = `shadow-record hook ${event}`;
+    const wantCmd = cmdFor(event);
 
-    // Look for an existing entry that already wires this exact command.
+    // Existing hook with this exact absolute command — leave it alone.
     const matched = settings.hooks[event].find((group) =>
       Array.isArray(group.hooks) &&
       group.hooks.some((h) => h.type === "command" && h.command === wantCmd),
@@ -83,13 +113,30 @@ function wireHooks(settings) {
       continue;
     }
 
+    // Existing legacy-bare hook — rewrite it in place so we don't leave a
+    // duplicate. This is the "future users don't hit Alex's dogfood bug"
+    // path.
+    let didUpgrade = false;
+    for (const group of settings.hooks[event]) {
+      for (const h of group.hooks ?? []) {
+        if (h.type === "command" && isLegacyBare(h.command) && h.command.includes(`hook ${event}`)) {
+          h.command = wantCmd;
+          didUpgrade = true;
+          upgraded++;
+          break;
+        }
+      }
+      if (didUpgrade) break;
+    }
+    if (didUpgrade) continue;
+
     settings.hooks[event].push({
       matcher: "*",
       hooks: [{ type: "command", command: wantCmd, timeout: 30 }],
     });
     added++;
   }
-  return { added, alreadyPresent };
+  return { added, alreadyPresent, upgraded };
 }
 
 export async function runInit() {
@@ -97,7 +144,7 @@ export async function runInit() {
 
   const key = ensureKeypair();
   const settings = loadSettings();
-  const { added, alreadyPresent } = wireHooks(settings);
+  const { added, alreadyPresent, upgraded } = wireHooks(settings);
 
   writeFileSync(
     CLAUDE_SETTINGS_PATH,
@@ -108,7 +155,7 @@ export async function runInit() {
   process.stdout.write(
     `shadow-record init complete\n` +
     `  keypair : ${key.privPath} (${key.created ? "generated" : "existing"})\n` +
-    `  hooks   : ${added} added, ${alreadyPresent} already present (${HOOK_EVENTS.length} total)\n` +
+    `  hooks   : ${added} added, ${upgraded} upgraded-to-abs-path, ${alreadyPresent} already present (${HOOK_EVENTS.length} total)\n` +
     `  config  : ${CLAUDE_SETTINGS_PATH}\n` +
     `\n` +
     `Next: start a Claude Code session. Bundles land in ~/.shadow/sessions/<id>/bundle.json on SessionEnd.\n` +

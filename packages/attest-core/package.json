@@ -1,6 +1,6 @@
 {
   "name": "shadow-attest-core",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Zero-LLM-dep cryptographic evidence primitives for AI decision attestation and agent session recording. Ed25519 signing, hash chain, batch attestation, and streaming session bundle API. Independently verifiable offline.",
   "license": "MIT",
   "author": "Alex Xiaoyu Ji <xji1@mail.yu.edu>",

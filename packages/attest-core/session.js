@@ -49,6 +49,15 @@ export const EVENT_TYPES = Object.freeze([
   "human_approval",
   "error",
   "session_end",
+  // Claude Code adapter (M2.1, 2026-07-13) — carry hook-specific names so
+  // the bundle keeps the distinction between "user prompt", "tool failure",
+  // "sub-agent stop", "main-agent stop", and "context compaction gate"
+  // instead of collapsing them into user_message + error + model_output.
+  "prompt",
+  "tool_error",
+  "subagent_stop",
+  "turn_end",
+  "pre_compact",
 ]);
 
 const ACTOR_TYPES = Object.freeze(["agent", "user", "model", "tool", "system"]);
