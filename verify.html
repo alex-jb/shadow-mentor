@@ -174,12 +174,26 @@ function pemToSpki(pem) {
   return out.buffer;
 }
 
+// ── Verifier structured-error format (2026-07-13) ──
+// Every failure returns { ok:false, error:{seq, reason, impact}, reason (mirror), failedSeq (mirror) }
+// The mirrors let a page inspector script that hasn't been updated still see the old fields.
+function fail(seq, reason, impact) {
+  const s = typeof seq === "number" ? seq : null;
+  const out = { ok: false, error: { seq: s, reason, impact }, reason };
+  if (typeof seq === "number") out.failedSeq = seq;
+  return out;
+}
+
 // ── Verify bundle ──
 async function verifyBundle(bundle, publicKeyPem) {
-  if (!bundle || typeof bundle !== "object") return { ok: false, reason: "not a JSON object" };
-  if (bundle.bundle_version !== 1) return { ok: false, reason: `unsupported bundle_version ${bundle.bundle_version}` };
-  if (!Array.isArray(bundle.events)) return { ok: false, reason: "events must be an array" };
-  if (!Array.isArray(bundle.signatures) || bundle.signatures.length === 0) return { ok: false, reason: "signatures missing" };
+  if (!bundle || typeof bundle !== "object") return fail(null, "bundle_missing",
+    "The dropped file is not a JSON object; expected a parsed Shadow evidence bundle.");
+  if (bundle.bundle_version !== 1) return fail(null, "bundle_unsupported_version",
+    `bundle_version ${bundle.bundle_version} is not supported by this verifier (expected 1).`);
+  if (!Array.isArray(bundle.events)) return fail(null, "events_not_array",
+    "bundle.events is not an array; the event chain cannot be walked.");
+  if (!Array.isArray(bundle.signatures) || bundle.signatures.length === 0) return fail(null, "signatures_missing",
+    "bundle.signatures is empty; the batch root is unsigned and cannot be trusted.");
 
   const seed = await headerSeedHash(bundle.header);
   let expectedPrev = seed;
@@ -187,22 +201,26 @@ async function verifyBundle(bundle, publicKeyPem) {
 
   for (let i = 0; i < bundle.events.length; i++) {
     const ev = bundle.events[i];
-    if (ev.seq !== i) return { ok: false, reason: `sequence gap at index ${i}`, failedSeq: i };
-    if (ev.prev_hash !== expectedPrev) return { ok: false, reason: "prev_hash mismatch", failedSeq: i };
+    if (ev.seq !== i) return fail(i, "seq_gap",
+      `Event at index ${i} declares seq ${ev.seq}; the chain is missing or reordered starting here.`);
+    if (ev.prev_hash !== expectedPrev) return fail(i, "prev_hash_mismatch",
+      `prev_hash at seq ${i} does not match the previous event's own hash; chain broken at this point and every event after it is unverifiable against this signature.`);
     const own = await sha256Hex(canonicalBytes(signedShape(ev)));
     eventHashes.push(own);
     expectedPrev = own;
   }
 
-  // Compute batch_root = sha256(concatenated event hashes).
   const concat = new Uint8Array(eventHashes.length * 32);
   eventHashes.forEach((h, i) => concat.set(hexToBytes(h), i * 32));
   const batchRoot = await sha256Hex(concat);
-  if (batchRoot !== bundle.batch_root) return { ok: false, reason: "batch_root mismatch" };
+  if (batchRoot !== bundle.batch_root) return fail(null, "batch_root_mismatch",
+    "The Merkle root recomputed from the event hashes does not match bundle.batch_root; either an event was mutated or the batch_root field was rewritten.");
 
   const sig = bundle.signatures[0];
-  if (sig.algorithm !== "ed25519") return { ok: false, reason: `unsupported signature algorithm "${sig.algorithm}"` };
-  if (!publicKeyPem) return { ok: false, reason: "public key required — paste the PEM below and re-drop the bundle" };
+  if (sig.algorithm !== "ed25519") return fail(null, "signatures_unsupported_algorithm",
+    `Signature algorithm "${sig.algorithm}" is not supported; this verifier only accepts ed25519.`);
+  if (!publicKeyPem) return fail(null, "public_key_missing",
+    "A PEM-encoded Ed25519 public key is required. Paste it below and drop the bundle again.");
 
   let key;
   try {
@@ -214,13 +232,15 @@ async function verifyBundle(bundle, publicKeyPem) {
       ["verify"],
     );
   } catch (err) {
-    return { ok: false, reason: `public key import failed: ${err.message}` };
+    return fail(null, "public_key_import_failed",
+      `Public key PEM could not be parsed by WebCrypto: ${err.message}`);
   }
 
   const sigBytes = b64urlToBytes(sig.signature);
   const batchRootBytes = hexToBytes(batchRoot);
   const sigOk = await crypto.subtle.verify({ name: "Ed25519" }, key, sigBytes, batchRootBytes);
-  if (!sigOk) return { ok: false, reason: "signature verification failed" };
+  if (!sigOk) return fail(null, "signature_verification_failed",
+    "The Ed25519 signature does not match the batch root under the supplied public key; the bundle is not authentic for this key.");
 
   const trustLevel = Array.isArray(bundle.external_anchors) && bundle.external_anchors.length > 0
     ? "TIME_ANCHORED (external anchor present — not verified by this offline tool)"
@@ -272,21 +292,34 @@ function renderResult(result, bundle) {
         <dt>batch_root</dt><dd>${escapeHtml(result.batchRoot ?? "-")}</dd>
       </dl>
     `;
-  } else if (bundle) {
-    const failed = result.failedSeq !== undefined ? ` (failed at event ${result.failedSeq})` : "";
-    meta = `
-      <dl class="meta">
+  } else {
+    // M5 verifier-error-format (2026-07-13): render {seq, reason, impact}.
+    const err = result.error ?? {
+      seq: typeof result.failedSeq === "number" ? result.failedSeq : null,
+      reason: result.reason ?? "unknown_failure",
+      impact: "(no structured impact — legacy verifier return)",
+    };
+    const seqStr = err.seq === null || err.seq === undefined ? "—" : String(err.seq);
+    const bundleMeta = bundle ? `
         <dt>Bundle version</dt><dd>${bundle.bundle_version ?? "?"}</dd>
         <dt>Session ID</dt><dd>${escapeHtml(bundle.header?.session_id ?? "-")}</dd>
-        <dt>Event count</dt><dd>${Array.isArray(bundle.events) ? bundle.events.length : "?"}${failed}</dd>
+        <dt>Event count</dt><dd>${Array.isArray(bundle.events) ? bundle.events.length : "?"}</dd>
+    ` : "";
+    meta = `
+      <dl class="meta">
+        <dt>seq</dt><dd>${escapeHtml(seqStr)}</dd>
+        <dt>reason</dt><dd><code>${escapeHtml(err.reason)}</code></dd>
+        <dt>impact</dt><dd>${escapeHtml(err.impact)}</dd>
+        ${bundleMeta}
       </dl>
     `;
   }
 
+  const successReason = "Chain intact, batch_root matches, Ed25519 signature verified against the supplied public key.";
   resultEl.innerHTML = `
     <div class="result ${cls}">
       <p class="verdict ${cls}">${verdictText}</p>
-      <p class="reason">${escapeHtml(result.reason ?? (result.ok ? "Chain intact, batch_root matches, Ed25519 signature verified against the supplied public key." : ""))}</p>
+      ${result.ok ? `<p class="reason">${escapeHtml(successReason)}</p>` : ""}
       ${meta}
     </div>
   `;
