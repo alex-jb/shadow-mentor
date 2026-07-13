@@ -22,6 +22,12 @@
 html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body); }
 body { min-height: 100vh; display: flex; flex-direction: column; }
 
+/* The [hidden] attribute must beat any layout `display` rule below.
+   Without this, .workshop { display: flex } overrides the browser's
+   default [hidden]{display:none}, and the workshop leaks into view
+   before a bundle is loaded. */
+[hidden] { display: none !important; }
+
 /* ── header ─────────────────────────────────────────────── */
 .hdr {
   display: flex; align-items: center; justify-content: space-between;
