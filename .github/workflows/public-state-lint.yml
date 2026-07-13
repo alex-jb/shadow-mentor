@@ -55,7 +55,7 @@ jobs:
           # Trailing 排出 Tier / carve OUT of Tier still matches the pattern
           # because SR 26-2 doesn't use a Tier taxonomy — even a "carved
           # out of Tier X" phrasing is factually wrong.
-          FORBIDDEN='SR 26-2 Tier|排出 Tier|Bulletin 2024-09|13 days|SR 11-7 compliant'
+          FORBIDDEN='SR 26-2 Tier|排出 Tier|Bulletin 2024-09|13 days|13 天完成定位|SR 11-7 compliant'
           if echo "$BODY" | grep -nE "$FORBIDDEN"; then
             echo ""
             echo "::error::Public zh-CN README has forbidden phrases (see matches above)."

@@ -4,6 +4,8 @@
 
 > **5-到-6 voice 的 AI 合规议会,面向受监管的贷款业务。** 用 5 笔历史决策编码你银行的贷款政策。毫秒级得到一个 signed + attestation-bound 的 verdict。跑在你的 VPC。5 分钟通过 MCP 装进 Claude Desktop / Cursor / OpenCode。
 
+**Shadow 具体证明什么。** Shadow 证的是 **integrity**:签完之后记录没被悄悄改。它不证 **content authenticity**:agent 采集时刻的行为本身有没有被 prompt injection 污染 / 合规违规。绿色 `✓ Bundle verified` 的意思是"这是当时签的那份记录",不是"这次 session 是干净的"。v3.1 roadmap 会加可选的 injection-detection 标记 · 让审计员看到采集时哪些事件被怀疑 — integrity + 怀疑标记 · 我们不给我们给不了的 clean bill of health。完整 seven-class 攻击表 · 见 [`docs/THREAT_MODEL.md`](./docs/THREAT_MODEL.md)(P1 写)。
+
 [![tests](https://img.shields.io/badge/tests-1371%2F1372%20passing-brightgreen)](./test) [![verdict invariance](https://img.shields.io/badge/verdict%20invariance-10%2F10%20structural%20perturbations-blue)](./test/verdict-invariance.test.js) [![shadow agentic score](https://img.shields.io/badge/shadow%20agentic%20score-87%20%C2%B1%203%20(n%3D6)-coral)](./benchmark/history/SUMMARY.md) [![live demo](https://img.shields.io/badge/live%20demo-vercel-black)](https://shadow-mentor-o033hfcya-alex-jbs-projects.vercel.app) [![backend](https://img.shields.io/badge/backend-Anthropic%20Sonnet%204.6-purple)](./api/deliberate.js) [![license](https://img.shields.io/badge/license-MIT-yellow)](./LICENSE)
 
 ## v2.0.0 + v3 evidence layer(2026-07-10)
@@ -24,7 +26,7 @@
 
 ## v1.5.41 更新(2026-07-08)
 
-一天内连发 v1.5.31 → v1.5.41 **十一个版本**。核心改进:Reg B 2026-07-21 生效前 13 天完成定位调整 · **6 篇 arXiv 2026-06/07 论文**护城河 · `/api/deliberate` 全套采购可见 · **13 个 append-only 签名字段** · Dr. NGO 2026-07-16 演示准备完毕(md + html + pdf 已 commit) · 离线 mock demo 备份。
+一天内连发 v1.5.31 → v1.5.41 **十一个版本**。核心改进:Reg B 2026-07-21 生效前完成定位调整 · **6 篇 arXiv 2026-06/07 论文**护城河 · `/api/deliberate` 全套采购可见 · **13 个 append-only 签名字段** · Dr. NGO 2026-07-16 演示准备完毕(md + html + pdf 已 commit) · 离线 mock demo 备份。
 
 - **[`v1.5.41`](./CHANGELOG.md#v1541)** — SIVE persona 一致性测试 rig(arXiv:2607.00910)+ 3 个诚实 baseline finding(承认 Shadow 目前 obvious_approve 错返 escalate + OFAC 未自动 promote + Ranking-Calibration conflation bug 存在)。
 - **[`v1.5.40`](./CHANGELOG.md#v1540)** — Eticas AI Risk Taxonomy v2.0.0(arXiv:2607.02201)。12 个 Shadow 测试映射 Eticas 子分类 + NIST AI RMF + EU AI Act + ISO 42001 一行搞定。
