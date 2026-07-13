@@ -4,6 +4,10 @@
 
 > *Same wire, opposite guarantee.* `claude-mem` is memory for the agent. Shadow is evidence for the auditor. Both hook the same Claude Code events. Different jobs.
 
+<p align="center">
+  <img src="./docs/architecture.svg" alt="Shadow architecture: agent session → adapter → shadow-attest-core → signed bundle → CLI + verify.html + M5 replay demo, with the trust ladder shown" width="900" />
+</p>
+
 **Why now** — three external signals converged 2026-07:
 
 - **Anthropic Claude Code v2.1.205 (2026-07)** added auto-mode rules preventing tampering with session transcript files — Anthropic itself now treats session integrity as a first-class concern. Shadow ships the receipt for the integrity Anthropic quietly acknowledged. [changelog](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)

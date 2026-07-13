@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Shadow — architecture at a glance</title>
+  <desc id="desc">Agent session → adapter captures every hook event → shadow-attest-core signs a hash-chained bundle → auditor verifies offline months later with a public key.</desc>
+
+  <defs>
+    <style>
+      .bg     { fill: #0b0d10; }
+      .panel  { fill: #14181e; stroke: #263140; stroke-width: 1.5; }
+      .panel-hi { fill: #1a2029; stroke: #7ed3ff; stroke-width: 2; }
+      .fg-mute { fill: #8b98a7; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+      .fg     { fill: #e6ecf1; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+      .mono   { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; fill: #a6b1c0; }
+      .accent { fill: #7ed3ff; }
+      .arrow  { stroke: #7ed3ff; stroke-width: 2; fill: none; }
+      .arrow-mute { stroke: #4a5566; stroke-width: 1.5; fill: none; }
+      .ok     { fill: #6fd889; }
+      .danger { fill: #ff6a6a; }
+      .title-t { font-size: 20px; font-weight: 700; fill: #e6ecf1; }
+      .subtitle-t { font-size: 13px; font-weight: 500; fill: #7ed3ff; letter-spacing: 0.06em; text-transform: uppercase; }
+      .body-t { font-size: 14px; fill: #8b98a7; }
+      .code-t { font-size: 11.5px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; fill: #a6b1c0; }
+    </style>
+    <marker id="arrow-head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7ed3ff"/>
+    </marker>
+    <marker id="arrow-head-mute" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a5566"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1200" height="720"/>
+
+  <!-- Top-left: agent session -->
+  <g transform="translate(60, 80)">
+    <rect class="panel" width="260" height="180" rx="10"/>
+    <text class="subtitle-t" x="20" y="34">agent session</text>
+    <text class="title-t" x="20" y="66">Claude Code</text>
+    <text class="body-t" x="20" y="88">or OpenTelemetry-instrumented</text>
+    <text class="body-t" x="20" y="106">agent, or MCP tool caller</text>
+    <text class="code-t" x="20" y="140">user_message</text>
+    <text class="code-t" x="20" y="156">tool_call · tool_result</text>
+    <text class="code-t" x="20" y="172">session_end</text>
+  </g>
+
+  <!-- Top-center: adapter -->
+  <g transform="translate(410, 80)">
+    <rect class="panel" width="260" height="180" rx="10"/>
+    <text class="subtitle-t" x="20" y="34">adapter · M2.1 + M2.2</text>
+    <text class="title-t" x="20" y="66">shadow-record hook</text>
+    <text class="body-t" x="20" y="88">9 hooks · non-blocking</text>
+    <text class="body-t" x="20" y="106">reads transcript, pins model</text>
+    <text class="code-t" x="20" y="140">SessionStart · PreToolUse</text>
+    <text class="code-t" x="20" y="156">PostToolUse · Stop · …</text>
+    <text class="code-t" x="20" y="172">→ hash-chain in memory</text>
+  </g>
+
+  <!-- Top-right: attest-core -->
+  <g transform="translate(760, 80)">
+    <rect class="panel-hi" width="380" height="180" rx="10"/>
+    <text class="subtitle-t" x="20" y="34">shadow-attest-core · npm</text>
+    <text class="title-t" x="20" y="66">Ed25519-signed bundle</text>
+    <text class="body-t" x="20" y="88">SHA-256 hash-chain over</text>
+    <text class="body-t" x="20" y="106">all events · Merkle batch_root</text>
+    <text class="code-t" x="20" y="140">createSession → appendEvent × N</text>
+    <text class="code-t" x="20" y="156">→ sealSession → verifyBundle</text>
+    <text class="code-t" x="20" y="172">bundle.json + public-key.pem</text>
+  </g>
+
+  <!-- Arrows top row -->
+  <path class="arrow" d="M 322 170 L 408 170" marker-end="url(#arrow-head)"/>
+  <path class="arrow" d="M 672 170 L 758 170" marker-end="url(#arrow-head)"/>
+
+  <!-- Middle: bundle -->
+  <g transform="translate(410, 320)">
+    <rect class="panel" width="380" height="120" rx="10"/>
+    <text class="subtitle-t" x="20" y="34">artifact · shadow-evidence/v1</text>
+    <text class="title-t" x="20" y="66">bundle.json (signed)</text>
+    <text class="body-t" x="20" y="88">header · events · batch_root · signatures</text>
+    <text class="code-t" x="20" y="108">~30 KB for an 11-min session</text>
+  </g>
+  <!-- Arrow from attest-core down to bundle -->
+  <path class="arrow" d="M 950 260 L 950 300 Q 950 320 930 320 L 790 320" marker-end="url(#arrow-head)"/>
+
+  <!-- Bottom-left: CLI verify -->
+  <g transform="translate(60, 500)">
+    <rect class="panel" width="260" height="180" rx="10"/>
+    <text class="subtitle-t" x="20" y="34">verify · anywhere</text>
+    <text class="title-t" x="20" y="66">CLI</text>
+    <text class="body-t" x="20" y="88">npx shadow-verify bundle.json</text>
+    <text class="body-t" x="20" y="106">CI-ready exit codes</text>
+    <text class="code-t" x="20" y="140" fill="#6fd889">✓ Bundle verified</text>
+    <text class="code-t" x="20" y="156">agent : claude-code@2.1.116</text>
+    <text class="code-t" x="20" y="172">trust : SELF_SIGNED</text>
+  </g>
+
+  <!-- Bottom-center: verify.html -->
+  <g transform="translate(410, 500)">
+    <rect class="panel" width="260" height="180" rx="10"/>
+    <text class="subtitle-t" x="20" y="34">verify · offline</text>
+    <text class="title-t" x="20" y="66">verify.html</text>
+    <text class="body-t" x="20" y="88">single HTML file</text>
+    <text class="body-t" x="20" y="106">WebCrypto · works from USB</text>
+    <text class="code-t" x="20" y="140">zero network</text>
+    <text class="code-t" x="20" y="156">zero build step</text>
+    <text class="code-t" x="20" y="172">audit-committee ready</text>
+  </g>
+
+  <!-- Bottom-right: M5 replay -->
+  <g transform="translate(760, 500)">
+    <rect class="panel" width="380" height="180" rx="10"/>
+    <text class="subtitle-t" x="20" y="34">demo · M5</text>
+    <text class="title-t" x="20" y="66">2D replay + tamper</text>
+    <text class="body-t" x="20" y="88">drag bundle → timeline → tamper button</text>
+    <text class="body-t" x="20" y="106">verifier prints seq / reason / impact</text>
+    <text class="code-t" x="20" y="140">demos/replay/index.html</text>
+    <text class="code-t" x="20" y="156">?xreal=1 for AR-glass legibility</text>
+    <text class="code-t" x="20" y="172" fill="#ff6a6a">tamper cascades → auditor rejects</text>
+  </g>
+
+  <!-- Arrows from bundle down to verifiers -->
+  <path class="arrow-mute" d="M 500 440 L 500 470 Q 500 490 480 490 L 260 490 Q 240 490 240 510 L 240 495" marker-end="url(#arrow-head-mute)"/>
+  <path class="arrow-mute" d="M 600 440 L 600 495" marker-end="url(#arrow-head-mute)"/>
+  <path class="arrow-mute" d="M 700 440 L 700 470 Q 700 490 720 490 L 940 490 Q 960 490 960 510 L 960 495" marker-end="url(#arrow-head-mute)"/>
+
+  <!-- Trust ladder chip in corner -->
+  <g transform="translate(60, 360)">
+    <rect class="panel" width="260" height="80" rx="10"/>
+    <text class="subtitle-t" x="20" y="30">trust ladder</text>
+    <text class="code-t" x="20" y="55">SELF_SIGNED → TIME_ANCHORED</text>
+    <text class="code-t" x="20" y="70">→ LOG_ANCHORED (Rekor)</text>
+  </g>
+
+  <!-- Bottom-most caption -->
+  <text class="fg-mute" x="60" y="712" font-size="11">Same wire, opposite guarantee. claude-mem is memory for the agent. Shadow is evidence for the auditor.</text>
+</svg>
