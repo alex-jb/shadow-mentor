@@ -232,9 +232,12 @@ test("handleHookEvent — unmapped events are skipped without error", () => {
 });
 
 
-test("handleHookEvent — events with different session_id land in separate JSONL files", () => {
+test("handleHookEvent — events with different session_id land in separate pending queues", () => {
   const shadowDir = freshShadowDir();
   const { privatePem } = freshKeypair();
+  // Phase 2 (2026-07-13): SessionStart with an empty (missing) transcript
+  // defers materialization, so we look for the pending file rather than
+  // the sealed store. session_id partitioning is what matters here.
   handleHookEvent({
     eventName: "SessionStart",
     stdin: { session_id: "sess-A", model: "claude-sonnet-4-6" },
@@ -247,8 +250,13 @@ test("handleHookEvent — events with different session_id land in separate JSON
     shadowDir,
     privateKey: privatePem,
   });
-  assert.ok(existsSync(join(shadowDir, "sessions", "sess-A.jsonl")));
-  assert.ok(existsSync(join(shadowDir, "sessions", "sess-B.jsonl")));
+  const aPending = join(shadowDir, "sessions", "sess-A.pending.jsonl");
+  const bPending = join(shadowDir, "sessions", "sess-B.pending.jsonl");
+  assert.ok(existsSync(aPending), "session A must have its own pending queue");
+  assert.ok(existsSync(bPending), "session B must have its own pending queue");
+  // Cross-partition sanity: neither session leaks into the other.
+  assert.ok(!existsSync(join(shadowDir, "sessions", "sess-A.jsonl")));
+  assert.ok(!existsSync(join(shadowDir, "sessions", "sess-B.jsonl")));
 });
 
 

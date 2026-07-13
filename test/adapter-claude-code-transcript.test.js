@@ -165,43 +165,102 @@ test("handleHookEvent — SessionStart with populated transcript pins real model
   assert.equal(verify.ok, true, verify.reason);
 });
 
-test("handleHookEvent — session_end payload carries discovered_model_id even if header was 'unknown'", () => {
+test("Phase 2: SessionStart with empty transcript is deferred, materialized when a later hook finds a model", () => {
   const shadowDir = freshShadowDir();
   const { privatePem, publicPem } = freshKeypair();
   const transcriptPath = join(shadowDir, "transcript.jsonl");
+  const sessionId = "sess-m22b";
 
   // Fresh session: transcript exists but is empty at SessionStart.
   writeFileSync(transcriptPath, "");
-  handleHookEvent({
+  const r1 = handleHookEvent({
     eventName: "SessionStart",
-    stdin: { session_id: "sess-m22b", transcript_path: transcriptPath, source: "startup" },
+    stdin: { session_id: sessionId, transcript_path: transcriptPath, source: "startup" },
     shadowDir,
     privateKey: privatePem,
   });
+  // Deferred — no store yet.
+  assert.equal(r1.skipped, true);
+  assert.match(r1.reason, /buffered/);
+  assert.ok(existsSync(join(shadowDir, "sessions", `${sessionId}.pending.jsonl`)),
+    "expected pending queue while deferred");
+  assert.ok(!existsSync(join(shadowDir, "sessions", `${sessionId}.jsonl`)),
+    "sealed store must NOT exist yet");
 
   // Now the transcript gets populated (simulates Claude Code writing assistant response).
   writeFileSync(transcriptPath,
     [JSON.stringify(REAL_SCHEMA_USER), JSON.stringify(REAL_SCHEMA_ASSISTANT)].join("\n"),
   );
 
+  // Next hook triggers materialization + replay of the buffered SessionStart.
+  handleHookEvent({
+    eventName: "PostToolUse",
+    stdin: { session_id: sessionId, transcript_path: transcriptPath, tool_name: "Read", tool_output: "hi" },
+    shadowDir,
+    privateKey: privatePem,
+  });
+  assert.ok(existsSync(join(shadowDir, "sessions", `${sessionId}.jsonl`)),
+    "store must exist after materialization");
+  assert.ok(!existsSync(join(shadowDir, "sessions", `${sessionId}.pending.jsonl`)),
+    "pending queue must be cleared after replay");
+
   const result = handleHookEvent({
     eventName: "SessionEnd",
-    stdin: { session_id: "sess-m22b", transcript_path: transcriptPath, end_reason: "logout" },
+    stdin: { session_id: sessionId, transcript_path: transcriptPath, end_reason: "logout" },
     shadowDir,
     privateKey: privatePem,
   });
 
   const bundle = JSON.parse(readFileSync(result.bundlePath, "utf8"));
-  // Header still "unknown" — session was created before transcript had model.
-  assert.equal(bundle.header.models[0].model_id, "unknown");
-  // But session_end payload carries the discovery.
-  const sessionEnd = bundle.events.find((e) => e.event_type === "session_end");
-  assert.ok(sessionEnd, "expected session_end event");
-  // payload is hashed but not embedded — we need to check via the extensions we set.
-  // Extensions we DO embed inline on the event record.
-  assert.equal(sessionEnd.extensions?.discovered_model_id, "claude-opus-4-7");
-  assert.equal(sessionEnd.extensions?.discovered_agent_version, "2.1.116");
+  // Phase 2 win: header now pins the real model (was "unknown" pre-Phase-2).
+  assert.equal(bundle.header.models[0].model_id, "claude-opus-4-7");
+  assert.equal(bundle.header.agent.version, "2.1.116");
 
+  // Replay preserved the SessionStart event before the current PostToolUse + SessionEnd.
+  const eventTypes = bundle.events.map((e) => e.event_type);
+  assert.equal(eventTypes[0], "session_start", "SessionStart must be first (replayed)");
+  assert.ok(eventTypes.includes("tool_result"));
+  assert.equal(eventTypes[eventTypes.length - 1], "session_end");
+
+  const verify = verifyBundle(bundle, { publicKey: publicPem });
+  assert.equal(verify.ok, true, verify.reason);
+});
+
+test("Phase 2: SessionEnd force-materializes even if transcript never yields a model (fallback)", () => {
+  const shadowDir = freshShadowDir();
+  const { privatePem, publicPem } = freshKeypair();
+  const transcriptPath = join(shadowDir, "transcript.jsonl");
+  const sessionId = "sess-m22c";
+  writeFileSync(transcriptPath, ""); // transcript stays empty the whole time
+
+  handleHookEvent({
+    eventName: "SessionStart",
+    stdin: { session_id: sessionId, transcript_path: transcriptPath, source: "startup" },
+    shadowDir,
+    privateKey: privatePem,
+  });
+  handleHookEvent({
+    eventName: "PreToolUse",
+    stdin: { session_id: sessionId, transcript_path: transcriptPath, tool_name: "Bash", tool_input: {} },
+    shadowDir,
+    privateKey: privatePem,
+  });
+  // Both above deferred to pending. SessionEnd force-materializes.
+  const result = handleHookEvent({
+    eventName: "SessionEnd",
+    stdin: { session_id: sessionId, transcript_path: transcriptPath, end_reason: "logout" },
+    shadowDir,
+    privateKey: privatePem,
+  });
+
+  const bundle = JSON.parse(readFileSync(result.bundlePath, "utf8"));
+  // Truly-fresh session with no model discovery — header is "unknown".
+  assert.equal(bundle.header.models[0].model_id, "unknown");
+  // But the pending events still replay in order, then SessionEnd caps.
+  const eventTypes = bundle.events.map((e) => e.event_type);
+  assert.equal(eventTypes[0], "session_start");
+  assert.ok(eventTypes.includes("tool_call"));
+  assert.equal(eventTypes[eventTypes.length - 1], "session_end");
   const verify = verifyBundle(bundle, { publicKey: publicPem });
   assert.equal(verify.ok, true, verify.reason);
 });

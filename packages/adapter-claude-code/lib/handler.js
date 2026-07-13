@@ -33,19 +33,26 @@ import {
   recoverSession,
   createFileStore,
 } from "shadow-attest-core";
-import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync, readFileSync, appendFileSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
 
 import { mapEvent, actorFor, extractPayload } from "./mapping.js";
 import { enrichFromTranscript } from "./transcript.js";
 
 const KEY_ID_DEFAULT = "claude-code-local";
+// Safety cap: if we've buffered this many hooks and still don't have a
+// model from the transcript, give up and materialize the session with
+// "unknown" so we never leak unbounded memory or lose events forever.
+const PENDING_HOOK_CAP = 40;
 
 function sessionsDir(shadowDir) {
   return join(shadowDir, "sessions");
 }
 function storePath(shadowDir, sessionId) {
   return join(sessionsDir(shadowDir), `${sessionId}.jsonl`);
+}
+function pendingPath(shadowDir, sessionId) {
+  return join(sessionsDir(shadowDir), `${sessionId}.pending.jsonl`);
 }
 function bundleDir(shadowDir, sessionId) {
   return join(sessionsDir(shadowDir), sessionId);
@@ -54,37 +61,40 @@ function bundlePath(shadowDir, sessionId) {
   return join(bundleDir(shadowDir, sessionId), "bundle.json");
 }
 
-/**
- * Look up or lazily create a session for this hook event. Returns
- * { session, isNew } — isNew=true means the JSONL was empty, so we just
- * wrote the header line.
- */
-function ensureSession({ shadowDir, sessionId, stdin, privateKey, keyId }) {
+function readPending(shadowDir, sessionId) {
+  const path = pendingPath(shadowDir, sessionId);
+  if (!existsSync(path)) return [];
+  const raw = readFileSync(path, "utf8").trim();
+  if (!raw) return [];
+  return raw.split("\n").filter(Boolean).map((line) => {
+    try { return JSON.parse(line); } catch { return null; }
+  }).filter(Boolean);
+}
+
+function appendPending(shadowDir, sessionId, record) {
   mkdirSync(sessionsDir(shadowDir), { recursive: true });
-  const path = storePath(shadowDir, sessionId);
-  const store = createFileStore({ path });
+  appendFileSync(pendingPath(shadowDir, sessionId), JSON.stringify(record) + "\n", "utf8");
+}
 
-  if (existsSync(path) && readFileSync(path, "utf8").trim().length > 0) {
-    const session = recoverSession({ store, privateKey });
-    return { session, isNew: false };
-  }
+function clearPending(shadowDir, sessionId) {
+  const path = pendingPath(shadowDir, sessionId);
+  if (existsSync(path)) unlinkSync(path);
+}
 
-  // M2.2: read stdin.transcript_path to pin real agent.version + model_id.
-  // Fresh sessions with an empty transcript still get "unknown" — that's
-  // recovered at seal time via the session_end payload enrichment below.
-  const { agentVersion, modelId } = enrichFromTranscript(stdin.transcript_path);
-
+function materializeSession({ shadowDir, sessionId, stdin, privateKey, keyId, agentVersion, modelId }) {
+  const storeFilePath = storePath(shadowDir, sessionId);
+  const store = createFileStore({ path: storeFilePath });
   const session = createSession({
     agent: {
       name: "claude-code",
       version: agentVersion
         ?? process.env.CLAUDE_CODE_VERSION
-        ?? stdin.claude_code_version
+        ?? stdin?.claude_code_version
         ?? "unknown",
     },
     models: [
       {
-        model_id: modelId ?? stdin.model ?? "unknown",
+        model_id: modelId ?? stdin?.model ?? "unknown",
         provider: "anthropic",
       },
     ],
@@ -97,7 +107,51 @@ function ensureSession({ shadowDir, sessionId, stdin, privateKey, keyId }) {
     sessionId, // pin to the Claude Code session_id so recovery matches
     store,
   });
-  return { session, isNew: true };
+  return session;
+}
+
+/**
+ * Look up or resolve a session for this hook event. Three outcomes:
+ *
+ *   { session, isNew: false }               — recovered from existing store
+ *   { session, isNew: true, replay: [] }    — freshly created; replay list
+ *                                             contains any buffered events
+ *   { session: null, deferred: true }       — no model info yet, hook was
+ *                                             buffered to the pending file
+ *                                             (unless forceMaterialize was set)
+ *
+ * M2.2 Phase 2 (2026-07-13): a fresh session with an empty transcript no
+ * longer materializes immediately with model_id="unknown". Instead the
+ * hook is buffered to `sessions/{id}.pending.jsonl`. Later hooks retry
+ * enrichFromTranscript; the FIRST one that finds a model triggers
+ * materializeSession + replay of the buffered hooks in original order.
+ *
+ * `forceMaterialize` is set on SessionEnd so a truly-empty transcript
+ * still produces a bundle (with fallback "unknown") instead of stranding
+ * the pending queue on disk forever.
+ */
+function ensureSession({ shadowDir, sessionId, stdin, privateKey, keyId, forceMaterialize }) {
+  mkdirSync(sessionsDir(shadowDir), { recursive: true });
+  const storeFilePath = storePath(shadowDir, sessionId);
+
+  if (existsSync(storeFilePath) && readFileSync(storeFilePath, "utf8").trim().length > 0) {
+    const store = createFileStore({ path: storeFilePath });
+    const session = recoverSession({ store, privateKey });
+    return { session, isNew: false, replay: [] };
+  }
+
+  const { agentVersion, modelId } = enrichFromTranscript(stdin.transcript_path);
+  const pending = readPending(shadowDir, sessionId);
+  const overCap = pending.length >= PENDING_HOOK_CAP;
+
+  if (!modelId && !forceMaterialize && !overCap) {
+    return { session: null, deferred: true, isNew: false, replay: [] };
+  }
+
+  const session = materializeSession({
+    shadowDir, sessionId, stdin, privateKey, keyId, agentVersion, modelId,
+  });
+  return { session, isNew: true, replay: pending };
 }
 
 /**
@@ -106,6 +160,26 @@ function ensureSession({ shadowDir, sessionId, stdin, privateKey, keyId }) {
  * corruption). Callers should log-and-swallow to keep the parent Claude
  * Code session unblocked.
  */
+function appendMappedEvent(session, eventName, stdin) {
+  const { agentVersion: discoveredVersion, modelId: discoveredModelId } =
+    enrichFromTranscript(stdin?.transcript_path);
+  const extensions = {};
+  if (discoveredVersion) extensions.discovered_agent_version = discoveredVersion;
+  if (discoveredModelId) extensions.discovered_model_id = discoveredModelId;
+
+  const basePayload = extractPayload(eventName, stdin);
+  const payload = eventName === "SessionEnd"
+    ? { ...basePayload, discovered_model_id: discoveredModelId, discovered_agent_version: discoveredVersion }
+    : basePayload;
+
+  appendEvent(session, {
+    event_type: mapEvent(eventName),
+    actor: actorFor(eventName),
+    payload,
+    extensions: Object.keys(extensions).length > 0 ? extensions : undefined,
+  });
+}
+
 export function handleHookEvent({ eventName, stdin, shadowDir, privateKey, keyId = KEY_ID_DEFAULT }) {
   if (!eventName) throw new Error("handleHookEvent: eventName required");
   if (!shadowDir) throw new Error("handleHookEvent: shadowDir required");
@@ -116,7 +190,20 @@ export function handleHookEvent({ eventName, stdin, shadowDir, privateKey, keyId
   if (!shadowEventType) return { skipped: true, reason: `unmapped ${eventName}` };
 
   const sessionId = s.session_id ?? "unknown-session";
-  const { session } = ensureSession({ shadowDir, sessionId, stdin: s, privateKey, keyId });
+
+  // On SessionEnd, always materialize — the pending queue must not
+  // strand on disk. Fallback header will be "unknown" only if we truly
+  // never found a model.
+  const forceMaterialize = eventName === "SessionEnd";
+  const { session, deferred, replay } = ensureSession({
+    shadowDir, sessionId, stdin: s, privateKey, keyId, forceMaterialize,
+  });
+
+  if (deferred) {
+    // No model info yet; buffer this hook for a later retry.
+    appendPending(shadowDir, sessionId, { eventName, stdin: s });
+    return { skipped: true, reason: "buffered — model not yet known", sessionId };
+  }
 
   // If SessionEnd arrives on a session that's already been sealed via
   // manual `shadow-record seal`, recoverSession returns _sealed: true.
@@ -125,30 +212,15 @@ export function handleHookEvent({ eventName, stdin, shadowDir, privateKey, keyId
     return { skipped: true, reason: "session already sealed", sessionId };
   }
 
-  // M2.2: enrich EVERY event with the current transcript-discovered model
-  // + version in extensions. For fresh sessions where SessionStart saw
-  // an empty transcript, this is how the ground-truth model still lands
-  // in the bundle — the auditor reads events not just the header.
-  const { agentVersion: discoveredVersion, modelId: discoveredModelId } =
-    enrichFromTranscript(s.transcript_path);
-  const extensions = {};
-  if (discoveredVersion) extensions.discovered_agent_version = discoveredVersion;
-  if (discoveredModelId) extensions.discovered_model_id = discoveredModelId;
+  // Replay any buffered hooks first, then the current one.
+  if (replay && replay.length > 0) {
+    for (const rec of replay) {
+      if (mapEvent(rec.eventName)) appendMappedEvent(session, rec.eventName, rec.stdin);
+    }
+    clearPending(shadowDir, sessionId);
+  }
 
-  const basePayload = extractPayload(eventName, s);
-  // For SessionEnd specifically, hoist the discovery into payload so it's
-  // signed in the sealed batch_root even if a downstream tool strips
-  // extensions.
-  const payload = eventName === "SessionEnd"
-    ? { ...basePayload, discovered_model_id: discoveredModelId, discovered_agent_version: discoveredVersion }
-    : basePayload;
-
-  appendEvent(session, {
-    event_type: shadowEventType,
-    actor: actorFor(eventName),
-    payload,
-    extensions: Object.keys(extensions).length > 0 ? extensions : undefined,
-  });
+  appendMappedEvent(session, eventName, s);
 
   if (eventName === "SessionEnd") {
     const bundle = sealSession(session);
@@ -164,12 +236,34 @@ export function handleHookEvent({ eventName, stdin, shadowDir, privateKey, keyId
  *
  * @returns { bundlePath, bundle }
  */
-export function sealSessionById({ sessionId, shadowDir, privateKey, partial = false }) {
+export function sealSessionById({ sessionId, shadowDir, privateKey, partial = false, keyId = KEY_ID_DEFAULT }) {
   if (!sessionId) throw new Error("sealSessionById: sessionId required");
   const path = storePath(shadowDir, sessionId);
+
+  // M2.2 Phase 2 (2026-07-13): if the store doesn't exist but a pending
+  // queue does, the session was deferred waiting for transcript_path
+  // model discovery. Force materialize now (unknown fallback) + replay
+  // + seal so we never strand pending events.
   if (!existsSync(path) || readFileSync(path, "utf8").trim().length === 0) {
-    throw new Error(`sealSessionById: no store at ${path}`);
+    const pending = readPending(shadowDir, sessionId);
+    if (pending.length === 0) {
+      throw new Error(`sealSessionById: no store at ${path}`);
+    }
+    // Try to enrich from the last pending event's transcript_path in
+    // case one is available now (long-lived Claude Code process).
+    const lastStdin = pending[pending.length - 1].stdin ?? {};
+    const { agentVersion, modelId } = enrichFromTranscript(lastStdin.transcript_path);
+    const session = materializeSession({
+      shadowDir, sessionId, stdin: lastStdin, privateKey, keyId, agentVersion, modelId,
+    });
+    for (const rec of pending) {
+      if (mapEvent(rec.eventName)) appendMappedEvent(session, rec.eventName, rec.stdin);
+    }
+    clearPending(shadowDir, sessionId);
+    const bundle = partial ? sealPartialBundle(session) : sealSession(session);
+    return writeBundleForSession({ shadowDir, sessionId, bundle });
   }
+
   const store = createFileStore({ path });
   const session = recoverSession({ store, privateKey });
   if (session._sealed) {
@@ -184,6 +278,12 @@ export function sealSessionById({ sessionId, shadowDir, privateKey, partial = fa
     };
     return writeBundleForSession({ shadowDir, sessionId, bundle });
   }
+  // If a pending queue still exists on a recovered session, replay it.
+  const stillPending = readPending(shadowDir, sessionId);
+  for (const rec of stillPending) {
+    if (mapEvent(rec.eventName)) appendMappedEvent(session, rec.eventName, rec.stdin);
+  }
+  if (stillPending.length > 0) clearPending(shadowDir, sessionId);
   const bundle = partial ? sealPartialBundle(session) : sealSession(session);
   return writeBundleForSession({ shadowDir, sessionId, bundle });
 }
