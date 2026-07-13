@@ -24,6 +24,30 @@
       background: var(--bg); color: var(--text);
       font: 15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
     }
+    /* XREAL One Pro in-glasses mode (?xreal=1) — mirrors demos/replay/
+       styles.css. Bigger fonts, higher contrast, motion capped for
+       33-PPD birdbath optics. See commit 91228a4 for research anchor. */
+    body[data-xreal="true"] {
+      font-size: 17px;
+      background: #0B0F1A;
+      color: #E8ECF3;
+      -webkit-font-smoothing: antialiased;
+    }
+    body[data-xreal="true"] .wrap { max-width: 1120px; }
+    body[data-xreal="true"] h1 { font-size: 26px; font-weight: 600; }
+    body[data-xreal="true"] .sub { font-size: 15px; }
+    body[data-xreal="true"] .drop h2 { font-size: 18px; }
+    body[data-xreal="true"] .drop p { font-size: 15px; }
+    body[data-xreal="true"] .drop label { font-size: 15px; padding: 10px 20px; }
+    body[data-xreal="true"] .keyrow label { font-size: 15px; }
+    body[data-xreal="true"] .keyrow textarea { font-size: 14px; min-height: 130px; }
+    body[data-xreal="true"] .verdict { font-size: 22px; }
+    body[data-xreal="true"] .reason { font-size: 16px; }
+    body[data-xreal="true"] dl.meta { font-size: 15px; grid-template-columns: 160px 1fr; }
+    body[data-xreal="true"] * {
+      transition-duration: 150ms !important;
+      animation-duration: 400ms !important;
+    }
     .wrap { max-width: 800px; margin: 0 auto; }
     header { margin-bottom: 24px; }
     h1 { margin: 0 0 8px; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
@@ -255,6 +279,13 @@ async function verifyBundle(bundle, publicKeyPem) {
     batchRoot,
     keyId: sig.key_id,
   };
+}
+
+// ── URL params ──
+// `?xreal=1` opts into the in-glasses legibility overrides (bigger
+// fonts, higher contrast, motion capped for 33-PPD birdbath optics).
+if (new URLSearchParams(window.location.search).get("xreal") === "1") {
+  document.body.setAttribute("data-xreal", "true");
 }
 
 // ── UI wiring ──
