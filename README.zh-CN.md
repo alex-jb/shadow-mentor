@@ -44,7 +44,7 @@
 
 ## 监管姿势(2026 H2)
 
-2026 年的两次监管转向改变了 Shadow 的定位框架。**弃用 "SR 11-7 compliant" 的措辞**,新的姿势是:
+2026 年的两次监管转向改变了 Shadow 的定位框架。**弃用旧 SR 11-7 合规措辞**,新的姿势是:
 
 - **SR 26-2 footnote 3 model-purpose / model-exposure materiality carve-out**。SR 11-7 于 2026-04-17 被 Fed / OCC / FDIC 联合撤回;SR 26-2 明确把 GenAI / agentic AI 排出 model-risk 覆盖范围,等待后续 RFI。Shadow 是 SR 26-2 明确不管的这一类的治理层。对应 Treasury FS AI RMF(2026-02)230 项控制目标里的 40+ 项。
 - **欧盟侧:GDPR Art. 22 + Schufa(C-634/21),不是 AI Act 2026**。Digital Omnibus 把 Annex III(5)(b) 信用评分类的截止从 2026-08-02 → 2027-12-02。Schufa 今天就可以执行;Shadow 的人工复核 + 审计链直接映射 Art. 22 "关于逻辑的有意义信息" + "人工介入"要求。
