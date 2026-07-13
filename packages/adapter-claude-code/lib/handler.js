@@ -37,6 +37,7 @@ import { existsSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { mapEvent, actorFor, extractPayload } from "./mapping.js";
+import { enrichFromTranscript } from "./transcript.js";
 
 const KEY_ID_DEFAULT = "claude-code-local";
 
@@ -68,14 +69,22 @@ function ensureSession({ shadowDir, sessionId, stdin, privateKey, keyId }) {
     return { session, isNew: false };
   }
 
+  // M2.2: read stdin.transcript_path to pin real agent.version + model_id.
+  // Fresh sessions with an empty transcript still get "unknown" — that's
+  // recovered at seal time via the session_end payload enrichment below.
+  const { agentVersion, modelId } = enrichFromTranscript(stdin.transcript_path);
+
   const session = createSession({
     agent: {
       name: "claude-code",
-      version: process.env.CLAUDE_CODE_VERSION ?? stdin.claude_code_version ?? "unknown",
+      version: agentVersion
+        ?? process.env.CLAUDE_CODE_VERSION
+        ?? stdin.claude_code_version
+        ?? "unknown",
     },
     models: [
       {
-        model_id: stdin.model ?? "unknown",
+        model_id: modelId ?? stdin.model ?? "unknown",
         provider: "anthropic",
       },
     ],
@@ -116,10 +125,29 @@ export function handleHookEvent({ eventName, stdin, shadowDir, privateKey, keyId
     return { skipped: true, reason: "session already sealed", sessionId };
   }
 
+  // M2.2: enrich EVERY event with the current transcript-discovered model
+  // + version in extensions. For fresh sessions where SessionStart saw
+  // an empty transcript, this is how the ground-truth model still lands
+  // in the bundle — the auditor reads events not just the header.
+  const { agentVersion: discoveredVersion, modelId: discoveredModelId } =
+    enrichFromTranscript(s.transcript_path);
+  const extensions = {};
+  if (discoveredVersion) extensions.discovered_agent_version = discoveredVersion;
+  if (discoveredModelId) extensions.discovered_model_id = discoveredModelId;
+
+  const basePayload = extractPayload(eventName, s);
+  // For SessionEnd specifically, hoist the discovery into payload so it's
+  // signed in the sealed batch_root even if a downstream tool strips
+  // extensions.
+  const payload = eventName === "SessionEnd"
+    ? { ...basePayload, discovered_model_id: discoveredModelId, discovered_agent_version: discoveredVersion }
+    : basePayload;
+
   appendEvent(session, {
     event_type: shadowEventType,
     actor: actorFor(eventName),
-    payload: extractPayload(eventName, s),
+    payload,
+    extensions: Object.keys(extensions).length > 0 ? extensions : undefined,
   });
 
   if (eventName === "SessionEnd") {
