@@ -10,6 +10,106 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### v3 M2.3 + M2.1 + M2.2 + M5 + verifier-error-format — 2026-07-13 (autonomous day)
+
+Seven commits pushed to `main`. Full suite 1472/1475 green (was 1436/1439 at
+day start). All work backwards-compatible; no breaking changes to on-disk
+bundles.
+
+**M2.3 (`b21c715`) — Generic HTTP ingest endpoint hardened.**
+Five findings from `docs/m2.3-audit-2026-07-13.md` shipped as one batch:
+
+- F1: moved `api/evidence-events.js` → `api/evidence/events.js` so the
+  URL matches the brief-original `/api/evidence/events` (was serving at
+  `/api/evidence-events` — dashed, undocumented).
+- F2: `MAX_EVENTS_PER_REQUEST = 5000` DoS guard; returns 413 with
+  remediation hint above the cap.
+- F3: `Idempotency-Key` header derives `session_id` via SHA-256[:32]
+  when body doesn't specify one. Body wins over header, per Stripe.
+- F4: response mirrors `session_id` at top level so tools don't have to
+  parse the bundle.
+- F7: `X-Shadow-Bundle-Version: 1` + `X-Shadow-Session-Id` response
+  headers. F5/F6 deferred per audit (F5 landed on M5 port day; F6 is
+  post-launch rate-limit work).
+
+Test surface +5 (11 → 16 evidence-events tests).
+
+**M2.1 refactor (`d139e63`) — Adapter handler.js + manual seal + PATH fix.**
+Extracted routing from `bin/shadow-record.mjs` into `lib/handler.js` so
+integration tests drive it without spawning Claude Code. Added
+`shadow-record seal <session_id>` fallback for when `SessionEnd` never
+fires (Ctrl+D, kill -9, OS shutdown). `bin/init.mjs` now writes hooks
+with an ABSOLUTE `<abs-node> <abs-script> hook X` command instead of
+bare `shadow-record hook X`, because `/bin/sh` (which Claude Code
+spawns hooks in) doesn't inherit shell PATH — bare invocation silently
+failed every hook fire in dogfood. Rewrites legacy bare entries on
+re-run. 7 new integration tests.
+
+**M2.2 Phase 1 (`b379280`) — Adapter reads `transcript_path`.**
+Claude Code's SessionStart hook stdin doesn't carry model_id or CLI
+version; both live in the transcript JSONL at `stdin.transcript_path`.
+`lib/transcript.js` reads it and returns `{agentVersion, modelId}`.
+`ensureSession` pins these into the session header for resumed
+sessions. Fresh sessions with an empty transcript still landed
+"unknown" in the header — hoisted into `session_end.payload` + every
+event's `extensions.discovered_*` so an auditor can still recover
+truth. 8 new tests.
+
+**M2.2 Phase 2 (`d01202c`) — Defer createSession until model known.**
+Phase 1 filled `session_end` but header stayed "unknown" for 100% of
+fresh sessions. Phase 2 buffers hook events to
+`sessions/{id}.pending.jsonl` and defers `createSession` entirely until
+`enrichFromTranscript` yields a model. The first hook that finds one
+materializes + replays the pending queue in original order + applies
+the current hook. `SessionEnd` force-materializes with "unknown"
+fallback so nothing strands on disk. `PENDING_HOOK_CAP=40` bounds
+memory for pathological cases. `sealSessionById` also handles the
+pending-only case. +2 tests, updated 3.
+
+**M5 replay 2D demo (`7c471c6`) — Drop bundle → tamper → chain break.**
+`demos/replay/` — `index.html` + `main.js` + `timeline.js` +
+`inspector.js` + `tamper.js` + `verify-browser.js` + seeded real
+dogfood bundle. Zero build step. Zero CDN. Zero npm install for the
+folder. Opens from `file://`. Auditor drops a bundle, sees the whole
+session as a horizontal timeline, clicks Tamper & verify → verifier's
+structured error prints as a floating caption + downstream events
+dim + row flashes red. Reset restores pristine state. 3 parity tests
+against Node verifier + 7 UI integration tests all green.
+Post-ship polish (`42006e4`): fixed `[hidden]` attribute leaking through
+`.workshop { display: flex }` (specificity fix via top-level
+`[hidden]{display:none !important}`) + inline data-URL favicon to kill
+the 404.
+
+**Verifier error format port (`e4f3997`, `4913c84`) — one week early.**
+Was scheduled for 2026-07-17 (Thu) per `docs/spec/verifier-error-format.md`
+but shipped early because M5's tamper caption already exercised the
+target contract. `verifyBundle` now returns
+`{ok:false, error:{seq, reason, impact}, reason (mirror), failedSeq (mirror)}`.
+10 stable snake_case reason codes (`prev_hash_mismatch`,
+`batch_root_mismatch`, `signature_verification_failed`, etc). Ported
+across three consumer surfaces: `bin/shadow-verify.mjs` (JSON output +
+human triple), `demos/replay/verify-browser.js` (WebCrypto mirror), and
+`verify.html` (offline USB verifier). 15 drift-catcher tests confirm
+Node/browser parity on every reason code. Deleted the
+`adaptVerifierError` shim in `demos/replay/tamper.js` — captions now
+read the verifier's `error.impact` sentence verbatim, no adapter-invented
+copy. `top-level reason` + `failedSeq` fields preserved for 1 release
+cycle back-compat; delete on v3.1.
+
+**Dogfood evidence archived (`7c471c6`).** First real signed bundle
+(`13df92c7`, 30 KB, 11-minute session, 69 events) captured 2026-07-13
+09:55 NY committed as `docs/dogfood-evidence/m2.1-first-success-*.json`
++ matching public PEM. Verifiable with `npx shadow-verify`.
+
+**Wed demo playbook (`9a1ac79`).** `docs/wed-demo-checklist-2026-07-16.md`
+— 6-beat 12-min script (story hook → adapter dogfood → M5 replay →
+trust ladder → XREAL flourish → 2 questions for Lora) + Tuesday-night
+4-command pre-flight + freeze list + 5 anticipated Q&A. Standalone
+document so operator can rehearse without asking the CLI.
+
+Test totals: 1439 → 1475 across the day (+36 net after M5 + Phase 2 +
+error-format drift tests). Zero failures. Zero skipped tests broke.
+
 ### npm publish of `shadow-attest-core@2.0.0` — 2026-07-11
 
 **Package is LIVE:** `npm install shadow-attest-core` returns v2.0.0 including
