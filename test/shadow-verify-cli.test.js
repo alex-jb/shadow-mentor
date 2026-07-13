@@ -129,6 +129,8 @@ test("shadow-verify on wrong public key exits 1 with signature-failed reason", (
 
     const r = runCli([bundlePath, "--public-key", otherPath]);
     assert.equal(r.status, 1);
-    assert.match(r.stderr, /signature verification failed/);
+    // Post M5 verifier-error-format port (2026-07-13): CLI now prints
+    // the structured error triple, so we grep for the snake_case code.
+    assert.match(r.stderr, /signature_verification_failed/);
   });
 });

@@ -199,7 +199,9 @@ test("verifyBundle detects event reordering", () => {
   [bundle.events[0], bundle.events[1]] = [bundle.events[1], bundle.events[0]];
   const result = verifyBundle(bundle, { publicKey });
   assert.equal(result.ok, false);
-  assert.match(result.reason, /seq gap|prev_hash mismatch/);
+  // Post M5 verifier-error-format port (2026-07-13): reason is a
+  // snake_case code, not the old ad-hoc string.
+  assert.match(result.reason, /seq_gap|prev_hash_mismatch/);
 });
 
 
@@ -228,7 +230,7 @@ test("verifyBundle detects wrong public key", () => {
 
   const result = verifyBundle(bundle, { publicKey: otherPublicKey });
   assert.equal(result.ok, false);
-  assert.match(result.reason, /signature verification failed/);
+  assert.match(result.reason, /signature_verification_failed/);
 });
 
 

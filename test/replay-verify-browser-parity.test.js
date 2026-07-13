@@ -76,7 +76,7 @@ test("browser + node verifier both return prev_hash mismatch on tampered payload
     `failedSeq diverged: node=${nodeResult.failedSeq} browser=${browserResult.failedSeq}`);
 });
 
-test("browser verifier returns 'batch_root mismatch' on a bundle whose last event is tampered", async () => {
+test("browser verifier returns 'batch_root_mismatch' on a bundle whose last event is tampered", async () => {
   // Interesting edge case: tampering the LAST event doesn't break
   // prev_hash chain (no downstream event to check), but batch_root
   // still mismatches. Confirms both verifiers agree on this shape.
@@ -94,5 +94,5 @@ test("browser verifier returns 'batch_root mismatch' on a bundle whose last even
   assert.equal(nodeResult.reason, browserResult.reason);
   // Both should report batch_root mismatch — no per-seq downstream
   // event to catch this at chain-walk time.
-  assert.equal(nodeResult.reason, "batch_root mismatch");
+  assert.equal(nodeResult.reason, "batch_root_mismatch");
 });

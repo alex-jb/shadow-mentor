@@ -478,19 +478,42 @@ function cryptoRandomHex(byteLen) {
  *     back to structural on partial failure with a diagnostic reason
  * @param {string|object} [params.rekorPubKey] — required for Rekor "full" mode.
  *   Fetch current key: `curl https://rekor.sigstore.dev/api/v1/log/publicKey`
- * @returns {{ok: boolean, reason?: string, failedSeq?: number, trustLevel?: string, anchors?: object[]}}
+ * @returns {{ok: boolean, error?: {seq:number|null, reason:string, impact:string}, reason?: string, failedSeq?: number, trustLevel?: string, anchors?: object[]}}
+ *
+ * Failure return shape (M5 verifier-error-format port, 2026-07-13):
+ *   {
+ *     ok: false,
+ *     error: { seq: number|null, reason: <snake_case>, impact: <sentence> },
+ *     // back-compat mirrors — will be removed in v3.1:
+ *     reason: <same as error.reason>,
+ *     failedSeq: <same as error.seq when it's a number>,
+ *   }
+ * Callers should read `result.error` going forward. The legacy top-level
+ * `reason` + `failedSeq` fields are preserved so existing tests + tools
+ * (bin/shadow-verify.mjs, verify.html) don't break during the transition.
  */
+function fail(seq, reason, impact) {
+  const s = typeof seq === "number" ? seq : null;
+  return {
+    ok: false,
+    error: { seq: s, reason, impact },
+    reason,
+    ...(typeof seq === "number" ? { failedSeq: seq } : {}),
+  };
+}
+
 export function verifyBundle(bundle, params) {
   const { publicKey, checkAnchors = false, rekorPubKey, caTrustStorePem } = params ?? {};
-  if (!publicKey) return { ok: false, reason: "publicKey required" };
-  if (!bundle || typeof bundle !== "object") return { ok: false, reason: "bundle required" };
-  if (bundle.bundle_version !== BUNDLE_VERSION) {
-    return { ok: false, reason: `unsupported bundle_version ${bundle.bundle_version}` };
-  }
-  if (!Array.isArray(bundle.events)) return { ok: false, reason: "events must be array" };
-  if (!Array.isArray(bundle.signatures) || bundle.signatures.length === 0) {
-    return { ok: false, reason: "signatures required" };
-  }
+  if (!publicKey) return fail(null, "public_key_missing",
+    "verifyBundle was called without an Ed25519 public key; cannot verify the signature.");
+  if (!bundle || typeof bundle !== "object") return fail(null, "bundle_missing",
+    "The supplied argument is not an object; expected a parsed Shadow evidence bundle.");
+  if (bundle.bundle_version !== BUNDLE_VERSION) return fail(null, "bundle_unsupported_version",
+    `bundle_version ${bundle.bundle_version} is not supported by this verifier (expected ${BUNDLE_VERSION}).`);
+  if (!Array.isArray(bundle.events)) return fail(null, "events_not_array",
+    "bundle.events is not an array; the event chain cannot be walked.");
+  if (!Array.isArray(bundle.signatures) || bundle.signatures.length === 0) return fail(null, "signatures_missing",
+    "bundle.signatures is empty; the batch root is unsigned and cannot be trusted.");
 
   const headerHash = headerSeedHash(bundle.header);
   let expectedPrev = headerHash;
@@ -498,24 +521,22 @@ export function verifyBundle(bundle, params) {
 
   for (let i = 0; i < bundle.events.length; i++) {
     const ev = bundle.events[i];
-    if (ev.seq !== i) return { ok: false, reason: `seq gap at index ${i}`, failedSeq: i };
-    if (ev.prev_hash !== expectedPrev) {
-      return { ok: false, reason: "prev_hash mismatch", failedSeq: i };
-    }
+    if (ev.seq !== i) return fail(i, "seq_gap",
+      `Event at index ${i} declares seq ${ev.seq}; the chain is missing or reordered starting here.`);
+    if (ev.prev_hash !== expectedPrev) return fail(i, "prev_hash_mismatch",
+      `prev_hash at seq ${i} does not match the previous event's own hash; chain broken at this point and every event after it is unverifiable against this signature.`);
     const own = sha256Hex(canonicalBytes(signedShape(ev)));
     eventHashes.push(own);
     expectedPrev = own;
   }
 
   const batchRoot = sha256Hex(Buffer.concat(eventHashes.map(h => Buffer.from(h, "hex"))));
-  if (batchRoot !== bundle.batch_root) {
-    return { ok: false, reason: "batch_root mismatch" };
-  }
+  if (batchRoot !== bundle.batch_root) return fail(null, "batch_root_mismatch",
+    "The Merkle root recomputed from the event hashes does not match bundle.batch_root; either an event was mutated or the batch_root field was rewritten.");
 
   const sig = bundle.signatures[0];
-  if (sig.algorithm !== "ed25519") {
-    return { ok: false, reason: `unsupported signature algorithm "${sig.algorithm}"` };
-  }
+  if (sig.algorithm !== "ed25519") return fail(null, "signatures_unsupported_algorithm",
+    `Signature algorithm "${sig.algorithm}" is not supported; this verifier only accepts ed25519.`);
   const keyObj = typeof publicKey === "string" ? createPublicKey(publicKey) : publicKey;
   const sigOk = cryptoVerify(
     null,
@@ -523,7 +544,8 @@ export function verifyBundle(bundle, params) {
     keyObj,
     Buffer.from(sig.signature, "base64url"),
   );
-  if (!sigOk) return { ok: false, reason: "signature verification failed" };
+  if (!sigOk) return fail(null, "signature_verification_failed",
+    "The Ed25519 signature does not match the batch root under the supplied public key; the bundle is not authentic for this key.");
 
   // v3 M3 sprint 1 + 2: report trust level. Default SELF_SIGNED. If the
   // caller opts into checkAnchors, walk external_anchors and elevate.

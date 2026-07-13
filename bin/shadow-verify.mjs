@@ -134,6 +134,9 @@ const result = verifyBundle(bundle, {
 if (args.json) {
   const payload = {
     ok: result.ok,
+    // M5 verifier-error-format port (2026-07-13): structured error triple.
+    error: result.error ?? null,
+    // Back-compat legacy fields — will be removed in v3.1.
     reason: result.reason ?? null,
     failedSeq: result.failedSeq ?? null,
     session_id: bundle?.header?.session_id ?? null,
@@ -181,9 +184,19 @@ if (result.ok) {
   process.exit(0);
 }
 
-const failedSeq = result.failedSeq !== undefined ? ` (event ${result.failedSeq})` : "";
+// M5 verifier-error-format port: render the {seq, reason, impact} triple.
+// Falls back to legacy fields if a caller-supplied verifier returned the
+// old shape.
+const err = result.error ?? {
+  seq: typeof result.failedSeq === "number" ? result.failedSeq : null,
+  reason: result.reason ?? "unknown_failure",
+  impact: "(no structured impact — legacy verifier return)",
+};
+const seqStr = err.seq === null || err.seq === undefined ? "—" : String(err.seq);
 process.stderr.write(
-  `✗ Verification failed${failedSeq}\n` +
-  `  reason : ${result.reason}\n`,
+  `✗ Verification failed\n` +
+  `  seq    : ${seqStr}\n` +
+  `  reason : ${err.reason}\n` +
+  `  impact : ${err.impact}\n`,
 );
 process.exit(1);

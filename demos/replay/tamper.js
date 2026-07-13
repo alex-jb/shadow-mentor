@@ -72,42 +72,18 @@ export function tamperInPlace(workingBundle, seq) {
 }
 
 /**
- * Shim adapting the {ok, reason, failedSeq} verifier return into the
- * {seq, reason, impact} contract the caption renders. Per design §4
- * step 4: DELETE this when docs/spec/verifier-error-format.md port
- * lands on 2026-07-17 (Thu) and verifyBundle returns {seq, reason,
- * impact} natively.
- *
- * @param {object} verifyResult — {ok:false, reason, failedSeq?}
- * @param {number} tamperedSeq  — the event the demo actually mutated
- * @returns {{ seq: number|string, reason: string, impact: string }}
- */
-export function adaptVerifierError(verifyResult, tamperedSeq) {
-  if (verifyResult.ok !== false) {
-    throw new Error("adaptVerifierError: expected verifyResult.ok === false");
-  }
-  // `seq` per design §5: the mutated event's index. NOT verifier's
-  // downstream failedSeq (see design test criterion (b)).
-  const seq = tamperedSeq;
-  const reason = verifyResult.reason;
-  const detected = typeof verifyResult.failedSeq === "number"
-    ? `chain break detected downstream at seq ${verifyResult.failedSeq}`
-    : "chain break detected at bundle-level check";
-
-  // Deterministic impact string — no hallucination, only fields we
-  // know from the verifier's own return.
-  const impact = `${detected}. Every event from seq ${tamperedSeq + 1} onward is now unverifiable against this signature. Auditor rejects the bundle.`;
-  return { seq, reason, impact };
-}
-
-/**
  * The full PRISTINE → TAMPERED transition. Mutates workingBundle in
- * place, calls the verifier, adapts the error, returns everything the
- * UI needs.
+ * place, calls the verifier, reads the structured error the verifier
+ * now returns natively, and hands the UI everything it needs.
+ *
+ * Note (2026-07-13): the earlier `adaptVerifierError` shim was deleted
+ * once packages/attest-core/session.js verifyBundle started returning
+ * `{ok:false, error:{seq, reason, impact}}` per the verifier-error-format
+ * spec (docs/spec/verifier-error-format.md).
  */
 export async function runTamperCycle({ workingBundle, publicKeyPem }) {
-  const seq = chooseTamperTarget(workingBundle);
-  tamperInPlace(workingBundle, seq);
+  const tamperedSeq = chooseTamperTarget(workingBundle);
+  tamperInPlace(workingBundle, tamperedSeq);
 
   const verify = await verifyBundleInBrowser(workingBundle, publicKeyPem);
   if (verify.ok !== false) {
@@ -117,6 +93,17 @@ export async function runTamperCycle({ workingBundle, publicKeyPem }) {
     throw new Error("tamper did not break verify — demo bug, please report");
   }
 
-  const caption = adaptVerifierError(verify, seq);
-  return { tamperedSeq: seq, verify, caption };
+  // The verifier reports the seq WHERE the break was DETECTED (typically
+  // one past the tampered event, because prev_hash on event N+1 no longer
+  // matches). The demo's caption shows both facts:
+  //   - error.seq (detected here)
+  //   - tamperedSeq (mutated here)
+  // so the auditor sees the cascade with no ambiguity.
+  const detected = verify.error;
+  const caption = {
+    seq: tamperedSeq,
+    reason: detected.reason,
+    impact: `Mutated event at seq ${tamperedSeq}; verifier detected the break at seq ${detected.seq ?? "—"}. ${detected.impact}`,
+  };
+  return { tamperedSeq, verify, caption };
 }
