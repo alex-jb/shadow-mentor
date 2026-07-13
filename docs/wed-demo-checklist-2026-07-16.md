@@ -142,7 +142,7 @@ chain of blocks you can step through."
 > "Two open questions for you. One: for the IEEE VR abstract, does the
 > auditor-walkthrough visual metaphor (this cascade dimming) hold up as
 > a research contribution, or should we frame it differently? Two: when
-> you talk to Y.U. Dean+VP, does the SR 26-2 Tier 3 positioning land or
+> you talk to Y.U. Dean+VP, does the SR 26-2 model-purpose carve-out for GenAI positioning land or
 > does that need to be reframed for a non-Fed audience?"
 
 Do NOT ask for money, roles, or timing. Ask her opinion, listen, take
@@ -221,12 +221,12 @@ LOG_ANCHORED closes it against past-dated tampering. The bank chooses
 the ladder rung based on their threat model.
 
 **"How does this fit into SR 26-2?"**
-Tier 3 (GenAI + agentic AI) was explicitly carved out of the Fed's
-model risk guidance in the 2026-04-17 rescission — meaning banks
-using GenAI in decision workflows have no Fed-mandated evidence
-requirement. Shadow fills that gap voluntarily, before the Fed's
-follow-up RFI is finalized. If the RFI ends up mandating something,
-Shadow is already there.
+The 2026-04-17 Fed/OCC/FDIC guidance rescinded SR 11-7 + OCC 2011-12 and
+scoped GenAI + agentic AI out of the model-risk envelope pending a
+follow-up RFI. Banks using GenAI in decision workflows have no
+currently-mandated evidence requirement. Shadow fills that gap
+voluntarily, before the follow-up RFI is finalized. If the RFI ends up
+mandating something, Shadow is already there.
 
 **"Why not just use OpenTelemetry?"**
 OTel exports observability data — it's designed for engineers reading
