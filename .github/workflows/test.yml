@@ -38,6 +38,16 @@ jobs:
       - name: Forbidden-phrases lint
         if: matrix.os == 'ubuntu-latest'
         run: node scripts/check-forbidden-phrases.mjs
+      # Verifies the committed dogfood bundle still passes shadow-verify.
+      # Catches any refactor that silently breaks bundle-format compat with
+      # bundles already in the wild. The Wed 2026-07-16 demo consumes this
+      # exact bundle path, so a green CI here is a Wed-morning safety net.
+      - name: Dogfood bundle verification
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          node bin/shadow-verify.mjs \
+            docs/dogfood-evidence/m2.1-first-success-13df92c7-2026-07-13.json \
+            --public-key docs/dogfood-evidence/public-key-2026-07-13.pem
 
   python:
     name: python (${{ matrix.python-version }})

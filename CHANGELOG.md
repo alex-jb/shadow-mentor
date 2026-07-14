@@ -10,6 +10,46 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+_Nothing yet. See v2.0.1 below for the 2026-07-13 shipping day and its P0 security tests._
+
+---
+
+## [2.0.1] — 2026-07-13
+
+Post-v2.0.0 shipping day plus P0 security tests, public-README hardening, and dogfood-bundle CI gate. Zero API breaks vs v2.0.0. All commits since v2.0.0 rolled up here.
+
+### Added — P0 security tests (`5b5ced6`)
+
+Two adversarial test suites required by `docs/SHADOW_SECURITY_STANDARDS_BRIEF.md`, both green:
+
+- **S1 truncation-attack** (`test/truncation-attack.test.js`, 7 tests) — tail truncation (K=1, 3, 10), mid-chain deletion (with + without seq reindex), zero-event edge case, attacker-resign with wrong key. All fail verify with the expected structural reason. No real bug surfaced; the S1 defense stands.
+- **S2 JCS canonicalization parity** (`test/jcs-canonicalization.test.js`, 12 tests) — order-insensitive equality at every nesting level, semantic difference detection, RFC 8785 corners (number normalization, negative zero, unicode strings, non-ASCII keys sorted lexicographically), tamper-detection property, Node ↔ browser canonicalize byte parity across 15 fixtures. Passes without touching canonicalization.
+
+### Added — Impeccable design audit (`038c180`)
+
+`docs/impeccable-audit-2026-07-13.md` — first `npx impeccable detect` pass on `verify.html`, `demos/replay/index.html`, `demos/replay/styles.css`, `README.md`. Five findings: three real signal (font hierarchy, em-dash count, adapter README pending scan), two false positive (border-left as M5 row selection indicator, Roboto only in font-stack fallback). Adoption plan deferred to post-Wed per the "周三前 nothing else" discipline.
+
+### Added — Dogfood bundle CI verification
+
+`.github/workflows/test.yml` now runs `bin/shadow-verify.mjs` against the committed dogfood bundle (`docs/dogfood-evidence/m2.1-first-success-13df92c7-2026-07-13.json` + `public-key-2026-07-13.pem`) on every push. Catches any refactor that silently breaks offline-verifier compatibility with real-world bundles before Wed 2026-07-16.
+
+### Changed — README procurement clarity (`7b9a242`)
+
+New paragraph after the "Status" line: an explicit boundary between what Shadow guarantees (integrity of what was recorded) and what it does not (content authenticity). Prevents a bank auditor from over-reading the attestation guarantee. Same paragraph mirrored into `README.zh-CN.md`.
+
+### Fixed — Public README false-alarm phrases (`b75f258`, `7b9a242` zh-CN slice)
+
+Post-push audit against `raw.githubusercontent.com` surfaced two forbidden phrases that survived earlier cleanups:
+
+- `README.zh-CN.md`: rewrote `"SR 11-7 compliant"` (quoted as a phrase Shadow explicitly deprecates) so the public-state-lint regex doesn't false-flag it. Now reads `弃用旧 SR 11-7 合规措辞`.
+- `README.zh-CN.md`: dropped the fabricated `"13 天完成定位"` urgency phrase.
+
+Both public URLs verified clean via curl. `public-state-lint.yml` CI workflow (added in `8b3064d`) now guards this class of drift permanently by grepping the actual GitHub raw URLs after every push to main.
+
+---
+
+## [2.0.0 addendum] — the 2026-07-13 v3 shipping day rolled into v2.0.1
+
 ### v3 M2.3 + M2.1 + M2.2 + M5 + verifier-error-format — 2026-07-13 (autonomous day)
 
 Seven commits pushed to `main`. Full suite 1472/1475 green (was 1436/1439 at
