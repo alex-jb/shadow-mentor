@@ -28,7 +28,7 @@
 **Version**: 2.0.1
 **Tests**: 1491/1494 passing (0 failing)
 **Attestation signed fields**: 21 parameters, 14 append-only conditional bindings
-**Release tags**: 56
+**Release tags**: 57
 <!-- readme-stats:end -->
 
 Numbers above are regenerated from source by `node scripts/readme-stats.mjs --write`. CI blocks pushes where they drift.
