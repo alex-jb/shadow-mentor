@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shadow evidence bundle — offline verifier</title>
+  <title>Shadow evidence bundle · offline verifier</title>
   <meta name="description" content="Offline WebCrypto verifier for Shadow v3 evidence bundles. Works from a USB stick. Zero network calls." />
   <style>
     :root {
@@ -50,6 +50,8 @@
     }
     .wrap { max-width: 800px; margin: 0 auto; }
     header { margin-bottom: 24px; }
+    /* Impeccable font hierarchy — 3 tiers: body 14 / subhead 17 / hero 22.
+       Collapsed from 7 sizes (12/13/14/16/17/18/22) per docs/impeccable-audit-2026-07-13.md. */
     h1 { margin: 0 0 8px; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
     .sub { color: var(--dim); font-size: 14px; }
     .sub code { font-family: var(--mono); color: var(--text); }
@@ -63,14 +65,14 @@
       transition: border-color 120ms, background 120ms;
     }
     .drop.active { border-color: var(--accent); background: #172232; }
-    .drop h2 { margin: 0 0 8px; font-size: 16px; font-weight: 500; }
-    .drop p { margin: 0; color: var(--dim); font-size: 13px; }
+    .drop h2 { margin: 0 0 8px; font-size: 17px; font-weight: 500; }
+    .drop p { margin: 0; color: var(--dim); font-size: 14px; }
     .drop input[type="file"] { display: none; }
     .drop label {
       display: inline-block; margin-top: 12px;
       padding: 8px 16px; border-radius: 8px;
       background: var(--accent); color: #0b0d10; cursor: pointer;
-      font-size: 13px; font-weight: 500;
+      font-size: 14px; font-weight: 500;
     }
 
     .keyrow {
@@ -78,11 +80,11 @@
       background: var(--panel); border: 1px solid var(--panel-border);
       border-radius: 12px;
     }
-    .keyrow label { display: block; margin-bottom: 8px; font-size: 13px; color: var(--dim); }
+    .keyrow label { display: block; margin-bottom: 8px; font-size: 14px; color: var(--dim); }
     .keyrow textarea {
       width: 100%; min-height: 100px; padding: 10px;
       background: var(--bg); color: var(--text); border: 1px solid var(--panel-border);
-      border-radius: 8px; font-family: var(--mono); font-size: 12px; resize: vertical;
+      border-radius: 8px; font-family: var(--mono); font-size: 14px; resize: vertical;
     }
 
     .result {
@@ -93,14 +95,14 @@
     .result.ok { border-color: var(--ok); }
     .result.bad { border-color: var(--bad); }
     .result.warn { border-color: var(--warn); }
-    .verdict { font-size: 18px; font-weight: 600; margin: 0 0 8px; }
+    .verdict { font-size: 22px; font-weight: 600; margin: 0 0 8px; }
     .verdict.ok { color: var(--ok); }
     .verdict.bad { color: var(--bad); }
     .verdict.warn { color: var(--warn); }
     .reason { color: var(--dim); font-size: 14px; margin: 0 0 16px; }
     .reason code { font-family: var(--mono); color: var(--text); }
 
-    dl.meta { display: grid; grid-template-columns: 180px 1fr; gap: 4px 16px; margin: 0; font-size: 13px; }
+    dl.meta { display: grid; grid-template-columns: 180px 1fr; gap: 4px 16px; margin: 0; font-size: 14px; }
     dl.meta dt { color: var(--dim); }
     dl.meta dd { margin: 0; font-family: var(--mono); word-break: break-all; }
 
@@ -128,7 +130,7 @@
     </div>
 
     <div class="keyrow">
-      <label for="pubkey">Ed25519 public key (PEM format) — required if the bundle does not embed one:</label>
+      <label for="pubkey">Ed25519 public key (PEM format), required if the bundle does not embed one:</label>
       <textarea id="pubkey" placeholder="-----BEGIN PUBLIC KEY-----&#10;MCowBQYDK2VwAyEA...&#10;-----END PUBLIC KEY-----"></textarea>
     </div>
 
@@ -267,7 +269,7 @@ async function verifyBundle(bundle, publicKeyPem) {
     "The Ed25519 signature does not match the batch root under the supplied public key; the bundle is not authentic for this key.");
 
   const trustLevel = Array.isArray(bundle.external_anchors) && bundle.external_anchors.length > 0
-    ? "TIME_ANCHORED (external anchor present — not verified by this offline tool)"
+    ? "TIME_ANCHORED (external anchor present, not verified by this offline tool)"
     : "SELF_SIGNED (no external anchor)";
 
   return {
@@ -328,7 +330,7 @@ function renderResult(result, bundle) {
     const err = result.error ?? {
       seq: typeof result.failedSeq === "number" ? result.failedSeq : null,
       reason: result.reason ?? "unknown_failure",
-      impact: "(no structured impact — legacy verifier return)",
+      impact: "(no structured impact; legacy verifier return)",
     };
     const seqStr = err.seq === null || err.seq === undefined ? "—" : String(err.seq);
     const bundleMeta = bundle ? `

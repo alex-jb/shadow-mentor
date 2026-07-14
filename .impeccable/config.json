@@ -1,0 +1,18 @@
+{
+  "$schema": "https://impeccable.dev/schema/config-v1.json",
+  "//": "Impeccable design-audit config. Documented false-positive ignores per docs/impeccable-audit-2026-07-13.md.",
+
+  "ignores": [
+    {
+      "rule": "side-tab",
+      "file": "demos/replay/styles.css",
+      "reason": "The `border-left: 3px solid` on lines ~195-196 is the M5 replay's SELECTED-row and TAMPERED-row indicator. Removing it means auditors cannot tell which event is highlighted or which one broke the chain. Functional, not decorative."
+    },
+    {
+      "rule": "overused-font",
+      "file": "demos/replay/index.html",
+      "match": "Roboto",
+      "reason": "Roboto appears only as a fallback in the system-font stack `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, ...` — never actually rendered on macOS/iOS/Windows/Chrome-Linux. It is the Android fallback. Detector's regex isn't stack-aware."
+    }
+  ]
+}

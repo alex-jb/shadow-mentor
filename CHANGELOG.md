@@ -10,7 +10,40 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
-_Nothing yet. See v2.0.1 below for the 2026-07-13 shipping day and its P0 security tests._
+_Nothing yet. See v2.0.2 below for the 2026-07-14 pre-Wed hardening batch._
+
+---
+
+## [2.0.2] — 2026-07-14
+
+Pre-Wed 2026-07-16 XREAL demo hardening. Zero API breaks. Adds S3 replay-attack test, applies Impeccable design audit findings 1-2 + 4-5, and pins the false-positive ignore list.
+
+### Added — S3 replay-attack test suite (5 tests, all green)
+
+`test/replay-attack.test.js` — the third P0 adversarial test from `docs/SHADOW_SECURITY_STANDARDS_BRIEF.md`, joining S1 (truncation) and S2 (JCS canonicalization).
+
+- **S3.A** two variants — verifyBundle alone cannot detect replay (bundle is byte-for-byte valid); caller-side dedup via `bundle.header.session_id` set catches it. Documents the application-layer dedup pattern.
+- **S3.B** — attacker rewrites `session_started_at_utc` to look fresh. Fails at `signature_verification_failed` OR `prev_hash_mismatch` (Shadow has two independent defenses: chain-seed derived from session_id AND signature over full body).
+- **S3.C** — attacker rewrites `session_id` to evade dedup. Same defense-in-depth: chain break or signature fail.
+- **S3 freshness** — verifyBundle exposes `bundle.header.session_started_at_utc` so callers can implement a per-vertical maxAge gate (loan: 24h; AML/KYC: 1h; incident-response: 15min).
+
+Full suite: **1496/1499 passing** (was 1491/1494 in v2.0.1). +5 tests, +0 failures.
+
+### Changed — Impeccable design audit fixes applied (findings 1-2)
+
+Per `docs/impeccable-audit-2026-07-13.md`, applied the two "real signal" findings pre-Wed for XREAL One Pro readability:
+
+- **`verify.html` font hierarchy** collapsed from 7 sizes (12/13/14/16/17/18/22 px) to 3 tiers: body 14, subhead 17, hero 22. Ratio 1.25:1 between tiers. Comment marker added in CSS block. XREAL mode (`?xreal=1`) preserved as-is.
+- **`demos/replay/index.html` em-dashes** reduced from 3 visible dashes to 0. Title, hdr-title, and public-key summary now use middot (·) or comma.
+- **`verify.html` visible em-dashes** reduced from 4 to 0. Title, PEM label, TIME_ANCHORED verdict string, and legacy verifier-return impact string all rewritten. CSS/JS code-comment em-dashes and intentional placeholder em-dash (`err.seq === null ? "—" : ...`) preserved.
+
+### Added — `.impeccable/config.json`
+
+Pins the two documented false-positive rule ignores from the audit:
+- `side-tab` on `demos/replay/styles.css` (M5 SELECTED-row + TAMPERED-row indicators are functional, not decorative)
+- `overused-font` Roboto match (present only as Android fallback in system-font stack, never rendered on macOS/iOS/Windows)
+
+Future `npx impeccable detect` runs will not re-flag these.
 
 ---
 

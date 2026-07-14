@@ -25,8 +25,8 @@
 **Zero telemetry.** Shadow does not phone home. No usage pings, no crash reports, no analytics — from either the library or the CLI verifiers. Verify by grepping the source: neither `shadow-attest-core` nor any CLI in `bin/` opens an outbound socket to a Shadow-controlled host. Security policy: [`SECURITY.md`](./SECURITY.md).
 
 <!-- readme-stats:begin -->
-**Version**: 2.0.1
-**Tests**: 1491/1494 passing (0 failing)
+**Version**: 2.0.2
+**Tests**: 1496/1499 passing (0 failing)
 **Attestation signed fields**: 21 parameters, 14 append-only conditional bindings
 **Release tags**: 57
 <!-- readme-stats:end -->
