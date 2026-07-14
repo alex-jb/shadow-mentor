@@ -9,7 +9,7 @@ Only `main` and the most recent tagged release receive security fixes. Older tag
 | Version | Supported |
 |---|---|
 | main | Yes |
-| latest tag (v2.0.2) | Yes |
+| latest tag (v2.0.3) | Yes |
 | earlier tags | No |
 
 ## Reporting a vulnerability

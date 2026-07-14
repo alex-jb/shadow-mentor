@@ -133,6 +133,24 @@ const CANONICAL_TOOLS = [
     determinismClaim: "no-llm-inside-tool",
     latencyPercentiles: { p50_ms: 1, p95_ms: 3 },
   },
+  {
+    name: "shadow_disparity",
+    description:
+      "Fair-Lending disparity math (SolasAI-aligned Node port). Computes Adverse Impact Ratio (AIR, EEOC UGSEP 1978 §1607.4(D) four-fifths rule), Standardized Mean Difference (SMD, Cohen's d style), and Segmented AIR (surfaces per-slice violations aggregate metrics mask). Pure computation, no LLM, no Python runtime dependency. Wraps the SolasAI methodology (Apache-2.0) natively.",
+    inputSchemaKeys: [
+      "mode",
+      "protected_outcomes",
+      "reference_outcomes",
+      "rows",
+    ],
+    regulatoryScope: [
+      "EEOC UGSEP 1978 §1607.4(D) four-fifths rule",
+      "Reg B / ECOA disparate impact",
+      "SolasAI methodology (Apache-2.0)",
+    ],
+    determinismClaim: "no-llm-inside-tool",
+    latencyPercentiles: { p50_ms: 1, p95_ms: 4 },
+  },
 ];
 
 function computeToolHash(tool) {

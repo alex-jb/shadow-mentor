@@ -10,7 +10,32 @@ The format loosely follows [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
-_Nothing yet. See v2.0.2 below for the 2026-07-14 pre-Wed hardening batch._
+_Nothing yet._
+
+---
+
+## [2.0.3] — 2026-07-14
+
+**10th MCP tool: `shadow_disparity`.** Fair-Lending disparity math (SolasAI-aligned Node port, zero Python runtime dependency).
+
+### Added — `lib/disparity/` (native Node port of SolasAI methodology)
+
+- `adverseImpactRatio(protected, reference)` — EEOC UGSEP 1978 §1607.4(D) four-fifths rule. Returns `{air, protected_rate, reference_rate, four_fifths_violation}`.
+- `standardizedMeanDifference(protected, reference)` — Cohen's d style for continuous outcomes (e.g. approved credit limits). Returns `{smd, protected_mean, reference_mean, pooled_stdev, concerning}` where `concerning = |smd| > 0.20`.
+- `segmentedAIR(rows)` — AIR sliced by a control variable (e.g. FICO bucket). Reveals per-segment violations that aggregate metrics hide. Returns `{[segment]: AIR-result-or-{air:null, reason:'insufficient_data'}}`.
+- Native JS implementation: no `child_process` shell-out to SolasAI Python, no runtime dependency added. Methodology cite: `github.com/SolasAI/solas-ai-disparity` (Apache-2.0). Fair-lending expert-witness names behind SolasAI make this a procurement-grade attribution.
+
+### Added — 8 contract tests in `test/disparity.test.js` (all green)
+
+Covers AIR (parity + violation + zero-reference + empty-input), SMD (null + concerning), and segmented AIR (aggregate-hides-slice case study + insufficient-data handling). Full suite: **1504 pass** (was 1496 in v2.0.2). +8 tests, 0 regressions.
+
+### Added — `shadow_disparity` as 10th MCP tool
+
+Registered in `mcp/server.js` `TOOLS`, `api/mcp-manifest.js` `CANONICAL_TOOLS`, `lib/auth/oauth-scaffold.js` `ALL_TOOLS` + council/admin scope grants, and `installer/tools.json` `$tool_surface`. All 4 drift-detection tests updated in lockstep. Auditors querying from Cursor/Claude Desktop now get Fair-Lending disparity math on demand.
+
+### Regulatory framing
+
+`shadow_disparity` output includes a `regulatory_anchor` field citing EEOC UGSEP 1978 §1607.4(D) and a `methodology` field crediting SolasAI. Both fields appear in the response envelope so bank counsel can cite them directly in an AA-notice response chain.
 
 ---
 

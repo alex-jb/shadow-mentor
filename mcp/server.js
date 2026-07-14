@@ -33,6 +33,7 @@ import { PERSONA_PROMPTS, SCENARIO_CONTEXTS } from "../lib/prompts.js";
 import { TRACEABILITY } from "../lib/traceability.js";
 import { ADVERSE_ACTION_CODES, AA_SOURCES } from "../lib/schemas/adverse-action.js";
 import { verifyAttestation, SIGNATURE_MODES } from "../lib/attestation.js";
+import { adverseImpactRatio, standardizedMeanDifference, segmentedAIR } from "../lib/disparity/index.js";
 import { createResponse, isEnvelope } from "./response.js";
 
 const TOOLS = [
@@ -211,6 +212,44 @@ const TOOLS = [
         "kelly_avg_loss_pct"
       ]
     }
+  },
+  {
+    name: "shadow_disparity",
+    description: "Fair-Lending disparity math for AI-assisted credit decisions. Implements SolasAI methodology (github.com/SolasAI/solas-ai-disparity, Apache-2.0) natively in Node with zero Python dependency. Computes: (1) Adverse Impact Ratio (AIR) per EEOC UGSEP 1978 §1607.4(D) four-fifths rule, (2) Standardized Mean Difference (SMD) for continuous outcomes like approved credit limit, (3) Segmented AIR sliced by a control variable (e.g. FICO bucket) to surface per-slice violations that aggregate metrics mask. Use when: a Fair-Lending examiner asks whether a Shadow-council-approved decision batch shows disparate impact against a protected class. Pure computation, no LLM. Cite as Shadow's Fair-Lending disparity primitive layered on the same council output the other 9 tools consume.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        mode: {
+          type: "string",
+          enum: ["air", "smd", "segmented_air"],
+          description: "Which disparity statistic to compute."
+        },
+        protected_outcomes: {
+          type: "array",
+          items: { type: "number" },
+          description: "For 'air': binary outcomes (0|1) for the protected class. For 'smd': continuous values (e.g. approved limits)."
+        },
+        reference_outcomes: {
+          type: "array",
+          items: { type: "number" },
+          description: "Same shape as protected_outcomes, for the reference class."
+        },
+        rows: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              outcome: { type: "number", description: "0 or 1 (approved)" },
+              is_protected: { type: "boolean" },
+              segment: { type: "string", description: "Control variable value, e.g. 'fico_620_699'" }
+            },
+            required: ["outcome", "is_protected", "segment"]
+          },
+          description: "Only used when mode = 'segmented_air'. Rows to bucket by segment."
+        }
+      },
+      required: ["mode"]
+    }
   }
 ];
 
@@ -374,6 +413,49 @@ export function handleToolCall(name, args) {
         ? "Attestation verified. Request + response were not tampered, the pinned model ran, and the deployment key matches."
         : "Attestation FAILED verification. Do NOT trust this record — it may have been tampered, silently model-swapped, or signed with a different key."
     };
+  }
+
+  if (name === "shadow_disparity") {
+    if (args.mode === "air") {
+      if (!args.protected_outcomes || !args.reference_outcomes) {
+        return { error: "shadow_disparity mode=air requires protected_outcomes and reference_outcomes" };
+      }
+      try {
+        return {
+          mode: "air",
+          methodology: "SolasAI-aligned (github.com/SolasAI/solas-ai-disparity, Apache-2.0), Node port",
+          regulatory_anchor: "EEOC UGSEP 1978 §1607.4(D) four-fifths rule",
+          ...adverseImpactRatio(args.protected_outcomes, args.reference_outcomes),
+        };
+      } catch (err) {
+        return { error: err.message };
+      }
+    }
+    if (args.mode === "smd") {
+      if (!args.protected_outcomes || !args.reference_outcomes) {
+        return { error: "shadow_disparity mode=smd requires protected_outcomes and reference_outcomes" };
+      }
+      try {
+        return {
+          mode: "smd",
+          methodology: "SolasAI-aligned Node port; Cohen's d style",
+          ...standardizedMeanDifference(args.protected_outcomes, args.reference_outcomes),
+        };
+      } catch (err) {
+        return { error: err.message };
+      }
+    }
+    if (args.mode === "segmented_air") {
+      if (!Array.isArray(args.rows)) {
+        return { error: "shadow_disparity mode=segmented_air requires rows array" };
+      }
+      return {
+        mode: "segmented_air",
+        methodology: "SolasAI-aligned Node port; surfaces per-segment violations hidden by aggregate AIR",
+        segments: segmentedAIR(args.rows),
+      };
+    }
+    return { error: `unknown shadow_disparity mode: ${args.mode}` };
   }
 
   if (name === "shadow_scenarios") {
