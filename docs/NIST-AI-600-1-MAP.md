@@ -60,3 +60,38 @@ Reviewed against:
 ---
 
 **Bottom line for federal procurement contact:** 8 of 12 NIST 600-1 GenAI risks are Shadow-enforced with code + test evidence at v1.5.21; the remaining 4 are honestly categorized. This is a deeper mapping than any AI compliance vendor has published, per the 2026-07-08 competitive audit. If your acquisition officer requires this mapping to advance a Shadow POC, cite this file directly.
+
+---
+
+## v0.2 refresh — 2026-07-14
+
+Version reference update: Shadow v1.5.21 → **v2.0.3**. Test count 706 → **1,504**. Release tags → **59**. MCP tool count **10** (added `shadow_disparity`).
+
+### Rows updated in v0.2
+
+**Row 6 · Information Integrity (§2.7):** add `test/replay-attack.test.js` (S3, 5 tests, v2.0.2 — replay defense-in-depth via chain seed and Ed25519 signature over session_id + timestamp) and `test/truncation-attack.test.js` (S1, 7 tests) + `test/jcs-canonicalization.test.js` (S2, 12 tests) as adversarial-hardening evidence. Three-tier adversarial test suite now anchors the hash-chain integrity claim in code, not just prose.
+
+**Row 10 · Toxicity / Bias / Homogenization (§2.11):** add `shadow_disparity` MCP tool (v2.0.3) and `test/disparity.test.js` (8 tests). Native Node port of SolasAI methodology (Apache-2.0). Computes Adverse Impact Ratio per EEOC UGSEP 1978 §1607.4(D), Standardized Mean Difference (Cohen's d for continuous outcomes), and Segmented AIR (surfaces per-slice violations aggregate metrics hide). Response envelope includes `regulatory_anchor` + `methodology` fields procurement can cite directly.
+
+**Row 11 · Value Chain / Component Integration (§2.12):** MCP manifest SBOM updated to **10-tool** (was 8). Added `shadow_disparity` to `CANONICAL_TOOLS` in `api/mcp-manifest.js`. Manifest hash rotates with tool changes, so procurement pinning is version-anchored.
+
+### New non-coverage disclosure discipline
+
+For v0.3, each row will add an explicit "not covered" bullet documenting what Shadow does NOT defend against inside the same NIST risk category. Example for Row 3 Data Privacy: "does NOT provide encryption-at-rest — bank IT deploys HSM / KMS; Shadow attests to the *decision* privacy, not the *storage* privacy." Rationale: procurement teams increasingly discount vendor coverage claims that fail to state the non-coverage boundary. Explicit non-coverage per category is procurement-honest and prevents overselling.
+
+### CFPB 7/21 disparate-impact rule (2026-07-21) — non-impact on NIST mapping
+
+The 2026-07-21 Reg B final rule narrowed federal disparate-impact exposure but did not amend 12 CFR 1002.9's specific-principal-reason obligation. Shadow's citation-registry + reason-code-dictionary controls (Rows 1 + 3 + 10) continue to bind under the post-7/21 rule. `docs/CITATION_MAP.md` regulatory-frame coverage is unchanged; this NIST mapping is unchanged.
+
+### EU Digital Omnibus deferral (2026-06-29 formal adoption) — non-impact on NIST mapping
+
+The Digital Omnibus formally adopted 2026-06-29 defers EU AI Act credit-scoring provisions to 2027-12-02. Shadow's EU narrative pivots to CRD VI internal governance + GDPR Art. 22 + ECJ Schufa C-634/21 (all enforceable today, per EBA CP/2025/20 consultation and 2025-11 EBA mapping letter). Row 3 Data Privacy coverage unchanged. Row 6 Information Integrity strengthens under CRD VI Article 74 (arrangement of institution's model risk management) — Shadow's hash-chain + Ed25519 attestation composes directly with CRD VI Art. 74 audit-trail obligations.
+
+### Companion documents refresh
+
+- **`docs/CITATION_MAP.md`** — unchanged, still authoritative for regulatory-frame coverage
+- **`docs/THREAT_MODEL.md`** — 6-category systematized threat framework (T1-T6)
+- **`docs/SECURITY.md`** — supported-version updated to v2.0.3
+- **`docs/mcp-registry-submission-2026-07-14.md`** — new; 20-minute Alex-hand path to list Shadow in official Anthropic MCP Registry before 2026-08-02 launch
+
+**v0.2 provenance:** cross-referenced with Shadow v2.0.3 tag (2026-07-14) + `docs/CITATION_MAP.md` + `docs/THREAT_MODEL.md` + `2026-07-14 trending scan agent findings` (Wang GAICF arXiv:2607.04103 + Kurshan Agentic Regulator arXiv:2512.11933 as adjacent-not-competing prior art both cited in the ICAIF Milan companion paper Related Work).
