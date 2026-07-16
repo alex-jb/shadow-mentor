@@ -23,6 +23,17 @@ the highest-trust UX for finance and it's the same traceability idea Shadow's
 audit chain is built on. Reading comfort, not spectacle, is why the side panel
 beats a headset for on-screen documents.
 
+## Seal evidence — the analysis is a verifiable Shadow record
+
+After Analyze, press **Seal evidence**: the verdict + each cited claim are
+written into an Ed25519-signed, hash-chained evidence bundle in the exact
+attest-core format, and downloaded with its public key. Anyone can then verify
+it offline — `shadow-verify bundle.json --public-key public.pem` (or `verify.html`)
+— and a single edited claim breaks the chain. This is what makes the scan
+surface a real Shadow record and not just a view: the moat is the *verifiable
+evidence*, not the primitive. The signing runs in-browser via WebCrypto and is
+round-trip tested against the same verifier the CLI uses.
+
 ## The one seam to wire a real model
 
 `analyze(kind)` returns `{ verdict:{text,tone}, claims:[{text, cell}] }`. Today

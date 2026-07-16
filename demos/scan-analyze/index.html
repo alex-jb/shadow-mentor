@@ -52,9 +52,12 @@
   .claim .pill{display:inline-block;font-family:var(--mono);font-size:10.5px;color:var(--pill);
     border:1px solid rgba(125,211,252,.35);border-radius:999px;padding:1px 8px;margin-left:6px;cursor:pointer}
   .claim .pill:hover{background:rgba(125,211,252,.15)}
-  #run{margin-top:auto;background:var(--pill);color:#04121b;border:0;border-radius:8px;
+  #run{background:var(--pill);color:#04121b;border:0;border-radius:8px;
     padding:11px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--mono)}
   #run:disabled{opacity:.5;cursor:default}
+  #seal{background:transparent;color:var(--ok);border:1px solid rgba(61,220,151,.4);border-radius:8px;
+    padding:11px 14px;font-size:12px;cursor:pointer;font-family:var(--mono)}
+  #sealed{font-family:var(--mono);font-size:11px;color:var(--ok);line-height:1.5}
   #source{color:var(--dim);font-size:11px;font-family:var(--mono)}
   .thinking{color:var(--dim);font-size:12px;font-family:var(--mono)}
 </style>
@@ -76,7 +79,11 @@
     <div id="verdict" class="thinking">Press Analyze to run the council on the captured artifact.</div>
     <div id="claims"></div>
     <div id="source"></div>
-    <button id="run">Analyze</button>
+    <div id="sealed"></div>
+    <div style="margin-top:auto;display:flex;gap:8px">
+      <button id="run" style="flex:1">Analyze</button>
+      <button id="seal" hidden>Seal evidence</button>
+    </div>
   </aside>
 </div>
 
@@ -141,8 +148,42 @@ async function analyze(kind){
   };
 }
 
+// ── attestation: seal the analysis into a verifiable Shadow evidence
+// bundle (same format as attest-core / verify-browser.js — round-trip
+// tested). Each analysis becomes a signed, tamper-evident record anyone can
+// check offline with shadow-verify. This is what makes the scan surface a
+// real Shadow record, not just a view: the moat is the verifiable evidence.
+function canonicalize(v){if(v===null||typeof v!=="object")return JSON.stringify(v);if(Array.isArray(v))return "["+v.map(canonicalize).join(",")+"]";const k=Object.keys(v).sort();return "{"+k.map(k=>JSON.stringify(k)+":"+canonicalize(v[k])).join(",")+"}";}
+function canonicalBytes(v){return new TextEncoder().encode(canonicalize(v));}
+async function sha256Hex(b){const buf=await crypto.subtle.digest("SHA-256",b);return[...new Uint8Array(buf)].map(x=>x.toString(16).padStart(2,"0")).join("");}
+function signedShape(e){const{payload_ref,...r}=e;return r;}
+function hexToBytes(h){const o=new Uint8Array(h.length/2);for(let i=0;i<o.length;i++)o[i]=parseInt(h.substr(i*2,2),16);return o;}
+function bytesToB64url(b){let s="";for(const x of b)s+=String.fromCharCode(x);return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");}
+function abToPem(ab,l){const b=new Uint8Array(ab);let s="";for(const x of b)s+=String.fromCharCode(x);const b64=btoa(s).replace(/(.{64})/g,"$1\n");return `-----BEGIN ${l}-----\n${b64}\n-----END ${l}-----`;}
+async function headerSeed(h){return sha256Hex(canonicalBytes({...h,session_ended_at_utc:null}));}
+async function ownHash(e){return sha256Hex(canonicalBytes(signedShape(e)));}
+async function sealAnalysis(kind,persona,res){
+  const kp=await crypto.subtle.generateKey({name:"Ed25519"},true,["sign","verify"]);
+  const pem=abToPem(await crypto.subtle.exportKey("spki",kp.publicKey),"PUBLIC KEY");
+  const header={session_id:`scan-${kind}`,session_started_at_utc:"2026-07-16T00:00:00.000Z",session_ended_at_utc:null,agent:{name:"shadow-scan",version:"0.1",identity_ref:null},models:[{model_id:"worked-mock",provider:null,sampling_params_hash:null}],environment_fingerprint:{os:"browser",node_version:"n/a",hostname_hash:null},schema_versions:{bundle:1,attest_core:"2.0.0"}};
+  const events=[];let prev=await headerSeed(header),seq=0;
+  const push=async(t,a,p)=>{const ph=await sha256Hex(canonicalBytes(p));const ev={seq:seq++,ts_utc:header.session_started_at_utc,event_type:t,actor:a,payload_hash:ph,payload_ref:`sha256:${ph}`,prev_hash:prev,extensions:{}};events.push(ev);prev=await ownHash(ev);};
+  await push("session_start","system",{kind,persona});
+  await push("model_output","agent",{verdict:res.verdict.text,tone:res.verdict.tone});
+  for(const c of res.claims)await push("tool_result","agent",{claim:c.text,source:c.cell});
+  await push("session_end","system",{event_count:events.length+1});
+  const hashes=[];for(const e of events)hashes.push(await ownHash(e));
+  const concat=new Uint8Array(hashes.length*32);hashes.forEach((h,i)=>concat.set(hexToBytes(h),i*32));
+  const batch_root=await sha256Hex(concat);
+  const sig=await crypto.subtle.sign({name:"Ed25519"},kp.privateKey,hexToBytes(batch_root));
+  const bundle={bundle_version:1,spec_version:"shadow-evidence/v1",header,events,batch_root,signatures:[{algorithm:"ed25519",key_id:"shadow-scan-demo",signature:bytesToB64url(new Uint8Array(sig)),signed_at_utc:header.session_started_at_utc}]};
+  return {bundle,pem};
+}
+function download(name,text){const b=new Blob([text],{type:"application/octet-stream"});const u=URL.createObjectURL(b);const a=document.createElement("a");a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
+
 // ── UI wiring ───────────────────────────────────────────────────────
 let kind = "statement";
+let lastAnalysis = null;
 const $ = s=>document.querySelector(s);
 const body = $("#artifact-body");
 
@@ -152,6 +193,7 @@ function renderArtifact(){
   $("#verdict").className = "thinking";
   $("#verdict").textContent = "Press Analyze to run the council on the captured artifact.";
   $("#claims").innerHTML = ""; $("#source").textContent = "";
+  $("#seal").hidden = true; $("#sealed").textContent = ""; lastAnalysis = null;
 }
 function highlight(cell, on){
   document.querySelectorAll(`[data-cell="${cell}"]`).forEach(el=>{
@@ -181,13 +223,25 @@ $("#run").addEventListener("click", async ()=>{
     p.addEventListener("mouseleave",()=>highlight(cell,false));
     p.addEventListener("click",()=>{ document.querySelectorAll(".cell.hot,.dot.hot").forEach(e=>e.classList.remove("hot")); highlight(cell,true); });
   });
+  lastAnalysis = { kind, persona: ARTIFACTS[kind].persona, res };
+  $("#seal").hidden = false;
   run.disabled=false;
+});
+
+$("#seal").addEventListener("click", async ()=>{
+  if(!lastAnalysis) return;
+  const seal=$("#seal"); seal.disabled=true; seal.textContent="Sealing…";
+  const {bundle,pem} = await sealAnalysis(lastAnalysis.kind, lastAnalysis.persona, lastAnalysis.res);
+  download(`shadow-analysis-${lastAnalysis.kind}.bundle.json`, JSON.stringify(bundle,null,2));
+  download(`shadow-analysis-${lastAnalysis.kind}.public.pem`, pem);
+  $("#sealed").innerHTML = `✓ sealed · ${bundle.events.length} events · Ed25519<br>verify offline: <code>shadow-verify bundle.json --public-key public.pem</code>`;
+  seal.disabled=false; seal.textContent="Seal evidence";
 });
 
 renderArtifact();
 window.__scanAnalyze = { analyze, setKind:k=>{kind=k;renderArtifact();} };
 // auto-run for headless verification / a self-driving demo
-if(location.search.includes("auto")) setTimeout(()=>$("#run").click(), 200);
+if(location.search.includes("auto")) setTimeout(()=>{ $("#run").click(); setTimeout(()=>$("#seal").click(), 1000); }, 200);
 </script>
 </body>
 </html>
