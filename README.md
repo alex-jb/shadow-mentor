@@ -26,7 +26,7 @@
 
 <!-- readme-stats:begin -->
 **Version**: 2.0.3
-**Tests**: 1530/1533 passing (0 failing)
+**Tests**: 1547/1550 passing (0 failing)
 **Attestation signed fields**: 21 parameters, 14 append-only conditional bindings
 **Release tags**: 59
 <!-- readme-stats:end -->
@@ -53,7 +53,7 @@ The core primitives ship as [`shadow-attest-core`](https://www.npmjs.com/package
 npm install shadow-attest-core
 ```
 
-Includes all of M1 (evidence bundle) + M3 (external anchoring: RFC 3161 TSA + Sigstore Rekor + CA trust store) + M4 (offline verify) as of v2.0.0 (published 2026-07-11 from operator laptop; provenance-signed releases start at v2.0.1+ via the CI publish workflow).
+Includes all of M1 (evidence bundle) + M3 (external anchoring: RFC 3161 TSA + Sigstore Rekor + CA trust store) + M4 (offline verify). Current published version **2.1.0** (2026-07-17, from operator laptop — provenance to be added on a later version via the CI workflow). The OpenTelemetry adapter ships alongside as [`shadow-adapter-otel`](https://www.npmjs.com/package/shadow-adapter-otel) (`npm install shadow-adapter-otel`): map any instrumented agent's OTel GenAI/MCP spans onto signed evidence.
 
 ## v3 evidence bundle — flight recorder for AI agents
 

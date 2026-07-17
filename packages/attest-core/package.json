@@ -13,7 +13,8 @@
     "./chain": "./chain.js",
     "./session": "./session.js",
     "./anchors": "./anchors.js",
-    "./verify-chain": "./verify-chain.js"
+    "./verify-chain": "./verify-chain.js",
+    "./package.json": "./package.json"
   },
   "files": [
     "anchors.js",
