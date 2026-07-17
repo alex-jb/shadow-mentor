@@ -37,7 +37,12 @@ or a chain `?shot=whatif,audit`.
   the time — a claim keepable at any horizon, which a 5-year return forecast is
   not. This is the credibility view for a stats/quant audience.
 - **Risks / Agent Review** — expand only on command; each item shows source /
-  produced-by / confidence.
+  produced-by / confidence. **Click a risk** (or the top-3 `41%` metric, or say
+  "trace") → **source-map**: the cloud highlights the backing names, a popover
+  shows the arithmetic *recomputed live from the signed weights*
+  (`NVDA 16% + MSFT 13% + AAPL 12% = 41%`) and names the producing event
+  (`model_output · seq 2`). No number on screen is unsourced; the concentration
+  claim is a fact about the model's own output, not a separate assertion.
 - **Audit trail** — the actor-shaped chain
   (`You → Data → Model → Council → Human → Signed`), rendered **from the actual
   signed events** (no hardcoded node count — it grows when a branch is recorded).

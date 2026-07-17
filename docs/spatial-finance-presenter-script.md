@@ -73,6 +73,15 @@ book. The final call isn't a majority vote of five chatbots; it's a
 deterministic aggregator with a human approving. The disagreement is visible on
 purpose."
 
+## 5:15 — Trace a claim to its source (click "41%" or the concentration risk)
+
+Say: "One thing a reviewer always asks — where does a number come from. Click the
+concentration figure." Click the top-3 `41%` (or the risk row). "It highlights
+the three names it's computed from, shows the arithmetic — sixteen plus thirteen
+plus twelve — and names the signed event that produced the weights. The
+concentration isn't a separate claim; it's recomputed from the model's own
+output. No number on this screen is unsourced." Press `R` or the ✕ to clear.
+
 ## 5:45 — Audit trail (`5`) — the hero
 
 Say: "Now the part that's the actual product. Every step that produced this —

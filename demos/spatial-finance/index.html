@@ -73,6 +73,11 @@
   #tdiff{position:absolute;top:120px;left:50%;transform:translateX(-50%);z-index:7;display:none;
     font-family:var(--mono);font-size:12.5px;background:var(--panel);border:1px solid rgba(213,94,0,.5);border-radius:8px;padding:12px 18px;line-height:1.7}
   #tdiff .o{color:var(--dim)} #tdiff .n{color:var(--bad)} #tdiff .lbl{color:#5a6272}
+  #srcpop{position:absolute;left:26px;bottom:64px;z-index:8;display:none;max-width:420px;
+    font-family:var(--mono);font-size:12px;background:var(--panel);border:1px solid rgba(86,180,233,.55);border-radius:8px;padding:12px 16px;line-height:1.7}
+  #srcpop .claim{color:var(--ink);font-weight:600} #srcpop .math{color:#56B4E9} #srcpop .ev{color:#5a6272}
+  #srcpop .note{color:var(--dim)} #srcpop .x{float:right;color:#5a6272;cursor:pointer;margin-left:12px}
+  .row.clk{cursor:pointer} .row.clk:hover{background:rgba(86,180,233,.08)} #metrics b.clk{cursor:pointer;text-decoration:underline dotted rgba(86,180,233,.6)}
   .legend{position:absolute;top:96px;left:26px;z-index:6;font-family:var(--mono);font-size:11px;color:var(--dim);display:none}
   .legend.on{display:block} .legend b{color:var(--ink)}
 </style>
@@ -113,6 +118,7 @@
   <div id="hint">1 analytics · 2 forecast · 3 risks · 4 agents · 5 audit · 6 calibration<br>W what-if · P replay · T tamper · R reset · 0 home · S SBS stereo · [ ] eye-sep · M mute · drag</div>
   <div id="flash"></div>
   <div id="tdiff"></div>
+  <div id="srcpop"></div>
 </div>
 
 <script type="module">
@@ -151,6 +157,25 @@ const PORTFOLIO = {
   ],
 };
 const CONSENSUS_DISSENT = "Risk Agent dissents: top-3 concentration at 41% exceeds the 35% comfort band — the conviction tilt is the reason.";
+
+// Source-map: every claim → the exact positions + arithmetic + the signed event
+// that produced it. This is "no claim without a traceable source" — click a risk
+// (or the top-3 metric) and the cloud highlights the backing names, with the math
+// shown and the producing audit event named. Derived from PORTFOLIO, not asserted.
+function sumW(...ts){return ts.reduce((a,t)=>a+(PORTFOLIO.positions.find(p=>p.t===t)?.w||0),0);}
+const SOURCE={
+  concentration:{tickers:["NVDA","MSFT","AAPL"], event:"model_output (weights) · seq 2",
+    math:()=>{const ts=["NVDA","MSFT","AAPL"];const parts=ts.map(t=>`${t} ${(PORTFOLIO.positions.find(p=>p.t===t).w*100)|0}%`);
+      return `${parts.join(" + ")} = ${(sumW(...ts)*100)|0}% (top-3 by weight) · comfort band 35%`;},
+    note:"Concentration is a fact about the weights the model output — recomputed from them, not a separate number."},
+  capex:{tickers:["NVDA","AVGO","AMZN","MSFT"], event:"tool_result · market_data_api",
+    math:()=>`AI-capex-exposed names ${(sumW("NVDA","AVGO","AMZN","MSFT")*100)|0}% of book · drawdown risk if the capex cycle turns`,
+    note:"Sector exposure, summed from the positions tagged to the AI-capex cycle."},
+  regulatory:{tickers:["GOOGL","META","AMZN"], event:"tool_result · news",
+    math:()=>`antitrust-exposed names ${(sumW("GOOGL","META","AMZN")*100)|0}% · low likelihood, high-tail`,
+    note:"Names with active antitrust exposure, from the news source."},
+};
+const RISK_KEY=["concentration","capex","regulatory"]; // PORTFOLIO.risks index → SOURCE key
 
 // Calibration track record: for past probabilistic calls, predicted prob vs.
 // realized frequency, binned. This is the claim we CAN keep at any horizon —
@@ -218,6 +243,7 @@ const $=s=>document.querySelector(s);
 let view="decision", rot={x:-0.5,y:0.6}, dragging=false, lastXY=null;
 let stereo=false, eyeSep=parseFloat(localStorage.getItem("sf.eyeSep"))||26; // px disparity, tuned on glasses with [ ]
 let replay={on:false,t:1,start:0,dur:5600}; // t=0..1 reveal cursor over the audit chain (synthetic 18s run)
+let highlight=new Set();                    // source-map focus: tickers backing the clicked claim
 const cloud=$("#cloud"), audit=$("#audit"), calib=$("#calib"), fan=$("#fan");
 const ctxC=cloud.getContext("2d"), ctxA=audit.getContext("2d"), ctxK=calib.getContext("2d"), ctxF=fan.getContext("2d");
 function resize(){for(const cv of [cloud,audit,calib,fan]){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;}}
@@ -229,8 +255,8 @@ function fillDecision(){
   PORTFOLIO.positions.forEach(p=>{const d=document.createElement("div");d.className="w";
     d.style.flex=p.w; d.style.background=C[p.action]; d.title=`${p.t} ${(p.w*100).toFixed(0)}% ${p.action}`;
     d.textContent=p.w>=.09?p.t:""; wc.appendChild(d);});
-  $("#metrics").innerHTML=`<span>names</span> <b>10</b>   <span>top-3</span> <b>41%</b>   <span>method</span> <b>risk-parity + Kelly tilt</b>   <span>benchmark</span> <b>1/N</b>`;
-  $("#risks-body").innerHTML=PORTFOLIO.risks.map(r=>`<div class="row"><span class="lvl ${r.lvl}">${r.lvl}</span>${r.label}<br><small>${r.by} · conf ${(r.conf*100)|0}% · ${r.src} · ${r.upd}</small></div>`).join("");
+  $("#metrics").innerHTML=`<span>names</span> <b>10</b>   <span>top-3</span> <b class="clk" data-src="concentration">41%</b>   <span>method</span> <b>risk-parity + Kelly tilt</b>   <span>benchmark</span> <b>1/N</b>`;
+  $("#risks-body").innerHTML=PORTFOLIO.risks.map((r,i)=>`<div class="row clk" data-src="${RISK_KEY[i]}"><span class="lvl ${r.lvl}">${r.lvl}</span>${r.label} <span style="color:#56B4E9">↳ trace</span><br><small>${r.by} · conf ${(r.conf*100)|0}% · ${r.src} · ${r.upd}</small></div>`).join("");
   $("#agents-body").innerHTML=PORTFOLIO.agents.map(a=>`<div class="row">${a.name} — <b>${a.stance}</b> <small>(${(a.conf*100)|0}%)</small><br><small>${a.note}</small></div>`).join("")+`<div class="row" style="border:0;color:var(--warn)"><small>${CONSENSUS_DISSENT}</small></div>`;
   $("#forecast-body").innerHTML=`<div class="fan">`+PORTFOLIO.positions.slice(0,6).map(p=>{
     const lo=p.bear, hi=p.bull, span=hi-lo, base=p.ret;
@@ -282,10 +308,14 @@ function drawCloudEye(cx, s, eye){
   }).sort((a,b)=>a.proj.depth-b.proj.depth);
   for(const P of pts){
     const {sx,sy,scale}=P.proj, r=(6+P.p.w*90)*scale;
+    const hot = highlight.size===0 || highlight.has(P.p.t);  // source-map focus
     const foot=project({x:(P.p.vol-0.35)/0.3, y:-1, z:(P.p.conf-0.7)/0.25},cx,cyc,s,eye);
-    ctxC.strokeStyle="rgba(255,255,255,.15)";ctxC.beginPath();ctxC.moveTo(sx,sy);ctxC.lineTo(foot.sx,foot.sy);ctxC.stroke();
-    ctxC.fillStyle=C[P.p.action];ctxC.globalAlpha=.9;ctxC.beginPath();ctxC.arc(sx,sy,Math.max(3,r),0,7);ctxC.fill();ctxC.globalAlpha=1;
+    ctxC.strokeStyle=hot?"rgba(255,255,255,.15)":"rgba(255,255,255,.05)";ctxC.beginPath();ctxC.moveTo(sx,sy);ctxC.lineTo(foot.sx,foot.sy);ctxC.stroke();
+    ctxC.fillStyle=C[P.p.action];ctxC.globalAlpha=hot?.9:.14;ctxC.beginPath();ctxC.arc(sx,sy,Math.max(3,r),0,7);ctxC.fill();ctxC.globalAlpha=1;
+    if(hot&&highlight.size>0){ctxC.strokeStyle="#56B4E9";ctxC.lineWidth=2;ctxC.beginPath();ctxC.arc(sx,sy,Math.max(3,r)+3,0,7);ctxC.stroke();}
+    ctxC.globalAlpha=hot?1:.22;
     ctxC.fillStyle="#eef2f7";ctxC.font=`${11*scale+3}px `+font;ctxC.fillText(`${P.p.t} ${(P.p.w*100)|0}%`, sx+r+3, sy+3);
+    ctxC.globalAlpha=1;
   }
 }
 function drawCloud(){
@@ -484,10 +514,24 @@ async function doTamper(){
   speak("The model's weights were edited after signing. Verification failed at sequence "+(verifyState.seq??"")+". The chain caught it.");
 }
 async function doReset(){
-  whatif=false; replay.on=false; replay.t=1;
+  whatif=false; replay.on=false; replay.t=1; clearTrace();
   BUNDLE=await seal(); tampered=false; verifyState=await verify(BUNDLE);
   renderTrust(); hideDiff();
 }
+// source-map: trace a claim back to the positions + arithmetic + signed event.
+function traceClaim(key){
+  const s=SOURCE[key]; if(!s)return;
+  highlight=new Set(s.tickers);
+  setView("analytics");
+  const claim=({concentration:"Concentration risk — top-3 = 41%",capex:"AI-capex cycle drawdown risk",regulatory:"Regulatory / antitrust risk"})[key]||key;
+  $("#srcpop").innerHTML=`<span class="x" onclick="__spatialFinance.clearTrace()">✕</span>`+
+    `<span class="claim">${claim}</span><br><span class="math">${s.math()}</span><br>`+
+    `<span class="ev">produced by ${s.event} · in the signed chain</span><br><span class="note">${s.note}</span>`;
+  $("#srcpop").style.display="block";
+  flash("traced: "+[...highlight].join(" · "));
+  speak("Tracing that claim. The highlighted names are what it's computed from. "+s.math().replace(/%/g," percent").replace(/·.*/,""));
+}
+function clearTrace(){ highlight=new Set(); $("#srcpop").style.display="none"; }
 // timeline replay: play the recorded run forward, events landing over time.
 function startReplay(){
   setView("audit");
@@ -519,6 +563,7 @@ function parseIntent(s){s=(s||"").toLowerCase();
   if(/tamper|break|edit/.test(s))return"tamper";
   if(/what.?if|rates? (rise|up|higher)|counterfactual|stress/.test(s))return"whatif";
   if(/replay|play.?back|timeline|step through|walk through/.test(s))return"replay";
+  if(/trace|source|where.*(come|from)|concentration/.test(s))return"trace";
   return"unknown";}
 async function dispatch(intent){
   if(["analytics","forecast","risks","agents","audit","calib"].includes(intent)){setView(intent);flash(intent==="calib"?"calibration":intent);speak(NARRATION[intent]);}
@@ -527,6 +572,7 @@ async function dispatch(intent){
   else if(intent==="tamper"){await doTamper();}
   else if(intent==="whatif"){await doWhatIf();}
   else if(intent==="replay"){startReplay();}
+  else if(intent==="trace"){traceClaim("concentration");}
   else flash("didn't catch that");
 }
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition; let rec=null,listening=false;
@@ -547,6 +593,9 @@ addEventListener("keydown",e=>{
   if(m[e.key])dispatch(m[e.key]);
 });
 addEventListener("keyup",e=>{if(e.code==="Space"&&listening){try{rec.stop();}catch{}}});
+
+// click a claim (risk row or the top-3 metric) → trace it to its source
+addEventListener("click",e=>{const el=e.target.closest("[data-src]");if(el)traceClaim(el.getAttribute("data-src"));});
 
 // drag to rotate the cloud
 cloud.addEventListener("pointerdown",e=>{dragging=true;lastXY=[e.clientX,e.clientY];});
@@ -571,7 +620,7 @@ function loop(){
   if(qp.get("stereo")==="1")stereo=true;
   if(qp.has("shot")){const seq=(qp.get("shot")||"analytics").split(",");let d=300;for(const s of seq){setTimeout(()=>dispatch(s),d);d+=400;}}
 })();
-window.__spatialFinance={dispatch,seal,verify,doTamper,doReset,doWhatIf,startReplay,get bundle(){return BUNDLE},get state(){return{view,tampered,whatif,replay:replay.on,verifyState}}};
+window.__spatialFinance={dispatch,seal,verify,doTamper,doReset,doWhatIf,startReplay,traceClaim,clearTrace,get bundle(){return BUNDLE},get state(){return{view,tampered,whatif,replay:replay.on,highlight:[...highlight],verifyState}}};
 </script>
 </body>
 </html>
