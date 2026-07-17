@@ -3,7 +3,11 @@
 The composed demo from `Shadow_Spatial_Finance_ClaudeCode_Prompt_v2.pdf`: a
 top-10 → balanced portfolio, driven by voice or keyboard, whose hero is the
 **3D audit trace + tamper** proving where every weight came from and that
-nothing was silently changed. Offline, single file, no dependencies.
+nothing was silently changed. Single file, no dependencies — everything runs
+offline **except the optional voice control**, which uses the browser Web Speech
+API and therefore needs a network connection (Chrome relays audio to Google).
+Keyboard driving is authoritative and fully offline; at an airplane-mode venue,
+present with the keyboard and skip the voice beat.
 
 ## Run
 

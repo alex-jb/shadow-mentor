@@ -122,7 +122,7 @@
   <div class="legend" id="legend"></div>
 
   <div id="auditstrip">USER → DATA → MODEL → COUNCIL → HUMAN → SIGNED</div>
-  <div id="voice"><span id="mic"></span><span id="voice-txt">hold Space to talk</span></div>
+  <div id="voice"><span id="mic"></span><span id="voice-txt">hold Space to talk · voice needs network</span></div>
   <div id="hint">1 analytics · 2 forecast · 3 risks · 4 agents · 5 audit · 6 calibration<br>W what-if · P replay · T tamper · R reset · 0 home · S SBS stereo · G presenter · M mute · drag</div>
   <div id="flash"></div>
   <div id="tdiff"></div>
@@ -451,6 +451,7 @@ function drawCalib(){
   ctxK.fillText(`= reliability ${CALIB.rel.toFixed(3)} − resolution ${CALIB.res.toFixed(3)}`,rx,ry+22);
   ctxK.fillText(`  + uncertainty ${CALIB.unc.toFixed(3)}   (Murphy 1973)`,rx,ry+40);
   ctxK.fillStyle="#009E73";ctxK.fillText(`low reliability term = well-calibrated`,rx,ry+66);
+  ctxK.fillStyle="#E69F00";ctxK.fillText(`illustrative — synthetic bins (n≈600), not a live audited history`,rx,ry+84);
   const cap=["This is the claim we CAN keep at any horizon:","when we say 70%, it happens ~70% of the time.","We compete here — on calibration and","auditability — not on beating the market","on a 5-year point forecast (nobody can)."];
   ctxK.fillStyle="#8b95a8";ctxK.font="12px "+font;cap.forEach((l,i)=>ctxK.fillText(l,rx,ry+100+i*18));
   ctxK.restore();

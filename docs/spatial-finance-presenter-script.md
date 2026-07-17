@@ -6,7 +6,11 @@ a fixture. One line to keep in your head the whole time: **a verified record is
 not the same as a correct analysis, and the demo is honest about which is which.**
 
 Open `demos/spatial-finance/index.html`. Keyboard is authoritative; use voice
-(hold Space) once or twice so they see it works, then drive with keys.
+(hold Space) once or twice so they see it works, then drive with keys. **Voice
+needs a network connection** (browser Web Speech relays audio to Google) — if the
+venue is offline/airplane-mode, skip the voice beat and present keyboard-only;
+everything else runs offline. Test voice on the actual laptop + network before
+the room.
 
 Optional: press `G` for a presenter rail on the left — this running order with
 "you are here" and the next key, off by default so the audience view stays clean.
