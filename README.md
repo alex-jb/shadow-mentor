@@ -153,6 +153,19 @@ For a procurement / vendor-risk reviewer: [`docs/VENDOR_VIABILITY.md`](./docs/VE
 - Not SOC 2 audited. `docs/soc2-readiness.md` is a self-assessment readiness map, not an audit report.
 - Not designed to replace WORM logging + SIEM retention. Those handle chain-of-custody. Shadow adds a reason-code dictionary binding that WORM+SIEM cannot produce.
 
+## Compared to platform agent-governance (e.g. Microsoft's Agent Governance Toolkit)
+
+Microsoft open-sourced the [Agent Governance Toolkit](https://github.com/microsoft/agent-governance-toolkit) (MIT, April 2026): sub-0.1 ms policy enforcement, cryptographic **agent identity** (decentralized identifiers with Ed25519, "Agent Mesh"), a compliance module that grades agents and maps them to regulatory frameworks (EU AI Act, HIPAA, SOC 2), signed marketplace plugins, and SLSA build provenance — 9,500+ tests, backed by Microsoft, free. It is a serious, well-resourced project and it covers the OWASP Agentic Top 10.
+
+Read this honestly: **much of Shadow's cryptographic layer is now table stakes.** Ed25519, regulatory-framework mapping, signed artifacts — a platform vendor ships these for free with distribution Shadow cannot match. Acknowledging that overlap is the point; if the crypto layer were the whole product, there would be no reason to choose Shadow. What the platform layer does *not* do is where Shadow lives:
+
+- **Identity vs. decision.** Agent Mesh signs *who the agent is*. Shadow signs *what a specific decision was, and why* — a per-decision, hash-chained evidence record (verdict, adverse-action reason codes, model manifest, dictionary hash) that a third party re-verifies offline months later with only a public key. Governing an agent's identity is not the same as producing an independently verifiable record of the decision it made.
+- **A counsel-signed reason-code dictionary bound into the signature.** Shadow binds the adverse-action reason-code dictionary's hash into every attestation, so a post-hoc edit to the reasons a borrower was given breaks verification. Framework *grading* does not do this.
+- **Examiner-language rationale for a regulated vertical.** Shadow's personas produce adverse-action explanations in the language a Reg B / ECOA examiner reads, mapped to the citations they rely on (`docs/CITATION_MAP.md`, queryable). A horizontal compliance grade does not.
+- **A five-voice lending council**, not a generic policy check — Credit, Risk, Fair-Lending, Customer-Advocate, and Macro voices over a deterministic verdict engine.
+
+The wedge, stated plainly: **platform vendors govern agents horizontally; none of them ship the regulated-lending vertical.** A toolkit can grade an agent against SOC 2; it does not tell a bank examiner why a specific applicant was declined, in the examiner's own citation language, with the reason codes cryptographically bound to the signed record. That vertical — persona pack plus regulatory binding — is the defensible surface, and it is not something a horizontal platform is likely to build.
+
 ## Legacy content
 
 Prior README described intern-mentor, trading, and data-science persona packs that were experimental and are no longer part of the shipping product. Archived at [`docs/archive/README-v1-legacy.md`](./docs/archive/README-v1-legacy.md).

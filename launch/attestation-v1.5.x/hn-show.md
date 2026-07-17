@@ -82,6 +82,9 @@ A: SR 11-7 was rescinded 2026-04-17 and superseded by SR 26-2. SR 26-2 excludes 
 **Q: Is this actually novel or is it just JWT-with-extra-steps?**
 A: The dispatch surface story (same primitive under CLI + MCP + HTTP + CI recipe) is the point. Other attestation implementations either lock you into their SDK or make you shell out. Shadow's contract is: bank pipelines pick whichever surface fits their workflow; response shape is identical between MCP and HTTP so audit-trail comparability holds regardless.
 
+**Q: Isn't this just Microsoft's Agent Governance Toolkit? / How is it different?** (this WILL come up — answer it head-on, don't get defensive)
+A: The overlap is real and I'll say so up front: both MIT, both Ed25519, both map to regulatory frameworks; Microsoft has 9,500+ tests, Azure distribution, and it's free. The difference is identity vs. decision. Their Agent Mesh signs *who the agent is* (DIDs + Ed25519). Shadow signs *what a specific decision was, and why* — a per-decision, hash-chained record (verdict, adverse-action reason codes, model manifest, dictionary hash) you re-verify offline months later with only a public key. Shadow also binds a counsel-signed adverse-action reason-code dictionary into the signature, so a post-hoc edit to the reasons a borrower was given breaks verification; produces rationale in Reg B / ECOA examiner language; and runs a five-voice lending council over a deterministic verdict engine. A horizontal governance toolkit grades an agent against SOC 2 — it doesn't tell a bank examiner why a specific applicant was declined, in the examiner's own citation language, with the reason codes bound to the signed record. The wedge is the regulated-lending vertical, which platform vendors don't ship. Full comparison in the README.
+
 ## Timing
 
 Best window: Tuesday-Thursday, 8-10am NY EST. Avoid Monday (weekend backlog) and Friday afternoon.
@@ -90,5 +93,5 @@ Best window: Tuesday-Thursday, 8-10am NY EST. Avoid Monday (weekend backlog) and
 
 - Do not link to CHANGELOG entry — link to repo root, let the reader navigate
 - Do not use "revolutionary" / "game-changing" / any marketing verb
-- Do not compare to competitors by name (Anthropic FS, Hebbia, Zest) — HN downweights vendor-vs-vendor posts
+- Do not compare to competitors by name (Anthropic FS, Hebbia, Zest) — HN downweights vendor-vs-vendor posts. Exception handling: the **Microsoft Agent Governance Toolkit** overlaps directly and *will* be raised in comments — do not put it in the post body, but answer with the prepped Q&A above the moment it comes up (leading with the honest overlap earns credibility; dodging it loses the thread).
 - Do not include emoji in the title or body
