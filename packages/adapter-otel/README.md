@@ -46,10 +46,33 @@ shows verification fail (`prev_hash_mismatch`). The whole point in ~20 lines of
 output: a real agent's OTel run, signed and independently checkable, with no
 Shadow SDK in the agent.
 
+## Turn a real trace into a verifiable bundle (CLI)
+
+```
+node bin/otel-to-bundle.mjs <spans.json> --out bundle.json
+# or, to try it with a built-in trace:
+node bin/otel-to-bundle.mjs --sample --out bundle.json
+```
+
+Reads exported OTel spans (a JSON array), writes a **signed** `bundle.json` plus
+its public key, and prints the command to check it with the **shipped** verifier:
+
+```
+node bin/shadow-verify.mjs bundle.json --public-key bundle.json.public.pem
+#  → ✓ Bundle verified … trust: SELF_SIGNED
+```
+
+That closes the loop cross-tool: the adapter's output is verified by the same
+CLI a bank runs, not just by an in-process call. The CLI self-verifies before
+writing and never emits a bundle that doesn't check. (`--sample` prints its help
+with `--help`; timestamps may be BigInt, number, or string.)
+
 ## Tested
 
-`test/adapter-otel.test.js` — mapping correctness + a full round-trip proving an
-OTel trace becomes a signed bundle that `verifyBundle` accepts (5 tests).
+`test/adapter-otel.test.js` — mapping correctness, exported-JSON timestamp
+handling, and a full round-trip proving an OTel trace becomes a signed bundle
+that `verifyBundle` accepts (6 tests). The CLI's output is additionally verified
+by `bin/shadow-verify.mjs` end-to-end.
 
 ## Scope
 

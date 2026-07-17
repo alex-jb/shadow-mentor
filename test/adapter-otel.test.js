@@ -54,6 +54,19 @@ test("otelToEvents: session_start first, session_end last, spans ordered by star
   assert.equal(ev[2].payload.tool, "Read");
 });
 
+test("otelToEvents: string/number nano timestamps (exported JSON) sort correctly", () => {
+  // real exporters emit huge nanos as strings/numbers, not BigInt — must not throw
+  const jsonSpans = [
+    { name: "chat", trace_id: "t", span_id: "s2", start_time_unix_nano: "2000",
+      attributes: { "gen_ai.operation.name": "chat", "gen_ai.request.model": "m" } },
+    { name: "execute_tool", trace_id: "t", span_id: "s1", start_time_unix_nano: 1000,
+      attributes: { "gen_ai.operation.name": "execute_tool", "gen_ai.tool.name": "Read" } },
+  ];
+  const ev = otelToEvents(jsonSpans, { sessionId: "j" });
+  assert.equal(ev[1].payload.tool, "Read");   // s1 (t=1000) sorts before s2 (t=2000)
+  assert.equal(ev[2].actor, "model");
+});
+
 test("round-trip: an OTel trace becomes a signed, verifiable Shadow bundle", () => {
   const { privateKey, publicKey } = generateKeyPairSync("ed25519");
   const session = createSession({

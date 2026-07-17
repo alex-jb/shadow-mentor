@@ -21,9 +21,13 @@
 
 const ACTORS = new Set(["agent", "user", "model", "tool", "system"]);
 
-function nanoToIso(nano) {
-  if (nano == null) return undefined;
-  const ms = Number(BigInt(nano) / 1000000n);
+// Timestamps may arrive as BigInt (in-process) or number/string (from exported
+// JSON, where huge nanos are often strings to avoid precision loss). Coerce
+// safely so both paths work.
+function nano(v) { return v == null ? 0n : (typeof v === "bigint" ? v : BigInt(v)); }
+function nanoToIso(v) {
+  if (v == null) return undefined;
+  const ms = Number(nano(v) / 1000000n);
   return new Date(ms).toISOString();
 }
 
@@ -71,8 +75,10 @@ function clean(o) { const r = {}; for (const [k, v] of Object.entries(o)) if (v 
 // Ordered Shadow events for a whole trace: session_start, mapped spans (by
 // start time), session_end. Feed each to attest-core appendEvent(), then seal.
 export function otelToEvents(spans, { sessionId, agent } = {}) {
-  const ordered = [...spans].sort((x, y) =>
-    Number((x.start_time_unix_nano ?? 0n) - (y.start_time_unix_nano ?? 0n)) || 0);
+  const ordered = [...spans].sort((x, y) => {
+    const d = nano(x.start_time_unix_nano) - nano(y.start_time_unix_nano);
+    return d < 0n ? -1 : d > 0n ? 1 : 0;
+  });
   const root = ordered.find((s) => !s.parent_span_id) ?? ordered[0];
   const events = [];
   events.push({ event_type: "session_start", actor: "system",
