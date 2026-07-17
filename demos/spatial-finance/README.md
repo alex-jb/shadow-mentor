@@ -4,10 +4,14 @@ The composed demo from `Shadow_Spatial_Finance_ClaudeCode_Prompt_v2.pdf`: a
 top-10 → balanced portfolio, driven by voice or keyboard, whose hero is the
 **3D audit trace + tamper** proving where every weight came from and that
 nothing was silently changed. Single file, no dependencies — everything runs
-offline **except the optional voice control**, which uses the browser Web Speech
-API and therefore needs a network connection (Chrome relays audio to Google).
-Keyboard driving is authoritative and fully offline; at an airplane-mode venue,
-present with the keyboard and skip the voice beat.
+offline **except the optional voice control**. To be precise about the two halves:
+**voice output** (spoken narration) uses the browser/device speech synthesis —
+whether a voice is available offline depends on the voices installed on the
+machine; **voice input** (the "hold Space and speak" commands) uses the browser's
+speech-recognition service, which in Chrome relays audio to a server and so is not
+offline, and Shadow retains no audio. Keyboard driving is authoritative and fully
+offline; at an airplane-mode venue, present with the keyboard and skip the voice
+beat.
 
 ## Run
 
@@ -28,9 +32,11 @@ or a chain `?shot=whatif,audit`.
   Z (depth) = confidence, size = weight, color = hold/trim/short. Floor grid +
   drop-lines + billboard labels; rotatable. This is the one view that genuinely
   earns 3D (a structure/outlier task). Press **S** for **SBS stereo** — the
-  cloud renders as two eye viewports with horizontal disparity, so on XREAL One
-  Pro in 3D mode it fuses to real depth; `[` / `]` tune eye separation on the
-  glasses (persisted). `?stereo=1` starts in stereo.
+  cloud renders as two eye viewports with horizontal disparity, *intended* to
+  fuse to real depth on XREAL One Pro in 3D mode; `[` / `]` tune eye separation on
+  the glasses (persisted). `?stereo=1` starts in stereo. **Not yet confirmed
+  on-device** — verify the fusion on the actual One Pro before relying on the
+  stereo beat; the flat (mirrored) path is confirmed to work.
 - **Forecast** — bull/base/bear **scenario band per name**, never a point
   estimate.
 - **Calibration** (key `6` / "show calibration") — a **reliability diagram**
@@ -126,5 +132,14 @@ against an AGPL-isolated OpenBB service (the boundary + stub already exist);
 clicks back to the exact positions/arithmetic that produced it; ingest OTel spans
 via `packages/adapter-otel` so a *real* agent run (not the fixture) becomes the
 replayed, signed chain; reflow the audit trail into the polished
-`demos/replay/3d` Audit Room for the immersive version. Device: present on
-XREAL One Pro (flat/SBS); the native Beam Pro + Eye scan pipeline is Phase 2.
+`demos/replay/3d` Audit Room for the immersive version.
+
+**Device / scan capability (accurate as of XREAL SDK 3.1):** present this demo on
+XREAL One Pro (flat/SBS). This browser/SBS demo *cannot* access the XREAL Eye
+camera. A native Unity/Android app using XREAL SDK 3.1 **can** capture real-time
+RGB frames (YUV_420_888) and do scan-and-analyze, and One + Eye supports 6DoF — so
+the analysis can be shown in a stable floating panel. But One Pro + Eye does **not**
+provide plane tracking, image tracking, depth mesh, or persistent spatial anchors
+(per XREAL's compatibility table), so the result cannot be precisely "pinned" to a
+specific cell on the physical document. The native scan-and-analyze pipeline is
+Phase 2 (not built here).
