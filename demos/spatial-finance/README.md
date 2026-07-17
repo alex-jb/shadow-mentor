@@ -61,6 +61,14 @@ or a chain `?shot=whatif,audit`.
   chain, future nodes stay dimmed, a clock counts `00:00 → 00:18`. Reinforces
   "nothing added after the fact — watch it unfold in the order it happened."
 
+## Presenter rail (`G` / `?present=1`)
+
+Press `G` for a left-hand **presenter rail**: the running order as a teleprompter
+with "you are here" highlighted, the next key to press, and a small state line
+(verify status · event count). It's **off by default and never part of the clean
+scene** — the idea is the wearer/presenter sees the cues on their screen while
+the projected or cast view stays uncluttered. `?present=1` starts with it on.
+
 ## What's real vs mock
 
 - **Real:** the Ed25519 signing + SHA-256 hash-chain + verification runs

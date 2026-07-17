@@ -33,12 +33,16 @@ first (license + security + alternative + decision), per governance discipline.
 - **Timeline replay** — `demos/spatial-finance` (press P): the run plays forward over a synthetic 18s timeline, playhead sweeps the chain, future nodes dimmed. [queue #1 ✓]
 - **Source-map / click-claim-to-source** — `demos/spatial-finance` (click a risk or the top-3 metric, or say "trace"): the claim highlights its backing names in the cloud with the arithmetic recomputed live from the signed weights + the producing event named ("model_output · seq 2"). The structured-data version of the Meta rule "no claim without a traceable source"; the scanned-doc version (claim → page/region) still needs MarkItDown/OCR. [queue #2 ✓]
 
+- **Presenter / audience split** — `demos/spatial-finance` (press G / `?present=1`): a left presenter rail (running order + "you are here" + next key + state), off by default so the projected view stays clean. [queue #3 ✓]
+
 ## Next, worth building (ranked)
 
 1. **OpenBB provider** behind the data interface (real market data; install Alex-gated).
 2. **Scanned-doc source-map** — claim → page/region for a real PDF (MarkItDown for digital, OCR for paper). Beam Pro Phase 2.
-3. **Presenter / audience split** (wearer sees debug + next-scene; projection stays clean).
-4. **Browser demo over a real OTel run** (optional) — the CLI already proves OTel → signed → shipped-verifier end-to-end; loading an `otel-to-bundle` output into the spatial-finance replay/trace UI would be presentation polish, not new substance.
+3. **Browser demo over a real OTel run** (optional) — the CLI already proves OTel → signed → shipped-verifier end-to-end; loading an `otel-to-bundle` output into the spatial-finance replay/trace UI would be presentation polish, not new substance.
+
+The autonomous queue is now drained: what remains is either Alex-gated (OpenBB
+install/keys, Beam Pro hardware for scanned-doc OCR) or optional polish.
 
 ## Meta
 

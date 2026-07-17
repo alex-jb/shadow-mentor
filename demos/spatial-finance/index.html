@@ -78,6 +78,14 @@
   #srcpop .claim{color:var(--ink);font-weight:600} #srcpop .math{color:#56B4E9} #srcpop .ev{color:#5a6272}
   #srcpop .note{color:var(--dim)} #srcpop .x{float:right;color:#5a6272;cursor:pointer;margin-left:12px}
   .row.clk{cursor:pointer} .row.clk:hover{background:rgba(86,180,233,.08)} #metrics b.clk{cursor:pointer;text-decoration:underline dotted rgba(86,180,233,.6)}
+  /* presenter rail — wearer-only cues; hidden by default so the projection stays clean */
+  #present{position:absolute;left:0;top:0;bottom:0;width:250px;z-index:9;display:none;overflow:auto;
+    background:linear-gradient(90deg,rgba(10,12,16,.94),rgba(10,12,16,.72));border-right:1px solid var(--line);
+    font-family:var(--mono);font-size:11.5px;padding:18px 14px;line-height:1.5}
+  #present h4{color:#5a6272;font-weight:600;margin:0 0 10px;letter-spacing:.08em;text-transform:uppercase;font-size:10px}
+  #present .b{color:var(--dim);padding:5px 8px;border-radius:5px;margin-bottom:2px;display:flex;gap:8px}
+  #present .b .k{color:#5a6272;min-width:34px} #present .b.on{background:rgba(86,180,233,.14);color:var(--ink)}
+  #present .b.on .k{color:#56B4E9} #present .nx{margin-top:12px;color:#56B4E9} #present .foot{margin-top:14px;color:#5a6272;font-size:10px}
   .legend{position:absolute;top:96px;left:26px;z-index:6;font-family:var(--mono);font-size:11px;color:var(--dim);display:none}
   .legend.on{display:block} .legend b{color:var(--ink)}
 </style>
@@ -115,10 +123,11 @@
 
   <div id="auditstrip">USER → DATA → MODEL → COUNCIL → HUMAN → SIGNED</div>
   <div id="voice"><span id="mic"></span><span id="voice-txt">hold Space to talk</span></div>
-  <div id="hint">1 analytics · 2 forecast · 3 risks · 4 agents · 5 audit · 6 calibration<br>W what-if · P replay · T tamper · R reset · 0 home · S SBS stereo · [ ] eye-sep · M mute · drag</div>
+  <div id="hint">1 analytics · 2 forecast · 3 risks · 4 agents · 5 audit · 6 calibration<br>W what-if · P replay · T tamper · R reset · 0 home · S SBS stereo · G presenter · M mute · drag</div>
   <div id="flash"></div>
   <div id="tdiff"></div>
   <div id="srcpop"></div>
+  <div id="present"></div>
 </div>
 
 <script type="module">
@@ -244,6 +253,29 @@ let view="decision", rot={x:-0.5,y:0.6}, dragging=false, lastXY=null;
 let stereo=false, eyeSep=parseFloat(localStorage.getItem("sf.eyeSep"))||26; // px disparity, tuned on glasses with [ ]
 let replay={on:false,t:1,start:0,dur:5600}; // t=0..1 reveal cursor over the audit chain (synthetic 18s run)
 let highlight=new Set();                    // source-map focus: tickers backing the clicked claim
+let present=false, activeIntent="reset";    // presenter rail (wearer-only cues); which beat we're on
+// The presenter's running order — mirrors docs/spatial-finance-presenter-script.md.
+const BEATS=[
+  {k:"0 / R", intent:"reset",     label:"Portfolio — home"},
+  {k:"1",     intent:"analytics", label:"Risk-return cloud (3D)"},
+  {k:"2",     intent:"forecast",  label:"Forecast bands"},
+  {k:"6",     intent:"calib",     label:"Calibration / Brier"},
+  {k:"4",     intent:"agents",    label:"Agent review"},
+  {k:"3 / clk",intent:"trace",    label:"Trace a claim → source"},
+  {k:"5",     intent:"audit",     label:"Audit trail"},
+  {k:"T",     intent:"tamper",    label:"Tamper → chain breaks"},
+  {k:"W",     intent:"whatif",    label:"What-if → signed branch"},
+  {k:"P",     intent:"replay",    label:"Replay the run"},
+];
+function renderPresent(){
+  const p=$("#present"); if(!present){p.style.display="none";return;} p.style.display="block";
+  let cur=BEATS.findIndex(b=>b.intent===activeIntent); if(cur<0)cur=0;
+  const nx=BEATS[cur+1];
+  p.innerHTML=`<h4>Presenter · you are here</h4>`+
+    BEATS.map((b,i)=>`<div class="b ${i===cur?"on":""}"><span class="k">${b.k}</span><span>${b.label}</span></div>`).join("")+
+    (nx?`<div class="nx">▶ next: press ${nx.k.split(" ")[0]} — ${nx.label}</div>`:`<div class="nx">▶ end — press R to reset</div>`)+
+    `<div class="foot">verify ${verifyState.ok?"OK":"FAILED"} · ${(BUNDLE&&BUNDLE.events.length)||0} events · G hides this rail<br>audience/projection never sees it</div>`;
+}
 const cloud=$("#cloud"), audit=$("#audit"), calib=$("#calib"), fan=$("#fan");
 const ctxC=cloud.getContext("2d"), ctxA=audit.getContext("2d"), ctxK=calib.getContext("2d"), ctxF=fan.getContext("2d");
 function resize(){for(const cv of [cloud,audit,calib,fan]){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;}}
@@ -488,6 +520,7 @@ function setView(v){
   $("#decision").style.display=(v==="decision")?"block":"none";
   $("#auditstrip").style.opacity=(v==="audit")?0:1;
   if(v==="analytics")$("#legend").innerHTML="<b>size</b> = weight · <b>color</b> = hold/trim/short · <b>X</b> risk · <b>Y</b> 5y return · <b>Z</b> confidence · drag to rotate";
+  renderPresent();
 }
 function flash(t){const f=$("#flash");f.textContent=t;f.style.opacity=1;clearTimeout(flash._t);flash._t=setTimeout(()=>f.style.opacity=0,1800);}
 
@@ -507,6 +540,7 @@ const NARRATION={
 
 async function doTamper(){
   if(!BUNDLE||tampered)return;
+  activeIntent="tamper";
   BUNDLE.events[2].payload_hash=BUNDLE.events[2].payload_hash.slice(0,-1)+"0"; // edit the Model weights after signing
   tampered=true; verifyState=await verify(BUNDLE);
   renderTrust(); showDiff();
@@ -514,13 +548,14 @@ async function doTamper(){
   speak("The model's weights were edited after signing. Verification failed at sequence "+(verifyState.seq??"")+". The chain caught it.");
 }
 async function doReset(){
-  whatif=false; replay.on=false; replay.t=1; clearTrace();
+  activeIntent="reset"; whatif=false; replay.on=false; replay.t=1; clearTrace();
   BUNDLE=await seal(); tampered=false; verifyState=await verify(BUNDLE);
   renderTrust(); hideDiff();
 }
 // source-map: trace a claim back to the positions + arithmetic + signed event.
 function traceClaim(key){
   const s=SOURCE[key]; if(!s)return;
+  activeIntent="trace";
   highlight=new Set(s.tickers);
   setView("analytics");
   const claim=({concentration:"Concentration risk — top-3 = 41%",capex:"AI-capex cycle drawdown risk",regulatory:"Regulatory / antitrust risk"})[key]||key;
@@ -534,7 +569,7 @@ function traceClaim(key){
 function clearTrace(){ highlight=new Set(); $("#srcpop").style.display="none"; }
 // timeline replay: play the recorded run forward, events landing over time.
 function startReplay(){
-  setView("audit");
+  activeIntent="replay"; setView("audit");
   replay.on=true; replay.t=0; replay.start=performance.now();
   flash("replaying the run — every step, in the order it happened");
   speak(NARRATION.replay);
@@ -542,7 +577,7 @@ function startReplay(){
 // what-if: run a counterfactual AND record it as a new signed, verifiable branch.
 async function doWhatIf(){
   if(tampered)await doReset();          // start from a clean, verified base
-  whatif=true;
+  activeIntent="whatif"; whatif=true;
   BUNDLE=await seal();                  // re-seal: the what-if events are now in the signed chain
   verifyState=await verify(BUNDLE);     // still ok — a recorded branch is legitimate, not a tamper
   renderTrust();
@@ -566,6 +601,7 @@ function parseIntent(s){s=(s||"").toLowerCase();
   if(/trace|source|where.*(come|from)|concentration/.test(s))return"trace";
   return"unknown";}
 async function dispatch(intent){
+  if(BEATS.some(b=>b.intent===intent))activeIntent=intent;
   if(["analytics","forecast","risks","agents","audit","calib"].includes(intent)){setView(intent);flash(intent==="calib"?"calibration":intent);speak(NARRATION[intent]);}
   else if(intent==="verify"){const v=await verify(BUNDLE);const m=v.ok?"Signature valid. Self-signed, chain intact.":"Verification failed. "+v.reason;flash(v.ok?"signature valid · SELF_SIGNED":"verify FAILED · "+v.reason);speak(m);}
   else if(intent==="reset"){await doReset();setView("decision");flash("portfolio");speak("Portfolio restored. Verified.");}
@@ -586,6 +622,7 @@ addEventListener("keydown",e=>{
   if(e.key.toLowerCase()==="w")return dispatch("whatif");
   if(e.key.toLowerCase()==="p")return dispatch("replay");
   if(e.key.toLowerCase()==="r")return doReset().then(()=>{setView("decision");speak("Portfolio restored. Verified.");});
+  if(e.key.toLowerCase()==="g"){present=!present;renderPresent();flash(present?"presenter rail on (audience never sees it)":"presenter rail off");return;}
   if(e.key.toLowerCase()==="m"){ttsOn=!ttsOn;if(!ttsOn)speechSynthesis?.cancel();flash(ttsOn?"voice on":"voice muted");return;}
   if(e.key.toLowerCase()==="s"){stereo=!stereo;if(stereo&&view!=="analytics")setView("analytics");flash(stereo?"SBS stereo on (XREAL)":"flat");return;}
   if(e.key==="["){eyeSep=Math.max(0,eyeSep-3);localStorage.setItem("sf.eyeSep",eyeSep);flash("eye-sep "+eyeSep+"px");return;}
@@ -618,9 +655,10 @@ function loop(){
   // self-drive for headless verification
   const qp=new URLSearchParams(location.search);
   if(qp.get("stereo")==="1")stereo=true;
+  if(qp.get("present")==="1"){present=true;renderPresent();}
   if(qp.has("shot")){const seq=(qp.get("shot")||"analytics").split(",");let d=300;for(const s of seq){setTimeout(()=>dispatch(s),d);d+=400;}}
 })();
-window.__spatialFinance={dispatch,seal,verify,doTamper,doReset,doWhatIf,startReplay,traceClaim,clearTrace,get bundle(){return BUNDLE},get state(){return{view,tampered,whatif,replay:replay.on,highlight:[...highlight],verifyState}}};
+window.__spatialFinance={dispatch,seal,verify,doTamper,doReset,doWhatIf,startReplay,traceClaim,clearTrace,togglePresent:()=>{present=!present;renderPresent();},get bundle(){return BUNDLE},get state(){return{view,tampered,whatif,replay:replay.on,present,activeIntent,highlight:[...highlight],verifyState}}};
 </script>
 </body>
 </html>

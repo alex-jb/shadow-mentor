@@ -8,6 +8,10 @@ not the same as a correct analysis, and the demo is honest about which is which.
 Open `demos/spatial-finance/index.html`. Keyboard is authoritative; use voice
 (hold Space) once or twice so they see it works, then drive with keys.
 
+Optional: press `G` for a presenter rail on the left — this running order with
+"you are here" and the next key, off by default so the audience view stays clean.
+If you're mirroring to a projector, keep the rail on your laptop only.
+
 ---
 
 ## 0:00 — Portfolio view (the default, `0` / R to return here)
