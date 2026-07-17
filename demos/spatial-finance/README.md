@@ -80,9 +80,13 @@ the projected or cast view stays uncluttered. `?present=1` starts with it on.
   `demos/replay/verify-browser.js` / `bin/shadow-verify.mjs` (a tampered node
   produces the identical `prev_hash_mismatch`). The tamper detection is genuine.
 - **Mock:** the portfolio numbers, forecasts, and agent stances are a fixture
-  (the unified data contract, inlined as `PORTFOLIO` for offline use). Swap it
-  for an Orallexa/live feed behind the same shape — every view reads that one
-  object.
+  (the unified data contract, inlined as `PORTFOLIO` for offline use). The
+  provider boundary is real code in [`providers/`](./providers/): a
+  `getProvider()` factory over `MockMarketDataProvider` (this fixture) and a
+  documented `OpenBBMarketDataProvider` stub, all returning the one
+  `PORTFOLIO_CONTRACT` shape every view reads. A drift test keeps the inline copy
+  in sync with `providers/portfolio-fixture.mjs`. Wiring a live feed (Orallexa or
+  OpenBB, AGPL-isolated) means implementing one method — the views don't change.
 
 ## Credibility disciplines baked in (audience = quant + stats academics)
 
@@ -116,8 +120,9 @@ latency, embed, privacy) is confirmed with the Flow team.
 
 ## Next
 
-Wire `analyze()`/the data source to Orallexa or a live market feed (OpenBB behind
-the provider boundary); **source-map** so a claim (e.g. "top 3 = 41% of book")
+Implement `OpenBBMarketDataProvider.getPortfolio()` in [`providers/`](./providers/)
+against an AGPL-isolated OpenBB service (the boundary + stub already exist);
+**source-map** so a claim (e.g. "top 3 = 41% of book")
 clicks back to the exact positions/arithmetic that produced it; ingest OTel spans
 via `packages/adapter-otel` so a *real* agent run (not the fixture) becomes the
 replayed, signed chain; reflow the audit trail into the polished
