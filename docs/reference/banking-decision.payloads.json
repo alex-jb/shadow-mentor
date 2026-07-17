@@ -1,0 +1,30 @@
+{
+  "0": {
+    "loan": {
+      "loan_id": "REF-2026-001",
+      "credit_score": 640,
+      "debt_to_income": 0.44,
+      "loan_to_value": 0.88,
+      "amount": 310000,
+      "sector": "retail"
+    }
+  },
+  "1": {
+    "tool": "bureau_pull",
+    "as_of": "2026-07-17T00:00:00Z"
+  },
+  "2": {
+    "decision": "block",
+    "reason_codes": [
+      "AA01",
+      "AA02",
+      "AA04",
+      "AA03"
+    ],
+    "aggregated_score": -1
+  },
+  "3": {
+    "approved": true,
+    "reviewer": "credit-committee"
+  }
+}
