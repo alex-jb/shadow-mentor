@@ -20,7 +20,7 @@
 
 **Status**: pre-1.0. Not audited. Not a compliance product — it produces evidence that supports a compliance narrative.
 
-**What Shadow proves, precisely.** Shadow attests **integrity**: the recorded events were not silently rewritten after the seal. It does **not** attest **content authenticity**: whether the agent's behavior at capture time was benign, prompt-injection-free, or policy-compliant. A green `✓ Bundle verified` means "this is the record that was signed" — not "this session was safe". The v3.1 roadmap adds optional injection-detection markers so an auditor can see which events were flagged as suspicious at capture (integrity + suspicion, honestly labeled — not integrity + a clean bill of health we can't give). See [`docs/THREAT_MODEL.md`](./docs/THREAT_MODEL.md) once written (P1) for the seven-class attack table.
+**What Shadow proves, precisely.** Shadow attests **integrity**: the recorded events were not silently rewritten after the seal. It does **not** attest **content authenticity**: whether the agent's behavior at capture time was benign, prompt-injection-free, or policy-compliant. A green `✓ Bundle verified` means "this is the record that was signed" — not "this session was safe". The v3.1 roadmap adds optional injection-detection markers so an auditor can see which events were flagged as suspicious at capture (integrity + suspicion, honestly labeled — not integrity + a clean bill of health we can't give). See [`docs/THREAT_MODEL.md`](./docs/THREAT_MODEL.md) for the seven-class attack table.
 
 **Zero telemetry.** Shadow does not phone home. No usage pings, no crash reports, no analytics — from either the library or the CLI verifiers. Verify by grepping the source: neither `shadow-attest-core` nor any CLI in `bin/` opens an outbound socket to a Shadow-controlled host. Security policy: [`SECURITY.md`](./SECURITY.md).
 
@@ -136,7 +136,7 @@ v3 evidence bundle (M2.3, shipped 2026-07-10):
 
 ## MCP integration
 
-Shadow ships a 9-tool MCP server (`mcp/server.js`) usable from Cursor, Claude Desktop, Zed, or any MCP client. See [`mcp/README.md`](./mcp/README.md).
+Shadow ships a 10-tool MCP server (`mcp/server.js`) usable from Cursor, Claude Desktop, Zed, or any MCP client. See [`mcp/README.md`](./mcp/README.md).
 
 ## Threat model
 
