@@ -85,7 +85,7 @@ reference accelerant, not a cold enterprise sale.
 ## What this updates from the current positioning
 
 - Keep the regulatory facts (SR 26-2, GDPR Art. 22/Schufa, DORA) — they're
-  right. But "SR 26-2 Tier 3 companion" is a **weak** wedge: SR 26-2 *excludes*
+  right. But positioning as an "SR 26-2 companion control" is a **weak** wedge: SR 26-2 *excludes*
   agentic AI, so it's a gap no one is mandated to fill. Lead instead with
   **independence + third-party-agent governance + fintech-first GTM**.
 - The council and the crypto bundle are **features and credibility proof**, not
