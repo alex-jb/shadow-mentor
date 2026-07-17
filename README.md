@@ -88,6 +88,8 @@ Verify a bundle three different ways:
 - **CLI** — `npm run verify:bundle -- <bundle.json> --public-key <public.pem>` (aka `node bin/shadow-verify.mjs`). CI-friendly exit codes: `0` verified, `1` failed, `2` usage, `3` I/O.
 - **GitHub Action** — [`.github/actions/shadow-verify`](./.github/actions/shadow-verify) composite action. Wire it into a PR workflow and any bundle change that breaks the chain fails the merge.
 
+**Verifiability as a badge.** Consumers can verify their own committed bundle in their own CI with the Action above and put a green *audit chain* badge on their README — they advertise their own credibility, and it turns red the moment a record is silently rewritten. Recipe (3-line workflow + badge, plus why a hosted URL-fetch badge is intentionally not shipped — SSRF): [`docs/wedge/verifiability-badge.md`](./docs/wedge/verifiability-badge.md).
+
 **v3 M1.2 acceptance criteria (all met):**
 
 - 10,000-event session seals + verifies in **69 ms** on an M-series MacBook (5 s target, 72× under)
