@@ -61,8 +61,13 @@ Then:
 Per design §9:
 
 - No 3D chain-corridor (that's v3.1, XR).
-- No presenter mode (`?presenter=1` reserved, not implemented).
-- No verifier error format §7/17 port yet — `tamper.js` has a shim
-  (`adaptVerifierError`) that maps `{ok, reason, failedSeq}` into the
-  caption's `{seq, reason, impact}` contract. Delete when Thu 7/17
-  verifier error format lands.
+- No presenter mode in this replay demo. The sibling `demos/spatial-finance`
+  demo ships a presenter rail (`?present=1` — running order + "you are here",
+  hidden from the projected view); if this demo adds one, use that same flag name.
+
+Landed since day 1 (no longer "not shipped"):
+
+- Verifier error format — `packages/attest-core/session.js` `verifyBundle` now
+  returns the native structured `{ok:false, error:{seq, reason, impact}}` (spec:
+  `docs/spec/verifier-error-format.md`, implemented 2026-07-13). `tamper.js` reads
+  `verify.error` directly; the earlier `adaptVerifierError` shim was deleted.
