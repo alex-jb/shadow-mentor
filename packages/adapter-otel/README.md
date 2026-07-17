@@ -33,6 +33,19 @@ const bundle = sealSession(s);                              // signed, verifiabl
   alongside, not trusted as truth.
 - Pure functions; no signing here — the events feed attest-core, which signs.
 
+## See it run
+
+```
+node packages/adapter-otel/example.js
+```
+
+Takes a realistic five-span agent trace (a loan-review agent: think → read the
+tax-return PDF → an MCP sanctions lookup that errors then retries → answer),
+maps it to Shadow events, signs it, verifies it, then edits a signed event and
+shows verification fail (`prev_hash_mismatch`). The whole point in ~20 lines of
+output: a real agent's OTel run, signed and independently checkable, with no
+Shadow SDK in the agent.
+
 ## Tested
 
 `test/adapter-otel.test.js` — mapping correctness + a full round-trip proving an
