@@ -100,7 +100,7 @@
 
   <div id="auditstrip">USER → DATA → MODEL → COUNCIL → HUMAN → SIGNED</div>
   <div id="voice"><span id="mic"></span><span id="voice-txt">hold Space to talk</span></div>
-  <div id="hint">1 analytics · 2 forecast · 3 risks · 4 agents · 5 audit · 6 calibration<br>T tamper · R reset · 0 home · M mute voice · drag to rotate</div>
+  <div id="hint">1 analytics · 2 forecast · 3 risks · 4 agents · 5 audit · 6 calibration<br>T tamper · R reset · 0 home · S SBS stereo · [ ] eye-sep · M mute · drag to rotate</div>
   <div id="flash"></div>
 </div>
 
@@ -199,6 +199,7 @@ let BUNDLE=null, tampered=false, verifyState={ok:true};
 // ─── state + DOM ───
 const $=s=>document.querySelector(s);
 let view="decision", rot={x:-0.5,y:0.6}, dragging=false, lastXY=null;
+let stereo=false, eyeSep=parseFloat(localStorage.getItem("sf.eyeSep"))||26; // px disparity, tuned on glasses with [ ]
 const cloud=$("#cloud"), audit=$("#audit"), calib=$("#calib"), fan=$("#fan");
 const ctxC=cloud.getContext("2d"), ctxA=audit.getContext("2d"), ctxK=calib.getContext("2d"), ctxF=fan.getContext("2d");
 function resize(){for(const cv of [cloud,audit,calib,fan]){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;}}
@@ -220,41 +221,47 @@ function fillDecision(){
   }).join("")+`</div><div style="color:var(--dim);font-size:11px;margin-top:10px">Bull/base/bear over 5y — a scenario band, not a point estimate. Single-stock 5y point returns are close to noise (Welch-Goyal 2008); we show the range + who produced it, and stake credibility on the audit trail, not the number.</div>`;
 }
 
-// ─── 3D risk-return cloud (canvas 2.5D, rotatable) ───
-function project(p){ // p:{x,y,z} in [-1,1] → screen
-  const cx=Math.cos(rot.x),sx=Math.sin(rot.x),cy=Math.cos(rot.y),sy=Math.sin(rot.y);
-  let x=p.x, y=p.y, z=p.z;
-  let x1=x*cy - z*sy, z1=x*sy + z*cy;         // yaw
-  let y1=y*cx - z1*sx, z2=y*sx + z1*cx;       // pitch
-  const d=3.2, s=Math.min(innerWidth,innerHeight)*0.34, f=d/(d - z2);
-  return {sx:innerWidth/2 + x1*s*f, sy:innerHeight/2 - y1*s*f, depth:z2, scale:f};
+// ─── 3D risk-return cloud (canvas 2.5D, rotatable, optional SBS stereo) ───
+function project(p, cx, cyc, s, eye){ // p:{x,y,z} in [-1,1] → screen; eye = px disparity
+  const c=Math.cos(rot.x),sx=Math.sin(rot.x),cy=Math.cos(rot.y),sy=Math.sin(rot.y);
+  let x1=p.x*cy - p.z*sy, z1=p.x*sy + p.z*cy;   // yaw
+  let y1=p.y*c - z1*sx, z2=p.y*sx + z1*c;        // pitch
+  const d=3.2, f=d/(d - z2);
+  return {sx:cx + x1*s*f + eye*f, sy:cyc - y1*s*f, depth:z2, scale:f}; // eye*f = depth-scaled disparity
+}
+function drawCloudEye(cx, s, eye){
+  const font=getComputedStyle(document.body).fontFamily;
+  const cyc=innerHeight/2;
+  ctxC.strokeStyle="rgba(255,255,255,.08)";ctxC.lineWidth=1;
+  for(let i=-1;i<=1;i+=.25){
+    let a=project({x:i,y:-1,z:-1},cx,cyc,s,eye),b=project({x:i,y:-1,z:1},cx,cyc,s,eye);ctxC.beginPath();ctxC.moveTo(a.sx,a.sy);ctxC.lineTo(b.sx,b.sy);ctxC.stroke();
+    let cc=project({x:-1,y:-1,z:i},cx,cyc,s,eye),dd=project({x:1,y:-1,z:i},cx,cyc,s,eye);ctxC.beginPath();ctxC.moveTo(cc.sx,cc.sy);ctxC.lineTo(dd.sx,dd.sy);ctxC.stroke();
+  }
+  ctxC.fillStyle="#8b95a8";ctxC.font="12px "+font;
+  const put=(txt,pp)=>{const q=project(pp,cx,cyc,s,eye);ctxC.fillText(txt,q.sx,q.sy);};
+  put("← risk →",{x:0,y:-1.12,z:1}); put("↑ 5y return",{x:-1.15,y:0,z:1}); put("depth = confidence",{x:1,y:-1.12,z:0});
+  const pts=PORTFOLIO.positions.map(p=>{
+    const P={x:(p.vol-0.35)/0.3, y:(p.ret-0.4)/0.7, z:(p.conf-0.7)/0.25, p};
+    P.proj=project(P,cx,cyc,s,eye); return P;
+  }).sort((a,b)=>a.proj.depth-b.proj.depth);
+  for(const P of pts){
+    const {sx,sy,scale}=P.proj, r=(6+P.p.w*90)*scale;
+    const foot=project({x:(P.p.vol-0.35)/0.3, y:-1, z:(P.p.conf-0.7)/0.25},cx,cyc,s,eye);
+    ctxC.strokeStyle="rgba(255,255,255,.15)";ctxC.beginPath();ctxC.moveTo(sx,sy);ctxC.lineTo(foot.sx,foot.sy);ctxC.stroke();
+    ctxC.fillStyle=C[P.p.action];ctxC.globalAlpha=.9;ctxC.beginPath();ctxC.arc(sx,sy,Math.max(3,r),0,7);ctxC.fill();ctxC.globalAlpha=1;
+    ctxC.fillStyle="#eef2f7";ctxC.font=`${11*scale+3}px `+font;ctxC.fillText(`${P.p.t} ${(P.p.w*100)|0}%`, sx+r+3, sy+3);
+  }
 }
 function drawCloud(){
   const dpr=devicePixelRatio; ctxC.save(); ctxC.scale(dpr,dpr);
   ctxC.clearRect(0,0,innerWidth,innerHeight);
-  // floor grid on the risk-return plane (y=-1)
-  ctxC.strokeStyle="rgba(255,255,255,.08)";ctxC.lineWidth=1;
-  for(let i=-1;i<=1;i+=.25){
-    let a=project({x:i,y:-1,z:-1}),b=project({x:i,y:-1,z:1});ctxC.beginPath();ctxC.moveTo(a.sx,a.sy);ctxC.lineTo(b.sx,b.sy);ctxC.stroke();
-    let c=project({x:-1,y:-1,z:i}),d=project({x:1,y:-1,z:i});ctxC.beginPath();ctxC.moveTo(c.sx,c.sy);ctxC.lineTo(d.sx,d.sy);ctxC.stroke();
-  }
-  // axis labels
-  ctxC.fillStyle="var(--dim)";ctxC.font="12px "+getComputedStyle(document.body).fontFamily;
-  const put=(txt,pp)=>{const q=project(pp);ctxC.fillStyle="#8b95a8";ctxC.fillText(txt,q.sx,q.sy);};
-  put("← risk →",{x:0,y:-1.12,z:1}); put("↑ 5y return",{x:-1.15,y:0,z:1}); put("depth = confidence",{x:1,y:-1.12,z:0});
-  // points, painter's sorted
-  const pts=PORTFOLIO.positions.map(p=>{
-    const P={x:(p.vol-0.35)/0.3, y:(p.ret-0.4)/0.7, z:(p.conf-0.7)/0.25, p};
-    P.proj=project(P); return P;
-  }).sort((a,b)=>a.proj.depth-b.proj.depth);
-  for(const P of pts){
-    const {sx,sy,scale}=P.proj, r=(6+P.p.w*90)*scale;
-    // drop-line to the floor (restores the baseline)
-    const foot=project({x:(P.p.vol-0.35)/0.3, y:-1, z:(P.p.conf-0.7)/0.25});
-    ctxC.strokeStyle="rgba(255,255,255,.15)";ctxC.beginPath();ctxC.moveTo(sx,sy);ctxC.lineTo(foot.sx,foot.sy);ctxC.stroke();
-    ctxC.fillStyle=C[P.p.action];ctxC.globalAlpha=.9;ctxC.beginPath();ctxC.arc(sx,sy,Math.max(3,r),0,7);ctxC.fill();ctxC.globalAlpha=1;
-    ctxC.fillStyle="#eef2f7";ctxC.font=`${11*scale+3}px `+getComputedStyle(document.body).fontFamily;
-    ctxC.fillText(`${P.p.t} ${(P.p.w*100)|0}%`, sx+r+3, sy+3);
+  if(stereo){
+    const hw=innerWidth/2, s=Math.min(hw,innerHeight)*0.30;
+    ctxC.save();ctxC.beginPath();ctxC.rect(0,0,hw,innerHeight);ctxC.clip();drawCloudEye(hw/2,s,-eyeSep);ctxC.restore();
+    ctxC.save();ctxC.beginPath();ctxC.rect(hw,0,hw,innerHeight);ctxC.clip();drawCloudEye(hw+hw/2,s,+eyeSep);ctxC.restore();
+    ctxC.strokeStyle="rgba(255,255,255,.12)";ctxC.beginPath();ctxC.moveTo(hw,0);ctxC.lineTo(hw,innerHeight);ctxC.stroke();
+  } else {
+    drawCloudEye(innerWidth/2, Math.min(innerWidth,innerHeight)*0.34, 0);
   }
   ctxC.restore();
 }
@@ -432,6 +439,9 @@ addEventListener("keydown",e=>{
   if(e.key.toLowerCase()==="t")return dispatch("tamper");
   if(e.key.toLowerCase()==="r")return doReset().then(()=>{setView("decision");speak("Portfolio restored. Verified.");});
   if(e.key.toLowerCase()==="m"){ttsOn=!ttsOn;if(!ttsOn)speechSynthesis?.cancel();flash(ttsOn?"voice on":"voice muted");return;}
+  if(e.key.toLowerCase()==="s"){stereo=!stereo;if(stereo&&view!=="analytics")setView("analytics");flash(stereo?"SBS stereo on (XREAL)":"flat");return;}
+  if(e.key==="["){eyeSep=Math.max(0,eyeSep-3);localStorage.setItem("sf.eyeSep",eyeSep);flash("eye-sep "+eyeSep+"px");return;}
+  if(e.key==="]"){eyeSep+=3;localStorage.setItem("sf.eyeSep",eyeSep);flash("eye-sep "+eyeSep+"px");return;}
   if(m[e.key])dispatch(m[e.key]);
 });
 addEventListener("keyup",e=>{if(e.code==="Space"&&listening){try{rec.stop();}catch{}}});
@@ -452,7 +462,9 @@ function loop(){ if(view==="analytics")drawCloud(); if(view==="audit")drawAudit(
   setView("decision");
   loop();
   // self-drive for headless verification
-  if(location.search.includes("shot")){const v=new URLSearchParams(location.search).get("shot");setTimeout(()=>dispatch(v||"analytics"),300);}
+  const qp=new URLSearchParams(location.search);
+  if(qp.get("stereo")==="1")stereo=true;
+  if(qp.has("shot")){setTimeout(()=>dispatch(qp.get("shot")||"analytics"),300);}
 })();
 window.__spatialFinance={dispatch,seal,verify,doTamper,doReset,get bundle(){return BUNDLE},get state(){return{view,tampered,verifyState}}};
 </script>

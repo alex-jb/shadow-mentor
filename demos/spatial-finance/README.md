@@ -20,7 +20,10 @@ cloud. Headless self-drive: `?shot=analytics` or `?shot=tamper`.
 - **Analytics** — the **3D risk-return cloud**: X = risk, Y = 5-yr return,
   Z (depth) = confidence, size = weight, color = hold/trim/short. Floor grid +
   drop-lines + billboard labels; rotatable. This is the one view that genuinely
-  earns 3D (a structure/outlier task).
+  earns 3D (a structure/outlier task). Press **S** for **SBS stereo** — the
+  cloud renders as two eye viewports with horizontal disparity, so on XREAL One
+  Pro in 3D mode it fuses to real depth; `[` / `]` tune eye separation on the
+  glasses (persisted). `?stereo=1` starts in stereo.
 - **Forecast** — bull/base/bear **scenario band per name**, never a point
   estimate.
 - **Calibration** (key `6` / "show calibration") — a **reliability diagram**
