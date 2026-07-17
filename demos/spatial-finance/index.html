@@ -171,6 +171,7 @@ function shape(e){const{payload_ref,...r}=e;return r;}
 function h2b(h){const o=new Uint8Array(h.length/2);for(let i=0;i<o.length;i++)o[i]=parseInt(h.substr(i*2,2),16);return o;}
 async function own(e){return sha(cb(shape(e)));}
 let KEYS=null; async function keys(){if(KEYS)return KEYS;const kp=await crypto.subtle.generateKey({name:"Ed25519"},true,["sign","verify"]);KEYS={priv:kp.privateKey,pub:kp.publicKey};return KEYS;}
+let whatif=false; // a recorded counterfactual branch (rates +1%)
 async function seal(){
   const k=await keys();
   const header={session_id:"spatial-finance",session_started_at_utc:"2026-07-16T00:00:00.000Z",session_ended_at_utc:null,agent:{name:"orallexa-shadow",version:"0.1",identity_ref:null},models:[{model_id:"council-v1",provider:null,sampling_params_hash:null}],environment_fingerprint:{os:"browser",node_version:"n/a",hostname_hash:null},schema_versions:{bundle:1,attest_core:"2.0.0"}};
@@ -181,6 +182,11 @@ async function seal(){
   await push("model_output","agent",{recommendation:"balanced growth", weights:PORTFOLIO.positions.map(p=>[p.t,p.w])}); // MODEL
   await push("tool_result","agent",{council:PORTFOLIO.agents.map(a=>[a.name,a.stance])}); // COUNCIL
   await push("human_approval","user",{approved:true});                        // HUMAN
+  if(whatif){                                                                 // WHAT-IF BRANCH (recorded + signed)
+    await push("prompt","user",{q:"what if rates rise 1%"});
+    await push("tool_call","tool",{tool:"scenario_engine",shock:"policy_rate_+100bps"});
+    await push("model_output","agent",{scenario:"rates_+1pct",base_return:0.28,note:"duration + equity-risk-premium repricing"});
+  }
   await push("session_end","system",{event_count:ev.length+1});               // SIGNED
   const hs=[];for(const e of ev)hs.push(await own(e));
   const cc=new Uint8Array(hs.length*32);hs.forEach((h,i)=>cc.set(h2b(h),i*32));
@@ -304,25 +310,39 @@ function nodeShape(ctx,x,y,r,shape,color){
     for(let i=0;i<n;i++){const a=rot+i/n*7;const px=x+r*Math.cos(a),py=y+r*Math.sin(a);i?ctx.lineTo(px,py):ctx.moveTo(px,py);}ctx.closePath();}
   ctx.fill();
 }
+// per-event glyph — shape + label derived from the actual event, so the chain
+// grows when a what-if branch is recorded (no hardcoded 6-node assumption).
+const GLYPH={prompt:["circle","You","you"],tool_call:["hex","Data","tool"],model_output:["diamond","Model","AI"],
+  tool_result:["poly","Council","AI"],human_approval:["square","Human","human"],session_end:["shield","Signed","sig"]};
 function drawAudit(){
   const dpr=devicePixelRatio; ctxA.save(); ctxA.scale(dpr,dpr);
   ctxA.clearRect(0,0,innerWidth,innerHeight);
-  const n=6, y=innerHeight/2, x0=innerWidth*0.14, dx=(innerWidth*0.72)/(n-1);
+  const evs=(BUNDLE&&BUNDLE.events)||[];
+  const n=evs.length||6, y=innerHeight/2, x0=innerWidth*0.10, dx=(innerWidth*0.80)/Math.max(1,n-1);
+  const r=n>7?13:18, font=getComputedStyle(document.body).fontFamily;
   const brokenFrom = tampered ? (verifyState.seq ?? 99) : 99;
+  // the what-if branch = the 3 events inserted before session_end when whatif is on
+  const wfStart = whatif ? n-4 : 999, wfEnd = whatif ? n-2 : 998;
+  const wfLabel={ [wfStart]:"What-if", [wfStart+1]:"Scenario", [wfStart+2]:"Forecast" };
   for(let i=0;i<n;i++){
-    const x=x0+i*dx, broken=i>=brokenFrom, site=tampered&&i===2; // node 2 (Model) is the mutation site
-    const col = site||broken ? "#D55E00" : "#009E73";
-    if(i>0){const px=x0+(i-1)*dx; ctxA.strokeStyle=(i>=brokenFrom)?"#D55E00":"rgba(255,255,255,.25)";ctxA.lineWidth=2;
-      ctxA.beginPath();ctxA.moveTo(px+22,y);ctxA.lineTo(x-22,y);ctxA.stroke();}
+    const x=x0+i*dx, ev=evs[i]||{event_type:SHAPES[i]&&["prompt","tool_call","model_output","tool_result","human_approval","session_end"][i]};
+    const g=GLYPH[ev.event_type]||["circle","·","·"];
+    const broken=i>=brokenFrom, site=tampered&&i===2;      // model_output is the mutation site
+    const inWf = i>=wfStart && i<=wfEnd;
+    const col = site||broken ? "#D55E00" : inWf ? "#E69F00" : "#009E73";
+    if(i>0){const px=x0+(i-1)*dx; ctxA.strokeStyle=(i>=brokenFrom)?"#D55E00":(inWf?"rgba(230,159,0,.5)":"rgba(255,255,255,.22)");ctxA.lineWidth=2;
+      ctxA.beginPath();ctxA.moveTo(px+r+4,y);ctxA.lineTo(x-r-4,y);ctxA.stroke();}
     ctxA.globalAlpha=broken?0.45:1;
-    nodeShape(ctxA,x,y,18,SHAPES[i],col);
+    nodeShape(ctxA,x,y,r,g[0],col);
     ctxA.globalAlpha=1;
-    ctxA.fillStyle="#eef2f7";ctxA.font="13px "+getComputedStyle(document.body).fontFamily;ctxA.textAlign="center";
-    ctxA.fillText(ACTORS[i],x,y+42);
-    ctxA.fillStyle="#8b95a8";ctxA.font="10px "+getComputedStyle(document.body).fontFamily;
-    ctxA.fillText(["you","tool","AI","AI","human","sig"][i],x,y-30);
-    if(site){ctxA.fillStyle="#D55E00";ctxA.font="11px "+getComputedStyle(document.body).fontFamily;ctxA.fillText("HASH MISMATCH",x,y-46);}
+    ctxA.fillStyle="#eef2f7";ctxA.font="12px "+font;ctxA.textAlign="center";
+    ctxA.fillText(wfLabel[i]||g[1],x,y+r+22);
+    ctxA.fillStyle="#8b95a8";ctxA.font="10px "+font;
+    ctxA.fillText(inWf?"branch":g[2],x,y-r-12);
+    if(site){ctxA.fillStyle="#D55E00";ctxA.font="11px "+font;ctxA.fillText("HASH MISMATCH",x,y-r-28);}
   }
+  if(whatif){ctxA.fillStyle="#E69F00";ctxA.font="12px "+font;ctxA.textAlign="center";
+    ctxA.fillText("amber = what-if branch, recorded and signed — still verifies",innerWidth/2,y+r+52);}
   ctxA.restore();
 }
 
@@ -395,6 +415,20 @@ function drawFan(){
   ctxF.fillStyle="#8b95a8";ctxF.font="12px "+font;
   ctxF.fillText("30 / 60 / 90% predictive bands (Bank-of-England style). The band is the message,",X(0),Y(yMin)+48);
   ctxF.fillText("not the dashed median — single-stock 5-year point returns are close to noise (Welch-Goyal 2008).",X(0),Y(yMin)+66);
+  // what-if overlay: rates +1% scenario (Okabe-Ito amber, colorblind-safe), lower median + its own band
+  if(whatif){
+    const med2=y=>0.28*(y/5);
+    [[1.5,.10],[0.8,.18]].forEach(([k,alpha])=>{
+      ctxF.beginPath();
+      steps.forEach((y,i)=>{const p=[X(y),Y(med2(y)+band(y,k))];i?ctxF.lineTo(...p):ctxF.moveTo(...p);});
+      for(let i=steps.length-1;i>=0;i--){const y=steps[i];ctxF.lineTo(X(y),Y(med2(y)-band(y,k)));}
+      ctxF.closePath();ctxF.fillStyle=`rgba(230,159,0,${alpha})`;ctxF.fill();
+    });
+    ctxF.strokeStyle="rgba(230,159,0,.85)";ctxF.setLineDash([6,3]);ctxF.lineWidth=1.5;ctxF.beginPath();
+    steps.forEach((y,i)=>{const p=[X(y),Y(med2(y))];i?ctxF.lineTo(...p):ctxF.moveTo(...p);});ctxF.stroke();ctxF.setLineDash([]);
+    ctxF.fillStyle="#E69F00";ctxF.font="13px "+font;ctxF.textAlign="left";
+    ctxF.fillText("what-if: policy rate +1% → base +28% (was +41%) — recorded as a signed branch",X(0),Y(yMax)+2);
+  }
   ctxF.restore();
 }
 
@@ -424,6 +458,7 @@ const NARRATION={
   agents:"The council. Fundamentals bullish, risk cautious, compliance clear. The dissent is concentration.",
   audit:"The audit trail. User, market data, model, council, human, signed. Every step is recorded and hash-chained.",
   calib:"Calibration. When we say seventy percent, it happens about seventy percent of the time. We compete on calibration and auditability, not on beating the market.",
+  whatif:"What if rates rise one percent. The base case falls from plus forty-one to plus twenty-eight percent. And notice — the question and the new forecast are recorded as a signed branch. The analysis changed, and the change is itself auditable.",
 };
 
 async function doTamper(){
@@ -435,8 +470,19 @@ async function doTamper(){
   speak("The model's weights were edited after signing. Verification failed at sequence "+(verifyState.seq??"")+". The chain caught it.");
 }
 async function doReset(){
+  whatif=false;
   BUNDLE=await seal(); tampered=false; verifyState=await verify(BUNDLE);
   renderTrust(); hideDiff();
+}
+// what-if: run a counterfactual AND record it as a new signed, verifiable branch.
+async function doWhatIf(){
+  if(tampered)await doReset();          // start from a clean, verified base
+  whatif=true;
+  BUNDLE=await seal();                  // re-seal: the what-if events are now in the signed chain
+  verifyState=await verify(BUNDLE);     // still ok — a recorded branch is legitimate, not a tamper
+  renderTrust();
+  setView("forecast"); flash("what-if: rates +1% → base +28% · recorded as signed branch ("+BUNDLE.events.length+" events, verified)");
+  speak(NARRATION.whatif);
 }
 
 // ─── voice (6 intents) + keyboard (authoritative) ───
@@ -450,12 +496,14 @@ function parseIntent(s){s=(s||"").toLowerCase();
   if(/verify|verif/.test(s))return"verify";
   if(/reset|home|portfolio/.test(s))return"reset";
   if(/tamper|break|edit/.test(s))return"tamper";
+  if(/what.?if|rates? (rise|up|higher)|counterfactual|stress/.test(s))return"whatif";
   return"unknown";}
 async function dispatch(intent){
   if(["analytics","forecast","risks","agents","audit","calib"].includes(intent)){setView(intent);flash(intent==="calib"?"calibration":intent);speak(NARRATION[intent]);}
   else if(intent==="verify"){const v=await verify(BUNDLE);const m=v.ok?"Signature valid. Self-signed, chain intact.":"Verification failed. "+v.reason;flash(v.ok?"signature valid · SELF_SIGNED":"verify FAILED · "+v.reason);speak(m);}
   else if(intent==="reset"){await doReset();setView("decision");flash("portfolio");speak("Portfolio restored. Verified.");}
   else if(intent==="tamper"){await doTamper();}
+  else if(intent==="whatif"){await doWhatIf();}
   else flash("didn't catch that");
 }
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition; let rec=null,listening=false;
@@ -466,6 +514,7 @@ addEventListener("keydown",e=>{
   if(e.code==="Space"&&SR&&!listening){e.preventDefault();try{rec.start();listening=true;$("#mic").classList.add("hot");$("#voice-txt").textContent="listening…";}catch{}return;}
   const m={"1":"analytics","2":"forecast","3":"risks","4":"agents","5":"audit","6":"calib","0":"reset","t":"tamper","r":"reset"};
   if(e.key.toLowerCase()==="t")return dispatch("tamper");
+  if(e.key.toLowerCase()==="w")return dispatch("whatif");
   if(e.key.toLowerCase()==="r")return doReset().then(()=>{setView("decision");speak("Portfolio restored. Verified.");});
   if(e.key.toLowerCase()==="m"){ttsOn=!ttsOn;if(!ttsOn)speechSynthesis?.cancel();flash(ttsOn?"voice on":"voice muted");return;}
   if(e.key.toLowerCase()==="s"){stereo=!stereo;if(stereo&&view!=="analytics")setView("analytics");flash(stereo?"SBS stereo on (XREAL)":"flat");return;}
@@ -493,9 +542,9 @@ function loop(){ if(view==="analytics")drawCloud(); if(view==="audit")drawAudit(
   // self-drive for headless verification
   const qp=new URLSearchParams(location.search);
   if(qp.get("stereo")==="1")stereo=true;
-  if(qp.has("shot")){setTimeout(()=>dispatch(qp.get("shot")||"analytics"),300);}
+  if(qp.has("shot")){const seq=(qp.get("shot")||"analytics").split(",");let d=300;for(const s of seq){setTimeout(()=>dispatch(s),d);d+=400;}}
 })();
-window.__spatialFinance={dispatch,seal,verify,doTamper,doReset,get bundle(){return BUNDLE},get state(){return{view,tampered,verifyState}}};
+window.__spatialFinance={dispatch,seal,verify,doTamper,doReset,doWhatIf,get bundle(){return BUNDLE},get state(){return{view,tampered,whatif,verifyState}}};
 </script>
 </body>
 </html>
