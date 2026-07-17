@@ -28,7 +28,7 @@ first (license + security + alternative + decision), per governance discipline.
 - **Three-layer trust** (RECORD/SOURCE/ANALYSIS/DATA) + **tamper before/after diff** — `demos/spatial-finance` (the C2PA-insight UX + the "verified ≠ correct" honesty).
 - **Progressive-disclosure Decision Workspace** (agents are not the default scene) — already the demo's UX rule.
 - **BoE fan chart + calibration/Brier view** — the honest-forecast + governance framing.
-- **OTel GenAI/MCP adapter** (`packages/adapter-otel`, tested round-trip) — any instrumented agent's spans → signed Shadow evidence. [queue #1 ✓]
+- **OTel GenAI/MCP adapter** (`packages/adapter-otel`, tested round-trip + runnable `example.js`: a 5-span loan-review trace → signed → tamper-caught) — any instrumented agent's spans → signed Shadow evidence. [queue #1 ✓]
 - **What-if / counterfactual as a recorded, signed branch** — `demos/spatial-finance` (press W): forecast changes AND the change is appended to the chain, re-sealed, re-verified; the audit trace grows an amber branch. [queue #4 ✓]
 - **Timeline replay** — `demos/spatial-finance` (press P): the run plays forward over a synthetic 18s timeline, playhead sweeps the chain, future nodes dimmed. [queue #1 ✓]
 - **Source-map / click-claim-to-source** — `demos/spatial-finance` (click a risk or the top-3 metric, or say "trace"): the claim highlights its backing names in the cloud with the arithmetic recomputed live from the signed weights + the producing event named ("model_output · seq 2"). The structured-data version of the Meta rule "no claim without a traceable source"; the scanned-doc version (claim → page/region) still needs MarkItDown/OCR. [queue #2 ✓]
