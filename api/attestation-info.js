@@ -1,6 +1,12 @@
 // GET /api/attestation-info
 // Public key + rotation-metadata discovery for bank auditors.
 //
+// Also reachable at the standard discovery path
+// GET /.well-known/shadow-attestation(.json) — Vercel rewrites both to this
+// handler (see vercel.json). The .well-known alias tracks the MCP 2026 roadmap's
+// push toward standard `.well-known` capability metadata, so a client can
+// discover the verifier's key without an out-of-band exchange or a live connection.
+//
 // A bank SIEM pipeline auto-hydrates the verifier's public key without
 // requiring an out-of-band email exchange. Response also carries a
 // SHA-256 fingerprint of the public key, so the bank auditor can

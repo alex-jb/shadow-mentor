@@ -46,6 +46,14 @@ test("mapSpan: error status on an MCP tool span → tool_error", () => {
   assert.equal(e.actor, "tool");
 });
 
+test("mapSpan: emits a W3C traceparent (version-trace-span-flags) in extensions.otel", () => {
+  const e = mapSpan(SPANS[0]);
+  assert.equal(e.extensions.otel.traceparent, "00-t1-s1-01");
+  // absent when there's no span id to build one from
+  const noSpan = mapSpan({ name: "x", trace_id: "t1", attributes: { "gen_ai.request.model": "m" } });
+  assert.equal(noSpan.extensions.otel.traceparent, undefined);
+});
+
 test("otelToEvents: session_start first, session_end last, spans ordered by start", () => {
   const ev = otelToEvents(SPANS, { sessionId: "otel-1", agent: "claude-code" });
   assert.equal(ev[0].event_type, "session_start");

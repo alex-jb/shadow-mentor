@@ -31,6 +31,15 @@ function nanoToIso(v) {
   return new Date(ms).toISOString();
 }
 
+// W3C Trace Context traceparent: `{version}-{trace-id}-{parent-id}-{trace-flags}`
+// = `00-<32hex>-<16hex>-<2hex>`. Real OTLP exporters emit correctly-sized hex ids,
+// which pass through unchanged. trace-flags = 01 (sampled/recorded) — the flags
+// encode sampling, not error. Ids are carried as-is (advisory) — this does not
+// re-validate the exporter's ids.
+export function w3cTraceparent(traceId, spanId) {
+  return `00-${traceId}-${spanId}-01`;
+}
+
 // Map one OTel span to ONE Shadow event partial (frozen event vocabulary).
 export function mapSpan(span) {
   const a = span.attributes || {};
@@ -40,6 +49,12 @@ export function mapSpan(span) {
   const otel = {
     trace_id: span.trace_id, span_id: span.span_id,
     parent_span_id: span.parent_span_id ?? null, name: span.name,
+    // W3C Trace Context (MCP RC 2026-07-28 aligns on this): version-trace-span-flags.
+    // Carrying the traceparent lets a SIEM correlate signed evidence back to the
+    // distributed trace. Emitted only when both ids are present.
+    ...(span.trace_id && span.span_id
+      ? { traceparent: w3cTraceparent(span.trace_id, span.span_id) }
+      : {}),
   };
   const ts = nanoToIso(span.end_time_unix_nano ?? span.start_time_unix_nano);
 

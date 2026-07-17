@@ -28,9 +28,11 @@ const bundle = sealSession(s);                              // signed, verifiabl
     (actor `tool`); error status → `tool_error`
   - other spans → `tool_call` (actor `agent`); error status → `error`
 - Preserves each span's OTel identity — `trace_id` / `span_id` / `parent_span_id`
-  — in `extensions.otel`, so the 3D audit trace can render nested and parallel
-  agent branches. Shadow keeps its own audit identity; OTel ids are carried
-  alongside, not trusted as truth.
+  — in `extensions.otel`, plus a **W3C `traceparent`** string
+  (`00-<trace-id>-<span-id>-01`) so a SIEM can correlate the signed evidence back
+  to the distributed trace (MCP RC 2026-07-28 aligns on W3C Trace Context). The
+  3D audit trace can render nested and parallel agent branches from these. Shadow
+  keeps its own audit identity; OTel ids are carried alongside, not trusted as truth.
 - Pure functions; no signing here — the events feed attest-core, which signs.
 
 ## See it run
