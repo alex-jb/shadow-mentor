@@ -99,7 +99,7 @@
 
   <div id="auditstrip">USER → DATA → MODEL → COUNCIL → HUMAN → SIGNED</div>
   <div id="voice"><span id="mic"></span><span id="voice-txt">hold Space to talk</span></div>
-  <div id="hint">1 analytics · 2 forecast · 3 risks · 4 agents · 5 audit · 6 calibration<br>T tamper · R reset · 0 home · drag to rotate</div>
+  <div id="hint">1 analytics · 2 forecast · 3 risks · 4 agents · 5 audit · 6 calibration<br>T tamper · R reset · 0 home · M mute voice · drag to rotate</div>
   <div id="flash"></div>
 </div>
 
@@ -340,12 +340,25 @@ function setView(v){
 }
 function flash(t){const f=$("#flash");f.textContent=t;f.style.opacity=1;clearTimeout(flash._t);flash._t=setTimeout(()=>f.style.opacity=0,1800);}
 
+// ─── voice OUT (TTS) — the JARVIS answer, offline via Web Speech Synthesis ───
+let ttsOn=true;
+function speak(t){ if(!ttsOn||!window.speechSynthesis||!t)return; try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=1.06;u.pitch=1;speechSynthesis.speak(u);}catch{} }
+const NARRATION={
+  analytics:"Here are the ten names, placed by risk and five-year return. Size is portfolio weight; orange means trim.",
+  forecast:"Five-year scenarios — bull, base, and bear. These are ranges, not point forecasts; a single stock's five-year return is close to noise.",
+  risks:"Three risks. The top one is concentration — the top three names are forty-one percent of the book.",
+  agents:"The council. Fundamentals bullish, risk cautious, compliance clear. The dissent is concentration.",
+  audit:"The audit trail. User, market data, model, council, human, signed. Every step is recorded and hash-chained.",
+  calib:"Calibration. When we say seventy percent, it happens about seventy percent of the time. We compete on calibration and auditability, not on beating the market.",
+};
+
 async function doTamper(){
   if(!BUNDLE||tampered)return;
   BUNDLE.events[2].payload_hash=BUNDLE.events[2].payload_hash.slice(0,-1)+"0"; // edit the Model weights after signing
   tampered=true; verifyState=await verify(BUNDLE);
   $("#verified").className="bad";$("#verified").textContent="✕ VERIFICATION FAILED · seq "+(verifyState.seq??"—");
   setView("audit"); flash("weight edited after signing — chain broken at seq "+(verifyState.seq??"—"));
+  speak("The model's weights were edited after signing. Verification failed at sequence "+(verifyState.seq??"")+". The chain caught it.");
 }
 async function doReset(){
   BUNDLE=await seal(); tampered=false; verifyState=await verify(BUNDLE);
@@ -365,9 +378,9 @@ function parseIntent(s){s=(s||"").toLowerCase();
   if(/tamper|break|edit/.test(s))return"tamper";
   return"unknown";}
 async function dispatch(intent){
-  if(["analytics","forecast","risks","agents","audit","calib"].includes(intent)){setView(intent);flash(intent==="calib"?"calibration":intent);}
-  else if(intent==="verify"){const v=await verify(BUNDLE);flash(v.ok?"signature valid · SELF_SIGNED":"verify FAILED · "+v.reason);}
-  else if(intent==="reset"){await doReset();setView("decision");flash("portfolio");}
+  if(["analytics","forecast","risks","agents","audit","calib"].includes(intent)){setView(intent);flash(intent==="calib"?"calibration":intent);speak(NARRATION[intent]);}
+  else if(intent==="verify"){const v=await verify(BUNDLE);const m=v.ok?"Signature valid. Self-signed, chain intact.":"Verification failed. "+v.reason;flash(v.ok?"signature valid · SELF_SIGNED":"verify FAILED · "+v.reason);speak(m);}
+  else if(intent==="reset"){await doReset();setView("decision");flash("portfolio");speak("Portfolio restored. Verified.");}
   else if(intent==="tamper"){await doTamper();}
   else flash("didn't catch that");
 }
@@ -379,7 +392,8 @@ addEventListener("keydown",e=>{
   if(e.code==="Space"&&SR&&!listening){e.preventDefault();try{rec.start();listening=true;$("#mic").classList.add("hot");$("#voice-txt").textContent="listening…";}catch{}return;}
   const m={"1":"analytics","2":"forecast","3":"risks","4":"agents","5":"audit","6":"calib","0":"reset","t":"tamper","r":"reset"};
   if(e.key.toLowerCase()==="t")return dispatch("tamper");
-  if(e.key.toLowerCase()==="r")return doReset().then(()=>setView("decision"));
+  if(e.key.toLowerCase()==="r")return doReset().then(()=>{setView("decision");speak("Portfolio restored. Verified.");});
+  if(e.key.toLowerCase()==="m"){ttsOn=!ttsOn;if(!ttsOn)speechSynthesis?.cancel();flash(ttsOn?"voice on":"voice muted");return;}
   if(m[e.key])dispatch(m[e.key]);
 });
 addEventListener("keyup",e=>{if(e.code==="Space"&&listening){try{rec.stop();}catch{}}});
