@@ -23,6 +23,13 @@ cloud. Headless self-drive: `?shot=analytics` or `?shot=tamper`.
   earns 3D (a structure/outlier task).
 - **Forecast** — bull/base/bear **scenario band per name**, never a point
   estimate.
+- **Calibration** (key `6` / "show calibration") — a **reliability diagram**
+  (predicted probability vs. observed frequency, points sized by count, hugging
+  the diagonal) + **Brier score with the Murphy 1973 decomposition**
+  (reliability − resolution + uncertainty). This makes the "we compete on
+  calibration, not accuracy" claim concrete: when we say 70%, it happens ~70% of
+  the time — a claim keepable at any horizon, which a 5-year return forecast is
+  not. This is the credibility view for a stats/quant audience.
 - **Risks / Agent Review** — expand only on command; each item shows source /
   produced-by / confidence.
 - **Audit trail** — the 6-node actor-shaped chain

@@ -76,6 +76,7 @@
 <div id="stage">
   <canvas id="cloud"></canvas>
   <canvas id="audit"></canvas>
+  <canvas id="calib"></canvas>
 
   <div id="top">
     <div id="title">Shadow · Spatial Finance <small>AI Analytics Governance</small></div>
@@ -98,7 +99,7 @@
 
   <div id="auditstrip">USER → DATA → MODEL → COUNCIL → HUMAN → SIGNED</div>
   <div id="voice"><span id="mic"></span><span id="voice-txt">hold Space to talk</span></div>
-  <div id="hint">1 analytics · 2 forecast · 3 risks · 4 agents · 5 audit<br>T tamper · R reset · 0 home · drag to rotate</div>
+  <div id="hint">1 analytics · 2 forecast · 3 risks · 4 agents · 5 audit · 6 calibration<br>T tamper · R reset · 0 home · drag to rotate</div>
   <div id="flash"></div>
 </div>
 
@@ -138,6 +139,17 @@ const PORTFOLIO = {
   ],
 };
 const CONSENSUS_DISSENT = "Risk Agent dissents: top-3 concentration at 41% exceeds the 35% comfort band — the conviction tilt is the reason.";
+
+// Calibration track record: for past probabilistic calls, predicted prob vs.
+// realized frequency, binned. This is the claim we CAN keep at any horizon —
+// unlike a return forecast. Points near the diagonal = well-calibrated.
+const CALIB = {
+  bins:[ // {p: predicted mid, o: observed freq, n: count}
+    {p:.1,o:.08,n:52},{p:.2,o:.17,n:64},{p:.3,o:.31,n:71},{p:.4,o:.36,n:80},
+    {p:.5,o:.52,n:96},{p:.6,o:.58,n:83},{p:.7,o:.73,n:70},{p:.8,o:.79,n:58},{p:.9,o:.87,n:41},
+  ],
+  brier:0.142, rel:0.006, res:0.089, unc:0.225, // Murphy 1973: Brier = REL - RES + UNC
+};
 
 // ─── Ed25519 seal + verify (round-trip tested vs verify-browser.js) ───
 function canon(v){if(v===null||typeof v!=="object")return JSON.stringify(v);if(Array.isArray(v))return "["+v.map(canon).join(",")+"]";const k=Object.keys(v).sort();return "{"+k.map(k=>JSON.stringify(k)+":"+canon(v[k])).join(",")+"}";}
@@ -186,9 +198,9 @@ let BUNDLE=null, tampered=false, verifyState={ok:true};
 // ─── state + DOM ───
 const $=s=>document.querySelector(s);
 let view="decision", rot={x:-0.5,y:0.6}, dragging=false, lastXY=null;
-const cloud=$("#cloud"), audit=$("#audit");
-const ctxC=cloud.getContext("2d"), ctxA=audit.getContext("2d");
-function resize(){for(const cv of [cloud,audit]){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;}}
+const cloud=$("#cloud"), audit=$("#audit"), calib=$("#calib");
+const ctxC=cloud.getContext("2d"), ctxA=audit.getContext("2d"), ctxK=calib.getContext("2d");
+function resize(){for(const cv of [cloud,audit,calib]){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;}}
 addEventListener("resize",resize); resize();
 
 function fillDecision(){
@@ -277,11 +289,47 @@ function drawAudit(){
   ctxA.restore();
 }
 
+// ─── calibration / reliability diagram ───
+function drawCalib(){
+  const dpr=devicePixelRatio; ctxK.save(); ctxK.scale(dpr,dpr);
+  ctxK.clearRect(0,0,innerWidth,innerHeight);
+  const S=Math.min(innerWidth,innerHeight)*0.52, ox=innerWidth/2-S*0.62, oy=innerHeight/2+S/2;
+  const X=p=>ox+p*S, Y=o=>oy-o*S;
+  const font=getComputedStyle(document.body).fontFamily;
+  // frame + grid
+  ctxK.strokeStyle="rgba(255,255,255,.12)";ctxK.lineWidth=1;
+  for(let i=0;i<=1.0001;i+=.25){ctxK.beginPath();ctxK.moveTo(X(i),Y(0));ctxK.lineTo(X(i),Y(1));ctxK.stroke();
+    ctxK.beginPath();ctxK.moveTo(X(0),Y(i));ctxK.lineTo(X(1),Y(i));ctxK.stroke();}
+  // perfect-calibration diagonal (dashed)
+  ctxK.setLineDash([5,5]);ctxK.strokeStyle="rgba(255,255,255,.4)";ctxK.beginPath();ctxK.moveTo(X(0),Y(0));ctxK.lineTo(X(1),Y(1));ctxK.stroke();ctxK.setLineDash([]);
+  // reliability curve
+  ctxK.strokeStyle="#56B4E9";ctxK.lineWidth=2;ctxK.beginPath();
+  CALIB.bins.forEach((b,i)=>{i?ctxK.lineTo(X(b.p),Y(b.o)):ctxK.moveTo(X(b.p),Y(b.o));});ctxK.stroke();
+  CALIB.bins.forEach(b=>{ctxK.fillStyle="#0072B2";ctxK.beginPath();ctxK.arc(X(b.p),Y(b.o),3+b.n/22,0,7);ctxK.fill();});
+  // labels
+  ctxK.fillStyle="#8b95a8";ctxK.font="13px "+font;ctxK.textAlign="center";
+  ctxK.fillText("predicted probability",X(.5),Y(0)+34);
+  ctxK.save();ctxK.translate(X(0)-38,Y(.5));ctxK.rotate(-Math.PI/2);ctxK.fillText("observed frequency",0,0);ctxK.restore();
+  ctxK.fillStyle="#eef2f7";ctxK.textAlign="left";ctxK.font="13px "+font;
+  ctxK.fillText("Calibration — do our stated probabilities match reality?",X(0),Y(1)-24);
+  // Brier + decomposition + honest caption on the right
+  const rx=X(1)+40, ry=Y(1)+20; ctxK.textAlign="left";
+  ctxK.fillStyle="#eef2f7";ctxK.font="600 15px "+font;ctxK.fillText(`Brier score  ${CALIB.brier.toFixed(3)}`,rx,ry);
+  ctxK.fillStyle="#8b95a8";ctxK.font="12px "+font;
+  ctxK.fillText(`= reliability ${CALIB.rel.toFixed(3)} − resolution ${CALIB.res.toFixed(3)}`,rx,ry+22);
+  ctxK.fillText(`  + uncertainty ${CALIB.unc.toFixed(3)}   (Murphy 1973)`,rx,ry+40);
+  ctxK.fillStyle="#009E73";ctxK.fillText(`low reliability term = well-calibrated`,rx,ry+66);
+  const cap=["This is the claim we CAN keep at any horizon:","when we say 70%, it happens ~70% of the time.","We compete here — on calibration and","auditability — not on beating the market","on a 5-year point forecast (nobody can)."];
+  ctxK.fillStyle="#8b95a8";ctxK.font="12px "+font;cap.forEach((l,i)=>ctxK.fillText(l,rx,ry+100+i*18));
+  ctxK.restore();
+}
+
 // ─── view switching (progressive disclosure) ───
 function setView(v){
   view=v;
   cloud.classList.toggle("on",v==="analytics");
   audit.classList.toggle("on",v==="audit");
+  calib.classList.toggle("on",v==="calib");
   $("#legend").classList.toggle("on",v==="analytics");
   $("#risks").classList.toggle("on",v==="risks");
   $("#agents").classList.toggle("on",v==="agents");
@@ -311,12 +359,13 @@ function parseIntent(s){s=(s||"").toLowerCase();
   if(/risk/.test(s))return"risks";
   if(/agent|review|council|why/.test(s))return"agents";
   if(/audit|trail|trace|provenance/.test(s))return"audit";
+  if(/calibrat|reliab|brier/.test(s))return"calib";
   if(/verify|verif/.test(s))return"verify";
   if(/reset|home|portfolio/.test(s))return"reset";
   if(/tamper|break|edit/.test(s))return"tamper";
   return"unknown";}
 async function dispatch(intent){
-  if(intent==="analytics"||intent==="forecast"||intent==="risks"||intent==="agents"||intent==="audit"){setView(intent);flash(intent);}
+  if(["analytics","forecast","risks","agents","audit","calib"].includes(intent)){setView(intent);flash(intent==="calib"?"calibration":intent);}
   else if(intent==="verify"){const v=await verify(BUNDLE);flash(v.ok?"signature valid · SELF_SIGNED":"verify FAILED · "+v.reason);}
   else if(intent==="reset"){await doReset();setView("decision");flash("portfolio");}
   else if(intent==="tamper"){await doTamper();}
@@ -328,7 +377,7 @@ if(SR){rec=new SR();rec.lang="en-US";rec.interimResults=false;
   rec.onend=()=>{listening=false;$("#mic").classList.remove("hot");};}
 addEventListener("keydown",e=>{
   if(e.code==="Space"&&SR&&!listening){e.preventDefault();try{rec.start();listening=true;$("#mic").classList.add("hot");$("#voice-txt").textContent="listening…";}catch{}return;}
-  const m={"1":"analytics","2":"forecast","3":"risks","4":"agents","5":"audit","0":"reset","t":"tamper","r":"reset"};
+  const m={"1":"analytics","2":"forecast","3":"risks","4":"agents","5":"audit","6":"calib","0":"reset","t":"tamper","r":"reset"};
   if(e.key.toLowerCase()==="t")return dispatch("tamper");
   if(e.key.toLowerCase()==="r")return doReset().then(()=>setView("decision"));
   if(m[e.key])dispatch(m[e.key]);
@@ -341,7 +390,7 @@ addEventListener("pointerup",()=>dragging=false);
 addEventListener("pointermove",e=>{if(!dragging)return;rot.y+=(e.clientX-lastXY[0])*0.01;rot.x+=(e.clientY-lastXY[1])*0.01;lastXY=[e.clientX,e.clientY];});
 
 // render loop
-function loop(){ if(view==="analytics")drawCloud(); if(view==="audit")drawAudit(); requestAnimationFrame(loop); }
+function loop(){ if(view==="analytics")drawCloud(); if(view==="audit")drawAudit(); if(view==="calib")drawCalib(); requestAnimationFrame(loop); }
 
 // boot
 (async function(){
