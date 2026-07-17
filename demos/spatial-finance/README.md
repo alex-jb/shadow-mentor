@@ -60,6 +60,25 @@ cloud. Headless self-drive: `?shot=analytics` or `?shot=tamper`.
 - **3D only where it earns it:** the risk-return cloud is 3D; the allocation is
   a flat 2D bar (no 3D pie); colors are Okabe-Ito with redundant labels.
 
+## Flow (a.flow.gl) — how it helps, and the bridge
+
+Flow is the polished **3D display layer** for XREAL One Pro (colorful, rotatable,
+filterable spatial data, CSV import, a real-time Push Dataset API, and MCP so an
+AI can author a 3D narrative). It is genuinely good at exactly what Lora asked
+for — "3D, colorful, appealing" data on the glasses — so it can save us building
+a full Three.js/XR frontend from scratch.
+
+What Flow is **not**: the analysis, OCR, or trust layer. Shadow stays the
+analysis + audit + signing engine; Flow only displays. Never move signing or
+verification into Flow.
+
+`flow-adapter.mjs` is the bridge: `node flow-adapter.mjs` turns the portfolio +
+the evidence chain into two Flow-importable CSVs — `flow-portfolio.csv` (the
+risk-return cloud) and `flow-audit.csv` (the audit graph, real SHA-256 chaining
++ `produced_by` + `verification_status`). Drop them into Flow Editor today; the
+same rows push via Flow's Push Dataset API once its contract (auth, format,
+latency, embed, privacy) is confirmed with the Flow team.
+
 ## Next
 
 Wire `analyze()`/the data source to Orallexa or a live market feed; add the fan
