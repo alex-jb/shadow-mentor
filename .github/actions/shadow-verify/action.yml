@@ -17,12 +17,21 @@ inputs:
     required: true
   fail-on-mismatch:
     description: >
-      If 'true' (default), the step fails when verification returns non-ok.
+      If 'true' (default), the step fails when verification returns non-ok
+      (or, when a profile is set, when the bundle is non-conformant).
       If 'false', the action runs verification and sets outputs but does not
       set exit code — useful when a downstream step wants to post a comment
       before failing.
     required: false
     default: "true"
+  profile:
+    description: >
+      Optional evidence-profile name (e.g. 'banking-v1'). When set, the action
+      also checks Banking Evidence Profile conformance after integrity and, with
+      fail-on-mismatch=true, fails the run if the bundle is verified but
+      non-conformant (exit 4). Gate a bank's CI on 'is this decision auditable?'.
+    required: false
+    default: ""
 
 outputs:
   ok:
@@ -43,6 +52,12 @@ outputs:
   batch_root:
     description: "sha256 batch root, present on both ok and non-ok."
     value: ${{ steps.verify.outputs.batch_root }}
+  profile_conforms:
+    description: "When 'profile' is set: 'true'/'false' Banking Evidence Profile conformance; empty otherwise."
+    value: ${{ steps.verify.outputs.profile_conforms }}
+  profile_coverage:
+    description: "When 'profile' is set: percent of evidence slots present; empty otherwise."
+    value: ${{ steps.verify.outputs.profile_coverage }}
 
 runs:
   using: "composite"
@@ -60,10 +75,15 @@ runs:
       id: verify
       shell: bash
       run: |
+        PROFILE_ARGS=""
+        if [ -n "${{ inputs.profile }}" ]; then
+          PROFILE_ARGS="--profile ${{ inputs.profile }}"
+        fi
         set +e
         REPORT=$(node "${{ github.action_path }}/../../../bin/shadow-verify.mjs" \
           "${{ inputs.bundle }}" \
           --public-key "${{ inputs.public-key }}" \
+          $PROFILE_ARGS \
           --json)
         VERIFY_EXIT=$?
         set -e
@@ -81,9 +101,15 @@ runs:
           set('session_id', r.session_id ?? '');
           set('event_count', r.event_count ?? '');
           set('batch_root', r.batch_root ?? '');
+          set('profile_conforms', r.profile ? String(r.profile.pass) : '');
+          set('profile_coverage', r.profile ? String(r.profile.coverage_pct) : '');
         " "$REPORT" >> "$GITHUB_OUTPUT"
 
         if [ "${{ inputs.fail-on-mismatch }}" = "true" ] && [ "$VERIFY_EXIT" != "0" ]; then
-          echo "::error::shadow-verify reported non-ok. See report above."
+          if [ "$VERIFY_EXIT" = "4" ]; then
+            echo "::error::Bundle verified but NON-CONFORMANT to profile '${{ inputs.profile }}'. See report above."
+          else
+            echo "::error::shadow-verify reported non-ok. See report above."
+          fi
           exit "$VERIFY_EXIT"
         fi

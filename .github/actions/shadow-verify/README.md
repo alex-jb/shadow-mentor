@@ -29,13 +29,33 @@ jobs:
           public-key: keys/shadow-2026-Q3.pem
 ```
 
+          public-key: keys/shadow-2026-Q3.pem
+```
+
+### Gate on Banking Evidence Profile v1 conformance
+
+Set `profile: banking-v1` to also require that each decision bundle is an
+auditable credit-decision record (integrity + the examiner-required evidence,
+with a swapped/ungoverned reason-code dictionary failing). The job fails if a
+bundle is verified but non-conformant — a bank's CI gate for "is this decision
+auditable?":
+
+```yaml
+      - uses: alex-jb/shadow-mentor/.github/actions/shadow-verify@main
+        with:
+          bundle: evidence/decision.bundle.json
+          public-key: keys/shadow-2026-Q3.pem
+          profile: banking-v1
+```
+
 ## Inputs
 
 | Name | Required | Default | Description |
 | --- | --- | --- | --- |
 | `bundle` | yes | — | Path to the evidence bundle JSON file, relative to the workspace. |
 | `public-key` | yes | — | Path to the Ed25519 public key in PEM format. |
-| `fail-on-mismatch` | no | `"true"` | If `"false"`, the action reports verification result via outputs without failing the job — useful when a follow-up step should post a PR comment before halting. |
+| `fail-on-mismatch` | no | `"true"` | If `"false"`, the action reports result via outputs without failing the job — useful when a follow-up step should post a PR comment before halting. |
+| `profile` | no | `""` | Evidence-profile name (e.g. `banking-v1`). When set, also checks conformance; with `fail-on-mismatch=true`, fails on verified-but-non-conformant (exit 4). |
 
 ## Outputs
 
@@ -47,6 +67,8 @@ jobs:
 | `session_id` | The `session_id` from the bundle header. Present on both ok and non-ok. |
 | `event_count` | Number of events in the bundle. |
 | `batch_root` | The sha256 batch root. |
+| `profile_conforms` | When `profile` is set: `"true"`/`"false"` conformance. Empty otherwise. |
+| `profile_coverage` | When `profile` is set: percent of evidence slots present. Empty otherwise. |
 
 ## Downstream pattern — comment then fail
 
