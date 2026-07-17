@@ -110,7 +110,7 @@
 
   <div id="auditstrip">USER → DATA → MODEL → COUNCIL → HUMAN → SIGNED</div>
   <div id="voice"><span id="mic"></span><span id="voice-txt">hold Space to talk</span></div>
-  <div id="hint">1 analytics · 2 forecast · 3 risks · 4 agents · 5 audit · 6 calibration<br>T tamper · R reset · 0 home · S SBS stereo · [ ] eye-sep · M mute · drag to rotate</div>
+  <div id="hint">1 analytics · 2 forecast · 3 risks · 4 agents · 5 audit · 6 calibration<br>W what-if · P replay · T tamper · R reset · 0 home · S SBS stereo · [ ] eye-sep · M mute · drag</div>
   <div id="flash"></div>
   <div id="tdiff"></div>
 </div>
@@ -217,6 +217,7 @@ let BUNDLE=null, tampered=false, verifyState={ok:true};
 const $=s=>document.querySelector(s);
 let view="decision", rot={x:-0.5,y:0.6}, dragging=false, lastXY=null;
 let stereo=false, eyeSep=parseFloat(localStorage.getItem("sf.eyeSep"))||26; // px disparity, tuned on glasses with [ ]
+let replay={on:false,t:1,start:0,dur:5600}; // t=0..1 reveal cursor over the audit chain (synthetic 18s run)
 const cloud=$("#cloud"), audit=$("#audit"), calib=$("#calib"), fan=$("#fan");
 const ctxC=cloud.getContext("2d"), ctxA=audit.getContext("2d"), ctxK=calib.getContext("2d"), ctxF=fan.getContext("2d");
 function resize(){for(const cv of [cloud,audit,calib,fan]){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;}}
@@ -324,24 +325,36 @@ function drawAudit(){
   // the what-if branch = the 3 events inserted before session_end when whatif is on
   const wfStart = whatif ? n-4 : 999, wfEnd = whatif ? n-2 : 998;
   const wfLabel={ [wfStart]:"What-if", [wfStart+1]:"Scenario", [wfStart+2]:"Forecast" };
+  const cursor = replay.on ? replay.t : 1;                  // reveal fraction 0..1
+  const nodeT = i => n>1 ? i/(n-1) : 1;                     // each event's position in the run
+  const RUN_SEC = 18, mmss = f => { const s=Math.round(f*RUN_SEC); return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0"); };
   for(let i=0;i<n;i++){
     const x=x0+i*dx, ev=evs[i]||{event_type:SHAPES[i]&&["prompt","tool_call","model_output","tool_result","human_approval","session_end"][i]};
     const g=GLYPH[ev.event_type]||["circle","·","·"];
     const broken=i>=brokenFrom, site=tampered&&i===2;      // model_output is the mutation site
     const inWf = i>=wfStart && i<=wfEnd;
+    const future = replay.on && nodeT(i) > cursor + 1e-6;   // not yet reached by the playhead
+    const just = replay.on && !future && nodeT(i) > cursor - 0.06; // the node landing right now
     const col = site||broken ? "#D55E00" : inWf ? "#E69F00" : "#009E73";
-    if(i>0){const px=x0+(i-1)*dx; ctxA.strokeStyle=(i>=brokenFrom)?"#D55E00":(inWf?"rgba(230,159,0,.5)":"rgba(255,255,255,.22)");ctxA.lineWidth=2;
+    if(i>0){const px=x0+(i-1)*dx; const linkFuture=replay.on&&nodeT(i)>cursor+1e-6;
+      ctxA.strokeStyle=linkFuture?"rgba(255,255,255,.07)":(i>=brokenFrom)?"#D55E00":(inWf?"rgba(230,159,0,.5)":"rgba(255,255,255,.22)");ctxA.lineWidth=2;
       ctxA.beginPath();ctxA.moveTo(px+r+4,y);ctxA.lineTo(x-r-4,y);ctxA.stroke();}
-    ctxA.globalAlpha=broken?0.45:1;
-    nodeShape(ctxA,x,y,r,g[0],col);
-    ctxA.globalAlpha=1;
+    ctxA.globalAlpha=future?0.12:(broken?0.45:1);
+    nodeShape(ctxA,x,y,just?r+3:r,g[0],col);               // pop the landing node
+    ctxA.globalAlpha=future?0.2:1;
     ctxA.fillStyle="#eef2f7";ctxA.font="12px "+font;ctxA.textAlign="center";
     ctxA.fillText(wfLabel[i]||g[1],x,y+r+22);
     ctxA.fillStyle="#8b95a8";ctxA.font="10px "+font;
     ctxA.fillText(inWf?"branch":g[2],x,y-r-12);
-    if(site){ctxA.fillStyle="#D55E00";ctxA.font="11px "+font;ctxA.fillText("HASH MISMATCH",x,y-r-28);}
+    ctxA.globalAlpha=1;
+    if(site&&!future){ctxA.fillStyle="#D55E00";ctxA.font="11px "+font;ctxA.fillText("HASH MISMATCH",x,y-r-28);}
   }
-  if(whatif){ctxA.fillStyle="#E69F00";ctxA.font="12px "+font;ctxA.textAlign="center";
+  if(replay.on){                                            // playhead + time readout
+    const px=x0+cursor*(n-1)*dx;
+    ctxA.strokeStyle="rgba(86,180,233,.8)";ctxA.lineWidth=2;ctxA.beginPath();ctxA.moveTo(px,y-r-40);ctxA.lineTo(px,y+r+40);ctxA.stroke();
+    ctxA.fillStyle="#56B4E9";ctxA.font="12px "+font;ctxA.textAlign="center";
+    ctxA.fillText("▶ replaying run · "+mmss(cursor)+" / "+mmss(1),innerWidth/2,y+r+72);
+  } else if(whatif){ctxA.fillStyle="#E69F00";ctxA.font="12px "+font;ctxA.textAlign="center";
     ctxA.fillText("amber = what-if branch, recorded and signed — still verifies",innerWidth/2,y+r+52);}
   ctxA.restore();
 }
@@ -459,6 +472,7 @@ const NARRATION={
   audit:"The audit trail. User, market data, model, council, human, signed. Every step is recorded and hash-chained.",
   calib:"Calibration. When we say seventy percent, it happens about seventy percent of the time. We compete on calibration and auditability, not on beating the market.",
   whatif:"What if rates rise one percent. The base case falls from plus forty-one to plus twenty-eight percent. And notice — the question and the new forecast are recorded as a signed branch. The analysis changed, and the change is itself auditable.",
+  replay:"Replaying the run. Each step lands in the order it happened — you asked, the model pulled market data, produced a recommendation, the council reviewed, a human approved, and it was signed. Nothing is added after the fact.",
 };
 
 async function doTamper(){
@@ -470,9 +484,16 @@ async function doTamper(){
   speak("The model's weights were edited after signing. Verification failed at sequence "+(verifyState.seq??"")+". The chain caught it.");
 }
 async function doReset(){
-  whatif=false;
+  whatif=false; replay.on=false; replay.t=1;
   BUNDLE=await seal(); tampered=false; verifyState=await verify(BUNDLE);
   renderTrust(); hideDiff();
+}
+// timeline replay: play the recorded run forward, events landing over time.
+function startReplay(){
+  setView("audit");
+  replay.on=true; replay.t=0; replay.start=performance.now();
+  flash("replaying the run — every step, in the order it happened");
+  speak(NARRATION.replay);
 }
 // what-if: run a counterfactual AND record it as a new signed, verifiable branch.
 async function doWhatIf(){
@@ -497,6 +518,7 @@ function parseIntent(s){s=(s||"").toLowerCase();
   if(/reset|home|portfolio/.test(s))return"reset";
   if(/tamper|break|edit/.test(s))return"tamper";
   if(/what.?if|rates? (rise|up|higher)|counterfactual|stress/.test(s))return"whatif";
+  if(/replay|play.?back|timeline|step through|walk through/.test(s))return"replay";
   return"unknown";}
 async function dispatch(intent){
   if(["analytics","forecast","risks","agents","audit","calib"].includes(intent)){setView(intent);flash(intent==="calib"?"calibration":intent);speak(NARRATION[intent]);}
@@ -504,6 +526,7 @@ async function dispatch(intent){
   else if(intent==="reset"){await doReset();setView("decision");flash("portfolio");speak("Portfolio restored. Verified.");}
   else if(intent==="tamper"){await doTamper();}
   else if(intent==="whatif"){await doWhatIf();}
+  else if(intent==="replay"){startReplay();}
   else flash("didn't catch that");
 }
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition; let rec=null,listening=false;
@@ -515,6 +538,7 @@ addEventListener("keydown",e=>{
   const m={"1":"analytics","2":"forecast","3":"risks","4":"agents","5":"audit","6":"calib","0":"reset","t":"tamper","r":"reset"};
   if(e.key.toLowerCase()==="t")return dispatch("tamper");
   if(e.key.toLowerCase()==="w")return dispatch("whatif");
+  if(e.key.toLowerCase()==="p")return dispatch("replay");
   if(e.key.toLowerCase()==="r")return doReset().then(()=>{setView("decision");speak("Portfolio restored. Verified.");});
   if(e.key.toLowerCase()==="m"){ttsOn=!ttsOn;if(!ttsOn)speechSynthesis?.cancel();flash(ttsOn?"voice on":"voice muted");return;}
   if(e.key.toLowerCase()==="s"){stereo=!stereo;if(stereo&&view!=="analytics")setView("analytics");flash(stereo?"SBS stereo on (XREAL)":"flat");return;}
@@ -530,7 +554,10 @@ addEventListener("pointerup",()=>dragging=false);
 addEventListener("pointermove",e=>{if(!dragging)return;rot.y+=(e.clientX-lastXY[0])*0.01;rot.x+=(e.clientY-lastXY[1])*0.01;lastXY=[e.clientX,e.clientY];});
 
 // render loop
-function loop(){ if(view==="analytics")drawCloud(); if(view==="audit")drawAudit(); if(view==="calib")drawCalib(); if(view==="forecast")drawFan(); requestAnimationFrame(loop); }
+function loop(){
+  if(replay.on){replay.t=Math.min(1,(performance.now()-replay.start)/replay.dur); if(replay.t>=1){replay.on=false;replay.t=1;}}
+  if(view==="analytics")drawCloud(); if(view==="audit")drawAudit(); if(view==="calib")drawCalib(); if(view==="forecast")drawFan(); requestAnimationFrame(loop);
+}
 
 // boot
 (async function(){
@@ -544,7 +571,7 @@ function loop(){ if(view==="analytics")drawCloud(); if(view==="audit")drawAudit(
   if(qp.get("stereo")==="1")stereo=true;
   if(qp.has("shot")){const seq=(qp.get("shot")||"analytics").split(",");let d=300;for(const s of seq){setTimeout(()=>dispatch(s),d);d+=400;}}
 })();
-window.__spatialFinance={dispatch,seal,verify,doTamper,doReset,doWhatIf,get bundle(){return BUNDLE},get state(){return{view,tampered,whatif,verifyState}}};
+window.__spatialFinance={dispatch,seal,verify,doTamper,doReset,doWhatIf,startReplay,get bundle(){return BUNDLE},get state(){return{view,tampered,whatif,replay:replay.on,verifyState}}};
 </script>
 </body>
 </html>

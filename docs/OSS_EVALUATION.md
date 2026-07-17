@@ -28,15 +28,15 @@ first (license + security + alternative + decision), per governance discipline.
 - **Three-layer trust** (RECORD/SOURCE/ANALYSIS/DATA) + **tamper before/after diff** — `demos/spatial-finance` (the C2PA-insight UX + the "verified ≠ correct" honesty).
 - **Progressive-disclosure Decision Workspace** (agents are not the default scene) — already the demo's UX rule.
 - **BoE fan chart + calibration/Brier view** — the honest-forecast + governance framing.
+- **OTel GenAI/MCP adapter** (`packages/adapter-otel`, tested round-trip) — any instrumented agent's spans → signed Shadow evidence. [queue #1 ✓]
+- **What-if / counterfactual as a recorded, signed branch** — `demos/spatial-finance` (press W): forecast changes AND the change is appended to the chain, re-sealed, re-verified; the audit trace grows an amber branch. [queue #4 ✓]
 
 ## Next, worth building (ranked)
 
-1. **OTel GenAI adapter** (`packages/adapter-otel`) — spans → Shadow events; the biggest positioning upgrade (any agent → signed evidence).
+1. **Timeline replay** of the audit trace (scrub 00:00→end, events appear over time, parallel agent branches from `extensions.otel`, human-approval, downstream impact). Pure UI, autonomous. ← next
 2. **Source-map + click-claim-to-source** — a claim jumps to page/row/region (needs MarkItDown/OCR for real docs).
-3. **Timeline replay** of the audit trace (scrub 00:00→00:18, parallel agent branches, human-approval, downstream impact).
-4. **What-if / counterfactual** as a new *auditable* branch (interest-rate +1% → new forecast, recorded and signed).
-5. **OpenBB provider** behind the data interface (real market data).
-6. **Presenter / audience split** (wearer sees debug + next-scene; projection stays clean).
+3. **OpenBB provider** behind the data interface (real market data; install Alex-gated).
+4. **Presenter / audience split** (wearer sees debug + next-scene; projection stays clean).
 
 ## Meta
 
