@@ -8,10 +8,13 @@ nothing was silently changed. Offline, single file, no dependencies.
 ## Run
 
 Open `index.html` (double-click). Drive it by **voice** (hold Space, then say
-"show the analytics / forecast / risks / agent review / audit trail / verify")
-or **keyboard** (authoritative): `1` analytics · `2` forecast · `3` risks ·
-`4` agents · `5` audit · `0` home · `T` tamper · `R` reset · drag to rotate the
-cloud. Headless self-drive: `?shot=analytics` or `?shot=tamper`.
+"show the analytics / forecast / risks / agent review / audit trail / calibration
+/ what if rates rise / replay / verify") or **keyboard** (authoritative):
+`1` analytics · `2` forecast · `3` risks · `4` agents · `5` audit ·
+`6` calibration · `W` what-if · `P` replay · `T` tamper · `R` reset · `0` home ·
+`S` SBS stereo · `[` `]` eye-sep · `M` mute · drag to rotate the cloud. Headless
+self-drive: `?shot=analytics`, `?shot=tamper`, `?shot=whatif`, `?shot=replay`,
+or a chain `?shot=whatif,audit`.
 
 ## The views (progressive disclosure — the default scene stays clean)
 
@@ -35,11 +38,23 @@ cloud. Headless self-drive: `?shot=analytics` or `?shot=tamper`.
   not. This is the credibility view for a stats/quant audience.
 - **Risks / Agent Review** — expand only on command; each item shows source /
   produced-by / confidence.
-- **Audit trail** — the 6-node actor-shaped chain
-  (`User → Market data → Model → Council → Human → Signed`). `T` edits the
-  model's weights *after* signing → the real verifier flips `VERIFIED ✓` to
-  `✕ VERIFICATION FAILED · seq N`, the mutated node shows `HASH MISMATCH`, and
-  downstream nodes dim. `R` reset re-seals.
+- **Audit trail** — the actor-shaped chain
+  (`You → Data → Model → Council → Human → Signed`), rendered **from the actual
+  signed events** (no hardcoded node count — it grows when a branch is recorded).
+  `T` edits the model's weights *after* signing → the real verifier flips
+  `VERIFIED ✓` to `✕ VERIFICATION FAILED · seq N`, the mutated node shows
+  `HASH MISMATCH`, and downstream nodes dim. `R` reset re-seals.
+- **What-if** (key `W` / "what if rates rise 1%") — runs a counterfactual: the
+  forecast fan gains an amber rates+1% scenario (base +28% vs +41%, Okabe-Ito
+  safe) **and** the question + scenario tool + new forecast are appended to the
+  chain, re-sealed, and re-verified — still `VERIFIED ✓`, because a recorded
+  branch is legitimate, not a tamper. The audit trace grows three amber branch
+  nodes. The point: the analysis changed on command, and the change is *itself*
+  auditable.
+- **Replay** (key `P` / "replay") — plays the recorded run forward over a
+  synthetic 18-second timeline: each event lands in order, a playhead sweeps the
+  chain, future nodes stay dimmed, a clock counts `00:00 → 00:18`. Reinforces
+  "nothing added after the fact — watch it unfold in the order it happened."
 
 ## What's real vs mock
 
@@ -84,8 +99,10 @@ latency, embed, privacy) is confirmed with the Flow team.
 
 ## Next
 
-Wire `analyze()`/the data source to Orallexa or a live market feed; add the fan
-chart with real predictive intervals + a calibration/reliability panel; reflow
-the audit trail into the polished `demos/replay/3d` Audit Room for the immersive
-version; add TTS. Device: present on XREAL One Pro (flat/SBS); the native
-Beam Pro + Eye scan pipeline is Phase 2.
+Wire `analyze()`/the data source to Orallexa or a live market feed (OpenBB behind
+the provider boundary); **source-map** so a claim (e.g. "top 3 = 41% of book")
+clicks back to the exact positions/arithmetic that produced it; ingest OTel spans
+via `packages/adapter-otel` so a *real* agent run (not the fixture) becomes the
+replayed, signed chain; reflow the audit trail into the polished
+`demos/replay/3d` Audit Room for the immersive version. Device: present on
+XREAL One Pro (flat/SBS); the native Beam Pro + Eye scan pipeline is Phase 2.
