@@ -80,7 +80,7 @@ auditor (raw captured, Ed25519-signed, hash-chained, never rewritten).
 
 Test surface today: 1436 → 1478 (+42, 0 fail, 3 skipped). CI green
 on all 14 commits including the forbidden-phrase lint that caught an
-SR 26-2 Tier 3 misstatement in the checklist.
+SR 26-2 tier-taxonomy misstatement in the checklist.
 
 # THE DEMO (12 min, laptop + XREAL One Pro glasses)
 

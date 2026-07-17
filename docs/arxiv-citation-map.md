@@ -114,6 +114,48 @@ Shadow anchors:
 - Loredana Levitchi's BRD + Addenda regulatory triple aligns with the paper's empirical findings on what auditable ECOA testing requires
 - Use in academic positioning: this paper is the empirical anchor for "banks want auditable" — cite in IEEE VR 2027 abstract §2 Related Work
 
+### 11. From Agent Traces to Trust (the survey that leaves Shadow's exact gap open)
+**arXiv:2606.04990** — Wang, Zhang, Cai, Liu, Q. Sun, Z. Sun, Wu, Dong, Zheng, Yin, Zhu, 2026-06-03 (rev v4 2026-06-28)
+
+Quote: *"Final-answer accuracy alone cannot explain how an output was produced, which evidence supported each claim, whether tool calls were justified..."*
+
+Shadow relationship — **this is the canonical 2026 provenance survey, and it does not cover Shadow's layer**:
+- It systematizes evidence tracing + execution provenance for LLM agents but does **not** mention cryptographic attestation, signing, hash chains, or tamper-evidence (verified from the abstract, 2026-07-17).
+- Shadow ships precisely that missing layer: `packages/attest-core/` (Ed25519 + SHA-256 chain) + `packages/adapter-otel/` (any instrumented agent's traces → signed evidence).
+- Use in academic positioning: **IEEE VR 2027 + ICAIF Related Work §** — cite as the canonical provenance survey and state the cryptographic-attestation gap as Shadow's contribution.
+
+### 12. Governing Generative AI Across Financial Institutions
+**arXiv:2607.04103** — Mao, Lin, Kang, Wang, 2026-07-05
+
+Quote: *"Modern generative systems can synthesize large document collections, extract information from unstructured data, generate software and analytical code, create scenario narratives, support research workflows, and coordinate multi-step tasks."*
+
+Shadow relationship:
+- An application-oriented GenAI risk-control framework for financial institutions (banking, capital markets, insurance, wealth), organized around five capability patterns.
+- **Correction to earlier internal synthesis:** its abstract does **not** reference SR 26-2 (verified 2026-07-17). Cite it as a GenAI-in-finance governance framework, not as an "SR 26-2-compatible" one.
+- Use: ICAIF Related Work — someone else formalizing Shadow's positioning lane.
+
+### 13. A Survey on Immersive Cyber Situational Awareness Systems (M5 prior art)
+**arXiv:2408.07456** — Ahmad, Ullah, Jafri, 2024-08-14
+
+Quote: *"Immersive technologies, such as virtual reality, augmented reality, and mixed reality, are employed in the cybersecurity realm to create intuitive, engaging, and interactive cyber common operating pictures."*
+
+Shadow anchors:
+- Nearest prior art for the M5 XR Audit Room (`demos/replay/3d/`): immersive visualization of security/audit state, with a reference framework mapping immersive techniques to situational-awareness levels.
+- Use in academic positioning: **IEEE VR 2027 Related Work §** — the prior art the M5 audit-replay extends into cryptographic provenance.
+
+### 14. Collaborative Immersive Visualization & Analytics (CHI 2026, prior art for co-review)
+**arXiv:2602.02743** — Nafis, Li, Su, Chen, Han, 2026-02-02 (rev v2 2026-02-04), conditionally accepted CHI 2026
+
+Quote: *"Cross-disciplinary teams increasingly work with high-dimensional scientific datasets, yet fragmented toolchains and limited support for shared exploration hinder collaboration."*
+
+Shadow relationship:
+- Domain-expert-interview methodology (n=20) + design recommendations for collaborative immersive analytics — the closest prior art for the **dual-auditor co-review** extension (two auditors, two headsets, one signed log).
+- **Note:** the abstract does not itself argue "2D artifacts vs depth-encoding" (verified 2026-07-17) — do not attribute that specific claim to it. Cite it for the collaborative-analytics methodology + the barriers-to-multi-user-coordination findings.
+
+### Calibration citations — use with care
+- **P(True) / model self-consistency (Kadavath et al.):** do **not** cite uncritically. It has been reported to anti-correlate with correctness in some settings (high temperature / small models). If it appears in a calibration narrative, verify it against the specific setting first.
+- **Conformal prediction** belongs *next to* Brier, not instead of it. Brier + its Murphy 1973 decomposition (reliability − resolution + uncertainty) answers "are our stated probabilities calibrated?"; conformal adds distribution-free coverage ("this interval contains the truth ≥95% of the time") — the property an examiner actually wants. Shadow's Brier framing is more defensible than frontier calibration methods precisely because it is regulator-legible; add conformal as a second layer, do not replace Brier.
+
 ## Emerging category names Shadow can own
 
 Distilled from the papers above, these are the taxonomic labels Shadow should adopt in all outward positioning:

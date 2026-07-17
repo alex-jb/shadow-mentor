@@ -1,6 +1,6 @@
 ---
 title: Verifier structured-error format
-status: DRAFT — design frozen 2026-07-11, implementation scheduled 2026-07-17 (Thu, day after Wed demo)
+status: IMPLEMENTED 2026-07-13 — design frozen 2026-07-11. verifyBundle (packages/attest-core/session.js) returns {ok:false, error:{seq, reason, impact}} natively; demos/replay/tamper.js reads verify.error directly (the earlier adaptVerifierError shim was removed).
 depends_on: v3 M3 complete
 enables: v3 M5 replay demo (X5 caption pipeline)
 authors: Alex Ji + autonomous session 2026-07-11

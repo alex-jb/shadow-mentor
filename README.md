@@ -20,13 +20,13 @@
 
 **Status**: pre-1.0. Not audited. Not a compliance product — it produces evidence that supports a compliance narrative.
 
-**What Shadow proves, precisely.** Shadow attests **integrity**: the recorded events were not silently rewritten after the seal. It does **not** attest **content authenticity**: whether the agent's behavior at capture time was benign, prompt-injection-free, or policy-compliant. A green `✓ Bundle verified` means "this is the record that was signed" — not "this session was safe". The v3.1 roadmap adds optional injection-detection markers so an auditor can see which events were flagged as suspicious at capture (integrity + suspicion, honestly labeled — not integrity + a clean bill of health we can't give). See [`docs/THREAT_MODEL.md`](./docs/THREAT_MODEL.md) once written (P1) for the seven-class attack table.
+**What Shadow proves, precisely.** Shadow attests **integrity**: the recorded events were not silently rewritten after the seal. It does **not** attest **content authenticity**: whether the agent's behavior at capture time was benign, prompt-injection-free, or policy-compliant. A green `✓ Bundle verified` means "this is the record that was signed" — not "this session was safe". The v3.1 roadmap adds optional injection-detection markers so an auditor can see which events were flagged as suspicious at capture (integrity + suspicion, honestly labeled — not integrity + a clean bill of health we can't give). See [`docs/THREAT_MODEL.md`](./docs/THREAT_MODEL.md) for the seven-class attack table.
 
 **Zero telemetry.** Shadow does not phone home. No usage pings, no crash reports, no analytics — from either the library or the CLI verifiers. Verify by grepping the source: neither `shadow-attest-core` nor any CLI in `bin/` opens an outbound socket to a Shadow-controlled host. Security policy: [`SECURITY.md`](./SECURITY.md).
 
 <!-- readme-stats:begin -->
 **Version**: 2.0.3
-**Tests**: 1504/1507 passing (0 failing)
+**Tests**: 1552/1555 passing (0 failing)
 **Attestation signed fields**: 21 parameters, 14 append-only conditional bindings
 **Release tags**: 59
 <!-- readme-stats:end -->
@@ -53,7 +53,7 @@ The core primitives ship as [`shadow-attest-core`](https://www.npmjs.com/package
 npm install shadow-attest-core
 ```
 
-Includes all of M1 (evidence bundle) + M3 (external anchoring: RFC 3161 TSA + Sigstore Rekor + CA trust store) + M4 (offline verify) as of v2.0.0 (published 2026-07-11 from operator laptop; provenance-signed releases start at v2.0.1+ via the CI publish workflow).
+Includes all of M1 (evidence bundle) + M3 (external anchoring: RFC 3161 TSA + Sigstore Rekor + CA trust store) + M4 (offline verify). Current published version **2.1.0** (2026-07-17, from operator laptop — provenance to be added on a later version via the CI workflow). The OpenTelemetry adapter ships alongside as [`shadow-adapter-otel`](https://www.npmjs.com/package/shadow-adapter-otel) (`npm install shadow-adapter-otel`): map any instrumented agent's OTel GenAI/MCP spans onto signed evidence.
 
 ## v3 evidence bundle — flight recorder for AI agents
 
@@ -88,6 +88,8 @@ Verify a bundle three different ways:
 - **CLI** — `npm run verify:bundle -- <bundle.json> --public-key <public.pem>` (aka `node bin/shadow-verify.mjs`). CI-friendly exit codes: `0` verified, `1` failed, `2` usage, `3` I/O.
 - **GitHub Action** — [`.github/actions/shadow-verify`](./.github/actions/shadow-verify) composite action. Wire it into a PR workflow and any bundle change that breaks the chain fails the merge.
 
+**Verifiability as a badge.** Consumers can verify their own committed bundle in their own CI with the Action above and put a green *audit chain* badge on their README — they advertise their own credibility, and it turns red the moment a record is silently rewritten. Recipe (3-line workflow + badge, plus why a hosted URL-fetch badge is intentionally not shipped — SSRF): [`docs/wedge/verifiability-badge.md`](./docs/wedge/verifiability-badge.md).
+
 **v3 M1.2 acceptance criteria (all met):**
 
 - 10,000-event session seals + verifies in **69 ms** on an M-series MacBook (5 s target, 72× under)
@@ -114,7 +116,7 @@ Shadow does not claim to be a compliance product. It produces evidence that regu
 - **CFPB adverse-action AI guidance.** The CFPB's existing guidance on AI-generated adverse-action reasons — most recently reinforced in Circular 2026-03 (2026-05-05) — is the operative federal expectation for ML/AI-lender specificity.
 - **State fair-lending regimes.** New York, Massachusetts, California, Illinois, and New Jersey retain effects-based fair-lending regimes and coordinated state-AG activity against AI-underwriting disparate-impact. Massachusetts' 2025-07-10 $2.5M AI-underwriting settlement is the poster case. Federal deregulation does not touch these.
 - **Fair Housing Act.** FHA disparate-impact liability survives via private litigation for residential-mortgage secured credit, subject to HUD's evolving rulemaking posture.
-- **GDPR Article 22 + Schufa (C-634/21).** For EU-active institutions: the ECJ Schufa decision is enforceable today. Shadow's persona rationale layer and audit chain map to "meaningful information about the logic" and "human intervention" requirements. EU AI Act credit-scoring provisions were deferred to 2027-12-02 by the Digital Omnibus.
+- **GDPR Article 22 + Schufa (C-634/21).** For EU-active institutions: the ECJ Schufa decision is enforceable today. Shadow's persona rationale layer and audit chain map to "meaningful information about the logic" and "human intervention" requirements. The EU AI Act phases in obligations on different dates by system classification — this is specifically the Annex III(5)(b) credit-scoring provisions, deferred to 2027-12-02 by the Digital Omnibus; it is not a blanket "the AI Act is deferred," and exact dates depend on classification and may change.
 
 Shadow does not claim SR 26-2 applicability. The Fed/OCC/FDIC 2026-04-17 interagency model-risk guidance excludes deterministic rule-based processes from the definition of "model" and explicitly carves generative and agentic AI out of scope, though it directs the institution's own risk-management practices to govern them (SR 26-2 footnote 3). Shadow's verdict engine falls in the excluded rule-based class; the rationale layer falls in the carved-out generative-AI class. Interpret this as delegation to the institution, not a mandate for Shadow.
 
@@ -136,11 +138,15 @@ v3 evidence bundle (M2.3, shipped 2026-07-10):
 
 ## MCP integration
 
-Shadow ships a 9-tool MCP server (`mcp/server.js`) usable from Cursor, Claude Desktop, Zed, or any MCP client. See [`mcp/README.md`](./mcp/README.md).
+Shadow ships an 11-tool MCP server (`mcp/server.js`) usable from Cursor, Claude Desktop, Zed, or any MCP client. See [`mcp/README.md`](./mcp/README.md).
 
 ## Threat model
 
 Documented in [`docs/THREAT_MODEL.md`](./docs/THREAT_MODEL.md). Summary: Shadow's Ed25519 attestation defeats **external tampering** and **chain reordering / insertion / truncation**. It does **not** defeat a **bank insider with the private key**. If your threat model includes bank-side re-signing of history, you need an external timestamp anchor (RFC 3161 TSA or a public transparency log) on top of Shadow. Sigstore Rekor integration is on the v2.1 roadmap.
+
+## Vendor viability & third-party risk
+
+For a procurement / vendor-risk reviewer: [`docs/VENDOR_VIABILITY.md`](./docs/VENDOR_VIABILITY.md) answers the continuity, incident-notification, and viability questions the 2023 Interagency TPRM Guidance requires — including the central single-maintainer question. Short version: your evidence is verifiable **without** the vendor (offline verifier + public key, no phone-home), and MIT + a public repo make source continuity unconditional, so a bank can keep verifying its records even if development stops.
 
 ## What Shadow is not
 
@@ -148,6 +154,24 @@ Documented in [`docs/THREAT_MODEL.md`](./docs/THREAT_MODEL.md). Summary: Shadow'
 - Not a bank decision engine. Real bank loan origination uses a loan-origination system + credit models + human underwriters. Shadow attests. It does not decide.
 - Not SOC 2 audited. `docs/soc2-readiness.md` is a self-assessment readiness map, not an audit report.
 - Not designed to replace WORM logging + SIEM retention. Those handle chain-of-custody. Shadow adds a reason-code dictionary binding that WORM+SIEM cannot produce.
+
+## Compared to platform agent-governance (e.g. Microsoft's Agent Governance Toolkit)
+
+Microsoft open-sourced the [Agent Governance Toolkit](https://github.com/microsoft/agent-governance-toolkit) (MIT, April 2026, 9,500+ tests, backed by Microsoft, free): sub-0.1 ms policy enforcement, cryptographic agent identity (DIDs with Ed25519, "Agent Mesh"), a compliance module mapping to regulatory frameworks (EU AI Act, HIPAA, SOC 2), signed marketplace plugins, SLSA provenance — **and tamper-evident (Merkle) audit records of agent decisions.** It is a serious project covering the OWASP Agentic Top 10.
+
+So be honest about the overlap: Ed25519, framework mapping, signed artifacts, **and tamper-evident decision logs are all things a platform vendor now ships for free**, with distribution Shadow cannot match. Shadow's differentiator is therefore **not** "we also have signatures and a hash chain." It is three things a runtime-governance platform is not built to give:
+
+- **Portable, vendor-independent, offline verification.** A Shadow evidence bundle is a signed JSON file a third party verifies with only a public key — no Shadow service, no platform account, no network, from a clone or a USB stick, years later. The evidence outlives the tool and the vendor (see [`docs/VENDOR_VIABILITY.md`](./docs/VENDOR_VIABILITY.md)). A platform's audit records are strongest *inside* that platform.
+- **Banking decision semantics, not a generic policy grade.** The evidence carries what a regulated lending decision *means*: adverse-action reason codes bound into the signature (a post-hoc edit to the reasons a borrower was given breaks verification), rationale in Reg B / ECOA examiner language mapped to the exact citations (`docs/CITATION_MAP.md`, queryable), the reason-code dictionary version, human approval, and recorded agent disagreement. A horizontal grade against SOC 2 doesn't tell a bank examiner why a *specific* applicant was declined.
+- **It composes with the platform; it doesn't replace it.** The clean architecture is *both* — Microsoft governs what an agent is allowed to do at runtime; Shadow turns what happened into portable, examiner-ready banking evidence:
+
+```
+Microsoft Agent Governance Toolkit  →  Shadow adapter  →  portable banking decision evidence  →  auditor / examiner / bank customer
+  (runtime policy, identity,             (attest + bind      (offline-verifiable, vendor-
+   sandboxing, agent audit)               banking semantics)  independent, banking profile)
+```
+
+The defensible surface is **independent verification + banking decision semantics**, not the cryptographic primitives themselves — a vertical, not a platform feature, and unlikely to be something a horizontal platform builds.
 
 ## Legacy content
 

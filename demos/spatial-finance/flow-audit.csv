@@ -1,0 +1,7 @@
+seq,actor,event_type,produced_by,payload_hash_8,prev_hash_8,verification_status
+0,"User","prompt","human","6e3e6a67","aeebad4a","verified"
+1,"Market data","tool_call","tool","f6cf63e3","2278d496","verified"
+2,"Model","model_output","AI","860bee2d","d98d1f19","verified"
+3,"Council","tool_result","AI","556ac3cf","1e97b6e9","verified"
+4,"Human","human_approval","human","20ec2f38","2d7e05c7","verified"
+5,"Signed","session_end","system","d1abbfca","d93fc879","verified"

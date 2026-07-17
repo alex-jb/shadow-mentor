@@ -1,0 +1,10 @@
+[
+  { "n": 1, "name": "overview",              "cam": { "frame": "all" },                    "action": null },
+  { "n": 2, "name": "first file_write",      "cam": { "focusTool": "Edit", "dist": 2.2 },  "action": "focus" },
+  { "n": 3, "name": "shell_exec pair",       "cam": { "focusTool": "Bash", "dist": 2.6 },  "action": "focusPair" },
+  { "n": 4, "name": "security lens",         "cam": { "frame": "all" },                    "action": "lens:security" },
+  { "n": 5, "name": "tamper trigger",        "cam": { "focusTool": "Edit", "dist": 2.4 },  "action": "tamper" },
+  { "n": 6, "name": "pull-back full chain",  "cam": { "frame": "wide" },                   "action": "clearLens" },
+  { "n": 7, "name": "tampered card close-up","cam": { "focusTool": "Edit", "dist": 1.5 },  "action": "focusTampered" },
+  { "n": 8, "name": "trust badges",          "cam": { "frame": "badges" },                 "action": "trust" }
+]

@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="data:," />
+<title>Shadow · Spatial Finance</title>
+<style>
+  /* Shadow Spatial Finance — the 10-minute governance demo, per
+     Shadow_Spatial_Finance_ClaudeCode_Prompt_v2.pdf. Default scene shows
+     Decision + Risk + Evidence + Verification only; agents and the 3D audit
+     trace expand on command. 3D only where it earns it (risk-return cloud);
+     weights stay flat 2D. Colours = Okabe-Ito, category + redundant label.
+     Governance is the differentiator, not forecast accuracy. Offline, no deps. */
+  :root{
+    --bg:#0a0c10; --ink:#eef2f7; --dim:#8b95a8; --line:rgba(255,255,255,.09);
+    --panel:#12161d; --ok:#009E73; --warn:#E69F00; --bad:#D55E00; --sky:#56B4E9;
+    --blue:#0072B2; --pink:#CC79A7; --yellow:#F0E442;
+    --mono:"SF Mono","JetBrains Mono",ui-monospace,Menlo,monospace;
+    --sans:-apple-system,"SF Pro Display","Segoe UI",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--sans);overflow:hidden}
+  #stage{position:relative;height:100vh;width:100vw}
+  canvas{position:absolute;inset:0;display:none}
+  canvas.on{display:block}
+  /* top bar */
+  #top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;
+    padding:16px 26px;z-index:5;pointer-events:none}
+  #title{font-size:14px;font-weight:600;letter-spacing:.3px}
+  #title small{color:var(--dim);font-weight:400;margin-left:8px}
+  #trust{font-family:var(--mono);font-size:11px;text-align:right;line-height:1.55;background:rgba(18,22,29,.6);
+    border:1px solid var(--line);border-radius:8px;padding:8px 12px;min-width:210px}
+  #trust .tl{display:flex;justify-content:space-between;gap:16px}
+  #trust .k{color:#5a6272} #trust .v{color:var(--ink)} #trust .v.dim{color:var(--dim)}
+  #trust .v.ok{color:var(--ok)} #trust .v.bad{color:var(--bad)}
+  /* center decision */
+  #decision{position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);text-align:center;z-index:4;width:min(760px,92vw)}
+  #decision .head{font-size:34px;font-weight:700;letter-spacing:.5px}
+  #decision .gain{font-size:20px;color:var(--ok);margin-top:2px}
+  #decision .conf{color:var(--dim);font-family:var(--mono);font-size:13px;margin-top:2px}
+  #decision .oneliner{color:var(--ink);font-size:14px;margin:14px auto 0;max-width:560px;line-height:1.5}
+  #weights{display:flex;gap:3px;margin:22px auto 0;max-width:640px;height:34px;border-radius:6px;overflow:hidden}
+  #weights .w{position:relative;display:flex;align-items:flex-end;justify-content:center;font-family:var(--mono);font-size:9.5px;padding-bottom:2px;color:#04121b;min-width:2px}
+  #metrics{display:flex;justify-content:center;gap:34px;margin-top:20px;font-family:var(--mono);font-size:13px}
+  #metrics b{color:var(--ink)} #metrics span{color:var(--dim)}
+  /* side/overlay panels */
+  .panel{position:absolute;z-index:6;background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:16px 18px;display:none;max-height:70vh;overflow:auto}
+  .panel.on{display:block}
+  #risks{top:96px;right:26px;width:320px}
+  #agents{top:96px;left:26px;width:320px}
+  #forecast{bottom:120px;left:50%;transform:translateX(-50%);width:min(680px,92vw)}
+  .panel h3{margin:0 0 10px;font-size:12px;font-family:var(--mono);color:var(--dim);letter-spacing:.5px;text-transform:uppercase}
+  .row{font-size:13px;line-height:1.5;padding:7px 0;border-bottom:1px solid var(--line)}
+  .row .lvl{font-family:var(--mono);font-size:11px;padding:1px 7px;border-radius:999px;float:right}
+  .lvl.HIGH{background:rgba(213,94,0,.18);color:var(--bad)} .lvl.MED{background:rgba(230,159,0,.18);color:var(--warn)}
+  .lvl.LOW{background:rgba(0,158,115,.18);color:var(--ok)}
+  .row small{color:var(--dim);font-family:var(--mono);font-size:10.5px}
+  /* fan/scenario */
+  .fan{display:grid;grid-template-columns:70px 1fr;gap:6px 12px;font-family:var(--mono);font-size:12px;align-items:center}
+  .fan .bar{height:12px;border-radius:3px}
+  /* audit strip (bottom, default small) */
+  #auditstrip{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:4;
+    font-family:var(--mono);font-size:12px;color:var(--dim);letter-spacing:1px;pointer-events:none}
+  /* voice + hint */
+  #voice{position:absolute;bottom:22px;left:26px;z-index:6;font-family:var(--mono);font-size:12px;color:var(--dim);display:flex;align-items:center;gap:8px}
+  #mic{width:9px;height:9px;border-radius:50%;background:#444}
+  #mic.hot{background:var(--bad);box-shadow:0 0 8px var(--bad)}
+  #hint{position:absolute;bottom:22px;right:26px;z-index:6;font-family:var(--mono);font-size:10.5px;color:#5a6272;text-align:right;line-height:1.6}
+  #flash{position:absolute;top:64px;left:50%;transform:translateX(-50%);z-index:7;font-family:var(--mono);font-size:12px;
+    color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 16px;opacity:0;transition:opacity .2s}
+  #tdiff{position:absolute;top:120px;left:50%;transform:translateX(-50%);z-index:7;display:none;
+    font-family:var(--mono);font-size:12.5px;background:var(--panel);border:1px solid rgba(213,94,0,.5);border-radius:8px;padding:12px 18px;line-height:1.7}
+  #tdiff .o{color:var(--dim)} #tdiff .n{color:var(--bad)} #tdiff .lbl{color:#5a6272}
+  #srcpop{position:absolute;left:26px;bottom:64px;z-index:8;display:none;max-width:420px;
+    font-family:var(--mono);font-size:12px;background:var(--panel);border:1px solid rgba(86,180,233,.55);border-radius:8px;padding:12px 16px;line-height:1.7}
+  #srcpop .claim{color:var(--ink);font-weight:600} #srcpop .math{color:#56B4E9} #srcpop .ev{color:#5a6272}
+  #srcpop .note{color:var(--dim)} #srcpop .x{float:right;color:#5a6272;cursor:pointer;margin-left:12px}
+  .row.clk{cursor:pointer} .row.clk:hover{background:rgba(86,180,233,.08)} #metrics b.clk{cursor:pointer;text-decoration:underline dotted rgba(86,180,233,.6)}
+  /* presenter rail — wearer-only cues; hidden by default so the projection stays clean */
+  #present{position:absolute;left:0;top:0;bottom:0;width:250px;z-index:9;display:none;overflow:auto;
+    background:linear-gradient(90deg,rgba(10,12,16,.94),rgba(10,12,16,.72));border-right:1px solid var(--line);
+    font-family:var(--mono);font-size:11.5px;padding:18px 14px;line-height:1.5}
+  #present h4{color:#5a6272;font-weight:600;margin:0 0 10px;letter-spacing:.08em;text-transform:uppercase;font-size:10px}
+  #present .b{color:var(--dim);padding:5px 8px;border-radius:5px;margin-bottom:2px;display:flex;gap:8px}
+  #present .b .k{color:#5a6272;min-width:34px} #present .b.on{background:rgba(86,180,233,.14);color:var(--ink)}
+  #present .b.on .k{color:#56B4E9} #present .nx{margin-top:12px;color:#56B4E9} #present .foot{margin-top:14px;color:#5a6272;font-size:10px}
+  .legend{position:absolute;top:96px;left:26px;z-index:6;font-family:var(--mono);font-size:11px;color:var(--dim);display:none}
+  .legend.on{display:block} .legend b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="cloud"></canvas>
+  <canvas id="audit"></canvas>
+  <canvas id="calib"></canvas>
+  <canvas id="fan"></canvas>
+
+  <div id="top">
+    <div id="title">Shadow · Spatial Finance <small>AI Analytics Governance</small></div>
+    <div id="trust">
+      <div class="tl"><span class="k">RECORD</span><span class="v" id="t-record">VERIFIED ✓</span></div>
+      <div class="tl"><span class="k">SOURCE</span><span class="v dim" id="t-source">self-declared</span></div>
+      <div class="tl"><span class="k">ANALYSIS</span><span class="v dim" id="t-analysis">84% confidence</span></div>
+      <div class="tl"><span class="k">DATA</span><span class="v dim" id="t-data">fixture</span></div>
+    </div>
+  </div>
+
+  <div id="decision">
+    <div class="head" id="d-head">Balanced Portfolio · 5-year</div>
+    <div class="gain" id="d-gain">Projected +41%</div>
+    <div class="conf" id="d-conf">Confidence 84% · risk-parity + shrinkage, fractional-Kelly tilt, 1/N benchmark</div>
+    <div class="oneliner" id="d-one"></div>
+    <div id="weights"></div>
+    <div id="metrics" id="d-metrics"></div>
+  </div>
+
+  <div class="panel" id="risks"><h3>Risks</h3><div id="risks-body"></div></div>
+  <div class="panel" id="agents"><h3>Agent Review</h3><div id="agents-body"></div></div>
+  <div class="panel" id="forecast"><h3>5-year forecast · scenarios (not a point estimate)</h3><div id="forecast-body"></div></div>
+  <div class="legend" id="legend"></div>
+
+  <div id="auditstrip">USER → DATA → MODEL → COUNCIL → HUMAN → SIGNED</div>
+  <div id="voice"><span id="mic"></span><span id="voice-txt">hold Space to talk · voice needs network</span></div>
+  <div id="hint">1 analytics · 2 forecast · 3 risks · 4 agents · 5 audit · 6 calibration<br>W what-if · P replay · T tamper · R reset · 0 home · S SBS stereo · G presenter · M mute · drag</div>
+  <div id="flash"></div>
+  <div id="tdiff"></div>
+  <div id="srcpop"></div>
+  <div id="present"></div>
+</div>
+
+<script type="module">
+// ─────────────────────────────────────────────────────────────
+// DEMO DATA (unified contract). Weights sum to 1.0. Risk-parity base +
+// capped fractional-Kelly tilt; risk_contribution ~equal (the ERC property);
+// 1/N = 0.10 benchmark. Forecasts are scenarios, never point estimates.
+// ─────────────────────────────────────────────────────────────
+const C = { hold:"#009E73", trim:"#E69F00", short:"#D55E00" };
+const PORTFOLIO = {
+  horizon_years:5, projected_gain_pct:41, confidence:0.84,
+  one_liner:"AI leaders overweight via a capped conviction tilt, hedged by lower-beta names; concentration risk elevated. We compete on auditability and calibration, not on beating the market.",
+  positions:[
+    {t:"NVDA",name:"NVIDIA", w:.16, base:.10, tilt:.06, rc:.13, risk:"HIGH", vol:.42, ret:.62, conf:.72, action:"hold", bull:.95,bear:-.28},
+    {t:"MSFT",name:"Microsoft",w:.13, base:.13, tilt:0, rc:.09, risk:"MED", vol:.26, ret:.34, conf:.80, action:"hold", bull:.55,bear:-.12},
+    {t:"AAPL",name:"Apple",   w:.12, base:.13, tilt:-.01,rc:.09, risk:"MED", vol:.24, ret:.30, conf:.81, action:"hold", bull:.50,bear:-.10},
+    {t:"GOOGL",name:"Alphabet",w:.11,base:.11, tilt:0, rc:.10, risk:"MED", vol:.28, ret:.36, conf:.78, action:"hold", bull:.58,bear:-.14},
+    {t:"AMZN",name:"Amazon",  w:.10, base:.10, tilt:0, rc:.10, risk:"MED", vol:.30, ret:.40, conf:.75, action:"hold", bull:.66,bear:-.18},
+    {t:"META",name:"Meta",    w:.09, base:.09, tilt:0, rc:.10, risk:"MED", vol:.33, ret:.44, conf:.73, action:"hold", bull:.72,bear:-.22},
+    {t:"AVGO",name:"Broadcom",w:.08, base:.08, tilt:0, rc:.10, risk:"HIGH",vol:.36, ret:.50, conf:.70, action:"hold", bull:.80,bear:-.24},
+    {t:"RKLB",name:"Rocket Lab (SpaceX proxy)",w:.07,base:.05,tilt:.02,rc:.11,risk:"HIGH",vol:.58,ret:.88,conf:.55,action:"hold",bull:1.6,bear:-.45},
+    {t:"PLTR",name:"Palantir", w:.07, base:.06, tilt:.01,rc:.10, risk:"HIGH",vol:.52, ret:.70, conf:.60, action:"trim", bull:1.2,bear:-.4},
+    {t:"TSLA",name:"Tesla",   w:.07, base:.09, tilt:-.02,rc:.10, risk:"HIGH",vol:.55, ret:.55, conf:.52, action:"trim", bull:1.1,bear:-.5},
+  ],
+  risks:[
+    {label:"Concentration (top-3 = 41%)", lvl:"HIGH", by:"Risk Agent", conf:.88, src:"holdings", upd:"18:42"},
+    {label:"AI-capex cycle drawdown",     lvl:"MED",  by:"Macro Agent",conf:.71, src:"market_data_api", upd:"18:41"},
+    {label:"Regulatory (antitrust)",      lvl:"LOW",  by:"Compliance Agent",conf:.66,src:"news", upd:"18:40"},
+  ],
+  agents:[
+    {name:"Fundamentals", stance:"bullish",  conf:.86, note:"AI-leader revenue momentum intact"},
+    {name:"Risk",         stance:"cautious",  conf:.88, note:"concentration + high-vol tail names"},
+    {name:"Macro",        stance:"neutral",   conf:.70, note:"rate path balanced, capex cycle mid"},
+    {name:"Compliance",   stance:"no issue",  conf:.92, note:"no adverse-action / suitability flag"},
+    {name:"Technical",    stance:"positive",  conf:.74, note:"momentum positive, breadth narrowing"},
+  ],
+};
+const CONSENSUS_DISSENT = "Risk Agent dissents: top-3 concentration at 41% exceeds the 35% comfort band — the conviction tilt is the reason.";
+
+// Source-map: every claim → the exact positions + arithmetic + the signed event
+// that produced it. This is "no claim without a traceable source" — click a risk
+// (or the top-3 metric) and the cloud highlights the backing names, with the math
+// shown and the producing audit event named. Derived from PORTFOLIO, not asserted.
+function sumW(...ts){return ts.reduce((a,t)=>a+(PORTFOLIO.positions.find(p=>p.t===t)?.w||0),0);}
+const SOURCE={
+  concentration:{tickers:["NVDA","MSFT","AAPL"], event:"model_output (weights) · seq 2",
+    math:()=>{const ts=["NVDA","MSFT","AAPL"];const parts=ts.map(t=>`${t} ${(PORTFOLIO.positions.find(p=>p.t===t).w*100)|0}%`);
+      return `${parts.join(" + ")} = ${(sumW(...ts)*100)|0}% (top-3 by weight) · comfort band 35%`;},
+    note:"Concentration is a fact about the weights the model output — recomputed from them, not a separate number."},
+  capex:{tickers:["NVDA","AVGO","AMZN","MSFT"], event:"tool_result · market_data_api",
+    math:()=>`AI-capex-exposed names ${(sumW("NVDA","AVGO","AMZN","MSFT")*100)|0}% of book · drawdown risk if the capex cycle turns`,
+    note:"Sector exposure, summed from the positions tagged to the AI-capex cycle."},
+  regulatory:{tickers:["GOOGL","META","AMZN"], event:"tool_result · news",
+    math:()=>`antitrust-exposed names ${(sumW("GOOGL","META","AMZN")*100)|0}% · low likelihood, high-tail`,
+    note:"Names with active antitrust exposure, from the news source."},
+};
+const RISK_KEY=["concentration","capex","regulatory"]; // PORTFOLIO.risks index → SOURCE key
+
+// Calibration track record: for past probabilistic calls, predicted prob vs.
+// realized frequency, binned. This is the claim we CAN keep at any horizon —
+// unlike a return forecast. Points near the diagonal = well-calibrated.
+const CALIB = {
+  bins:[ // {p: predicted mid, o: observed freq, n: count}
+    {p:.1,o:.08,n:52},{p:.2,o:.17,n:64},{p:.3,o:.31,n:71},{p:.4,o:.36,n:80},
+    {p:.5,o:.52,n:96},{p:.6,o:.58,n:83},{p:.7,o:.73,n:70},{p:.8,o:.79,n:58},{p:.9,o:.87,n:41},
+  ],
+  brier:0.142, rel:0.006, res:0.089, unc:0.225, // Murphy 1973: Brier = REL - RES + UNC
+};
+
+// ─── Ed25519 seal + verify (round-trip tested vs verify-browser.js) ───
+function canon(v){if(v===null||typeof v!=="object")return JSON.stringify(v);if(Array.isArray(v))return "["+v.map(canon).join(",")+"]";const k=Object.keys(v).sort();return "{"+k.map(k=>JSON.stringify(k)+":"+canon(v[k])).join(",")+"}";}
+function cb(v){return new TextEncoder().encode(canon(v));}
+async function sha(b){return[...new Uint8Array(await crypto.subtle.digest("SHA-256",b))].map(x=>x.toString(16).padStart(2,"0")).join("");}
+function shape(e){const{payload_ref,...r}=e;return r;}
+function h2b(h){const o=new Uint8Array(h.length/2);for(let i=0;i<o.length;i++)o[i]=parseInt(h.substr(i*2,2),16);return o;}
+async function own(e){return sha(cb(shape(e)));}
+let KEYS=null; async function keys(){if(KEYS)return KEYS;const kp=await crypto.subtle.generateKey({name:"Ed25519"},true,["sign","verify"]);KEYS={priv:kp.privateKey,pub:kp.publicKey};return KEYS;}
+let whatif=false; // a recorded counterfactual branch (rates +1%)
+async function seal(){
+  const k=await keys();
+  const header={session_id:"spatial-finance",session_started_at_utc:"2026-07-16T00:00:00.000Z",session_ended_at_utc:null,agent:{name:"orallexa-shadow",version:"0.1",identity_ref:null},models:[{model_id:"council-v1",provider:null,sampling_params_hash:null}],environment_fingerprint:{os:"browser",node_version:"n/a",hostname_hash:null},schema_versions:{bundle:1,attest_core:"2.0.0"}};
+  const ev=[];let prev=await sha(cb({...header,session_ended_at_utc:null})),seq=0;
+  const push=async(t,a,p)=>{const ph=await sha(cb(p));const e={seq:seq++,ts_utc:header.session_started_at_utc,event_type:t,actor:a,payload_hash:ph,payload_ref:`sha256:${ph}`,prev_hash:prev,extensions:{}};ev.push(e);prev=await own(e);};
+  await push("prompt","user",{q:"balanced 5y portfolio, top-10"});           // USER
+  await push("tool_call","tool",{tool:"market_data_api"});                    // DATA
+  await push("model_output","agent",{recommendation:"balanced growth", weights:PORTFOLIO.positions.map(p=>[p.t,p.w])}); // MODEL
+  await push("tool_result","agent",{council:PORTFOLIO.agents.map(a=>[a.name,a.stance])}); // COUNCIL
+  await push("human_approval","user",{approved:true});                        // HUMAN
+  if(whatif){                                                                 // WHAT-IF BRANCH (recorded + signed)
+    await push("prompt","user",{q:"what if rates rise 1%"});
+    await push("tool_call","tool",{tool:"scenario_engine",shock:"policy_rate_+100bps"});
+    await push("model_output","agent",{scenario:"rates_+1pct",base_return:0.28,note:"duration + equity-risk-premium repricing"});
+  }
+  await push("session_end","system",{event_count:ev.length+1});               // SIGNED
+  const hs=[];for(const e of ev)hs.push(await own(e));
+  const cc=new Uint8Array(hs.length*32);hs.forEach((h,i)=>cc.set(h2b(h),i*32));
+  const root=await sha(cc);
+  const sig=await crypto.subtle.sign({name:"Ed25519"},k.priv,h2b(root));
+  return {header,events:ev,batch_root:root,sig:new Uint8Array(sig)};
+}
+async function verify(bundle){
+  // walk chain the same way verify-browser.js does
+  let prev=await sha(cb({...bundle.header,session_ended_at_utc:null}));
+  for(let i=0;i<bundle.events.length;i++){const e=bundle.events[i];
+    if(e.seq!==i)return{ok:false,seq:i,reason:"seq_gap"};
+    if(e.prev_hash!==prev)return{ok:false,seq:i,reason:"prev_hash_mismatch"};
+    prev=await own(e);}
+  const hs=[];for(const e of bundle.events)hs.push(await own(e));
+  const cc=new Uint8Array(hs.length*32);hs.forEach((h,i)=>cc.set(h2b(h),i*32));
+  if(await sha(cc)!==bundle.batch_root)return{ok:false,seq:null,reason:"batch_root_mismatch"};
+  const k=await keys();const ok=await crypto.subtle.verify({name:"Ed25519"},k.pub,bundle.sig,h2b(bundle.batch_root));
+  return ok?{ok:true}:{ok:false,seq:null,reason:"signature_verification_failed"};
+}
+
+// ─── audit trace model (the 6-node chain) ───
+const ACTORS=["User","Market data","Model","Council","Human","Signed"];
+const SHAPES=["circle","hex","diamond","poly","square","shield"];
+let BUNDLE=null, tampered=false, verifyState={ok:true};
+
+// ─── state + DOM ───
+const $=s=>document.querySelector(s);
+let view="decision", rot={x:-0.5,y:0.6}, dragging=false, lastXY=null;
+let stereo=false, eyeSep=parseFloat(localStorage.getItem("sf.eyeSep"))||26; // px disparity, tuned on glasses with [ ]
+let replay={on:false,t:1,start:0,dur:5600}; // t=0..1 reveal cursor over the audit chain (synthetic 18s run)
+let highlight=new Set();                    // source-map focus: tickers backing the clicked claim
+let present=false, activeIntent="reset";    // presenter rail (wearer-only cues); which beat we're on
+// The presenter's running order — mirrors docs/spatial-finance-presenter-script.md.
+const BEATS=[
+  {k:"0 / R", intent:"reset",     label:"Portfolio — home"},
+  {k:"1",     intent:"analytics", label:"Risk-return cloud (3D)"},
+  {k:"2",     intent:"forecast",  label:"Forecast bands"},
+  {k:"6",     intent:"calib",     label:"Calibration / Brier"},
+  {k:"4",     intent:"agents",    label:"Agent review"},
+  {k:"3 / clk",intent:"trace",    label:"Trace a claim → source"},
+  {k:"5",     intent:"audit",     label:"Audit trail"},
+  {k:"T",     intent:"tamper",    label:"Tamper → chain breaks"},
+  {k:"W",     intent:"whatif",    label:"What-if → signed branch"},
+  {k:"P",     intent:"replay",    label:"Replay the run"},
+];
+function renderPresent(){
+  const p=$("#present"); if(!present){p.style.display="none";return;} p.style.display="block";
+  let cur=BEATS.findIndex(b=>b.intent===activeIntent); if(cur<0)cur=0;
+  const nx=BEATS[cur+1];
+  p.innerHTML=`<h4>Presenter · you are here</h4>`+
+    BEATS.map((b,i)=>`<div class="b ${i===cur?"on":""}"><span class="k">${b.k}</span><span>${b.label}</span></div>`).join("")+
+    (nx?`<div class="nx">▶ next: press ${nx.k.split(" ")[0]} — ${nx.label}</div>`:`<div class="nx">▶ end — press R to reset</div>`)+
+    `<div class="foot">verify ${verifyState.ok?"OK":"FAILED"} · ${(BUNDLE&&BUNDLE.events.length)||0} events · G hides this rail<br>audience/projection never sees it</div>`;
+}
+const cloud=$("#cloud"), audit=$("#audit"), calib=$("#calib"), fan=$("#fan");
+const ctxC=cloud.getContext("2d"), ctxA=audit.getContext("2d"), ctxK=calib.getContext("2d"), ctxF=fan.getContext("2d");
+function resize(){for(const cv of [cloud,audit,calib,fan]){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;}}
+addEventListener("resize",resize); resize();
+
+function fillDecision(){
+  $("#d-one").textContent=PORTFOLIO.one_liner;
+  const wc=$("#weights"); wc.innerHTML="";
+  PORTFOLIO.positions.forEach(p=>{const d=document.createElement("div");d.className="w";
+    d.style.flex=p.w; d.style.background=C[p.action]; d.title=`${p.t} ${(p.w*100).toFixed(0)}% ${p.action}`;
+    d.textContent=p.w>=.09?p.t:""; wc.appendChild(d);});
+  $("#metrics").innerHTML=`<span>names</span> <b>10</b>   <span>top-3</span> <b class="clk" data-src="concentration">41%</b>   <span>method</span> <b>risk-parity + Kelly tilt</b>   <span>benchmark</span> <b>1/N</b>`;
+  $("#risks-body").innerHTML=PORTFOLIO.risks.map((r,i)=>`<div class="row clk" data-src="${RISK_KEY[i]}"><span class="lvl ${r.lvl}">${r.lvl}</span>${r.label} <span style="color:#56B4E9">↳ trace</span><br><small>${r.by} · conf ${(r.conf*100)|0}% · ${r.src} · ${r.upd}</small></div>`).join("");
+  $("#agents-body").innerHTML=PORTFOLIO.agents.map(a=>`<div class="row">${a.name} — <b>${a.stance}</b> <small>(${(a.conf*100)|0}%)</small><br><small>${a.note}</small></div>`).join("")+`<div class="row" style="border:0;color:var(--warn)"><small>${CONSENSUS_DISSENT}</small></div>`;
+  $("#forecast-body").innerHTML=`<div class="fan">`+PORTFOLIO.positions.slice(0,6).map(p=>{
+    const lo=p.bear, hi=p.bull, span=hi-lo, base=p.ret;
+    const L=(x)=>((x-lo)/span*100);
+    return `<div>${p.t}</div><div style="position:relative;height:16px"><div class="bar" style="position:absolute;left:${L(lo)}%;width:${L(hi)-L(lo)}%;background:linear-gradient(90deg,rgba(213,94,0,.5),rgba(0,158,115,.5))"></div><div style="position:absolute;left:${L(base)}%;top:-2px;width:2px;height:20px;background:#fff" title="base ${(base*100)|0}%"></div></div>`;
+  }).join("")+`</div><div style="color:var(--dim);font-size:11px;margin-top:10px">Bull/base/bear over 5y — a scenario band, not a point estimate. Single-stock 5y point returns are close to noise (Welch-Goyal 2008); we show the range + who produced it, and stake credibility on the audit trail, not the number.</div>`;
+}
+
+// ─── trust status (record ≠ correct — the honest three-layer badge) ───
+function renderTrust(){
+  const r=$("#t-record");
+  if(verifyState.ok){r.textContent="VERIFIED ✓";r.className="v ok";}
+  else{r.textContent="FAILED ✕ · seq "+(verifyState.seq??"—");r.className="v bad";}
+  // SOURCE / ANALYSIS / DATA stay informational: a green RECORD means the record
+  // wasn't altered after signing — NOT that the analysis is correct, safe, or
+  // compliant. Source is self-declared (no C2PA yet); analysis is a confidence,
+  // not a truth; data is a fixture.
+}
+function showDiff(){ // before/after of the edited value — makes tamper concrete
+  $("#tdiff").innerHTML=`<span class="lbl">Model output · NVDA weight</span><br>`+
+    `<span class="o">original  0.16 (16%)</span><br><span class="n">modified  0.24 (24%) — edited after signing</span><br>`+
+    `<span class="lbl">seq 3 · verification FAILED · downstream unverifiable</span>`;
+  $("#tdiff").style.display="block";
+}
+function hideDiff(){ $("#tdiff").style.display="none"; }
+
+// ─── 3D risk-return cloud (canvas 2.5D, rotatable, optional SBS stereo) ───
+function project(p, cx, cyc, s, eye){ // p:{x,y,z} in [-1,1] → screen; eye = px disparity
+  const c=Math.cos(rot.x),sx=Math.sin(rot.x),cy=Math.cos(rot.y),sy=Math.sin(rot.y);
+  let x1=p.x*cy - p.z*sy, z1=p.x*sy + p.z*cy;   // yaw
+  let y1=p.y*c - z1*sx, z2=p.y*sx + z1*c;        // pitch
+  const d=3.2, f=d/(d - z2);
+  return {sx:cx + x1*s*f + eye*f, sy:cyc - y1*s*f, depth:z2, scale:f}; // eye*f = depth-scaled disparity
+}
+function drawCloudEye(cx, s, eye){
+  const font=getComputedStyle(document.body).fontFamily;
+  const cyc=innerHeight/2;
+  ctxC.strokeStyle="rgba(255,255,255,.08)";ctxC.lineWidth=1;
+  for(let i=-1;i<=1;i+=.25){
+    let a=project({x:i,y:-1,z:-1},cx,cyc,s,eye),b=project({x:i,y:-1,z:1},cx,cyc,s,eye);ctxC.beginPath();ctxC.moveTo(a.sx,a.sy);ctxC.lineTo(b.sx,b.sy);ctxC.stroke();
+    let cc=project({x:-1,y:-1,z:i},cx,cyc,s,eye),dd=project({x:1,y:-1,z:i},cx,cyc,s,eye);ctxC.beginPath();ctxC.moveTo(cc.sx,cc.sy);ctxC.lineTo(dd.sx,dd.sy);ctxC.stroke();
+  }
+  ctxC.fillStyle="#8b95a8";ctxC.font="12px "+font;
+  const put=(txt,pp)=>{const q=project(pp,cx,cyc,s,eye);ctxC.fillText(txt,q.sx,q.sy);};
+  put("← risk →",{x:0,y:-1.12,z:1}); put("↑ 5y return",{x:-1.15,y:0,z:1}); put("depth = confidence",{x:1,y:-1.12,z:0});
+  const pts=PORTFOLIO.positions.map(p=>{
+    const P={x:(p.vol-0.35)/0.3, y:(p.ret-0.4)/0.7, z:(p.conf-0.7)/0.25, p};
+    P.proj=project(P,cx,cyc,s,eye); return P;
+  }).sort((a,b)=>a.proj.depth-b.proj.depth);
+  for(const P of pts){
+    const {sx,sy,scale}=P.proj, r=(6+P.p.w*90)*scale;
+    const hot = highlight.size===0 || highlight.has(P.p.t);  // source-map focus
+    const foot=project({x:(P.p.vol-0.35)/0.3, y:-1, z:(P.p.conf-0.7)/0.25},cx,cyc,s,eye);
+    ctxC.strokeStyle=hot?"rgba(255,255,255,.15)":"rgba(255,255,255,.05)";ctxC.beginPath();ctxC.moveTo(sx,sy);ctxC.lineTo(foot.sx,foot.sy);ctxC.stroke();
+    ctxC.fillStyle=C[P.p.action];ctxC.globalAlpha=hot?.9:.14;ctxC.beginPath();ctxC.arc(sx,sy,Math.max(3,r),0,7);ctxC.fill();ctxC.globalAlpha=1;
+    if(hot&&highlight.size>0){ctxC.strokeStyle="#56B4E9";ctxC.lineWidth=2;ctxC.beginPath();ctxC.arc(sx,sy,Math.max(3,r)+3,0,7);ctxC.stroke();}
+    ctxC.globalAlpha=hot?1:.22;
+    ctxC.fillStyle="#eef2f7";ctxC.font=`${11*scale+3}px `+font;ctxC.fillText(`${P.p.t} ${(P.p.w*100)|0}%`, sx+r+3, sy+3);
+    ctxC.globalAlpha=1;
+  }
+}
+function drawCloud(){
+  const dpr=devicePixelRatio; ctxC.save(); ctxC.scale(dpr,dpr);
+  ctxC.clearRect(0,0,innerWidth,innerHeight);
+  if(stereo){
+    const hw=innerWidth/2, s=Math.min(hw,innerHeight)*0.30;
+    ctxC.save();ctxC.beginPath();ctxC.rect(0,0,hw,innerHeight);ctxC.clip();drawCloudEye(hw/2,s,-eyeSep);ctxC.restore();
+    ctxC.save();ctxC.beginPath();ctxC.rect(hw,0,hw,innerHeight);ctxC.clip();drawCloudEye(hw+hw/2,s,+eyeSep);ctxC.restore();
+    ctxC.strokeStyle="rgba(255,255,255,.12)";ctxC.beginPath();ctxC.moveTo(hw,0);ctxC.lineTo(hw,innerHeight);ctxC.stroke();
+  } else {
+    drawCloudEye(innerWidth/2, Math.min(innerWidth,innerHeight)*0.34, 0);
+  }
+  ctxC.restore();
+}
+
+// ─── audit trace (canvas, actor-shaped nodes) ───
+function nodeShape(ctx,x,y,r,shape,color){
+  ctx.fillStyle=color;ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();
+  if(shape==="circle")ctx.arc(x,y,r,0,7);
+  else if(shape==="square")ctx.rect(x-r,y-r,2*r,2*r);
+  else{const n={hex:6,diamond:4,poly:5,shield:3}[shape]||6, rot=shape==="diamond"?Math.PI/4:-Math.PI/2;
+    for(let i=0;i<n;i++){const a=rot+i/n*7;const px=x+r*Math.cos(a),py=y+r*Math.sin(a);i?ctx.lineTo(px,py):ctx.moveTo(px,py);}ctx.closePath();}
+  ctx.fill();
+}
+// per-event glyph — shape + label derived from the actual event, so the chain
+// grows when a what-if branch is recorded (no hardcoded 6-node assumption).
+const GLYPH={prompt:["circle","You","you"],tool_call:["hex","Data","tool"],model_output:["diamond","Model","AI"],
+  tool_result:["poly","Council","AI"],human_approval:["square","Human","human"],session_end:["shield","Signed","sig"]};
+function drawAudit(){
+  const dpr=devicePixelRatio; ctxA.save(); ctxA.scale(dpr,dpr);
+  ctxA.clearRect(0,0,innerWidth,innerHeight);
+  const evs=(BUNDLE&&BUNDLE.events)||[];
+  const n=evs.length||6, y=innerHeight/2, x0=innerWidth*0.10, dx=(innerWidth*0.80)/Math.max(1,n-1);
+  const r=n>7?13:18, font=getComputedStyle(document.body).fontFamily;
+  const brokenFrom = tampered ? (verifyState.seq ?? 99) : 99;
+  // the what-if branch = the 3 events inserted before session_end when whatif is on
+  const wfStart = whatif ? n-4 : 999, wfEnd = whatif ? n-2 : 998;
+  const wfLabel={ [wfStart]:"What-if", [wfStart+1]:"Scenario", [wfStart+2]:"Forecast" };
+  const cursor = replay.on ? replay.t : 1;                  // reveal fraction 0..1
+  const nodeT = i => n>1 ? i/(n-1) : 1;                     // each event's position in the run
+  const RUN_SEC = 18, mmss = f => { const s=Math.round(f*RUN_SEC); return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0"); };
+  for(let i=0;i<n;i++){
+    const x=x0+i*dx, ev=evs[i]||{event_type:SHAPES[i]&&["prompt","tool_call","model_output","tool_result","human_approval","session_end"][i]};
+    const g=GLYPH[ev.event_type]||["circle","·","·"];
+    const broken=i>=brokenFrom, site=tampered&&i===2;      // model_output is the mutation site
+    const inWf = i>=wfStart && i<=wfEnd;
+    const future = replay.on && nodeT(i) > cursor + 1e-6;   // not yet reached by the playhead
+    const just = replay.on && !future && nodeT(i) > cursor - 0.06; // the node landing right now
+    const col = site||broken ? "#D55E00" : inWf ? "#E69F00" : "#009E73";
+    if(i>0){const px=x0+(i-1)*dx; const linkFuture=replay.on&&nodeT(i)>cursor+1e-6;
+      ctxA.strokeStyle=linkFuture?"rgba(255,255,255,.07)":(i>=brokenFrom)?"#D55E00":(inWf?"rgba(230,159,0,.5)":"rgba(255,255,255,.22)");ctxA.lineWidth=2;
+      ctxA.beginPath();ctxA.moveTo(px+r+4,y);ctxA.lineTo(x-r-4,y);ctxA.stroke();}
+    ctxA.globalAlpha=future?0.12:(broken?0.45:1);
+    nodeShape(ctxA,x,y,just?r+3:r,g[0],col);               // pop the landing node
+    ctxA.globalAlpha=future?0.2:1;
+    ctxA.fillStyle="#eef2f7";ctxA.font="12px "+font;ctxA.textAlign="center";
+    ctxA.fillText(wfLabel[i]||g[1],x,y+r+22);
+    ctxA.fillStyle="#8b95a8";ctxA.font="10px "+font;
+    ctxA.fillText(inWf?"branch":g[2],x,y-r-12);
+    ctxA.globalAlpha=1;
+    if(site&&!future){ctxA.fillStyle="#D55E00";ctxA.font="11px "+font;ctxA.fillText("HASH MISMATCH",x,y-r-28);}
+  }
+  if(replay.on){                                            // playhead + time readout
+    const px=x0+cursor*(n-1)*dx;
+    ctxA.strokeStyle="rgba(86,180,233,.8)";ctxA.lineWidth=2;ctxA.beginPath();ctxA.moveTo(px,y-r-40);ctxA.lineTo(px,y+r+40);ctxA.stroke();
+    ctxA.fillStyle="#56B4E9";ctxA.font="12px "+font;ctxA.textAlign="center";
+    ctxA.fillText("▶ replaying run · "+mmss(cursor)+" / "+mmss(1),innerWidth/2,y+r+72);
+  } else if(whatif){ctxA.fillStyle="#E69F00";ctxA.font="12px "+font;ctxA.textAlign="center";
+    ctxA.fillText("amber = what-if branch, recorded and signed — still verifies",innerWidth/2,y+r+52);}
+  ctxA.restore();
+}
+
+// ─── calibration / reliability diagram ───
+function drawCalib(){
+  const dpr=devicePixelRatio; ctxK.save(); ctxK.scale(dpr,dpr);
+  ctxK.clearRect(0,0,innerWidth,innerHeight);
+  const S=Math.min(innerWidth,innerHeight)*0.52, ox=innerWidth/2-S*0.62, oy=innerHeight/2+S/2;
+  const X=p=>ox+p*S, Y=o=>oy-o*S;
+  const font=getComputedStyle(document.body).fontFamily;
+  // frame + grid
+  ctxK.strokeStyle="rgba(255,255,255,.12)";ctxK.lineWidth=1;
+  for(let i=0;i<=1.0001;i+=.25){ctxK.beginPath();ctxK.moveTo(X(i),Y(0));ctxK.lineTo(X(i),Y(1));ctxK.stroke();
+    ctxK.beginPath();ctxK.moveTo(X(0),Y(i));ctxK.lineTo(X(1),Y(i));ctxK.stroke();}
+  // perfect-calibration diagonal (dashed)
+  ctxK.setLineDash([5,5]);ctxK.strokeStyle="rgba(255,255,255,.4)";ctxK.beginPath();ctxK.moveTo(X(0),Y(0));ctxK.lineTo(X(1),Y(1));ctxK.stroke();ctxK.setLineDash([]);
+  // reliability curve
+  ctxK.strokeStyle="#56B4E9";ctxK.lineWidth=2;ctxK.beginPath();
+  CALIB.bins.forEach((b,i)=>{i?ctxK.lineTo(X(b.p),Y(b.o)):ctxK.moveTo(X(b.p),Y(b.o));});ctxK.stroke();
+  CALIB.bins.forEach(b=>{ctxK.fillStyle="#0072B2";ctxK.beginPath();ctxK.arc(X(b.p),Y(b.o),3+b.n/22,0,7);ctxK.fill();});
+  // labels
+  ctxK.fillStyle="#8b95a8";ctxK.font="13px "+font;ctxK.textAlign="center";
+  ctxK.fillText("predicted probability",X(.5),Y(0)+34);
+  ctxK.save();ctxK.translate(X(0)-38,Y(.5));ctxK.rotate(-Math.PI/2);ctxK.fillText("observed frequency",0,0);ctxK.restore();
+  ctxK.fillStyle="#eef2f7";ctxK.textAlign="left";ctxK.font="13px "+font;
+  ctxK.fillText("Calibration — do our stated probabilities match reality?",X(0),Y(1)-24);
+  // Brier + decomposition + honest caption on the right
+  const rx=X(1)+40, ry=Y(1)+20; ctxK.textAlign="left";
+  ctxK.fillStyle="#eef2f7";ctxK.font="600 15px "+font;ctxK.fillText(`Brier score  ${CALIB.brier.toFixed(3)}`,rx,ry);
+  ctxK.fillStyle="#8b95a8";ctxK.font="12px "+font;
+  ctxK.fillText(`= reliability ${CALIB.rel.toFixed(3)} − resolution ${CALIB.res.toFixed(3)}`,rx,ry+22);
+  ctxK.fillText(`  + uncertainty ${CALIB.unc.toFixed(3)}   (Murphy 1973)`,rx,ry+40);
+  ctxK.fillStyle="#009E73";ctxK.fillText(`low reliability term = well-calibrated`,rx,ry+66);
+  ctxK.fillStyle="#E69F00";ctxK.fillText(`illustrative — synthetic bins (n≈600), not a live audited history`,rx,ry+84);
+  const cap=["This is the claim we CAN keep at any horizon:","when we say 70%, it happens ~70% of the time.","We compete here — on calibration and","auditability — not on beating the market","on a 5-year point forecast (nobody can)."];
+  ctxK.fillStyle="#8b95a8";ctxK.font="12px "+font;cap.forEach((l,i)=>ctxK.fillText(l,rx,ry+100+i*18));
+  ctxK.restore();
+}
+
+// ─── forecast fan chart (Bank-of-England style: widening bands, no bold median) ───
+function drawFan(){
+  const dpr=devicePixelRatio; ctxF.save(); ctxF.scale(dpr,dpr);
+  ctxF.clearRect(0,0,innerWidth,innerHeight);
+  const font=getComputedStyle(document.body).fontFamily;
+  const W=Math.min(innerWidth*0.6,760), H=Math.min(innerHeight*0.5,380);
+  const ox=innerWidth/2-W/2, oy=innerHeight/2+H/2, yMin=-0.6, yMax=1.0;
+  const X=y=>ox+(y/5)*W, Y=r=>oy-((r-yMin)/(yMax-yMin))*H;
+  const med=y=>0.41*(y/5);                         // portfolio median path → +41% at y5
+  const band=(y,k)=>k*0.24*Math.sqrt(y);           // widens ~sqrt(time)
+  // grid + zero line
+  ctxF.strokeStyle="rgba(255,255,255,.10)";ctxF.lineWidth=1;
+  for(let r=-0.5;r<=1.001;r+=0.25){ctxF.beginPath();ctxF.moveTo(X(0),Y(r));ctxF.lineTo(X(5),Y(r));ctxF.stroke();
+    ctxF.fillStyle="#5a6272";ctxF.font="11px "+font;ctxF.textAlign="right";ctxF.fillText((r*100|0)+"%",X(0)-8,Y(r)+3);}
+  ctxF.strokeStyle="rgba(255,255,255,.35)";ctxF.beginPath();ctxF.moveTo(X(0),Y(0));ctxF.lineTo(X(5),Y(0));ctxF.stroke();
+  // bands (widest first)
+  const steps=[...Array(51).keys()].map(i=>i/10);
+  [[2.3,.10],[1.5,.16],[0.8,.24]].forEach(([k,alpha])=>{
+    ctxF.beginPath();
+    steps.forEach((y,i)=>{const p=[X(y),Y(med(y)+band(y,k))];i?ctxF.lineTo(...p):ctxF.moveTo(...p);});
+    for(let i=steps.length-1;i>=0;i--){const y=steps[i];ctxF.lineTo(X(y),Y(med(y)-band(y,k)));}
+    ctxF.closePath();ctxF.fillStyle=`rgba(0,158,115,${alpha})`;ctxF.fill();
+  });
+  // subtle median (not privileged)
+  ctxF.strokeStyle="rgba(255,255,255,.5)";ctxF.setLineDash([4,4]);ctxF.lineWidth=1.5;ctxF.beginPath();
+  steps.forEach((y,i)=>{const p=[X(y),Y(med(y))];i?ctxF.lineTo(...p):ctxF.moveTo(...p);});ctxF.stroke();ctxF.setLineDash([]);
+  // labels
+  ctxF.fillStyle="#8b95a8";ctxF.font="12px "+font;ctxF.textAlign="center";
+  for(let y=0;y<=5;y++)ctxF.fillText("Y"+y,X(y),Y(yMin)+22);
+  ctxF.fillStyle="#eef2f7";ctxF.textAlign="left";ctxF.font="14px "+font;
+  ctxF.fillText("Portfolio 5-year return — a fan of outcomes, not a point",X(0),Y(yMax)-18);
+  ctxF.fillStyle="#8b95a8";ctxF.font="12px "+font;
+  ctxF.fillText("30 / 60 / 90% predictive bands (Bank-of-England style). The band is the message,",X(0),Y(yMin)+48);
+  ctxF.fillText("not the dashed median — single-stock 5-year point returns are close to noise (Welch-Goyal 2008).",X(0),Y(yMin)+66);
+  // what-if overlay: rates +1% scenario (Okabe-Ito amber, colorblind-safe), lower median + its own band
+  if(whatif){
+    const med2=y=>0.28*(y/5);
+    [[1.5,.10],[0.8,.18]].forEach(([k,alpha])=>{
+      ctxF.beginPath();
+      steps.forEach((y,i)=>{const p=[X(y),Y(med2(y)+band(y,k))];i?ctxF.lineTo(...p):ctxF.moveTo(...p);});
+      for(let i=steps.length-1;i>=0;i--){const y=steps[i];ctxF.lineTo(X(y),Y(med2(y)-band(y,k)));}
+      ctxF.closePath();ctxF.fillStyle=`rgba(230,159,0,${alpha})`;ctxF.fill();
+    });
+    ctxF.strokeStyle="rgba(230,159,0,.85)";ctxF.setLineDash([6,3]);ctxF.lineWidth=1.5;ctxF.beginPath();
+    steps.forEach((y,i)=>{const p=[X(y),Y(med2(y))];i?ctxF.lineTo(...p):ctxF.moveTo(...p);});ctxF.stroke();ctxF.setLineDash([]);
+    ctxF.fillStyle="#E69F00";ctxF.font="13px "+font;ctxF.textAlign="left";
+    ctxF.fillText("what-if: policy rate +1% → base +28% (was +41%) — recorded as a signed branch",X(0),Y(yMax)+2);
+  }
+  ctxF.restore();
+}
+
+// ─── view switching (progressive disclosure) ───
+function setView(v){
+  view=v;
+  cloud.classList.toggle("on",v==="analytics");
+  audit.classList.toggle("on",v==="audit");
+  calib.classList.toggle("on",v==="calib");
+  fan.classList.toggle("on",v==="forecast");
+  $("#legend").classList.toggle("on",v==="analytics");
+  $("#risks").classList.toggle("on",v==="risks");
+  $("#agents").classList.toggle("on",v==="agents");
+  $("#decision").style.display=(v==="decision")?"block":"none";
+  $("#auditstrip").style.opacity=(v==="audit")?0:1;
+  if(v==="analytics")$("#legend").innerHTML="<b>size</b> = weight · <b>color</b> = hold/trim/short · <b>X</b> risk · <b>Y</b> 5y return · <b>Z</b> confidence · drag to rotate";
+  renderPresent();
+}
+function flash(t){const f=$("#flash");f.textContent=t;f.style.opacity=1;clearTimeout(flash._t);flash._t=setTimeout(()=>f.style.opacity=0,1800);}
+
+// ─── voice OUT (TTS) — the JARVIS answer, offline via Web Speech Synthesis ───
+let ttsOn=true;
+function speak(t){ if(!ttsOn||!window.speechSynthesis||!t)return; try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=1.06;u.pitch=1;speechSynthesis.speak(u);}catch{} }
+const NARRATION={
+  analytics:"Here are the ten names, placed by risk and five-year return. Size is portfolio weight; orange means trim.",
+  forecast:"Five-year scenarios — bull, base, and bear. These are ranges, not point forecasts; a single stock's five-year return is close to noise.",
+  risks:"Three risks. The top one is concentration — the top three names are forty-one percent of the book.",
+  agents:"The council. Fundamentals bullish, risk cautious, compliance clear. The dissent is concentration.",
+  audit:"The audit trail. User, market data, model, council, human, signed. Every step is recorded and hash-chained.",
+  calib:"Calibration. When we say seventy percent, it happens about seventy percent of the time. We compete on calibration and auditability, not on beating the market.",
+  whatif:"What if rates rise one percent. The base case falls from plus forty-one to plus twenty-eight percent. And notice — the question and the new forecast are recorded as a signed branch. The analysis changed, and the change is itself auditable.",
+  replay:"Replaying the run. Each step lands in the order it happened — you asked, the model pulled market data, produced a recommendation, the council reviewed, a human approved, and it was signed. Nothing is added after the fact.",
+};
+
+async function doTamper(){
+  if(!BUNDLE||tampered)return;
+  activeIntent="tamper";
+  BUNDLE.events[2].payload_hash=BUNDLE.events[2].payload_hash.slice(0,-1)+"0"; // edit the Model weights after signing
+  tampered=true; verifyState=await verify(BUNDLE);
+  renderTrust(); showDiff();
+  setView("audit"); flash("weight edited after signing — chain broken at seq "+(verifyState.seq??"—"));
+  speak("The model's weights were edited after signing. Verification failed at sequence "+(verifyState.seq??"")+". The chain caught it.");
+}
+async function doReset(){
+  activeIntent="reset"; whatif=false; replay.on=false; replay.t=1; clearTrace();
+  BUNDLE=await seal(); tampered=false; verifyState=await verify(BUNDLE);
+  renderTrust(); hideDiff();
+}
+// source-map: trace a claim back to the positions + arithmetic + signed event.
+function traceClaim(key){
+  const s=SOURCE[key]; if(!s)return;
+  activeIntent="trace";
+  highlight=new Set(s.tickers);
+  setView("analytics");
+  const claim=({concentration:"Concentration risk — top-3 = 41%",capex:"AI-capex cycle drawdown risk",regulatory:"Regulatory / antitrust risk"})[key]||key;
+  $("#srcpop").innerHTML=`<span class="x" onclick="__spatialFinance.clearTrace()">✕</span>`+
+    `<span class="claim">${claim}</span><br><span class="math">${s.math()}</span><br>`+
+    `<span class="ev">produced by ${s.event} · in the signed chain</span><br><span class="note">${s.note}</span>`;
+  $("#srcpop").style.display="block";
+  flash("traced: "+[...highlight].join(" · "));
+  speak("Tracing that claim. The highlighted names are what it's computed from. "+s.math().replace(/%/g," percent").replace(/·.*/,""));
+}
+function clearTrace(){ highlight=new Set(); $("#srcpop").style.display="none"; }
+// timeline replay: play the recorded run forward, events landing over time.
+function startReplay(){
+  activeIntent="replay"; setView("audit");
+  replay.on=true; replay.t=0; replay.start=performance.now();
+  flash("replaying the run — every step, in the order it happened");
+  speak(NARRATION.replay);
+}
+// what-if: run a counterfactual AND record it as a new signed, verifiable branch.
+async function doWhatIf(){
+  if(tampered)await doReset();          // start from a clean, verified base
+  activeIntent="whatif"; whatif=true;
+  BUNDLE=await seal();                  // re-seal: the what-if events are now in the signed chain
+  verifyState=await verify(BUNDLE);     // still ok — a recorded branch is legitimate, not a tamper
+  renderTrust();
+  setView("forecast"); flash("what-if: rates +1% → base +28% · recorded as signed branch ("+BUNDLE.events.length+" events, verified)");
+  speak(NARRATION.whatif);
+}
+
+// ─── voice (6 intents) + keyboard (authoritative) ───
+function parseIntent(s){s=(s||"").toLowerCase();
+  if(/analytic|cloud|3d|risk.?return/.test(s))return"analytics";
+  if(/forecast|scenario|bull|bear/.test(s))return"forecast";
+  if(/risk/.test(s))return"risks";
+  if(/agent|review|council|why/.test(s))return"agents";
+  if(/audit|trail|trace|provenance/.test(s))return"audit";
+  if(/calibrat|reliab|brier/.test(s))return"calib";
+  if(/verify|verif/.test(s))return"verify";
+  if(/reset|home|portfolio/.test(s))return"reset";
+  if(/tamper|break|edit/.test(s))return"tamper";
+  if(/what.?if|rates? (rise|up|higher)|counterfactual|stress/.test(s))return"whatif";
+  if(/replay|play.?back|timeline|step through|walk through/.test(s))return"replay";
+  if(/trace|source|where.*(come|from)|concentration/.test(s))return"trace";
+  return"unknown";}
+async function dispatch(intent){
+  if(BEATS.some(b=>b.intent===intent))activeIntent=intent;
+  if(["analytics","forecast","risks","agents","audit","calib"].includes(intent)){setView(intent);flash(intent==="calib"?"calibration":intent);speak(NARRATION[intent]);}
+  else if(intent==="verify"){const v=await verify(BUNDLE);const m=v.ok?"Signature valid. Self-signed, chain intact.":"Verification failed. "+v.reason;flash(v.ok?"signature valid · SELF_SIGNED":"verify FAILED · "+v.reason);speak(m);}
+  else if(intent==="reset"){await doReset();setView("decision");flash("portfolio");speak("Portfolio restored. Verified.");}
+  else if(intent==="tamper"){await doTamper();}
+  else if(intent==="whatif"){await doWhatIf();}
+  else if(intent==="replay"){startReplay();}
+  else if(intent==="trace"){traceClaim("concentration");}
+  else flash("didn't catch that");
+}
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition; let rec=null,listening=false;
+if(SR){rec=new SR();rec.lang="en-US";rec.interimResults=false;
+  rec.onresult=e=>{const t=e.results[e.results.length-1][0].transcript;$("#voice-txt").textContent=`"${t}"`;dispatch(parseIntent(t));};
+  rec.onend=()=>{listening=false;$("#mic").classList.remove("hot");};}
+addEventListener("keydown",e=>{
+  if(e.code==="Space"&&SR&&!listening){e.preventDefault();try{rec.start();listening=true;$("#mic").classList.add("hot");$("#voice-txt").textContent="listening…";}catch{}return;}
+  const m={"1":"analytics","2":"forecast","3":"risks","4":"agents","5":"audit","6":"calib","0":"reset","t":"tamper","r":"reset"};
+  if(e.key.toLowerCase()==="t")return dispatch("tamper");
+  if(e.key.toLowerCase()==="w")return dispatch("whatif");
+  if(e.key.toLowerCase()==="p")return dispatch("replay");
+  if(e.key.toLowerCase()==="r")return doReset().then(()=>{setView("decision");speak("Portfolio restored. Verified.");});
+  if(e.key.toLowerCase()==="g"){present=!present;renderPresent();flash(present?"presenter rail on (audience never sees it)":"presenter rail off");return;}
+  if(e.key.toLowerCase()==="m"){ttsOn=!ttsOn;if(!ttsOn)speechSynthesis?.cancel();flash(ttsOn?"voice on":"voice muted");return;}
+  if(e.key.toLowerCase()==="s"){stereo=!stereo;if(stereo&&view!=="analytics")setView("analytics");flash(stereo?"SBS stereo on (XREAL)":"flat");return;}
+  if(e.key==="["){eyeSep=Math.max(0,eyeSep-3);localStorage.setItem("sf.eyeSep",eyeSep);flash("eye-sep "+eyeSep+"px");return;}
+  if(e.key==="]"){eyeSep+=3;localStorage.setItem("sf.eyeSep",eyeSep);flash("eye-sep "+eyeSep+"px");return;}
+  if(m[e.key])dispatch(m[e.key]);
+});
+addEventListener("keyup",e=>{if(e.code==="Space"&&listening){try{rec.stop();}catch{}}});
+
+// click a claim (risk row or the top-3 metric) → trace it to its source
+addEventListener("click",e=>{const el=e.target.closest("[data-src]");if(el)traceClaim(el.getAttribute("data-src"));});
+
+// drag to rotate the cloud
+cloud.addEventListener("pointerdown",e=>{dragging=true;lastXY=[e.clientX,e.clientY];});
+addEventListener("pointerup",()=>dragging=false);
+addEventListener("pointermove",e=>{if(!dragging)return;rot.y+=(e.clientX-lastXY[0])*0.01;rot.x+=(e.clientY-lastXY[1])*0.01;lastXY=[e.clientX,e.clientY];});
+
+// render loop
+function loop(){
+  if(replay.on){replay.t=Math.min(1,(performance.now()-replay.start)/replay.dur); if(replay.t>=1){replay.on=false;replay.t=1;}}
+  if(view==="analytics")drawCloud(); if(view==="audit")drawAudit(); if(view==="calib")drawCalib(); if(view==="forecast")drawFan(); requestAnimationFrame(loop);
+}
+
+// boot
+(async function(){
+  fillDecision();
+  BUNDLE=await seal(); verifyState=await verify(BUNDLE);
+  renderTrust();
+  setView("decision");
+  loop();
+  // self-drive for headless verification
+  const qp=new URLSearchParams(location.search);
+  if(qp.get("stereo")==="1")stereo=true;
+  if(qp.get("present")==="1"){present=true;renderPresent();}
+  if(qp.has("shot")){const seq=(qp.get("shot")||"analytics").split(",");let d=300;for(const s of seq){setTimeout(()=>dispatch(s),d);d+=400;}}
+})();
+window.__spatialFinance={dispatch,seal,verify,doTamper,doReset,doWhatIf,startReplay,traceClaim,clearTrace,togglePresent:()=>{present=!present;renderPresent();},get bundle(){return BUNDLE},get state(){return{view,tampered,whatif,replay:replay.on,present,activeIntent,highlight:[...highlight],verifyState}}};
+</script>
+</body>
+</html>

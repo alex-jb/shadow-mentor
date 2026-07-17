@@ -1,5 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": null,
-  "outputDirectory": "."
+  "outputDirectory": ".",
+  "rewrites": [
+    { "source": "/.well-known/shadow-attestation", "destination": "/api/attestation-info" },
+    { "source": "/.well-known/shadow-attestation.json", "destination": "/api/attestation-info" }
+  ]
 }

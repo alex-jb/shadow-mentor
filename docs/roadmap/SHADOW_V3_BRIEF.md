@@ -47,7 +47,7 @@ Priority order matters: the Claude Code adapter is the launch wedge.
 - Map: tool invocations → `tool_call`/`tool_result`; file edits → `file_write` with diff hash; bash → `shell_exec` with command + exit code; user prompts → `user_message` (payload hashed, content stored locally only).
 - Acceptance: record a real Claude Code session that edits 3 files and runs tests; verify the bundle; tamper with one recorded file-diff payload; verifier pinpoints it.
 
-### M2.2 OpenTelemetry GenAI adapter (`@shadow/adapter-otel`)
+### M2.2 OpenTelemetry GenAI adapter (`shadow-adapter-otel`)
 - A minimal OTLP/HTTP receiver (or processor plugin) that consumes GenAI semantic-convention spans and emits evidence events. This makes every LangChain/LlamaIndex/agent-SDK app already instrumented with OTel a zero-code-change source.
 - Document explicitly: OTel span → evidence event field mapping; what is lost (OTel is mutable telemetry; we add the integrity layer).
 

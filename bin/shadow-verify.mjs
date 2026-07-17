@@ -17,7 +17,7 @@
 
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { verifyBundle } from "../packages/attest-core/session.js";
+import { verifyBundle } from "shadow-attest-core/session";
 
 const USAGE = `Usage: shadow-verify <bundle.json> --public-key <public.pem> [--json] [--check-anchors <mode>] [--ca-trust <path>]
 
@@ -37,21 +37,28 @@ Options:
                            implies "signature verifies against the embedded cert" but
                            the cert's authority is unproven. With this, the chain is
                            validated to a caller-supplied root.
+  --profile <name>         After verifying integrity, check the bundle against an
+                           evidence profile and print a conformance report. Known:
+                           "banking-v1" (spec/banking-evidence-profile-v1.json) —
+                           does this credit-decision record contain the examiner-
+                           required evidence slots, correctly bound + tamper-evident?
   -h, --help               Print this message.
 
 Exit codes:
-  0  bundle verified
+  0  bundle verified (and, if --profile given, conformant)
   1  verification failed
   2  usage error
-  3  I/O or parse error`;
+  3  I/O or parse error
+  4  verified, but the requested --profile is non-conformant`;
 
 function parseArgs(argv) {
-  const out = { bundle: null, publicKey: null, json: false, checkAnchors: false, caTrust: null };
+  const out = { bundle: null, publicKey: null, json: false, checkAnchors: false, caTrust: null, profile: null };
   const rest = argv.slice(2);
   for (let i = 0; i < rest.length; i++) {
     const a = rest[i];
     if (a === "-h" || a === "--help") return { ...out, help: true };
     if (a === "--json") out.json = true;
+    else if (a === "--profile") out.profile = rest[++i];
     else if (a === "--public-key") out.publicKey = rest[++i];
     else if (a === "--ca-trust") out.caTrust = rest[++i];
     else if (a === "--check-anchors") {
@@ -131,6 +138,21 @@ const result = verifyBundle(bundle, {
   ...(caTrustStorePem ? { caTrustStorePem } : {}),
 });
 
+// Optional evidence-profile conformance (e.g. --profile banking-v1). Exit codes:
+//   integrity failure (result.ok=false) → 1 (dominates)
+//   integrity ok but profile non-conformant → 4
+let profileReport = null;
+if (args.profile) {
+  if (args.profile === "banking-v1") {
+    const { checkBankingProfileV1 } = await import("../lib/enforce-banking-profile.js");
+    profileReport = checkBankingProfileV1(bundle, { verified: result });
+  } else {
+    process.stderr.write(`shadow-verify: unknown --profile "${args.profile}" (known: banking-v1)\n`);
+    process.exit(2);
+  }
+}
+const finalExit = !result.ok ? 1 : (profileReport && !profileReport.pass ? 4 : 0);
+
 if (args.json) {
   const payload = {
     ok: result.ok,
@@ -145,9 +167,10 @@ if (args.json) {
     key_id: bundle?.signatures?.[0]?.key_id ?? null,
     trust_level: result.trustLevel ?? null,
     anchors: result.anchors ?? null,
+    ...(profileReport ? { profile: profileReport } : {}),
   };
   process.stdout.write(JSON.stringify(payload) + "\n");
-  process.exit(result.ok ? 0 : 1);
+  process.exit(finalExit);
 }
 
 if (result.ok) {
@@ -181,7 +204,16 @@ if (result.ok) {
     `  trust      : ${trust}${trustNote ? ` — ${trustNote}` : ""}\n` +
     anchorsLine,
   );
-  process.exit(0);
+  if (profileReport) {
+    const icon = (s) => s === "present" ? "✓" : s === "missing" ? "✗" : "·";
+    process.stdout.write(
+      `\nEvidence profile: ${profileReport.profile} — ${profileReport.pass ? "CONFORMS" : "NON-CONFORMANT"} ` +
+      `(coverage ${profileReport.coverage_pct}%${profileReport.adverse === true ? ", adverse" : profileReport.adverse === false ? ", approved" : ""})\n` +
+      profileReport.fields.map((f) => `  ${icon(f.status)} ${f.status.padEnd(8)} ${f.id.padEnd(28)} ${f.detail}`).join("\n") + "\n" +
+      (profileReport.missing_required.length ? `  required missing: ${profileReport.missing_required.join(", ")}\n` : ""),
+    );
+  }
+  process.exit(finalExit);
 }
 
 // M5 verifier-error-format port: render the {seq, reason, impact} triple.

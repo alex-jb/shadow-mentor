@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<link rel="icon" href="data:," /><!-- silence the file:// favicon fetch -->
+<title>Shadow · The Audit Room</title>
+<style>
+  /* The scene is everything. The only DOM is a fatal-error div and a mode
+     splash (design principle 7) — no HUD, no overlays, so SBS stereo is
+     never broken. Pure black page so optical see-through stays transparent. */
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #000; }
+  canvas { display: block; }
+  #splash {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    font: 600 13px/1 ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: 3px;
+    color: #E8E8E8; opacity: 0; transition: opacity .35s ease; pointer-events: none;
+    text-shadow: 0 0 1px rgba(0,0,0,.9);
+  }
+  #fatal {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    display: none; max-width: 60ch; text-align: center;
+    font: 500 14px/1.5 ui-monospace, Menlo, monospace; color: #FF4A4A;
+    background: #000; padding: 18px 22px; border: 1px solid #FF4A4A; border-radius: 8px;
+  }
+</style>
+</head>
+<body>
+  <div id="splash"></div>
+  <div id="fatal"></div>
+  <!-- One self-contained IIFE (three + app + real verifier + inlined demo
+       data), built by build.mjs. Classic script so it loads from file://
+       with no module CORS, no importmap, no server. -->
+  <script src="./dist/audit-room.js"></script>
+</body>
+</html>

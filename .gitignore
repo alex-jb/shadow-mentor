@@ -13,3 +13,6 @@ python/dist/
 
 # v3 M4 verify.html demo fixtures — regenerate with scripts/gen-verify-html-fixture.mjs
 verify-fixtures/
+
+# M5 XR study — generated trial stimuli + fresh keys (freeze per study run)
+demos/replay/3d/study/trials/

@@ -33,6 +33,9 @@ import { PERSONA_PROMPTS, SCENARIO_CONTEXTS } from "../lib/prompts.js";
 import { TRACEABILITY } from "../lib/traceability.js";
 import { ADVERSE_ACTION_CODES, AA_SOURCES } from "../lib/schemas/adverse-action.js";
 import { verifyAttestation, SIGNATURE_MODES } from "../lib/attestation.js";
+import { verifyBundle } from "../packages/attest-core/session.js";
+import { checkBankingProfileV1 } from "../lib/enforce-banking-profile.js";
+import { buildExaminerPacket, renderPacketMarkdown } from "../lib/evidence-packet.js";
 import { adverseImpactRatio, standardizedMeanDifference, segmentedAIR } from "../lib/disparity/index.js";
 import { createResponse, isEnvelope } from "./response.js";
 
@@ -156,6 +159,20 @@ const TOOLS = [
         }
       },
       required: ["attestation", "original_request", "original_response"]
+    }
+  },
+  {
+    name: "shadow_banking_profile",
+    description: "Check a Shadow evidence bundle against the Banking Evidence Profile v1 (spec/banking-evidence-profile-v1.json) and, optionally, produce an examiner-ready evidence packet. This is the 'is this credit decision auditable?' pass/fail gate no published standard owns: it confirms the bundle carries the examiner-required evidence for a US credit decision (integrity, decision outcome, model/tool manifest, policy version, timestamps, data-as-of, human review, principal reason codes, a GOVERNED reason-code dictionary version, source citations, retention status), each mapped to its Reg B / FCRA / SR 26-2 hook, with a swapped/ungoverned reason-code dictionary FAILING the gate. Bank-analyst path — run it from Cursor/Claude Desktop on a persisted bundle. Pass the bundle; pass public_key to verify integrity (SELF_SIGNED without it); pass payloads to enable value-level checks (reason-code count, adverse detection). Returns the conformance report {pass, coverage_pct, adverse, fields[], missing_required} plus, if packet=true, an examiner-ready markdown packet. Structural PASS means the evidence exists and is tamper-evident — it does NOT certify the decision was correct/fair/compliant.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        bundle: { type: "object", description: "The Shadow evidence bundle (header, events, batch_root, signatures) for one credit decision." },
+        public_key: { type: "string", description: "Ed25519 public key (PEM). If provided, integrity is verified; otherwise the integrity field is reported 'unknown'." },
+        payloads: { type: "object", description: "Optional map {seq|payload_ref -> payload} enabling value-level checks (principal reason-code count, adverse-decision detection)." },
+        packet: { type: "boolean", description: "If true, also return an examiner-ready markdown evidence packet." }
+      },
+      required: ["bundle"]
     }
   },
   {
@@ -413,6 +430,21 @@ export function handleToolCall(name, args) {
         ? "Attestation verified. Request + response were not tampered, the pinned model ran, and the deployment key matches."
         : "Attestation FAILED verification. Do NOT trust this record — it may have been tampered, silently model-swapped, or signed with a different key."
     };
+  }
+
+  if (name === "shadow_banking_profile") {
+    const { bundle, public_key, payloads, packet } = args;
+    if (!bundle || typeof bundle !== "object") return { error: "bundle required" };
+    const verified = public_key ? verifyBundle(bundle, { publicKey: public_key }) : null;
+    const conformance = checkBankingProfileV1(bundle, { verified, payloads: payloads ?? null });
+    const out = {
+      conformance,
+      interpretation: conformance.pass
+        ? `Conforms to ${conformance.profile} (${conformance.coverage_pct}% of evidence slots present): the examiner-required evidence is present and tamper-evident. This does NOT certify the decision was correct, fair, or compliant.`
+        : `NON-CONFORMANT to ${conformance.profile}: missing required evidence — ${conformance.missing_required.join(", ") || "none"}.`
+    };
+    if (packet) out.examiner_packet_markdown = renderPacketMarkdown(buildExaminerPacket(bundle, { verified, payloads: payloads ?? null }));
+    return out;
   }
 
   if (name === "shadow_disparity") {

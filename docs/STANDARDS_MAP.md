@@ -112,7 +112,7 @@ Reproduced from [`spec/EVIDENCE_BUNDLE.md`](../spec/EVIDENCE_BUNDLE.md#article-1
 
 ### 2.2 What is lost in the OTel → evidence-bundle direction
 
-OTel spans are **mutable telemetry**. Once emitted, an OTel processor can drop, sample, or edit them. Shadow's evidence bundle is **immutable** by design: post-emission edits break the hash chain and fail verification. This is a load-bearing difference, not a bug. The `@shadow/adapter-otel` package (M2.2, planned) ingests OTel spans and emits evidence events; it is a one-way pipe.
+OTel spans are **mutable telemetry**. Once emitted, an OTel processor can drop, sample, or edit them. Shadow's evidence bundle is **immutable** by design: post-emission edits break the hash chain and fail verification. This is a load-bearing difference, not a bug. The `shadow-adapter-otel` package (M2.2, planned) ingests OTel spans and emits evidence events; it is a one-way pipe.
 
 ### 2.3 Draft-stability note
 
