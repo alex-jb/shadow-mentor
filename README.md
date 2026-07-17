@@ -26,7 +26,7 @@
 
 <!-- readme-stats:begin -->
 **Version**: 2.0.3
-**Tests**: 1504/1507 passing (0 failing)
+**Tests**: 1530/1533 passing (0 failing)
 **Attestation signed fields**: 21 parameters, 14 append-only conditional bindings
 **Release tags**: 59
 <!-- readme-stats:end -->
@@ -141,6 +141,10 @@ Shadow ships a 10-tool MCP server (`mcp/server.js`) usable from Cursor, Claude D
 ## Threat model
 
 Documented in [`docs/THREAT_MODEL.md`](./docs/THREAT_MODEL.md). Summary: Shadow's Ed25519 attestation defeats **external tampering** and **chain reordering / insertion / truncation**. It does **not** defeat a **bank insider with the private key**. If your threat model includes bank-side re-signing of history, you need an external timestamp anchor (RFC 3161 TSA or a public transparency log) on top of Shadow. Sigstore Rekor integration is on the v2.1 roadmap.
+
+## Vendor viability & third-party risk
+
+For a procurement / vendor-risk reviewer: [`docs/VENDOR_VIABILITY.md`](./docs/VENDOR_VIABILITY.md) answers the continuity, incident-notification, and viability questions the 2023 Interagency TPRM Guidance requires — including the central single-maintainer question. Short version: your evidence is verifiable **without** the vendor (offline verifier + public key, no phone-home), and MIT + a public repo make source continuity unconditional, so a bank can keep verifying its records even if development stops.
 
 ## What Shadow is not
 
