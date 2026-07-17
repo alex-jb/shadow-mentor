@@ -13,7 +13,7 @@
 // ─────────────────────────────────────────────────────────────────
 import { generateKeyPairSync } from "node:crypto";
 import { otelToEvents } from "./index.js";
-import { createSession, appendEvent, sealSession, verifyBundle } from "../attest-core/session.js";
+import { createSession, appendEvent, sealSession, verifyBundle } from "shadow-attest-core/session";
 
 // ── 1. A sample trace: a loan-review agent, as an OTel exporter would emit it ──
 // (five spans of one trace `t-42`: think, read the file, search a registry that

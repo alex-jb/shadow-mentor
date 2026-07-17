@@ -17,7 +17,7 @@
 
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { verifyBundle } from "../packages/attest-core/session.js";
+import { verifyBundle } from "shadow-attest-core/session";
 
 const USAGE = `Usage: shadow-verify <bundle.json> --public-key <public.pem> [--json] [--check-anchors <mode>] [--ca-trust <path>]
 

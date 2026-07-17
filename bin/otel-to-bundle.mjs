@@ -28,7 +28,7 @@
 import { readFileSync, writeFileSync, chmodSync } from "node:fs";
 import { generateKeyPairSync, createPrivateKey } from "node:crypto";
 import { otelToEvents } from "../packages/adapter-otel/index.js";
-import { createSession, appendEvent, sealSession, verifyBundle } from "../packages/attest-core/session.js";
+import { createSession, appendEvent, sealSession, verifyBundle } from "shadow-attest-core/session";
 
 const SAMPLE = [
   { name: "chat", trace_id: "t-42", span_id: "a1",

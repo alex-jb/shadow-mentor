@@ -1,4 +1,4 @@
-# @shadow/adapter-otel
+# shadow-adapter-otel
 
 Turn the OpenTelemetry traces an agent **already emits** into Shadow evidence —
 so any instrumented agent (LangGraph, Google ADK, Claude Code, an MCP server,
@@ -9,7 +9,7 @@ system's trust layer.**
 ## Use
 
 ```js
-import { otelToEvents } from "@shadow/adapter-otel";
+import { otelToEvents } from "shadow-adapter-otel";
 import { createSession, appendEvent, sealSession } from "shadow-attest-core";
 
 const events = otelToEvents(spans, { sessionId, agent });   // OTel spans → Shadow events

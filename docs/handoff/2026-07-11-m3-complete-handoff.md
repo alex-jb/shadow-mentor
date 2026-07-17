@@ -128,7 +128,7 @@ Acceptance test: record a real Claude Code session that edits 3 files + runs
 tests; verify the bundle; tamper with one recorded file-diff payload; verifier
 pinpoints it.
 
-### 4.2 (Launch-blocker) M2.2 `@shadow/adapter-otel`
+### 4.2 (Launch-blocker) M2.2 `shadow-adapter-otel`
 
 Minimal OTLP/HTTP receiver or processor that consumes OpenTelemetry GenAI
 semantic-convention spans and emits evidence events. This unlocks every

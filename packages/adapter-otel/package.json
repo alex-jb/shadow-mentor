@@ -1,0 +1,37 @@
+{
+  "name": "shadow-adapter-otel",
+  "version": "1.0.0",
+  "description": "Map OpenTelemetry GenAI/MCP spans onto Shadow evidence events — any instrumented agent's traces become signed, verifiable Shadow bundles without adopting a new SDK.",
+  "type": "module",
+  "license": "MIT",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "files": [
+    "index.js",
+    "example.js",
+    "README.md"
+  ],
+  "scripts": {
+    "example": "node example.js"
+  },
+  "dependencies": {
+    "shadow-attest-core": "^2.1.0"
+  },
+  "keywords": [
+    "opentelemetry",
+    "otel",
+    "genai",
+    "mcp",
+    "agent",
+    "audit",
+    "attestation",
+    "provenance",
+    "shadow"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

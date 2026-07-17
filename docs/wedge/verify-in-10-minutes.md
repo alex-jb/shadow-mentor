@@ -98,15 +98,26 @@ record you filed is the one your agent produced?"
   evidence bundle. The banking council + persona layer sits *on top*; this
   verifier is the dev-adoptable bottom.
 
-## One packaging step to make it `npx`-able (TODO for the maintainer)
+## Making it `npx`-able — progress + the remaining step
 
-Today the CLI runs from a clone (`node bin/shadow-verify.mjs …`). To land the
-true 10-second dev experience — `npx @shadow/verify bundle.json --public-key
-key.pem` — expose a `bin` in the package that publishes the verifier (it already
-imports the published `shadow-attest-core`). That is the single packaging change
-that turns this from "clone the repo" into a genuine bottom-up developer tool,
-and it's the recommended next step for the OSS wedge. It is intentionally left
-as an explicit product/packaging decision, not done here.
+**Done (2026-07-17):** both CLIs now import the published `shadow-attest-core`
+(via `shadow-attest-core/session`, resolved through the workspace symlink from a
+clone and through the dependency when published), and `shadow-adapter-otel` is a
+real publishable package (`packages/adapter-otel/package.json`, `npm pack` clean)
+so its README `import` resolves for an external user. The CLIs are therefore
+publish-ready in their imports.
+
+**Remaining step:** the verifier still runs from a clone (`node
+bin/shadow-verify.mjs …`) rather than `npx`. To expose an `npx` bin, the CLI file
+must ship inside a published package's `bin`. `bin/shadow-verify.mjs` is
+referenced in ~20 places (the `shadow-verify` GitHub Action, the CI dogfood step,
+two test files, and many docs), so the clean move is a small refactor — extract
+the CLI core into `shadow-attest-core` and add a `bin` there (keeping the root
+`bin/shadow-verify.mjs` as a thin wrapper so every existing reference still
+works) — not a quick rename. Named unscoped (`shadow-verify` / a `shadow-attest-core`
+bin), not `@shadow/…`, to avoid the org-scope name-taken 403 that already forced
+the `@shadow/attest-core → shadow-attest-core` rename. Left as an explicit,
+scoped refactor.
 
 ## See also
 

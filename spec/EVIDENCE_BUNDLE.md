@@ -105,7 +105,7 @@ Where OTel GenAI semconv (2025 draft) has an equivalent attribute, evidence-bund
 | `event.extensions.finish_reason` | `gen_ai.response.finish_reasons` |
 | `event.ts_utc` | span start/end time |
 
-The `@shadow/adapter-otel` package (M2.2, week 2) ingests OTel spans and emits evidence events using this mapping. What is lost in the OTel → evidence direction: mutable telemetry semantics. OTel spans can be edited by pipelines; evidence bundle events cannot without breaking the chain.
+The `shadow-adapter-otel` package (M2.2, week 2) ingests OTel spans and emits evidence events using this mapping. What is lost in the OTel → evidence direction: mutable telemetry semantics. OTel spans can be edited by pipelines; evidence bundle events cannot without breaking the chain.
 
 ## Signing model
 
