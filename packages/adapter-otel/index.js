@@ -20,6 +20,7 @@
 // ─────────────────────────────────────────────────────────────────
 
 const ACTORS = new Set(["agent", "user", "model", "tool", "system"]);
+export const ADAPTER_MAPPING_VERSION = "1.0";
 
 // Timestamps may arrive as BigInt (in-process) or number/string (from exported
 // JSON, where huge nanos are often strings to avoid precision loss). Coerce
@@ -41,7 +42,7 @@ export function w3cTraceparent(traceId, spanId) {
 }
 
 // Map one OTel span to ONE Shadow event partial (frozen event vocabulary).
-export function mapSpan(span) {
+export function mapSpan(span, opts = {}) {
   const a = span.attributes || {};
   const op = a["gen_ai.operation.name"];        // chat | text_completion | embeddings | execute_tool | generate_content ...
   const mcpMethod = a["mcp.method.name"];        // tools/call | resources/read | ...
@@ -55,6 +56,15 @@ export function mapSpan(span) {
     ...(span.trace_id && span.span_id
       ? { traceparent: w3cTraceparent(span.trace_id, span.span_id) }
       : {}),
+    // Version tolerance (OTel GenAI/MCP semconv are Development-stage + actively
+    // renaming as of 2026): stamp the emitter's advertised semconv (schema_url)
+    // and this adapter's mapping version so a rename can be reconciled later.
+    ...(span.schema_url ? { schema_url: span.schema_url } : {}),
+    adapter_mapping_version: ADAPTER_MAPPING_VERSION,
+    // Opt-in raw-attribute retention: the highest-value hedge against attribute
+    // renames — keep the original attributes so a mapping can be re-derived
+    // without re-ingesting. Off by default to keep signed events lean.
+    ...(opts.retainRaw ? { raw_attributes: a } : {}),
   };
   const ts = nanoToIso(span.end_time_unix_nano ?? span.start_time_unix_nano);
 
@@ -72,7 +82,9 @@ export function mapSpan(span) {
     payload = clean({
       provider: a["gen_ai.provider.name"] ?? a["gen_ai.system"],
       request_model: a["gen_ai.request.model"], response_model: a["gen_ai.response.model"],
-      input_tokens: a["gen_ai.usage.input_tokens"], output_tokens: a["gen_ai.usage.output_tokens"],
+      // new names, with the pre-2026 legacy names as fallback (still emitted in the wild)
+      input_tokens: a["gen_ai.usage.input_tokens"] ?? a["gen_ai.usage.prompt_tokens"],
+      output_tokens: a["gen_ai.usage.output_tokens"] ?? a["gen_ai.usage.completion_tokens"],
       finish_reasons: a["gen_ai.response.finish_reasons"], operation: op,
     });
   } else if (mcpMethod) {
@@ -89,7 +101,7 @@ function clean(o) { const r = {}; for (const [k, v] of Object.entries(o)) if (v 
 
 // Ordered Shadow events for a whole trace: session_start, mapped spans (by
 // start time), session_end. Feed each to attest-core appendEvent(), then seal.
-export function otelToEvents(spans, { sessionId, agent } = {}) {
+export function otelToEvents(spans, { sessionId, agent, retainRaw = false } = {}) {
   const ordered = [...spans].sort((x, y) => {
     const d = nano(x.start_time_unix_nano) - nano(y.start_time_unix_nano);
     return d < 0n ? -1 : d > 0n ? 1 : 0;
@@ -100,7 +112,7 @@ export function otelToEvents(spans, { sessionId, agent } = {}) {
     payload: clean({ session_id: sessionId, agent, trace_id: root?.trace_id }),
     extensions: { otel: { trace_id: root?.trace_id } } });
   for (const s of ordered) {
-    const e = mapSpan(s);
+    const e = mapSpan(s, { retainRaw });
     if (!ACTORS.has(e.actor)) e.actor = "agent";
     events.push(e);
   }

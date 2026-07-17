@@ -62,6 +62,18 @@ test("otelToEvents: session_start first, session_end last, spans ordered by star
   assert.equal(ev[2].payload.tool, "Read");
 });
 
+test("mapSpan: version tolerance — legacy token names, schema_url stamp, mapping version, opt-in raw", () => {
+  const legacy = { name: "chat", trace_id: "t", span_id: "s", schema_url: "https://opentelemetry.io/schemas/1.37.0",
+    attributes: { "gen_ai.request.model": "m", "gen_ai.usage.prompt_tokens": 11, "gen_ai.usage.completion_tokens": 7 } };
+  const e = mapSpan(legacy);
+  assert.equal(e.payload.input_tokens, 11);   // pre-2026 prompt_tokens → input_tokens
+  assert.equal(e.payload.output_tokens, 7);   // completion_tokens → output_tokens
+  assert.equal(e.extensions.otel.schema_url, "https://opentelemetry.io/schemas/1.37.0");
+  assert.equal(e.extensions.otel.adapter_mapping_version, "1.0");
+  assert.equal(e.extensions.otel.raw_attributes, undefined);              // off by default
+  assert.deepEqual(mapSpan(legacy, { retainRaw: true }).extensions.otel.raw_attributes, legacy.attributes);
+});
+
 test("otelToEvents: string/number nano timestamps (exported JSON) sort correctly", () => {
   // real exporters emit huge nanos as strings/numbers, not BigInt — must not throw
   const jsonSpans = [

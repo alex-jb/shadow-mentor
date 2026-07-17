@@ -34,6 +34,13 @@ const bundle = sealSession(s);                              // signed, verifiabl
   3D audit trace can render nested and parallel agent branches from these. Shadow
   keeps its own audit identity; OTel ids are carried alongside, not trusted as truth.
 - Pure functions; no signing here — the events feed attest-core, which signs.
+- **Version tolerance** (OTel GenAI/MCP semconv are Development-stage and actively
+  renaming): maps the new attribute names with pre-2026 legacy fallbacks (e.g.
+  `gen_ai.usage.prompt_tokens` → `input_tokens`, `gen_ai.system` → provider),
+  stamps the emitter's `schema_url` + `adapter_mapping_version` in
+  `extensions.otel`, and — with `otelToEvents(spans, { retainRaw: true })` — keeps
+  the original `raw_attributes` so a future rename can be reconciled without
+  re-ingesting (off by default to keep signed events lean).
 
 ## See it run
 
