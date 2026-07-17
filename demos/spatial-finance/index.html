@@ -77,6 +77,7 @@
   <canvas id="cloud"></canvas>
   <canvas id="audit"></canvas>
   <canvas id="calib"></canvas>
+  <canvas id="fan"></canvas>
 
   <div id="top">
     <div id="title">Shadow · Spatial Finance <small>AI Analytics Governance</small></div>
@@ -198,9 +199,9 @@ let BUNDLE=null, tampered=false, verifyState={ok:true};
 // ─── state + DOM ───
 const $=s=>document.querySelector(s);
 let view="decision", rot={x:-0.5,y:0.6}, dragging=false, lastXY=null;
-const cloud=$("#cloud"), audit=$("#audit"), calib=$("#calib");
-const ctxC=cloud.getContext("2d"), ctxA=audit.getContext("2d"), ctxK=calib.getContext("2d");
-function resize(){for(const cv of [cloud,audit,calib]){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;}}
+const cloud=$("#cloud"), audit=$("#audit"), calib=$("#calib"), fan=$("#fan");
+const ctxC=cloud.getContext("2d"), ctxA=audit.getContext("2d"), ctxK=calib.getContext("2d"), ctxF=fan.getContext("2d");
+function resize(){for(const cv of [cloud,audit,calib,fan]){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;}}
 addEventListener("resize",resize); resize();
 
 function fillDecision(){
@@ -324,16 +325,53 @@ function drawCalib(){
   ctxK.restore();
 }
 
+// ─── forecast fan chart (Bank-of-England style: widening bands, no bold median) ───
+function drawFan(){
+  const dpr=devicePixelRatio; ctxF.save(); ctxF.scale(dpr,dpr);
+  ctxF.clearRect(0,0,innerWidth,innerHeight);
+  const font=getComputedStyle(document.body).fontFamily;
+  const W=Math.min(innerWidth*0.6,760), H=Math.min(innerHeight*0.5,380);
+  const ox=innerWidth/2-W/2, oy=innerHeight/2+H/2, yMin=-0.6, yMax=1.0;
+  const X=y=>ox+(y/5)*W, Y=r=>oy-((r-yMin)/(yMax-yMin))*H;
+  const med=y=>0.41*(y/5);                         // portfolio median path → +41% at y5
+  const band=(y,k)=>k*0.24*Math.sqrt(y);           // widens ~sqrt(time)
+  // grid + zero line
+  ctxF.strokeStyle="rgba(255,255,255,.10)";ctxF.lineWidth=1;
+  for(let r=-0.5;r<=1.001;r+=0.25){ctxF.beginPath();ctxF.moveTo(X(0),Y(r));ctxF.lineTo(X(5),Y(r));ctxF.stroke();
+    ctxF.fillStyle="#5a6272";ctxF.font="11px "+font;ctxF.textAlign="right";ctxF.fillText((r*100|0)+"%",X(0)-8,Y(r)+3);}
+  ctxF.strokeStyle="rgba(255,255,255,.35)";ctxF.beginPath();ctxF.moveTo(X(0),Y(0));ctxF.lineTo(X(5),Y(0));ctxF.stroke();
+  // bands (widest first)
+  const steps=[...Array(51).keys()].map(i=>i/10);
+  [[2.3,.10],[1.5,.16],[0.8,.24]].forEach(([k,alpha])=>{
+    ctxF.beginPath();
+    steps.forEach((y,i)=>{const p=[X(y),Y(med(y)+band(y,k))];i?ctxF.lineTo(...p):ctxF.moveTo(...p);});
+    for(let i=steps.length-1;i>=0;i--){const y=steps[i];ctxF.lineTo(X(y),Y(med(y)-band(y,k)));}
+    ctxF.closePath();ctxF.fillStyle=`rgba(0,158,115,${alpha})`;ctxF.fill();
+  });
+  // subtle median (not privileged)
+  ctxF.strokeStyle="rgba(255,255,255,.5)";ctxF.setLineDash([4,4]);ctxF.lineWidth=1.5;ctxF.beginPath();
+  steps.forEach((y,i)=>{const p=[X(y),Y(med(y))];i?ctxF.lineTo(...p):ctxF.moveTo(...p);});ctxF.stroke();ctxF.setLineDash([]);
+  // labels
+  ctxF.fillStyle="#8b95a8";ctxF.font="12px "+font;ctxF.textAlign="center";
+  for(let y=0;y<=5;y++)ctxF.fillText("Y"+y,X(y),Y(yMin)+22);
+  ctxF.fillStyle="#eef2f7";ctxF.textAlign="left";ctxF.font="14px "+font;
+  ctxF.fillText("Portfolio 5-year return — a fan of outcomes, not a point",X(0),Y(yMax)-18);
+  ctxF.fillStyle="#8b95a8";ctxF.font="12px "+font;
+  ctxF.fillText("30 / 60 / 90% predictive bands (Bank-of-England style). The band is the message,",X(0),Y(yMin)+48);
+  ctxF.fillText("not the dashed median — single-stock 5-year point returns are close to noise (Welch-Goyal 2008).",X(0),Y(yMin)+66);
+  ctxF.restore();
+}
+
 // ─── view switching (progressive disclosure) ───
 function setView(v){
   view=v;
   cloud.classList.toggle("on",v==="analytics");
   audit.classList.toggle("on",v==="audit");
   calib.classList.toggle("on",v==="calib");
+  fan.classList.toggle("on",v==="forecast");
   $("#legend").classList.toggle("on",v==="analytics");
   $("#risks").classList.toggle("on",v==="risks");
   $("#agents").classList.toggle("on",v==="agents");
-  $("#forecast").classList.toggle("on",v==="forecast");
   $("#decision").style.display=(v==="decision")?"block":"none";
   $("#auditstrip").style.opacity=(v==="audit")?0:1;
   if(v==="analytics")$("#legend").innerHTML="<b>size</b> = weight · <b>color</b> = hold/trim/short · <b>X</b> risk · <b>Y</b> 5y return · <b>Z</b> confidence · drag to rotate";
@@ -404,7 +442,7 @@ addEventListener("pointerup",()=>dragging=false);
 addEventListener("pointermove",e=>{if(!dragging)return;rot.y+=(e.clientX-lastXY[0])*0.01;rot.x+=(e.clientY-lastXY[1])*0.01;lastXY=[e.clientX,e.clientY];});
 
 // render loop
-function loop(){ if(view==="analytics")drawCloud(); if(view==="audit")drawAudit(); if(view==="calib")drawCalib(); requestAnimationFrame(loop); }
+function loop(){ if(view==="analytics")drawCloud(); if(view==="audit")drawAudit(); if(view==="calib")drawCalib(); if(view==="forecast")drawFan(); requestAnimationFrame(loop); }
 
 // boot
 (async function(){
