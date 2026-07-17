@@ -29,9 +29,11 @@
     padding:16px 26px;z-index:5;pointer-events:none}
   #title{font-size:14px;font-weight:600;letter-spacing:.3px}
   #title small{color:var(--dim);font-weight:400;margin-left:8px}
-  #verified{font-family:var(--mono);font-size:12px;padding:5px 12px;border-radius:999px;border:1px solid}
-  #verified.ok{color:var(--ok);border-color:rgba(0,158,115,.4)}
-  #verified.bad{color:var(--bad);border-color:rgba(213,94,0,.5)}
+  #trust{font-family:var(--mono);font-size:11px;text-align:right;line-height:1.55;background:rgba(18,22,29,.6);
+    border:1px solid var(--line);border-radius:8px;padding:8px 12px;min-width:210px}
+  #trust .tl{display:flex;justify-content:space-between;gap:16px}
+  #trust .k{color:#5a6272} #trust .v{color:var(--ink)} #trust .v.dim{color:var(--dim)}
+  #trust .v.ok{color:var(--ok)} #trust .v.bad{color:var(--bad)}
   /* center decision */
   #decision{position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);text-align:center;z-index:4;width:min(760px,92vw)}
   #decision .head{font-size:34px;font-weight:700;letter-spacing:.5px}
@@ -68,6 +70,9 @@
   #hint{position:absolute;bottom:22px;right:26px;z-index:6;font-family:var(--mono);font-size:10.5px;color:#5a6272;text-align:right;line-height:1.6}
   #flash{position:absolute;top:64px;left:50%;transform:translateX(-50%);z-index:7;font-family:var(--mono);font-size:12px;
     color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 16px;opacity:0;transition:opacity .2s}
+  #tdiff{position:absolute;top:120px;left:50%;transform:translateX(-50%);z-index:7;display:none;
+    font-family:var(--mono);font-size:12.5px;background:var(--panel);border:1px solid rgba(213,94,0,.5);border-radius:8px;padding:12px 18px;line-height:1.7}
+  #tdiff .o{color:var(--dim)} #tdiff .n{color:var(--bad)} #tdiff .lbl{color:#5a6272}
   .legend{position:absolute;top:96px;left:26px;z-index:6;font-family:var(--mono);font-size:11px;color:var(--dim);display:none}
   .legend.on{display:block} .legend b{color:var(--ink)}
 </style>
@@ -81,7 +86,12 @@
 
   <div id="top">
     <div id="title">Shadow · Spatial Finance <small>AI Analytics Governance</small></div>
-    <div id="verified" class="ok">VERIFIED ✓</div>
+    <div id="trust">
+      <div class="tl"><span class="k">RECORD</span><span class="v" id="t-record">VERIFIED ✓</span></div>
+      <div class="tl"><span class="k">SOURCE</span><span class="v dim" id="t-source">self-declared</span></div>
+      <div class="tl"><span class="k">ANALYSIS</span><span class="v dim" id="t-analysis">84% confidence</span></div>
+      <div class="tl"><span class="k">DATA</span><span class="v dim" id="t-data">fixture</span></div>
+    </div>
   </div>
 
   <div id="decision">
@@ -102,6 +112,7 @@
   <div id="voice"><span id="mic"></span><span id="voice-txt">hold Space to talk</span></div>
   <div id="hint">1 analytics · 2 forecast · 3 risks · 4 agents · 5 audit · 6 calibration<br>T tamper · R reset · 0 home · S SBS stereo · [ ] eye-sep · M mute · drag to rotate</div>
   <div id="flash"></div>
+  <div id="tdiff"></div>
 </div>
 
 <script type="module">
@@ -220,6 +231,24 @@ function fillDecision(){
     return `<div>${p.t}</div><div style="position:relative;height:16px"><div class="bar" style="position:absolute;left:${L(lo)}%;width:${L(hi)-L(lo)}%;background:linear-gradient(90deg,rgba(213,94,0,.5),rgba(0,158,115,.5))"></div><div style="position:absolute;left:${L(base)}%;top:-2px;width:2px;height:20px;background:#fff" title="base ${(base*100)|0}%"></div></div>`;
   }).join("")+`</div><div style="color:var(--dim);font-size:11px;margin-top:10px">Bull/base/bear over 5y — a scenario band, not a point estimate. Single-stock 5y point returns are close to noise (Welch-Goyal 2008); we show the range + who produced it, and stake credibility on the audit trail, not the number.</div>`;
 }
+
+// ─── trust status (record ≠ correct — the honest three-layer badge) ───
+function renderTrust(){
+  const r=$("#t-record");
+  if(verifyState.ok){r.textContent="VERIFIED ✓";r.className="v ok";}
+  else{r.textContent="FAILED ✕ · seq "+(verifyState.seq??"—");r.className="v bad";}
+  // SOURCE / ANALYSIS / DATA stay informational: a green RECORD means the record
+  // wasn't altered after signing — NOT that the analysis is correct, safe, or
+  // compliant. Source is self-declared (no C2PA yet); analysis is a confidence,
+  // not a truth; data is a fixture.
+}
+function showDiff(){ // before/after of the edited value — makes tamper concrete
+  $("#tdiff").innerHTML=`<span class="lbl">Model output · NVDA weight</span><br>`+
+    `<span class="o">original  0.16 (16%)</span><br><span class="n">modified  0.24 (24%) — edited after signing</span><br>`+
+    `<span class="lbl">seq 3 · verification FAILED · downstream unverifiable</span>`;
+  $("#tdiff").style.display="block";
+}
+function hideDiff(){ $("#tdiff").style.display="none"; }
 
 // ─── 3D risk-return cloud (canvas 2.5D, rotatable, optional SBS stereo) ───
 function project(p, cx, cyc, s, eye){ // p:{x,y,z} in [-1,1] → screen; eye = px disparity
@@ -401,13 +430,13 @@ async function doTamper(){
   if(!BUNDLE||tampered)return;
   BUNDLE.events[2].payload_hash=BUNDLE.events[2].payload_hash.slice(0,-1)+"0"; // edit the Model weights after signing
   tampered=true; verifyState=await verify(BUNDLE);
-  $("#verified").className="bad";$("#verified").textContent="✕ VERIFICATION FAILED · seq "+(verifyState.seq??"—");
+  renderTrust(); showDiff();
   setView("audit"); flash("weight edited after signing — chain broken at seq "+(verifyState.seq??"—"));
   speak("The model's weights were edited after signing. Verification failed at sequence "+(verifyState.seq??"")+". The chain caught it.");
 }
 async function doReset(){
   BUNDLE=await seal(); tampered=false; verifyState=await verify(BUNDLE);
-  $("#verified").className="ok";$("#verified").textContent="VERIFIED ✓";
+  renderTrust(); hideDiff();
 }
 
 // ─── voice (6 intents) + keyboard (authoritative) ───
@@ -458,7 +487,7 @@ function loop(){ if(view==="analytics")drawCloud(); if(view==="audit")drawAudit(
 (async function(){
   fillDecision();
   BUNDLE=await seal(); verifyState=await verify(BUNDLE);
-  $("#verified").className=verifyState.ok?"ok":"bad";
+  renderTrust();
   setView("decision");
   loop();
   // self-drive for headless verification
