@@ -7,9 +7,11 @@ import assert from "node:assert/strict";
 import { generateKeyPairSync } from "node:crypto";
 import { handleToolCall, TOOLS } from "../mcp/server.js";
 import { buildAttestation, SIGNATURE_MODES } from "../lib/attestation.js";
+import { createSession, appendEvent, sealSession } from "../packages/attest-core/session.js";
+import { computeDictionaryHash } from "../lib/enforce-reason-code-dictionary.js";
 
-test("MCP server exposes 9 tools (v1.5.45+ adds shadow_loan_council_typed)", () => {
-  assert.equal(TOOLS.length, 10);
+test("MCP server exposes 11 tools (adds shadow_banking_profile)", () => {
+  assert.equal(TOOLS.length, 11);
   const names = TOOLS.map((t) => t.name);
   for (const expected of [
     "shadow_loan_council",
@@ -20,10 +22,32 @@ test("MCP server exposes 9 tools (v1.5.45+ adds shadow_loan_council_typed)", () 
     "shadow_scenarios",
     "shadow_traceability",
     "shadow_verify_attestation",
-    "shadow_size_position"
+    "shadow_size_position",
+    "shadow_disparity",
+    "shadow_banking_profile"
   ]) {
     assert.ok(names.includes(expected), `missing tool ${expected}`);
   }
+});
+
+test("shadow_banking_profile: a conforming credit-decision bundle → CONFORMS + optional packet", () => {
+  const { privateKey, publicKey } = generateKeyPairSync("ed25519");
+  const s = createSession({ agent: { name: "loan-council", version: "1.5" }, models: [{ model_id: "council-v1", provider: "anthropic" }],
+    environmentFingerprint: { os: "linux", node_version: "v24" }, keyId: "k", privateKey: privateKey.export({ type: "pkcs8", format: "pem" }) });
+  appendEvent(s, { event_type: "tool_call", actor: "tool", payload: { tool: "bureau_pull" } });
+  appendEvent(s, { event_type: "model_output", actor: "model", payload: { decision: "deny" },
+    extensions: { dictionary_hash: computeDictionaryHash(), citation_registry_sha256: "sha256:x" } });
+  appendEvent(s, { event_type: "human_approval", actor: "user", payload: { approved: true } });
+  const bundle = sealSession(s);
+  const r = handleToolCall("shadow_banking_profile", { bundle, public_key: publicKey.export({ type: "spki", format: "pem" }), packet: true });
+  assert.equal(r.conformance.profile, "banking-v1");
+  assert.equal(r.conformance.pass, true);
+  assert.match(r.interpretation, /Conforms/);
+  assert.match(r.examiner_packet_markdown, /Credit-decision evidence packet/);
+});
+
+test("shadow_banking_profile: missing bundle → error", () => {
+  assert.equal(handleToolCall("shadow_banking_profile", {}).error, "bundle required");
 });
 
 test("shadow_size_position: valid input returns Risk Sizer verdict", () => {

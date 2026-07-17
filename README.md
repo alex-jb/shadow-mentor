@@ -26,7 +26,7 @@
 
 <!-- readme-stats:begin -->
 **Version**: 2.0.3
-**Tests**: 1547/1550 passing (0 failing)
+**Tests**: 1549/1552 passing (0 failing)
 **Attestation signed fields**: 21 parameters, 14 append-only conditional bindings
 **Release tags**: 59
 <!-- readme-stats:end -->
@@ -138,7 +138,7 @@ v3 evidence bundle (M2.3, shipped 2026-07-10):
 
 ## MCP integration
 
-Shadow ships a 10-tool MCP server (`mcp/server.js`) usable from Cursor, Claude Desktop, Zed, or any MCP client. See [`mcp/README.md`](./mcp/README.md).
+Shadow ships an 11-tool MCP server (`mcp/server.js`) usable from Cursor, Claude Desktop, Zed, or any MCP client. See [`mcp/README.md`](./mcp/README.md).
 
 ## Threat model
 
