@@ -6,7 +6,7 @@
 
 Shadow already ships 8 HTTP endpoints on Vercel. The MCP server lets you skip the curl and call Shadow directly from your LLM chat — same way you'd call `read_file` or `git_status`. Procurement-grade banking workflows are easier to demo when an analyst can type "what would the compliance council say about a B-rated TLB with FICO 740 and DTI 0.28?" and get the verdict back inline.
 
-The 7 tools exposed:
+The 11 tools exposed:
 
 | Tool | Purpose | Backed by |
 |---|---|---|
@@ -17,6 +17,10 @@ The 7 tools exposed:
 | `shadow_scenarios` | List the full surface (5 personas × 4 scenarios × 4 device clients × 2 providers) for discovery. | `lib/prompts.js` + `lib/schemas/loan.js` |
 | `shadow_traceability` | **New v1.1.1**: Look up the source attribution for any benchmark rule. Returns the governance layer (institutional risk framework / product-line policy / benchmark calibration parameter / regulatory) and the authoritative source. Use to verify procurement-audit citation chain — e.g. *"where does FICO ≥ 700 come from?"* → Addendum A; *"is VaR ≤ 0.12 from the BRD?"* → No, it's Addendum C Risk Appetite Note (benchmark calibration parameter). | `lib/traceability.js` + `lib/schemas/adverse-action.js` |
 | `shadow_verify_attestation` | **New v1.5.1**: Verify an AEX-style attestation on a persisted `/api/deliberate` or `/api/loan-council` response inline from chat. Bank auditors on a `shadow:read` seat pass the attestation object + persisted request/response + their public key (Ed25519) or HMAC key material. Returns `{ok, reason, checks, mode, model_id, key_id, interpretation}`. Failure names one of three modes explicitly: tamper, silent model-swap, or wrong key material. Same verifier the CLI at `bin/verify-attestation.mjs` uses. | `lib/attestation.js` |
+| `shadow_loan_council_typed` | Typed variant of the loan council returning a validated structured verdict. | `lib/run-loan-council.js` |
+| `shadow_size_position` | Trader-Pack Risk Sizer (FinPos): direction in → fund/skip + Kelly-capped position size + volatility scalar. Never returns a direction. Pure computation. | `lib/personas/trader-pack/risk-sizer.js` |
+| `shadow_disparity` | Fair-lending disparity metrics (adverse-impact ratio, standardized mean difference, segmented AIR). | `lib/disparity/index.js` |
+| `shadow_banking_profile` | **New**: check an evidence bundle against Banking Evidence Profile v1 — the "is this credit decision auditable?" pass/fail gate (integrity + examiner-required evidence, each mapped to Reg B / FCRA / SR 26-2; a swapped/ungoverned reason-code dictionary fails). Optionally returns an examiner-ready packet. `shadow:read` seat. | `lib/enforce-banking-profile.js` + `lib/evidence-packet.js` |
 
 All tools run locally — no network call, no LLM cost. Built on top of the same `lib/` modules that back `/api/loan-council` and `/api/scenarios` on Vercel.
 
