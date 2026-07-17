@@ -1,0 +1,14 @@
+{
+  "$comment": "Versioned registry of reason-code dictionaries. The dictionary_hash is bound into every attestation (v1.5.8), so a post-hoc edit to the reasons a borrower was given breaks verification. This registry adds GOVERNANCE on top: it resolves a bound dictionary_hash to a known, lifecycle-managed version, so (1) provenance is provable (which counsel-signed dictionary produced these reasons), and (2) a swap to an UNREGISTERED dictionary is detectable even if that swapped dictionary is internally self-consistent. test/dictionary-governance.test.js asserts the CURRENT lib/schemas/reason-code-dictionary.json computed hash is registered here — so editing the dictionary without registering the new version fails CI, forcing versioning discipline. Statuses: active | superseded | retired.",
+  "registry_version": "1.0.0",
+  "dictionaries": [
+    {
+      "schema_version": "reason-code-dictionary/v1.0.0",
+      "dictionary_hash": "6eb106db289769932d133aa668349183c159afa772afc3546557d15e0d9d5355",
+      "generated_at_utc": "2026-07-02T00:00:00Z",
+      "authority": "Loredana C. Levitchi, primary-author contributor to Shadow (2026-06-19)",
+      "status": "active",
+      "superseded_by": null
+    }
+  ]
+}

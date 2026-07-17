@@ -79,8 +79,8 @@
       "label": "Reason-code dictionary version, bound into the signature",
       "level": "required_on_adverse",
       "reg_hooks": ["Reg B 12 CFR 1002.9 (specific reasons)", "SR 26-2 (change control)"],
-      "provided_by": "dictionary_hash / dictionary schema_version in an event extension or payload",
-      "check": { "kind": "binding_present", "keys": ["dictionary_hash", "dictionary_version", "reason_code_dictionary_sha256"] }
+      "provided_by": "dictionary_hash bound in an event extension, resolved against the reason-code-dictionary registry",
+      "check": { "kind": "dictionary_governed" }
     },
     {
       "id": "source_citations",

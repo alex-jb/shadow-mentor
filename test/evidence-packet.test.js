@@ -6,6 +6,7 @@ import assert from "node:assert/strict";
 import { generateKeyPairSync } from "node:crypto";
 import { createSession, appendEvent, sealSession, verifyBundle } from "../packages/attest-core/session.js";
 import { buildExaminerPacket, renderPacketMarkdown } from "../lib/evidence-packet.js";
+import { computeDictionaryHash } from "../lib/enforce-reason-code-dictionary.js";
 
 function conformingBundle() {
   const { privateKey, publicKey } = generateKeyPairSync("ed25519");
@@ -18,7 +19,7 @@ function conformingBundle() {
   appendEvent(s, { event_type: "prompt", actor: "user", payload: { q: "credit" } });
   appendEvent(s, { event_type: "tool_call", actor: "tool", payload: { tool: "bureau_pull" } });
   appendEvent(s, { event_type: "model_output", actor: "model", payload: { decision: "deny" },
-    extensions: { dictionary_hash: "sha256:abc", citation_registry_sha256: "sha256:def" } });
+    extensions: { dictionary_hash: computeDictionaryHash(), citation_registry_sha256: "sha256:def" } });
   appendEvent(s, { event_type: "human_approval", actor: "user", payload: { approved: true } });
   return { bundle: sealSession(s), pub: publicKey.export({ type: "spki", format: "pem" }) };
 }

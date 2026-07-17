@@ -8,6 +8,9 @@ import assert from "node:assert/strict";
 import { generateKeyPairSync } from "node:crypto";
 import { createSession, appendEvent, sealSession, verifyBundle } from "../packages/attest-core/session.js";
 import { checkBankingProfileV1, BANKING_PROFILE_V1 } from "../lib/enforce-banking-profile.js";
+import { computeDictionaryHash } from "../lib/enforce-reason-code-dictionary.js";
+
+const DICT_HASH = computeDictionaryHash(); // the registered, governed dictionary
 
 function keys() {
   const { privateKey, publicKey } = generateKeyPairSync("ed25519");
@@ -29,7 +32,7 @@ function conformingBundle(k) {
   appendEvent(s, { event_type: "tool_call", actor: "tool", payload: { tool: "bureau_pull", as_of: "2026-07-17T00:00:00Z" } });
   appendEvent(s, { event_type: "model_output", actor: "model",
     payload: { decision: "deny", reason_codes: ["AA01", "AA02"] },
-    extensions: { dictionary_hash: "sha256:abc123", citation_registry_sha256: "sha256:def456" } });
+    extensions: { dictionary_hash: DICT_HASH, citation_registry_sha256: "sha256:def456" } });
   appendEvent(s, { event_type: "human_approval", actor: "user", payload: { approved: true, reviewer: "u-9" } });
   return sealSession(s);
 }
@@ -83,6 +86,23 @@ test("required_on_adverse enforced only when payloads reveal an adverse decision
   const rTooMany = checkBankingProfileV1(bundle, { verified, payloads: tooMany });
   assert.equal(rTooMany.pass, false);
   assert.ok(rTooMany.missing_required.includes("principal_reason_codes"));
+});
+
+test("a swapped/unregistered reason-code dictionary fails the gate on an adverse decision", () => {
+  const k = keys();
+  const s = session(k);
+  appendEvent(s, { event_type: "tool_call", actor: "tool", payload: { tool: "bureau_pull" } });
+  appendEvent(s, { event_type: "model_output", actor: "model", payload: { decision: "deny" },
+    extensions: { dictionary_hash: "e".repeat(64) } }); // NOT the registered dictionary
+  appendEvent(s, { event_type: "human_approval", actor: "user", payload: { approved: true } });
+  const bundle = sealSession(s);
+  const verified = verifyBundle(bundle, { publicKey: k.pub });
+  const payloads = { 1: { decision: "deny", reason_codes: ["AA01"] } };
+  const r = checkBankingProfileV1(bundle, { verified, payloads });
+  assert.equal(r.adverse, true);
+  assert.equal(r.pass, false);
+  assert.ok(r.missing_required.includes("reason_code_dictionary_version"));
+  assert.match(r.fields.find((f) => f.id === "reason_code_dictionary_version").detail, /swap|ungoverned/i);
 });
 
 test("without a verify result, integrity is 'unknown' (signature present, not yet verified)", () => {
