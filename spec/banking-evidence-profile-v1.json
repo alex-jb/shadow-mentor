@@ -1,0 +1,102 @@
+{
+  "$comment": "Shadow Banking Evidence Profile v1. This is a PROFILE (a binding over existing regulation), not a new ontology. It enumerates the evidence a single US consumer/commercial CREDIT decision record must contain to be examiner-auditable, maps each requirement to its regulatory hook (Reg B / FCRA / SR 26-2), and says where in a Shadow evidence bundle it is carried. The conformance checker (lib/enforce-banking-profile.js, `shadow-verify --profile banking-v1`) is the enforced artifact: no published standard owns the 'is this credit decision auditable?' pass/fail gate. Field-list precedent exists at the MODEL level (Model Cards, IBM FactSheets) and as generic provenance (W3C PROV); none is a per-decision, credit-regulation-mapped, machine-checkable profile. A generic 'decision event schema' concept is emerging in academia, so first-mover on the credit-specific, checker-enforced version is the defensible position — the differentiation is the regulation mapping + the conformance gate, not the schema.",
+  "profile": "banking-v1",
+  "profile_version": "1.0.0",
+  "applies_to": "single regulated consumer/commercial credit decision (approve / deny / counteroffer / incomplete)",
+  "levels": {
+    "required": "must be present for any bundle to conform to banking-v1",
+    "required_on_adverse": "must be present when the decision is adverse (deny / counteroffer / incomplete)",
+    "recommended": "expected for a complete examiner packet; absence is a warning, not a failure"
+  },
+  "note_on_checking": "Bundle payloads are content-addressed (payload_hash, not inline), so the checker verifies STRUCTURAL presence from the bundle alone (event types, header fields, signatures, extensions). Field-VALUE checks (e.g. reason codes actually AA-mapped) run only when the caller supplies the payloads map. Structural PASS means the evidence slot exists and is tamper-evident; it does not certify the decision was correct.",
+  "fields": [
+    {
+      "id": "integrity",
+      "label": "Cryptographic integrity",
+      "level": "required",
+      "reg_hooks": ["SR 26-2 (evidence of controls)", "general tamper-evidence"],
+      "provided_by": "bundle.signatures[] + bundle.batch_root + hash chain",
+      "check": { "kind": "verify", "detail": "verifyBundle(bundle) ok AND >=1 signature" }
+    },
+    {
+      "id": "decision_outcome",
+      "label": "Decision outcome + decision id",
+      "level": "required",
+      "reg_hooks": ["Reg B 12 CFR 1002.9(a) (notification of action taken)"],
+      "provided_by": "a model_output event; header.session_id as the decision id",
+      "check": { "kind": "event_present", "event_type": "model_output" }
+    },
+    {
+      "id": "model_tool_manifest",
+      "label": "Model / tool manifest (name + version)",
+      "level": "required",
+      "reg_hooks": ["SR 26-2 (model documentation + change control)"],
+      "provided_by": "bundle.header.models[]",
+      "check": { "kind": "header_nonempty", "path": "models" }
+    },
+    {
+      "id": "policy_config_version",
+      "label": "Policy / config / schema version in force",
+      "level": "required",
+      "reg_hooks": ["SR 26-2 (change control)"],
+      "provided_by": "bundle.header.schema_versions",
+      "check": { "kind": "header_present", "path": "schema_versions" }
+    },
+    {
+      "id": "timestamps",
+      "label": "Decision timestamps (application-complete / decision / notice clock)",
+      "level": "required",
+      "reg_hooks": ["Reg B 12 CFR 1002.9(a)(1) (30-day clock)"],
+      "provided_by": "bundle.header.session_started_at_utc + per-event ts_utc",
+      "check": { "kind": "header_present", "path": "session_started_at_utc" }
+    },
+    {
+      "id": "input_data_as_of",
+      "label": "Input data pull + data-as-of timestamp",
+      "level": "required",
+      "reg_hooks": ["FCRA (data used in the decision)", "SR 26-2 (inputs)"],
+      "provided_by": "a tool_call or tool_result event (the data pull)",
+      "check": { "kind": "event_present_any", "event_types": ["tool_call", "tool_result"] }
+    },
+    {
+      "id": "human_review",
+      "label": "Human review / approval (independent judgment)",
+      "level": "required",
+      "reg_hooks": ["Reg B (human judgment)", "CFPB Circular 2022-03", "SR 26-2 (effective challenge)"],
+      "provided_by": "a human_approval event",
+      "check": { "kind": "event_present", "event_type": "human_approval" }
+    },
+    {
+      "id": "principal_reason_codes",
+      "label": "Principal reason codes (<=4), specific + accurate, AA-mapped",
+      "level": "required_on_adverse",
+      "reg_hooks": ["Reg B 12 CFR 1002.9(a)(2)(i) + (b)(2)", "FCRA 615(a)", "CFPB Circular 2022-03 (specific, factors actually used)"],
+      "provided_by": "reason_codes in a model_output / tool_result payload (value-level: requires payloads)",
+      "check": { "kind": "payload_field", "any_event": ["model_output", "tool_result"], "field": "reason_codes", "max_len": 4 }
+    },
+    {
+      "id": "reason_code_dictionary_version",
+      "label": "Reason-code dictionary version, bound into the signature",
+      "level": "required_on_adverse",
+      "reg_hooks": ["Reg B 12 CFR 1002.9 (specific reasons)", "SR 26-2 (change control)"],
+      "provided_by": "dictionary_hash / dictionary schema_version in an event extension or payload",
+      "check": { "kind": "binding_present", "keys": ["dictionary_hash", "dictionary_version", "reason_code_dictionary_sha256"] }
+    },
+    {
+      "id": "source_citations",
+      "label": "Source citations for the factors actually considered",
+      "level": "recommended",
+      "reg_hooks": ["CFPB Circular 2022-03 (factors actually considered)"],
+      "provided_by": "citation_registry binding / citations in a model_output payload",
+      "check": { "kind": "binding_present", "keys": ["citation_registry_sha256", "citations"] }
+    },
+    {
+      "id": "retention_status",
+      "label": "Retention / redaction status",
+      "level": "recommended",
+      "reg_hooks": ["Reg B 12 CFR 1002.12 (25-month retention; 12 for business credit)"],
+      "provided_by": "retention flag in header.extensions or a session_end payload; GDPR-erasure via payload_ref nulling",
+      "check": { "kind": "binding_present", "keys": ["retention_status", "retention_until", "redaction"] }
+    }
+  ]
+}
