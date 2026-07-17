@@ -142,9 +142,10 @@ test("shadow-verify action declares the expected inputs", () => {
   const doc = parseYaml(raw);
   const inputs = doc.inputs;
   assert.ok(inputs, "inputs required");
-  for (const key of ["bundle", "public-key", "fail-on-mismatch"]) {
+  for (const key of ["bundle", "public-key", "fail-on-mismatch", "profile"]) {
     assert.ok(inputs[key], `input.${key} missing`);
   }
+  assert.equal(inputs.profile.default, "");
   assert.equal(inputs.bundle.required, "true");
   assert.equal(inputs["public-key"].required, "true");
   assert.equal(inputs["fail-on-mismatch"].default, "true");
@@ -156,7 +157,7 @@ test("shadow-verify action declares the expected outputs", () => {
   const doc = parseYaml(raw);
   const outputs = doc.outputs;
   assert.ok(outputs);
-  for (const key of ["ok", "reason", "failed_seq", "session_id", "event_count", "batch_root"]) {
+  for (const key of ["ok", "reason", "failed_seq", "session_id", "event_count", "batch_root", "profile_conforms", "profile_coverage"]) {
     assert.ok(outputs[key], `output.${key} missing`);
   }
 });
