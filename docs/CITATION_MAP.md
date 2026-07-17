@@ -12,6 +12,8 @@
 
 **Also available as `docs/CITATION_MAP.csv`** for procurement counsel who want to filter / sort / import into a GRC system.
 
+**Also available as `docs/citation-map.json`** (machine-readable, one object per `<persona, citation, test file>` triple) — generated from this document by `scripts/build-citation-map.mjs` and validated in CI by `test/citation-map.test.js` (every referenced test file must exist, every persona must be real, JSON must stay in sync with this doc). Query it: `npm run citation -- "1002.9"` or `node scripts/citation-map-query.mjs "OFAC"` returns the controls + the exact test files that prove coverage.
+
 ---
 
 ## 0. Recommended procurement format — 4-layer structure
@@ -95,7 +97,7 @@ The AML/KYC voice is opt-in: it attaches only when the loan payload contains `am
 | **GDPR Article 22** | Automated individual decision-making + right to meaningful information | Fair Lending + Customer Advocate | `test/reason-code-dictionary.test.js` | 17 |
 | **ECJ Schufa case (C-634/21)** | 2023 ruling — credit scoring qualifies as "automated decision" under Article 22 | Fair Lending + Customer Advocate | `test/traceability-reproducibility.test.js` | 14 |
 | **EU AI Act Article 14 — human oversight** | High-risk system oversight — audit trail export requirements | All 6 | `test/attestation-acceptance-demo.test.js` | (chain) |
-| **EU AI Act — credit-scoring deferral to 2027-12-02** | Digital Omnibus Regulation 2026-05 pushed credit-scoring deadlines | (context only) | (documented in `docs/EU_AI_ACT_STATUS.md`) | N/A |
+| **EU AI Act — credit-scoring deferral to 2027-12-02** | Digital Omnibus Regulation 2026-05 pushed credit-scoring deadlines | (context only) | (documented in `docs/eu-ai-act-self-attestation-shadow.md`) | N/A |
 
 ### 2.5 Investor conduct / suitability (advisor pack)
 
