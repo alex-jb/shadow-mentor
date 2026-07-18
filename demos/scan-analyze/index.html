@@ -79,6 +79,10 @@
   body.glasses .claim .pill{font-size:15px;padding:2px 12px}
   body.glasses #run{font-size:18px;padding:16px}
   body.glasses #source,body.glasses #sealed{font-size:14px}
+  #voice{position:fixed;bottom:14px;left:16px;z-index:9;font-family:var(--mono);font-size:12px;color:var(--dim);display:flex;align-items:center;gap:8px}
+  #mic{width:9px;height:9px;border-radius:50%;background:#444}
+  #mic.hot{background:var(--bad);box-shadow:0 0 8px var(--bad)}
+  body.glasses #voice{font-size:15px}
 </style>
 </head>
 <body>
@@ -107,6 +111,7 @@
     </div>
   </aside>
 </div>
+<div id="voice"><span id="mic"></span><span id="voice-txt">hold Space to talk · voice needs network</span></div>
 
 <script type="module">
 // ── worked demo data (two verticals) ────────────────────────────────
@@ -261,6 +266,7 @@ $("#run").addEventListener("click", async ()=>{
   const tone = res.verdict.tone;
   $("#verdict").className="";
   $("#verdict").innerHTML = `<span class="tag ${tone}">${tone.toUpperCase()}</span>${res.verdict.text}`;
+  speak(`${tone}. ${res.verdict.text}`); // read the answer aloud — hands-free on the glasses
   $("#claims").innerHTML = res.claims.map((c)=>{
     const ref = (c.cell!=null)
       ? `<span class="pill" data-cell="${c.cell}">source ↩</span>`
@@ -311,8 +317,35 @@ function setGlasses(on){ document.body.classList.toggle("glasses", on); }
 if(new URLSearchParams(location.search).get("glasses")==="1") setGlasses(true);
 addEventListener("keydown",(e)=>{ if(e.key.toLowerCase()==="g" && !e.metaKey && !e.ctrlKey){ setGlasses(!document.body.classList.contains("glasses")); }});
 
+// ── voice: TTS reads the answer; hold Space to speak a command ──────
+let ttsOn = true;
+function speak(t){ if(!ttsOn||!window.speechSynthesis||!t) return; try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); u.rate=1.05; speechSynthesis.speak(u); }catch{} }
+function flashVoice(t){ const v=$("#voice-txt"); if(v) v.textContent=t; }
+function parseIntent(s){ s=(s||"").toLowerCase();
+  if(/analy|run|assess|read|review/.test(s)) return "analyze";
+  if(/scan|upload|capture|document|photo/.test(s)) return "scan";
+  if(/seal|sign|evidence|attest/.test(s)) return "seal";
+  if(/statement|financial/.test(s)) return "statement";
+  if(/chart|scatter|data/.test(s)) return "chart";
+  if(/glass|big|hud/.test(s)) return "glasses";
+  return "unknown"; }
+function dispatch(intent){
+  if(intent==="analyze") $("#run").click();
+  else if(intent==="scan") $("#scanfile").click();
+  else if(intent==="seal"){ if(!$("#seal").hidden) $("#seal").click(); }
+  else if(intent==="statement"||intent==="chart"){ document.querySelectorAll(".toggle button").forEach(x=>x.classList.remove("on")); const b=document.querySelector('.toggle button[data-kind="'+intent+'"]'); if(b){ b.classList.add("on"); kind=intent; renderArtifact(); } }
+  else if(intent==="glasses") setGlasses(!document.body.classList.contains("glasses"));
+  else flashVoice("didn't catch that");
+}
+const SR = window.SpeechRecognition||window.webkitSpeechRecognition; let rec=null, listening=false;
+if(SR){ rec=new SR(); rec.lang="en-US"; rec.interimResults=false;
+  rec.onresult=e=>{ const t=e.results[e.results.length-1][0].transcript; flashVoice('"'+t+'"'); dispatch(parseIntent(t)); };
+  rec.onend=()=>{ listening=false; const m=$("#mic"); if(m) m.classList.remove("hot"); }; }
+addEventListener("keydown",(e)=>{ if(e.code==="Space" && SR && !listening && e.target.tagName!=="INPUT"){ e.preventDefault(); try{ rec.start(); listening=true; const m=$("#mic"); if(m) m.classList.add("hot"); flashVoice("listening…"); }catch{} } });
+addEventListener("keyup",(e)=>{ if(e.code==="Space" && listening){ try{ rec.stop(); }catch{} } });
+
 renderArtifact();
-window.__scanAnalyze = { analyze, setKind:k=>{kind=k;renderArtifact();}, setGlasses };
+window.__scanAnalyze = { analyze, setKind:k=>{kind=k;renderArtifact();}, setGlasses, speak, dispatch };
 // auto-run for headless verification / a self-driving demo
 if(location.search.includes("auto")) setTimeout(()=>{ $("#run").click(); setTimeout(()=>$("#seal").click(), 1000); }, 200);
 </script>
