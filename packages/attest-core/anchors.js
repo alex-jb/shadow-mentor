@@ -1,36 +1,44 @@
 // packages/attest-core/anchors.js
 // ─────────────────────────────────────────────────────────────────
-// v3 M3 sprint 1 — external anchoring.
+// v3 M3 — external anchoring (RFC 3161 time-stamping + Rekor transparency log).
 //
 // RFC 3161 Time-Stamp Protocol (TSA) client + verifier. Given a Shadow
 // evidence-bundle batch_root, requestTimestamp() posts a TimeStampReq to
 // a TSA and returns an anchor object embeddable in bundle.external_anchors.
-// verifyRfc3161Anchor() parses the returned TimeStampToken, checks that
-// the messageImprint matches the expected batch_root, extracts genTime.
+// verifyRfc3161Anchor() parses the returned TimeStampToken, checks that the
+// messageImprint matches the expected batch_root, extracts genTime, and —
+// when given the TSA/CA certificates — verifies the CMS SignedData signature
+// and certificate chain. A parallel Rekor path (submitRekorEntry /
+// verifyRekorAnchor) anchors the same batch_root in a public transparency log.
+//
+// Trust posture is graded, and the STRUCTURAL levels are the honest fallback,
+// not a limitation — the verifier returns the full level only when the inputs
+// for cryptographic verification are actually supplied:
+//   - RFC 3161: messageImprint + genTime alone → TIME_ANCHORED_STRUCTURAL;
+//     add CMS signature + trusted CA chain (verifyCmsSignature +
+//     validateCmsCertChain) → TIME_ANCHORED.
+//   - Rekor: entry payloadHash matches batch_root → LOG_ANCHORED_STRUCTURAL;
+//     add inclusion proof against the tree head + SET signature
+//     (verifyInclusionProof + verifyRekorSet, with a caller-supplied Rekor
+//     public key) → LOG_ANCHORED.
 //
 // Design constraints:
-//   - Zero external dependencies. All ASN.1 DER encoding + decoding is
-//     implemented inline against the specific structures RFC 3161 uses
-//     (TimeStampReq / TimeStampResp / TSTInfo). This keeps the attest-core
-//     zero-LLM-dep contract clean and makes bank-side security review
-//     simpler (no third-party crypto library to audit).
-//   - The verifier checks structural integrity (messageImprint match +
-//     genTime extraction). Sprint 1 does NOT verify the TSA's signature
-//     on the token — that requires full CMS SignedData parsing +
-//     certificate chain validation. Sprint 2 lands that. Until then, the
-//     trust level for a bundle with an anchor is reported as
-//     TIME_ANCHORED_STRUCTURAL, not TIME_ANCHORED. This is honest posture,
-//     not marketing.
-//   - No default TSA URL hard-coded to a specific vendor. The caller
-//     picks; documented free-tier options live in the module docstring.
-//     Freetsa.org (freetsa.org/tsr) is the widely-tested community
-//     default; DigiCert and Sectigo publish TSAs at published URLs. Any
-//     RFC 3161-compliant TSA works.
+//   - Zero external dependencies. All ASN.1 DER encoding + decoding (incl.
+//     CMS SignedData / X.509 chain parsing) is implemented inline against the
+//     specific structures these RFCs use. This keeps the attest-core
+//     zero-LLM-dep contract clean and makes bank-side security review simpler
+//     (no third-party crypto library to audit).
+//   - No default TSA URL hard-coded to a specific vendor. The caller picks.
+//     Freetsa.org (freetsa.org/tsr) is the widely-tested community default;
+//     DigiCert and Sectigo publish TSAs at published URLs. Any RFC 3161-
+//     compliant TSA works. Rekor defaults to the public Sigstore instance but
+//     accepts any Rekor-compatible endpoint + public key.
 //
 // References:
 //   - RFC 3161 (Time-Stamp Protocol / TSP)
-//   - RFC 5652 (Cryptographic Message Syntax)
-//   - RFC 5280 (X.509 certificate profile) — for sprint 2 signature check
+//   - RFC 5652 (Cryptographic Message Syntax) — CMS SignedData signature check
+//   - RFC 5280 (X.509 certificate profile) — TSA certificate-chain validation
+//   - Sigstore Rekor (transparency-log inclusion proof + SET)
 
 import { createHash, createPublicKey, verify as cryptoVerify, X509Certificate } from "node:crypto";
 
@@ -41,23 +49,21 @@ import { createHash, createPublicKey, verify as cryptoVerify, X509Certificate } 
 // docs/AUTONOMOUS_SESSION_RULES.md rule 3 applies here transitively.
 export const TRUST_LEVELS = Object.freeze({
   SELF_SIGNED: "SELF_SIGNED",
-  // Sprint 1 exits: chain intact + at least one RFC 3161 anchor whose
-  // messageImprint matches the bundle's batch_root. Structural check
-  // only; TSA signature not yet verified.
+  // Chain intact + at least one RFC 3161 anchor whose messageImprint matches
+  // the bundle's batch_root. Structural check only — the caller did not supply
+  // the CMS signature / CA chain needed to verify the TSA's signature.
   TIME_ANCHORED_STRUCTURAL: "TIME_ANCHORED_STRUCTURAL",
-  // Sprint 2 target: chain intact + RFC 3161 anchor whose CMS SignedData
-  // signature verifies against a trusted CA chain. Not exposed until
-  // sprint 2 ships; declared here so callers can pattern-match on the
-  // full enum today.
+  // Chain intact + RFC 3161 anchor whose CMS SignedData signature verifies
+  // against a trusted CA chain (verifyCmsSignature + validateCmsCertChain).
   TIME_ANCHORED: "TIME_ANCHORED",
-  // Sprint 3 exits: chain intact + Rekor entry body's payloadHash matches
-  // the bundle's batch_root. Log-operator received the entry; inclusion
-  // proof + SET signature not yet verified.
+  // Chain intact + Rekor entry body's payloadHash matches the bundle's
+  // batch_root. Log-operator received the entry; inclusion proof + SET
+  // signature not supplied for this check.
   LOG_ANCHORED_STRUCTURAL: "LOG_ANCHORED_STRUCTURAL",
-  // Sprint 3 target: chain intact + Rekor inclusion proof against the
-  // published tree head + SET signature verified with a caller-supplied
-  // Rekor public key. Publicly witnessed — a bundle at this level cannot
-  // be silently rewritten by a compromised operator alone.
+  // Chain intact + Rekor inclusion proof against the published tree head + SET
+  // signature verified with a caller-supplied Rekor public key
+  // (verifyInclusionProof + verifyRekorSet). Publicly witnessed — a bundle at
+  // this level cannot be silently rewritten by a compromised operator alone.
   LOG_ANCHORED: "LOG_ANCHORED",
 });
 
