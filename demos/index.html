@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shadow — demos</title>
+<style>
+  :root{ --bg:#0a0c10; --fg:#e8ecf2; --dim:#8b93a1; --line:#1c2230; --ok:#38d39f; --warn:#f5c451; --accent:#6ea8ff; --mono:ui-monospace,"SF Mono",Menlo,monospace; }
+  *{box-sizing:border-box} html,body{margin:0}
+  body{background:var(--bg);color:var(--fg);font:16px/1.5 -apple-system,system-ui,sans-serif;
+       min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6vh 5vw;gap:28px}
+  h1{margin:0;font-size:30px;letter-spacing:.3px} h1 b{color:var(--accent)}
+  .sub{color:var(--dim);font-family:var(--mono);font-size:13px;margin-top:-14px;text-align:center;max-width:640px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;width:100%;max-width:920px}
+  a.card{display:block;text-decoration:none;color:inherit;background:#0f131b;border:1px solid var(--line);
+         border-radius:14px;padding:20px 22px;transition:border-color .15s,transform .1s}
+  a.card:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .act{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.5px}
+  .card h2{margin:6px 0 6px;font-size:20px}
+  .card p{margin:0;color:var(--dim);font-size:13.5px}
+  .tag{display:inline-block;margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--ok);
+       border:1px solid #1e3a2f;background:#0d1a15;border-radius:999px;padding:3px 9px}
+  .tag.warn{color:var(--warn);border-color:#3a3320;background:#1a160d}
+  .foot{color:var(--dim);font-size:13px;max-width:680px;text-align:center;line-height:1.7}
+  .foot b{color:var(--fg)}
+  @media(max-width:520px){h1{font-size:24px}}
+</style>
+</head>
+<body>
+  <h1>Shadow — <b>Wednesday demo</b></h1>
+  <div class="sub">Scan a document → an AI produces an answer → every claim traces to its source → the whole thing is Ed25519-signed into an evidence bundle anyone can verify offline. Tap an act. Each works offline.</div>
+
+  <div class="grid">
+    <a class="card" href="scan-analyze/index.html?glasses=1">
+      <div class="act">ACT 1 · GLASSES HUD</div>
+      <h2>Scan → answer</h2>
+      <p>Upload a financial doc, Analyze, hear the verdict, seal it. Big single-column HUD for the One Pro. Hold Space to talk.</p>
+      <span class="tag">offline mock + real vision</span>
+    </a>
+    <a class="card" href="spatial-finance/index.html?stereo=1">
+      <div class="act">ACT 2 · SBS STEREO</div>
+      <h2>3D spatial view</h2>
+      <p>Risk-return cloud in side-by-side stereo — fuses to depth on the glasses. <b>S</b> toggles, <b>[</b>/<b>]</b> tune eye-sep, <b>W</b> what-if, <b>P</b> replay.</p>
+      <span class="tag warn">confirm fusion on-device</span>
+    </a>
+    <a class="card" href="scan-analyze/index.html">
+      <div class="act">ACT 1 · LAPTOP</div>
+      <h2>Scan → answer (flat)</h2>
+      <p>Same demo, normal layout — good for the laptop mirror or a projector. Press <b>G</b> to jump to glasses HUD.</p>
+      <span class="tag">no glasses needed</span>
+    </a>
+    <a class="card" href="spatial-replay/index.html">
+      <div class="act">BONUS</div>
+      <h2>Spatial replay</h2>
+      <p>Replay a sealed session's decisions through the hash-chain — the audit surface that's genuinely 3D-native.</p>
+      <span class="tag">offline</span>
+    </a>
+  </div>
+
+  <div class="foot">
+    Voice is folded into Acts 1 &amp; 2 (hold <b>Space</b>). Keyboard is authoritative — if the venue is offline, skip voice and drive by key.
+    Real vision on Act 1 needs the <b>/api/scan-analyze</b> endpoint deployed + <b>ANTHROPIC_API_KEY</b>; otherwise it uses the offline worked-mock. Full runbook: <b>docs/wednesday-demo-runbook.md</b>.
+  </div>
+</body>
+</html>
