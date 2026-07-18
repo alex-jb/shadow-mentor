@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shadow · spatial evidence replay · glass v1</title>
+<style>
+  :root {
+    --bg: #08090c;
+    --ink: #e8ecf3;
+    --ink-dim: #8b95a8;
+    --line: rgba(255,255,255,0.08);
+    --panel: rgba(20, 24, 34, 0.72);
+    --good: #4ade80;
+    --danger: #f87171;
+    --font: -apple-system, 'SF Pro Display', 'PingFang SC', sans-serif;
+    --mono: 'SF Mono', 'JetBrains Mono', Menlo, monospace;
+  }
+  html, body { margin: 0; padding: 0; overflow: hidden; background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+  #hud {
+    position: fixed; top: 0; left: 0; right: 0; padding: 18px 28px;
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 10; pointer-events: none;
+    background: linear-gradient(180deg, rgba(8,9,12,.85), transparent);
+  }
+  #hud .brand { display: flex; align-items: center; gap: 10px; }
+  #hud .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--good); box-shadow: 0 0 8px var(--good); }
+  #hud .dot.red { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
+  #hud .title { font-size: 14px; font-weight: 500; letter-spacing: 0.3px; }
+  #hud .subtitle { font-size: 12px; color: var(--ink-dim); font-weight: 400; margin-left: 10px; }
+  #hud .badges { display: flex; gap: 6px; font-size: 11px; color: var(--ink-dim); font-family: var(--mono); }
+  #hud .badge { padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); backdrop-filter: blur(20px); }
+  #verdict {
+    position: fixed; top: 68px; left: 50%; transform: translateX(-50%);
+    padding: 8px 18px; border-radius: 999px; font-size: 12px; font-family: var(--mono);
+    letter-spacing: 0.3px; z-index: 10; pointer-events: none;
+    background: var(--panel); backdrop-filter: blur(20px);
+    border: 1px solid rgba(74, 222, 128, 0.35); color: var(--good);
+    box-shadow: 0 0 24px rgba(74, 222, 128, 0.15);
+  }
+  #verdict.red {
+    border-color: rgba(248, 113, 113, 0.5); color: var(--danger);
+    box-shadow: 0 0 24px rgba(248, 113, 113, 0.2);
+  }
+  #inspector {
+    position: fixed; right: 24px; top: 120px; width: 340px;
+    padding: 20px 22px; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 16px; font-size: 12px; line-height: 1.55; z-index: 10;
+    display: none; backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  }
+  #inspector .close {
+    position: absolute; top: 12px; right: 16px; cursor: pointer; color: var(--ink-dim);
+    font-size: 14px; user-select: none;
+  }
+  #inspector .close:hover { color: var(--ink); }
+  #inspector .head {
+    font-size: 15px; font-weight: 600; letter-spacing: 0.2px;
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+  }
+  #inspector .type-dot { width: 10px; height: 10px; border-radius: 50%; }
+  #inspector .k { color: var(--ink-dim); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 14px; }
+  #inspector .v { color: var(--ink); word-break: break-all; font-family: var(--mono); font-size: 11px; margin-top: 3px; }
+  #actions {
+    position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 10px; z-index: 10;
+  }
+  #actions button {
+    padding: 10px 22px; background: var(--panel); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 999px;
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.4px;
+    cursor: pointer; backdrop-filter: blur(20px);
+    transition: all 0.15s ease;
+  }
+  #actions button:hover { border-color: #7dd3fc; color: #7dd3fc; }
+  #actions button.danger { border-color: rgba(248,113,113,0.35); color: #fca5a5; }
+  #actions button.danger:hover { border-color: var(--danger); color: var(--danger); box-shadow: 0 0 24px rgba(248,113,113,0.25); }
+  #actions button:disabled { opacity: 0.35; cursor: not-allowed; }
+  #footer {
+    position: fixed; bottom: 12px; left: 24px; right: 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: var(--ink-dim); z-index: 10; pointer-events: none;
+    font-family: var(--mono);
+  }
+</style>
+</head>
+<body>
+
+<div id="hud">
+  <div class="brand">
+    <span class="dot" id="status-dot"></span>
+    <span class="title">Shadow</span>
+    <span class="subtitle">spatial evidence replay · frosted glass v1</span>
+  </div>
+  <div class="badges">
+    <span class="badge" id="badge-sid">sid …</span>
+    <span class="badge" id="badge-count">… events</span>
+    <span class="badge" id="badge-agent">agent …</span>
+  </div>
+</div>
+
+<div id="verdict">verifying…</div>
+
+<div id="inspector">
+  <span class="close" onclick="document.getElementById('inspector').style.display='none'">✕</span>
+  <div class="head">
+    <span class="type-dot" id="ins-dot"></span>
+    <span id="ins-title">event</span>
+  </div>
+  <div style="font-size:11px; color: var(--ink-dim); font-family: var(--mono);" id="ins-actor">actor · —</div>
+  <div class="k">seq</div><div class="v" id="ins-seq">—</div>
+  <div class="k">payload_hash</div><div class="v" id="ins-hash">—</div>
+  <div class="k">prev_hash</div><div class="v" id="ins-prev">—</div>
+</div>
+
+<div id="actions">
+  <button id="btn-tamper" class="danger" disabled>Tamper &amp; verify</button>
+  <button id="btn-reset" disabled>Reset</button>
+</div>
+
+<div id="footer">
+  <div>drag · rotate · scroll · zoom · click card · inspect</div>
+  <div><span id="fps">— fps</span></div>
+</div>
+
+<script id="embedded-bundle" type="application/json">
+{"bundle_version":1,"spec_version":"shadow-evidence/v1","header":{"session_id":"phase2-demo-2026-07-13","session_started_at_utc":"2026-07-13T14:00:00.000Z","session_ended_at_utc":"2026-07-13T14:00:08.050Z","agent":{"name":"claude-code","version":"2.1.116","identity_ref":null},"models":[{"model_id":"claude-opus-4-7","provider":"anthropic","sampling_params_hash":null}],"environment_fingerprint":{"os":"darwin-25.3.0","node_version":"v24.14.1","hostname_hash":null},"schema_versions":{"bundle":1,"attest_core":"2.0.0"}},"events":[{"seq":0,"ts_utc":"2026-07-13T14:00:00.000Z","event_type":"session_start","actor":"system","payload_hash":"14244303f6170cf45b603c494591161d92b3ee613f8c1bee12bce1919033fcf2","payload_ref":"sha256:14244303f6170cf45b603c494591161d92b3ee613f8c1bee12bce1919033fcf2","prev_hash":"8f0a6a25069f9a004eed7f45fd59f35e4f6036873e84fd62f00c091df25c132a","extensions":{"discovered_agent_version":"2.1.116","discovered_model_id":"claude-opus-4-7"}},{"seq":1,"ts_utc":"2026-07-13T14:00:00.900Z","event_type":"prompt","actor":"user","payload_hash":"6cc51c32ac496de3e0900dee735550f89c277fb4a550b62b57642dd0dda49009","payload_ref":"sha256:6cc51c32ac496de3e0900dee735550f89c277fb4a550b62b57642dd0dda49009","prev_hash":"ac5fdd3325907fc69e8a0f586fd86fa6e705b533ce0939ddcf4bd06e99b3ec67","extensions":{"discovered_agent_version":"2.1.116","discovered_model_id":"claude-opus-4-7","tool":null}},{"seq":2,"ts_utc":"2026-07-13T14:00:01.200Z","event_type":"tool_call","actor":"agent","payload_hash":"29fd831215c367700f360639d044caf57b2b52a60758941a6b26750c19a133c8","payload_ref":"sha256:29fd831215c367700f360639d044caf57b2b52a60758941a6b26750c19a133c8","prev_hash":"5ebd67f159483385591cb5f93b4e62e4bbcbccefc3247060a2dc1bac03257e60","extensions":{"discovered_agent_version":"2.1.116","discovered_model_id":"claude-opus-4-7","tool":"Read"}},{"seq":3,"ts_utc":"2026-07-13T14:00:01.400Z","event_type":"tool_result","actor":"tool","payload_hash":"fb321ac9372e7f9ffe1ccf198b79c9533ecc7127a917d2d3c2f358c31f892066","payload_ref":"sha256:fb321ac9372e7f9ffe1ccf198b79c9533ecc7127a917d2d3c2f358c31f892066","prev_hash":"7057a686e4b0734c32071247dbc0f0a5fce17a6bdabc71ad6c509b1f5d07a4d4","extensions":{"discovered_agent_version":"2.1.116","discovered_model_id":"claude-opus-4-7","tool":"Read"}},{"seq":4,"ts_utc":"2026-07-13T14:00:01.750Z","event_type":"tool_call","actor":"agent","payload_hash":"ad3c45282ad9f65961bc550e1cf32e8831d3dadb92162e7097625cdcf63b3541","payload_ref":"sha256:ad3c45282ad9f65961bc550e1cf32e8831d3dadb92162e7097625cdcf63b3541","prev_hash":"96a8550b4c9000742cd7dead6f6bd8d7d84dd73a8ff7fbf8a3afea0146fe9084","extensions":{"discovered_agent_version":"2.1.116","discovered_model_id":"claude-opus-4-7","tool":"Grep"}},{"seq":5,"ts_utc":"2026-07-13T14:00:02.000Z","event_type":"tool_result","actor":"tool","payload_hash":"8f7666995538839ab605d9da6ac623b2221378c0eacb51bb007d8f02bf7b3fef","payload_ref":"sha256:8f7666995538839ab605d9da6ac623b2221378c0eacb51bb007d8f02bf7b3fef","prev_hash":"ade3d7a9d1ed000157183837ce0751512ae74954f07d8a67defe4af91522e030","extensions":{"discovered_agent_version":"2.1.116","discovered_model_id":"claude-opus-4-7","tool":"Grep"}},{"seq":6,"ts_utc":"2026-07-13T14:00:02.450Z","event_type":"tool_call","actor":"agent","payload_hash":"ee9037961f47773c43418e6d9143a4d44997cd89b8a213d5f00a5456459dcbc3","payload_ref":"sha256:ee9037961f47773c43418e6d9143a4d44997cd89b8a213d5f00a5456459dcbc3","prev_hash":"15bf5976433eedc3afba53a581e3574598b177794143df0f07603f715a01edef","extensions":{"discovered_agent_version":"2.1.116","discovered_model_id":"claude-opus-4-7","tool":"Edit"}},{"seq":7,"ts_utc":"2026-07-13T14:00:02.650Z","event_type":"tool_result","actor":"tool","payload_hash":"60d39b26a82f5efa655cea6b02b7d667a04f1c1a5b4eaf4bf6858d179c77c0ce","payload_ref":"sha256:60d39b26a82f5efa655cea6b02b7d667a04f1c1a5b4eaf4bf6858d179c77c0ce","prev_hash":"45ce4ea51eee9a5841effc9c7c1fd21d5308a6f05c6d6c67d37ad5e39f481e75","extensions":{"discovered_agent_version":"2.1.116","discovered_model_id":"claude-opus-4-7","tool":"Edit"}},{"seq":8,"ts_utc":"2026-07-13T14:00:03.150Z","event_type":"tool_call","actor":"agent","payload_hash":"409bce6759d882d3d637e93467aedb5aaa3e82d7ec0075baac95af38e501e3ab","payload_ref":"sha256:409bce6759d882d3d637e93467aedb5aaa3e82d7ec0075baac95af38e501e3ab","prev_hash":"841826803163a235cd6afadb6c26df7380a0ba65a7093eb2d0ba6d9689fe06c9","extensions":{"discovered_agent_version":"2.1.116","discovered_model_id":"claude-opus-4-7","tool":"Bash"}},{"seq":9,"ts_utc":"2026-07-13T14:00:06.950Z","event_type":"tool_result","actor":"tool","payload_hash":"4b7cfa29565ec5f51d0ca6005d1cd3e32199b07d0c358c9300eabf60d45dfa3b","payload_ref":"sha256:4b7cfa29565ec5f51d0ca6005d1cd3e32199b07d0c358c9300eabf60d45dfa3b","prev_hash":"48658de8db2aa6617bfcfc8bd4e4bf1542c42c8592e042ae97fac759fa6e641d","extensions":{"discovered_agent_version":"2.1.116","discovered_model_id":"claude-opus-4-7","tool":"Bash"}},{"seq":10,"ts_utc":"2026-07-13T14:00:07.850Z","event_type":"turn_end","actor":"agent","payload_hash":"6f54b5e9c4e7f61fb0d90288c8778b5b05bdd3246dbc9a780be6ed651fce5156","payload_ref":"sha256:6f54b5e9c4e7f61fb0d90288c8778b5b05bdd3246dbc9a780be6ed651fce5156","prev_hash":"bf6e4cf4d7f9948588a8ca8a5466e14097a65d0814c208871c238df8345af031","extensions":{"discovered_agent_version":"2.1.116","discovered_model_id":"claude-opus-4-7","tool":null}},{"seq":11,"ts_utc":"2026-07-13T14:00:08.050Z","event_type":"session_end","actor":"system","payload_hash":"7843300667cf48717837e10582eff0767899255961865858c2810f012872f22e","payload_ref":"sha256:7843300667cf48717837e10582eff0767899255961865858c2810f012872f22e","prev_hash":"a65e7cec82d038c5eff16cc211c7fdfc5aa7292b5fff7e9b866eaa5299378ac7","extensions":{}}],"batch_root":"b80c45eb09395ad5e64ff9503b25511558c235c6a83ab6b842ca2c9d2efbfa91","signatures":[{"algorithm":"ed25519","key_id":"claude-code-local","signature":"3002lTPXuybN5575EUKULDegrmf6oiaQ-PiuuJdLh7kMDeSAUaBDaq0uBAwM6qOTASp8nwKytOB0xJjPt-85Aw","signed_at_utc":"2026-07-13T18:14:06.209Z"}]}
+</script>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const C = {
+  CARD_W: 1.7, CARD_H: 1.08, CARD_THICK: 0.06,
+  CARD_ARC_RADIUS: 8.5, CARD_ARC_SPAN: 1.35, CARD_TILT: 0.10, CARD_Y_JITTER: 0.05,
+  CAMERA_FOV: 45, CAMERA_POS: [0, 1.8, 9.5], CAMERA_TARGET: [0, 0.5, 0],
+  LABEL_PX: 512, TITLE_FONT_PX: 48, META_FONT_PX: 26, HASH_FONT_PX: 24,
+  BG: 0x08090c, GLASS_TINT: 0xa8b8d0,
+  TYPE_COLOR: {
+    session_start: '#7dd3fc', session_end: '#7dd3fc',
+    prompt: '#fbbf24', tool_call: '#4ade80', tool_result: '#a78bfa', turn_end: '#94a3b8',
+  },
+  TYPE_HEX: {
+    session_start: 0x7dd3fc, session_end: 0x7dd3fc,
+    prompt: 0xfbbf24, tool_call: 0x4ade80, tool_result: 0xa78bfa, turn_end: 0x94a3b8,
+  },
+  DANGER: '#f87171', DANGER_HEX: 0xf87171,
+  CASCADE_MS_PER_CARD: 40,
+  TAMPER_SEQ: 5,
+};
+
+const PUBLIC_KEY_PEM = `-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEA81ufkotYvTHOmsIDmlcNvjveiQsTJUCP47u50iOQadg=
+-----END PUBLIC KEY-----`;
+
+// ─── Verify logic · ported from verify.html ────────────────────────
+function canonicalize(v){if(v===null||typeof v!=='object')return JSON.stringify(v);if(Array.isArray(v))return '['+v.map(canonicalize).join(',')+']';const k=Object.keys(v).sort();return '{'+k.map(k=>JSON.stringify(k)+':'+canonicalize(v[k])).join(',')+'}';}
+function canonicalBytes(v){return new TextEncoder().encode(canonicalize(v));}
+async function sha256Hex(b){const buf=await crypto.subtle.digest('SHA-256',b);return[...new Uint8Array(buf)].map(x=>x.toString(16).padStart(2,'0')).join('');}
+async function headerSeedHash(h){return sha256Hex(canonicalBytes({...h,session_ended_at_utc:null}));}
+function signedShape(e){const{payload_ref,...r}=e;return r;}
+function hexToBytes(h){const o=new Uint8Array(h.length/2);for(let i=0;i<o.length;i++)o[i]=parseInt(h.substr(i*2,2),16);return o;}
+function b64urlToBytes(s){const p=s.replace(/-/g,'+').replace(/_/g,'/')+'=='.slice(0,(4-s.length%4)%4);const b=atob(p);const o=new Uint8Array(b.length);for(let i=0;i<b.length;i++)o[i]=b.charCodeAt(i);return o;}
+function pemToSpki(p){const c=p.replace(/-----BEGIN [^-]+-----|-----END [^-]+-----|\s+/g,'');const b=atob(c);const o=new Uint8Array(b.length);for(let i=0;i<b.length;i++)o[i]=b.charCodeAt(i);return o.buffer;}
+function fail(seq,reason,impact){return{ok:false,error:{seq,reason,impact}};}
+
+async function verifyBundle(bundle, publicKeyPem) {
+  if (!bundle || bundle.bundle_version !== 1) return fail(null, 'bundle_missing', 'not v1');
+  if (!Array.isArray(bundle.events)) return fail(null, 'events_not_array', 'no events');
+  if (!Array.isArray(bundle.signatures) || !bundle.signatures.length) return fail(null, 'signatures_missing', 'unsigned');
+  const seed = await headerSeedHash(bundle.header);
+  let expectedPrev = seed;
+  const eventHashes = [];
+  for (let i = 0; i < bundle.events.length; i++) {
+    const ev = bundle.events[i];
+    if (ev.seq !== i) return fail(i, 'seq_gap', `event ${i} declares seq ${ev.seq}`);
+    if (ev.prev_hash !== expectedPrev) return fail(i, 'prev_hash_mismatch', `chain broken at seq ${i}`);
+    const own = await sha256Hex(canonicalBytes(signedShape(ev)));
+    eventHashes.push(own);
+    expectedPrev = own;
+  }
+  const concat = new Uint8Array(eventHashes.length * 32);
+  eventHashes.forEach((h, i) => concat.set(hexToBytes(h), i * 32));
+  const batchRoot = await sha256Hex(concat);
+  if (batchRoot !== bundle.batch_root) return fail(null, 'batch_root_mismatch', 'merkle mismatch');
+  const sig = bundle.signatures[0];
+  if (sig.algorithm !== 'ed25519') return fail(null, 'sig_algo_unsupported', sig.algorithm);
+  let key;
+  try {
+    key = await crypto.subtle.importKey('spki', pemToSpki(publicKeyPem), { name: 'Ed25519' }, false, ['verify']);
+  } catch (e) { return fail(null, 'pubkey_import_failed', e.message); }
+  const ok = await crypto.subtle.verify({ name: 'Ed25519' }, key, b64urlToBytes(sig.signature), hexToBytes(batchRoot));
+  if (!ok) return fail(null, 'signature_verification_failed', 'invalid signature');
+  return { ok: true, batchRoot, sessionId: bundle.header.session_id };
+}
+
+// ─── State ─────────────────────────────────────────────────────────
+const ORIGINAL_BUNDLE = JSON.parse(document.getElementById('embedded-bundle').textContent);
+let currentBundle = JSON.parse(JSON.stringify(ORIGINAL_BUNDLE));
+
+// ─── Scene ─────────────────────────────────────────────────────────
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(C.BG);
+scene.fog = new THREE.FogExp2(C.BG, 0.045);
+
+const camera = new THREE.PerspectiveCamera(C.CAMERA_FOV, innerWidth / innerHeight, 0.1, 100);
+camera.position.set(...C.CAMERA_POS);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+document.body.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.target.set(...C.CAMERA_TARGET);
+controls.minDistance = 4; controls.maxDistance = 20;
+
+// Lights · Vision Pro-style soft global + subtle rim
+scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+const key = new THREE.DirectionalLight(0xffffff, 1.2); key.position.set(4, 6, 5); scene.add(key);
+const rim = new THREE.DirectionalLight(0x7dd3fc, 0.6); rim.position.set(-6, 2, -3); scene.add(rim);
+scene.add(new THREE.HemisphereLight(0x1a2a44, 0x000000, 0.35));
+
+// Subtle starfield
+(function(){
+  const g = new THREE.BufferGeometry();
+  const N = 400;
+  const p = new Float32Array(N*3);
+  for (let i=0; i<N; i++){
+    const r = 25+Math.random()*20;
+    const th = Math.random()*Math.PI*2;
+    const ph = Math.acos(2*Math.random()-1);
+    p[i*3] = r*Math.sin(ph)*Math.cos(th);
+    p[i*3+1] = r*Math.cos(ph)*0.4;
+    p[i*3+2] = r*Math.sin(ph)*Math.sin(th);
+  }
+  g.setAttribute('position', new THREE.BufferAttribute(p, 3));
+  scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color: 0xffffff, size: 0.02, transparent: true, opacity: 0.55, sizeAttenuation: true })));
+})();
+
+// ─── Card factory ──────────────────────────────────────────────────
+const cards = [];
+const chainGroup = new THREE.Group();
+scene.add(chainGroup);
+
+function roundedRect(w, h, r) {
+  const s = new THREE.Shape();
+  s.moveTo(-w/2+r,-h/2); s.lineTo(w/2-r,-h/2); s.quadraticCurveTo(w/2,-h/2,w/2,-h/2+r);
+  s.lineTo(w/2,h/2-r); s.quadraticCurveTo(w/2,h/2,w/2-r,h/2);
+  s.lineTo(-w/2+r,h/2); s.quadraticCurveTo(-w/2,h/2,-w/2,h/2-r);
+  s.lineTo(-w/2,-h/2+r); s.quadraticCurveTo(-w/2,-h/2,-w/2+r,-h/2);
+  return s;
+}
+
+function roundRect(g, x, y, w, h, r) {
+  g.beginPath();
+  g.moveTo(x+r,y); g.lineTo(x+w-r,y); g.quadraticCurveTo(x+w,y,x+w,y+r);
+  g.lineTo(x+w,y+h-r); g.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  g.lineTo(x+r,y+h); g.quadraticCurveTo(x,y+h,x,y+h-r);
+  g.lineTo(x,y+r); g.quadraticCurveTo(x,y,x+r,y); g.closePath();
+}
+
+function faceTexture(evt, tampered) {
+  const px = C.LABEL_PX;
+  const c = document.createElement('canvas');
+  c.width = px; c.height = px*(C.CARD_H/C.CARD_W);
+  const g = c.getContext('2d');
+  const grad = g.createLinearGradient(0, 0, 0, c.height);
+  grad.addColorStop(0, 'rgba(255,255,255,0.09)');
+  grad.addColorStop(1, 'rgba(255,255,255,0.03)');
+  g.fillStyle = grad; g.fillRect(0, 0, c.width, c.height);
+  const pad = 28;
+  const accent = tampered ? C.DANGER : (C.TYPE_COLOR[evt.event_type] ?? '#7dd3fc');
+
+  g.fillStyle = tampered ? '#ff9090' : '#e8ecf3';
+  g.font = `600 ${C.TITLE_FONT_PX}px -apple-system, "SF Pro Display", "PingFang SC", sans-serif`;
+  g.textBaseline = 'top';
+  g.fillText(evt.event_type, pad, pad);
+
+  g.fillStyle = '#8b95a8';
+  g.font = `500 ${C.META_FONT_PX}px -apple-system, sans-serif`;
+  g.fillText(`${evt.actor}  ·  seq ${evt.seq}`, pad, pad + C.TITLE_FONT_PX + 8);
+
+  const pillY = c.height - pad - 44;
+  const pillX = pad;
+  const pillH = 34;
+  const shortHash = evt.payload_hash.slice(0, 12) + '…';
+  g.font = `500 ${C.HASH_FONT_PX}px "SF Mono", "JetBrains Mono", Menlo, monospace`;
+  const pillW = g.measureText(shortHash).width + 30;
+  g.fillStyle = accent + '22';
+  roundRect(g, pillX, pillY, pillW, pillH, 17); g.fill();
+  g.strokeStyle = accent + '66';
+  g.lineWidth = 1.5;
+  roundRect(g, pillX, pillY, pillW, pillH, 17); g.stroke();
+  g.fillStyle = accent;
+  g.textBaseline = 'middle';
+  g.fillText(shortHash, pillX + 15, pillY + pillH/2 + 1);
+
+  g.beginPath();
+  g.arc(c.width - pad - 8, pad + 12, 6, 0, Math.PI*2);
+  g.fillStyle = accent; g.fill();
+
+  if (tampered) {
+    g.font = `500 ${C.META_FONT_PX}px "SF Mono", Menlo, monospace`;
+    g.fillStyle = C.DANGER;
+    g.textAlign = 'right'; g.textBaseline = 'top';
+    g.fillText('⛓ ✗', c.width - pad - 20, pad + 12);
+  }
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.anisotropy = 8; tex.needsUpdate = true;
+  return tex;
+}
+
+function makeCard(evt, i, total) {
+  const group = new THREE.Group();
+  const shape = roundedRect(C.CARD_W, C.CARD_H, 0.10);
+  const extrude = { depth: C.CARD_THICK, bevelEnabled: true, bevelSize: 0.015, bevelThickness: 0.02, bevelSegments: 3, curveSegments: 8 };
+  const glassGeo = new THREE.ExtrudeGeometry(shape, extrude);
+  glassGeo.center();
+  const glassMat = new THREE.MeshPhysicalMaterial({
+    color: C.GLASS_TINT, metalness: 0.05, roughness: 0.15,
+    transmission: 0.72, thickness: 0.6, ior: 1.45,
+    transparent: true, opacity: 0.85,
+    clearcoat: 1.0, clearcoatRoughness: 0.05,
+  });
+  const glass = new THREE.Mesh(glassGeo, glassMat);
+  group.add(glass);
+
+  const faceGeo = new THREE.PlaneGeometry(C.CARD_W - 0.05, C.CARD_H - 0.05);
+  const faceMat = new THREE.MeshBasicMaterial({ map: faceTexture(evt, false), transparent: true, depthWrite: false });
+  const face = new THREE.Mesh(faceGeo, faceMat);
+  face.position.z = C.CARD_THICK/2 + 0.005;
+  group.add(face);
+
+  const accentHex = C.TYPE_HEX[evt.event_type] ?? 0x7dd3fc;
+  const edgeMat = new THREE.LineBasicMaterial({ color: accentHex, transparent: true, opacity: 0.6 });
+  const edge = new THREE.LineSegments(new THREE.EdgesGeometry(faceGeo), edgeMat);
+  edge.position.z = C.CARD_THICK/2 + 0.01;
+  group.add(edge);
+
+  const t = i / (total - 1);
+  const angle = (t - 0.5) * C.CARD_ARC_SPAN;
+  group.position.set(
+    Math.sin(angle) * C.CARD_ARC_RADIUS,
+    Math.sin(t * Math.PI * 3) * C.CARD_Y_JITTER + 0.4,
+    -Math.cos(angle) * C.CARD_ARC_RADIUS + C.CARD_ARC_RADIUS - 0.5,
+  );
+  group.lookAt(0, group.position.y, 3);
+  group.rotateX(-C.CARD_TILT * 0.4);
+
+  group.userData = { evt, glassMat, edgeMat, faceMat, accentHex, isTampered: false, i };
+  chainGroup.add(group);
+  cards.push(group);
+  return group;
+}
+
+// Chain links · quadratic bezier curves with green tint
+const linkLines = [];
+function buildScene() {
+  cards.forEach(c => chainGroup.remove(c));
+  cards.length = 0;
+  linkLines.forEach(l => chainGroup.remove(l));
+  linkLines.length = 0;
+  const total = currentBundle.events.length;
+  currentBundle.events.forEach((e, i) => makeCard(e, i, total));
+  for (let i = 1; i < cards.length; i++) {
+    const a = cards[i-1].position.clone();
+    const b = cards[i].position.clone();
+    const mid = a.clone().lerp(b, 0.5); mid.y -= 0.35; mid.z += 0.15;
+    const curve = new THREE.QuadraticBezierCurve3(a, mid, b);
+    const geo = new THREE.BufferGeometry().setFromPoints(curve.getPoints(24));
+    const mat = new THREE.LineBasicMaterial({ color: 0x4ade80, transparent: true, opacity: 0.5 });
+    const line = new THREE.Line(geo, mat);
+    chainGroup.add(line);
+    linkLines.push(line);
+  }
+}
+buildScene();
+
+// ─── HUD ───────────────────────────────────────────────────────────
+document.getElementById('badge-sid').textContent = `sid ${currentBundle.header.session_id.slice(0, 12)}…`;
+document.getElementById('badge-count').textContent = `${currentBundle.events.length} events`;
+document.getElementById('badge-agent').textContent = `agent ${currentBundle.header.agent.name}@${currentBundle.header.agent.version}`;
+
+async function verifyAndPaint() {
+  const r = await verifyBundle(currentBundle, PUBLIC_KEY_PEM);
+  const dot = document.getElementById('status-dot');
+  const v = document.getElementById('verdict');
+  if (r.ok) {
+    dot.className = 'dot';
+    v.className = '';
+    v.textContent = `signature valid · SELF_SIGNED · ${r.batchRoot.slice(0, 12)}…`;
+    return null;
+  } else {
+    dot.className = 'dot red';
+    v.className = 'red';
+    v.textContent = `verify failed · ${r.error.reason}` + (r.error.seq !== null ? ` @ seq ${r.error.seq}` : '');
+    return r.error;
+  }
+}
+
+// ─── Interaction ───────────────────────────────────────────────────
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let hovered = null;
+
+renderer.domElement.addEventListener('pointermove', (ev) => {
+  const rect = renderer.domElement.getBoundingClientRect();
+  mouse.x = ((ev.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((ev.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+  const meshes = cards.flatMap(c => c.children.filter(x => x.isMesh));
+  const hit = raycaster.intersectObjects(meshes, false)[0];
+  const card = hit ? cards.find(c => c.children.includes(hit.object)) : null;
+  if (hovered && hovered !== card) hovered.userData.edgeMat.opacity = 0.6;
+  if (card) { card.userData.edgeMat.opacity = 1.0; document.body.style.cursor = 'pointer'; }
+  else { document.body.style.cursor = 'default'; }
+  hovered = card;
+});
+
+renderer.domElement.addEventListener('click', (ev) => {
+  const rect = renderer.domElement.getBoundingClientRect();
+  mouse.x = ((ev.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((ev.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+  const meshes = cards.flatMap(c => c.children.filter(x => x.isMesh));
+  const hit = raycaster.intersectObjects(meshes, false)[0];
+  if (hit) {
+    const card = cards.find(c => c.children.includes(hit.object));
+    if (card) {
+      const evt = card.userData.evt;
+      const d = document.getElementById('ins-dot');
+      d.style.background = C.TYPE_COLOR[evt.event_type] ?? '#7dd3fc';
+      d.style.boxShadow = `0 0 6px ${C.TYPE_COLOR[evt.event_type] ?? '#7dd3fc'}`;
+      document.getElementById('ins-title').textContent = evt.event_type;
+      document.getElementById('ins-actor').textContent = `${evt.actor} · seq ${evt.seq}`;
+      document.getElementById('ins-seq').textContent = `#${evt.seq}`;
+      document.getElementById('ins-hash').textContent = evt.payload_hash;
+      document.getElementById('ins-prev').textContent = evt.prev_hash;
+      document.getElementById('inspector').style.display = 'block';
+    }
+  }
+});
+
+// ─── Tamper + Reset ────────────────────────────────────────────────
+async function tamper() {
+  document.getElementById('btn-tamper').disabled = true;
+  const target = currentBundle.events[C.TAMPER_SEQ];
+  target.payload_hash = target.payload_hash.slice(0, -1) + (target.payload_hash.slice(-1) === 'f' ? '0' : 'f');
+  target.payload_ref = `sha256:${target.payload_hash}`;
+  await verifyAndPaint();
+
+  for (let i = C.TAMPER_SEQ; i < cards.length; i++) {
+    setTimeout(() => {
+      const card = cards[i];
+      card.userData.isTampered = true;
+      card.userData.edgeMat.color.setHex(C.DANGER_HEX);
+      card.userData.edgeMat.opacity = 1.0;
+      const oldTex = card.userData.faceMat.map;
+      card.userData.faceMat.map = faceTexture(card.userData.evt, true);
+      card.userData.faceMat.needsUpdate = true;
+      if (oldTex) oldTex.dispose();
+      if (i > 0 && linkLines[i - 1]) {
+        linkLines[i - 1].material.color.setHex(C.DANGER_HEX);
+        linkLines[i - 1].material.opacity = 0.85;
+      }
+    }, (i - C.TAMPER_SEQ) * C.CASCADE_MS_PER_CARD);
+  }
+  setTimeout(() => { document.getElementById('btn-reset').disabled = false; },
+    (cards.length - C.TAMPER_SEQ) * C.CASCADE_MS_PER_CARD + 200);
+}
+
+async function reset() {
+  document.getElementById('btn-reset').disabled = true;
+  currentBundle = JSON.parse(JSON.stringify(ORIGINAL_BUNDLE));
+  cards.forEach((card) => {
+    card.userData.isTampered = false;
+    card.userData.edgeMat.color.setHex(card.userData.accentHex);
+    card.userData.edgeMat.opacity = 0.6;
+    const oldTex = card.userData.faceMat.map;
+    card.userData.faceMat.map = faceTexture(card.userData.evt, false);
+    card.userData.faceMat.needsUpdate = true;
+    if (oldTex) oldTex.dispose();
+  });
+  linkLines.forEach((l) => {
+    l.material.color.setHex(0x4ade80);
+    l.material.opacity = 0.5;
+  });
+  await verifyAndPaint();
+  document.getElementById('btn-tamper').disabled = false;
+}
+
+document.getElementById('btn-tamper').addEventListener('click', tamper);
+document.getElementById('btn-reset').addEventListener('click', reset);
+
+(async () => {
+  const err = await verifyAndPaint();
+  if (!err) document.getElementById('btn-tamper').disabled = false;
+})();
+
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+let last = performance.now(), frames = 0, fpsAcc = 0;
+function loop(t) {
+  const dt = (t - last) / 1000; last = t;
+  frames++; fpsAcc += dt;
+  if (fpsAcc > 0.5) {
+    document.getElementById('fps').textContent = `${Math.round(frames / fpsAcc)} fps`;
+    frames = 0; fpsAcc = 0;
+  }
+  linkLines.forEach(l => {
+    if (l.material.color.getHex() === 0x4ade80) {
+      l.material.opacity = 0.35 + 0.1 * Math.sin(t * 0.0012);
+    }
+  });
+  controls.update();
+  renderer.render(scene, camera);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>
+
+</body>
+</html>

@@ -5,7 +5,7 @@
 // monitoring dashboards without paying the cost of fetching full session
 // histories every minute.
 
-import { memorySingleton } from "../lib/memory.js";
+import { buildMemoryBackend, describeMemoryBackend } from "../lib/memory-elastic.js";
 
 const VALID_PERSONAS = ["compliance", "quant", "engineer", "trader", "advisor"];
 
@@ -16,17 +16,31 @@ export default async function handler(req, res) {
   const url = new URL(req.url, `http://${req.headers?.host ?? "localhost"}`);
   const persona = url.searchParams.get("persona");
 
+  const { name: backend } = describeMemoryBackend();
+  let memory;
+  try {
+    memory = await buildMemoryBackend();
+  } catch (err) {
+    // Configured-but-unwired backend (e.g. Elastic stub) → clean 503, not a 500.
+    return res.status(503).json({ error: `memory backend '${backend}' unavailable: ${err?.message ?? String(err)}`, backend });
+  }
+
   if (!persona) {
     // Return calibration across all personas at once
-    const all = {};
-    for (const p of VALID_PERSONAS) {
-      all[p] = memorySingleton.recallCalibrationStats({ persona: p });
+    try {
+      const all = {};
+      for (const p of VALID_PERSONAS) {
+        all[p] = await memory.recallCalibrationStats({ persona: p });
+      }
+      return res.status(200).json({
+        personas: all,
+        backend,
+        rubric_version: "0.3.3",
+        brier_interpretation: "0 = perfect calibration, 0.25 = unhelpful baseline (always 50%), 1 = perfectly wrong"
+      });
+    } catch (err) {
+      return res.status(503).json({ error: `memory backend '${backend}' unavailable: ${err?.message ?? String(err)}`, backend });
     }
-    return res.status(200).json({
-      personas: all,
-      rubric_version: "0.3.3",
-      brier_interpretation: "0 = perfect calibration, 0.25 = unhelpful baseline (always 50%), 1 = perfectly wrong"
-    });
   }
 
   if (!VALID_PERSONAS.includes(persona)) {
@@ -36,13 +50,19 @@ export default async function handler(req, res) {
     });
   }
 
-  const stats = memorySingleton.recallCalibrationStats({ persona });
+  let stats;
+  try {
+    stats = await memory.recallCalibrationStats({ persona });
+  } catch (err) {
+    return res.status(503).json({ error: `memory backend '${backend}' unavailable: ${err?.message ?? String(err)}`, backend });
+  }
   if (!stats) {
     return res.status(200).json({
       persona,
       n: 0,
       mean_brier: null,
       outcome_dist: {},
+      backend,
       note: "no entries with resolved outcomes for this persona yet"
     });
   }
@@ -50,6 +70,7 @@ export default async function handler(req, res) {
   return res.status(200).json({
     persona,
     ...stats,
+    backend,
     rubric_version: "0.3.3",
     brier_interpretation: "0 = perfect calibration, 0.25 = unhelpful baseline (always 50%), 1 = perfectly wrong"
   });
