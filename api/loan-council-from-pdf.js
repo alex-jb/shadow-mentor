@@ -17,6 +17,8 @@
 //   Body: {
 //     pdf_base64: string,           // base64-encoded PDF bytes
 //     force_ocr_provider?: "mistral"|"claude"|"stub"   // optional
+//     force_extractor?: "llm"|"regex"  // optional; default auto (LLM tool-use
+//                                      // when a key is present, regex fallback)
 //   }
 //
 // Response: same shape as /api/loan-council + meta:
@@ -32,8 +34,7 @@
 //   400 OCR confidence below 0.5 (PDF unreadable or non-loan-template)
 //   400 extracted loan failed validateLoan (schema violation)
 
-import { extractTextFromPdf } from "../lib/ocr/index.js";
-import { extractLoanFieldsStub } from "../lib/ocr/extract-loan-fields-stub.js";
+import { extractTextFromPdf, extractLoanFields } from "../lib/ocr/index.js";
 import { runLoanCouncil } from "../lib/run-loan-council.js";
 import { validateLoan } from "../lib/schemas/loan.js";
 
@@ -48,7 +49,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "POST only" });
   }
 
-  const { pdf_base64, force_ocr_provider } = req.body ?? {};
+  const { pdf_base64, force_ocr_provider, force_extractor } = req.body ?? {};
 
   let pdfBuffer = null;
   if (pdf_base64) {
@@ -68,7 +69,19 @@ export default async function handler(req, res) {
     force_provider: force_ocr_provider
   });
 
-  const extractResult = extractLoanFieldsStub(ocrResult.text);
+  let extractResult;
+  try {
+    extractResult = await extractLoanFields(ocrResult.text, { force_extractor });
+  } catch (err) {
+    // Reached only when force_extractor:"llm" was requested but the LLM path
+    // failed (no key / API error). The default 'auto' path never throws — it
+    // falls back to regex — so this can't break the demo.
+    return res.status(400).json({
+      error: `forced LLM extraction failed: ${err?.message ?? String(err)}`,
+      ocr: ocrResult,
+      hint: "omit force_extractor to use the auto path (LLM when a key is present, regex fallback)",
+    });
+  }
 
   if (extractResult._meta.confidence < 0.5) {
     return res.status(400).json({

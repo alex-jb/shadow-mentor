@@ -31,7 +31,7 @@ function mockRes() {
 describe("loan-council-from-pdf — end-to-end stub mode", () => {
   test("empty body → stub OCR → 5-voice council approve", async () => {
     const res = mockRes();
-    await handler(mockReq({ force_ocr_provider: "stub" }), res);
+    await handler(mockReq({ force_ocr_provider: "stub", force_extractor: "regex" }), res);
     assert.equal(res.statusCode, 200);
     assert.equal(res.body.voices.length, 5);
     assert.equal(res.body.final_verdict, "approve");
@@ -45,7 +45,7 @@ describe("loan-council-from-pdf — end-to-end stub mode", () => {
 
   test("ocr meta includes provider + latency + char count", async () => {
     const res = mockRes();
-    await handler(mockReq({ force_ocr_provider: "stub" }), res);
+    await handler(mockReq({ force_ocr_provider: "stub", force_extractor: "regex" }), res);
     assert.equal(res.body.ocr.provider, "stub");
     assert.ok(res.body.ocr.latency_ms >= 0);
     assert.ok(res.body.ocr.char_count > 100);
@@ -54,7 +54,7 @@ describe("loan-council-from-pdf — end-to-end stub mode", () => {
 
   test("extraction meta includes confidence + extracted_fields list", async () => {
     const res = mockRes();
-    await handler(mockReq({ force_ocr_provider: "stub" }), res);
+    await handler(mockReq({ force_ocr_provider: "stub", force_extractor: "regex" }), res);
     assert.ok(res.body.extraction.confidence >= 0.5);
     assert.ok(Array.isArray(res.body.extraction.extracted_fields));
     assert.ok(res.body.extraction.extracted_fields.includes("credit_score"));
@@ -63,7 +63,7 @@ describe("loan-council-from-pdf — end-to-end stub mode", () => {
 
   test("latency fields present + both >= 0", async () => {
     const res = mockRes();
-    await handler(mockReq({ force_ocr_provider: "stub" }), res);
+    await handler(mockReq({ force_ocr_provider: "stub", force_extractor: "regex" }), res);
     assert.ok(res.body.council_latency_ms >= 0);
     assert.ok(res.body.total_latency_ms >= res.body.council_latency_ms);
   });
@@ -84,7 +84,7 @@ describe("loan-council-from-pdf — end-to-end stub mode", () => {
 describe("loan-council-from-pdf — error paths", () => {
   test("invalid base64 returns 400", async () => {
     const res = mockRes();
-    await handler(mockReq({ pdf_base64: "not-valid-base64!!!@#$" }), res);
+    await handler(mockReq({ pdf_base64: "not-valid-base64!!!@#$", force_extractor: "regex" }), res);
     // Buffer.from('not-valid-base64!!!@#$', 'base64') doesn't throw, it returns
     // a small buffer. The downstream OCR stub will succeed regardless.
     // So we actually expect 200 here in stub mode — base64 only fails on
@@ -94,7 +94,7 @@ describe("loan-council-from-pdf — error paths", () => {
 
   test("council shape exposes voice name + rationale + AA codes per voice", async () => {
     const res = mockRes();
-    await handler(mockReq({ force_ocr_provider: "stub" }), res);
+    await handler(mockReq({ force_ocr_provider: "stub", force_extractor: "regex" }), res);
     // 5 voices each have voice name + verdict + rationale + AA codes array
     for (const voice of res.body.voices) {
       assert.ok(voice.voice, "voice.voice (persona name) required");
