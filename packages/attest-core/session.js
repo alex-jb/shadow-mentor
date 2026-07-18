@@ -32,7 +32,7 @@ import {
   verify as cryptoVerify,
 } from "node:crypto";
 import { canonicalize } from "./attestation.js";
-import { TRUST_LEVELS, trustLevelRank, verifyRfc3161Anchor, verifyRekorAnchor } from "./anchors.js";
+import { TRUST_LEVELS, trustLevelRank, verifyRfc3161Anchor, verifyRekorAnchor, requestTimestamp, submitRekorEntry } from "./anchors.js";
 
 // Frozen event enum. If this list changes, bump bundle_version.
 export const EVENT_TYPES = Object.freeze([
@@ -304,6 +304,78 @@ export function sealSession(session, options = {}) {
     }));
   }
 
+  return bundle;
+}
+
+/**
+ * Seal a session AND anchor its batch_root externally in one call — the seal
+ * produces the Ed25519-signed bundle, then external anchors (RFC 3161 TSA and/or
+ * a Rekor transparency-log entry) are requested for that batch_root and embedded
+ * in bundle.external_anchors[]. The signature covers batch_root, so anchors sit
+ * OUTSIDE the signature as independent attestations of it — no re-signing.
+ *
+ * Additive + back-compat: sealSession() is unchanged and stays sync/offline;
+ * this is the async convenience for callers who want a witnessed bundle without
+ * hand-wiring requestTimestamp/submitRekorEntry after every seal. With no anchor
+ * option it is exactly sealSession() plus an await, and adds no external_anchors.
+ *
+ * @param {object} session
+ * @param {object} [options] - sealSession options PLUS:
+ *   @param {string|{url?:string,tsaUrl?:string,hashAlgorithm?:string,timeoutMs?:number}} [options.tsa]
+ *     - request an RFC 3161 timestamp (string = TSA URL, or an object)
+ *   @param {{publicKeyPem:string,url?:string,rekorUrl?:string,timeoutMs?:number}} [options.rekor]
+ *     - submit a Rekor entry (needs the signer's public key PEM)
+ *   @param {(batchRootHex:string, bundle:object)=>Promise<object|object[]>} [options.requestAnchor]
+ *     - custom anchor producer (also the offline-testable seam)
+ *   @param {boolean} [options.bestEffortAnchors=false] - if true, an anchor
+ *     request that fails is recorded in bundle.anchor_errors[] instead of
+ *     throwing, and the bundle returns with whatever anchors succeeded. Default
+ *     is fail-loud: an explicitly-requested anchor that fails throws, so a caller
+ *     never mistakes an unanchored bundle for a witnessed one.
+ * @returns {Promise<object>} the sealed bundle, with external_anchors[] when any
+ *   anchor succeeded (and anchor_errors[] in best-effort mode).
+ */
+export async function sealAndAnchor(session, options = {}) {
+  const { tsa, rekor, requestAnchor, bestEffortAnchors = false, ...sealOptions } = options;
+  const bundle = sealSession(session, sealOptions);
+
+  const anchors = [];
+  const errors = [];
+  const collect = async (label, fn) => {
+    try {
+      const a = await fn();
+      if (Array.isArray(a)) anchors.push(...a.filter(Boolean));
+      else if (a) anchors.push(a);
+    } catch (e) {
+      if (!bestEffortAnchors) throw new Error(`sealAndAnchor: ${label} anchor failed: ${e?.message ?? String(e)}`);
+      errors.push({ anchor: label, reason: e?.message ?? String(e) });
+    }
+  };
+
+  if (tsa) {
+    const t = typeof tsa === "string" ? { tsaUrl: tsa } : tsa;
+    await collect("rfc3161-tsa", () => requestTimestamp({
+      batchRootHex: bundle.batch_root,
+      tsaUrl: t.tsaUrl ?? t.url,
+      hashAlgorithm: t.hashAlgorithm,
+      timeoutMs: t.timeoutMs,
+    }));
+  }
+  if (rekor) {
+    await collect("rekor", () => submitRekorEntry({
+      batchRootHex: bundle.batch_root,
+      signatureBase64: bundle.signatures[0].signature,
+      publicKeyPem: rekor.publicKeyPem,
+      rekorUrl: rekor.rekorUrl ?? rekor.url,
+      timeoutMs: rekor.timeoutMs,
+    }));
+  }
+  if (requestAnchor) {
+    await collect("custom", () => requestAnchor(bundle.batch_root, bundle));
+  }
+
+  if (anchors.length) bundle.external_anchors = anchors;
+  if (errors.length) bundle.anchor_errors = errors;
   return bundle;
 }
 

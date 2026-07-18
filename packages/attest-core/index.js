@@ -30,6 +30,7 @@ export {
   createSession,
   appendEvent,
   sealSession,
+  sealAndAnchor,
   sealPartialBundle,
   recoverSession,
   verifyBundle,
