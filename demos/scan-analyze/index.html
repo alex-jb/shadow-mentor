@@ -60,6 +60,25 @@
   #sealed{font-family:var(--mono);font-size:11px;color:var(--ok);line-height:1.5}
   #source{color:var(--dim);font-size:11px;font-family:var(--mono)}
   .thinking{color:var(--dim);font-size:12px;font-family:var(--mono)}
+  /* scanned document (uploaded/captured image) */
+  #scanimg{max-width:560px;max-height:60vh;border:1px solid var(--line);border-radius:8px;display:block}
+  .scanbtn{position:relative;overflow:hidden}
+  .scanbtn input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+  /* glasses HUD mode (?glasses=1 or key G): big, high-contrast, single-column
+     for the small XREAL One Pro FOV — the answer is the star. */
+  body.glasses{--dim:#c2cad6}
+  body.glasses #app{grid-template-columns:1fr;grid-template-rows:32vh 1fr}
+  body.glasses #artifact{border-right:0;border-bottom:1px solid var(--line);padding:16px 22px}
+  body.glasses #artifact h1,body.glasses #artifact .sub,body.glasses #mocknote{display:none}
+  body.glasses #scanimg{max-height:26vh}
+  body.glasses table.doc{font-size:16px}
+  body.glasses #panel .persona{font-size:16px}
+  body.glasses #verdict{font-size:30px;line-height:1.25}
+  body.glasses #verdict .tag{font-size:16px;padding:3px 12px}
+  body.glasses .claim{font-size:20px;line-height:1.45;padding:12px 0 12px 16px}
+  body.glasses .claim .pill{font-size:15px;padding:2px 12px}
+  body.glasses #run{font-size:18px;padding:16px}
+  body.glasses #source,body.glasses #sealed{font-size:14px}
 </style>
 </head>
 <body>
@@ -70,6 +89,7 @@
     <div class="toggle">
       <button data-kind="statement" class="on">financial statement</button>
       <button data-kind="chart">data chart</button>
+      <button class="scanbtn" id="scanbtn">scan a document<input type="file" id="scanfile" accept="image/*"></button>
     </div>
     <div id="artifact-body"></div>
   </section>
@@ -123,12 +143,35 @@ const ARTIFACTS = {
   },
 };
 
-// ── the seam: swap this for a real vision-LLM endpoint ──────────────
-// analyze(kind) -> { verdict:{text,tone}, claims:[{text, cell}] }
-// Today it returns a worked mock so the UX runs offline. To wire a real
-// model: POST the captured frame to a vision endpoint that returns the same
-// shape; the citation `cell` must be an id present on the artifact.
+// ── scanned document (uploaded/captured image) ─────────────────────
+let scannedImage = null; // { dataUrl, base64, mediaType }
+ARTIFACTS.scanned = {
+  persona: "Scanned document",
+  render(el){ el.innerHTML = scannedImage
+    ? `<img id="scanimg" src="${scannedImage.dataUrl}" alt="scanned document">`
+    : `<div class="thinking">Click "scan a document" to upload / capture an image, then Analyze.</div>`; },
+};
+
+// Vision endpoint for scanned images. Override with ?api=<url>. Falls back to the
+// offline mock if unreachable (no key / not deployed / airplane-mode venue).
+const SCAN_API = new URLSearchParams(location.search).get("api")
+  || "https://shadow-mentor-phi.vercel.app/api/scan-analyze";
+
+// ── the seam: real vision-LLM for scanned images, worked mock otherwise ──
+// analyze(kind) -> { verdict:{text,tone}, claims:[{text, cell?|source?}] }
 async function analyze(kind){
+  if(kind==="scanned" && scannedImage){
+    try{
+      const r = await fetch(SCAN_API, {method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ image_base64: scannedImage.base64, media_type: scannedImage.mediaType, kind:"financial document" })});
+      if(!r.ok){ const j=await r.json().catch(()=>({})); throw new Error(j.error || ("HTTP "+r.status)); }
+      const j = await r.json();
+      return { verdict: j.verdict, claims: (j.claims||[]).map(c=>({text:c.text, source:c.source})) };
+    }catch(e){
+      return { verdict:{text:"Vision endpoint unavailable — offline demo. ("+e.message+")", tone:"warn"},
+        claims:[{text:"Set ANTHROPIC_API_KEY on the deployment (or ?api=<url>) for real analysis. The signing + verification below is real regardless.", source:"—"}] };
+    }
+  }
   await new Promise(r=>setTimeout(r,700)); // "thinking" — a real call is ~1-3s
   if(kind==="statement") return {
     verdict:{ text:"DTI 0.41 — above the 0.36 policy ceiling; FICO clears the 700 floor.", tone:"warn" },
@@ -191,6 +234,10 @@ const body = $("#artifact-body");
 function renderArtifact(){
   ARTIFACTS[kind].render(body);
   $("#persona").textContent = "SHADOW · " + ARTIFACTS[kind].persona;
+  const note = $("#mocknote");
+  if(note) note.textContent = kind==="scanned"
+    ? "scanned document — analysis is a real vision-LLM call when the endpoint is configured (else it falls back to the offline demo); the Ed25519 signing + verification below is real"
+    : "demo — the analysis is a worked mock (runs offline, no vision-LLM call); the Ed25519 signing + verification below is real";
   $("#verdict").className = "thinking";
   $("#verdict").textContent = "Press Analyze to run the council on the captured artifact.";
   $("#claims").innerHTML = ""; $("#source").textContent = "";
@@ -214,11 +261,17 @@ $("#run").addEventListener("click", async ()=>{
   const tone = res.verdict.tone;
   $("#verdict").className="";
   $("#verdict").innerHTML = `<span class="tag ${tone}">${tone.toUpperCase()}</span>${res.verdict.text}`;
-  $("#claims").innerHTML = res.claims.map((c,i)=>
-    `<div class="claim">${c.text}<span class="pill" data-cell="${c.cell}">source ↩</span></div>`).join("");
-  $("#source").textContent = "every claim links to its source region — click a pill";
-  // citation pills highlight the exact source cell/point (the trust UX)
-  document.querySelectorAll(".claim .pill").forEach(p=>{
+  $("#claims").innerHTML = res.claims.map((c)=>{
+    const ref = (c.cell!=null)
+      ? `<span class="pill" data-cell="${c.cell}">source ↩</span>`
+      : (c.source && c.source!=="—") ? `<span class="pill" title="${(""+c.source).replace(/"/g,"&quot;")}">source: ${c.source}</span>` : "";
+    return `<div class="claim">${c.text}${ref}</div>`;
+  }).join("");
+  $("#source").textContent = res.claims.some(c=>c.cell!=null)
+    ? "every claim links to its source region — click a pill"
+    : "each claim names the figure it came from";
+  // citation pills highlight the exact source cell/point (the trust UX; mock artifacts only)
+  document.querySelectorAll(".claim .pill[data-cell]").forEach(p=>{
     const cell=p.dataset.cell;
     p.addEventListener("mouseenter",()=>highlight(cell,true));
     p.addEventListener("mouseleave",()=>highlight(cell,false));
@@ -239,8 +292,27 @@ $("#seal").addEventListener("click", async ()=>{
   seal.disabled=false; seal.textContent="Seal evidence";
 });
 
+// ── scan a document: read an uploaded/captured image → the "scanned" artifact ──
+$("#scanfile").addEventListener("change", (e)=>{
+  const f = e.target.files && e.target.files[0]; if(!f) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    const dataUrl = String(reader.result);
+    scannedImage = { dataUrl, base64: dataUrl.split(",")[1], mediaType: f.type || "image/png" };
+    document.querySelectorAll(".toggle button").forEach(x=>x.classList.remove("on"));
+    $("#scanbtn").classList.add("on");
+    kind = "scanned"; renderArtifact();
+  };
+  reader.readAsDataURL(f);
+});
+
+// ── glasses HUD mode (?glasses=1 or key G) — big/high-contrast for XREAL One Pro ──
+function setGlasses(on){ document.body.classList.toggle("glasses", on); }
+if(new URLSearchParams(location.search).get("glasses")==="1") setGlasses(true);
+addEventListener("keydown",(e)=>{ if(e.key.toLowerCase()==="g" && !e.metaKey && !e.ctrlKey){ setGlasses(!document.body.classList.contains("glasses")); }});
+
 renderArtifact();
-window.__scanAnalyze = { analyze, setKind:k=>{kind=k;renderArtifact();} };
+window.__scanAnalyze = { analyze, setKind:k=>{kind=k;renderArtifact();}, setGlasses };
 // auto-run for headless verification / a self-driving demo
 if(location.search.includes("auto")) setTimeout(()=>{ $("#run").click(); setTimeout(()=>$("#seal").click(), 1000); }, 200);
 </script>
