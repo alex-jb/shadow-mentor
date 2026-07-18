@@ -16,3 +16,6 @@ verify-fixtures/
 
 # M5 XR study — generated trial stimuli + fresh keys (freeze per study run)
 demos/replay/3d/study/trials/
+
+# macOS
+.DS_Store
