@@ -75,9 +75,26 @@ const auditRows = CHAIN.map((e, i) => {
   return row;
 });
 
+// council dataset → the 3D agent-council graph in Flow: center = Final
+// Recommendation, spokes = the 5 voices, each with a support/oppose relation.
+const COUNCIL = [
+  { voice: "Final Recommendation", role: "verdict",   stance: "center", confidence: 0.74, note: "HOLD — balanced; DTI/risk within policy" },
+  { voice: "Fundamental",          role: "analysis",  stance: "support", confidence: 0.80, note: "earnings + cash flow support the weights" },
+  { voice: "Risk",                 role: "analysis",  stance: "support", confidence: 0.72, note: "VaR within appetite; concentration OK" },
+  { voice: "Macro",                role: "analysis",  stance: "oppose",  confidence: 0.61, note: "rate path argues for trimming duration" },
+  { voice: "Governance",           role: "control",   stance: "support", confidence: 0.83, note: "Reg B / policy thresholds satisfied" },
+  { voice: "Skeptic",              role: "adversary", stance: "oppose",  confidence: 0.58, note: "crowded AI names; momentum fragility" },
+];
+const councilRows = COUNCIL.map((c) => ({
+  voice: c.voice, role: c.role, relation_to_final: c.stance,
+  confidence: c.confidence, is_center: c.stance === "center" ? 1 : 0, note: c.note,
+}));
+
 writeFileSync(resolve(HERE, "flow-portfolio.csv"), csv(portfolioRows));
 writeFileSync(resolve(HERE, "flow-audit.csv"), csv(auditRows));
+writeFileSync(resolve(HERE, "flow-council.csv"), csv(councilRows));
 
-console.log("[flow-adapter] flow-portfolio.csv  — %d holdings (risk-return cloud)", portfolioRows.length);
-console.log("[flow-adapter] flow-audit.csv      — %d chain nodes (audit graph)", auditRows.length);
-console.log("[flow-adapter] import either into Flow Editor (CSV), or push the same rows via the Push Dataset API once its contract is confirmed.");
+console.log("[flow-adapter] flow-portfolio.csv  — %d holdings (Scene 1: risk-return cloud)", portfolioRows.length);
+console.log("[flow-adapter] flow-council.csv    — %d nodes (Scene 2: agent-council graph, center=Final)", councilRows.length);
+console.log("[flow-adapter] flow-audit.csv      — %d chain nodes (Scene 3: audit trace, real hash chain)", auditRows.length);
+console.log("[flow-adapter] import into Flow Editor (CSV), or push the same rows via the Push Dataset API once its contract is confirmed. Flow renders the spatial layer; Shadow signs + verifies the data — the spatial engine is Flow's, not Shadow's.");

@@ -1,0 +1,7 @@
+voice,role,relation_to_final,confidence,is_center,note
+"Final Recommendation","verdict","center",0.74,1,"HOLD — balanced; DTI/risk within policy"
+"Fundamental","analysis","support",0.8,0,"earnings + cash flow support the weights"
+"Risk","analysis","support",0.72,0,"VaR within appetite; concentration OK"
+"Macro","analysis","oppose",0.61,0,"rate path argues for trimming duration"
+"Governance","control","support",0.83,0,"Reg B / policy thresholds satisfied"
+"Skeptic","adversary","oppose",0.58,0,"crowded AI names; momentum fragility"
