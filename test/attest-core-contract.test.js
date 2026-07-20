@@ -44,6 +44,27 @@ test("attest-core exports the documented symbols", () => {
   }
 });
 
+// The FULL export surface is frozen + tied to the version. Adding/removing an export
+// must be intentional: update this list AND bump packages/attest-core/package.json in
+// the SAME commit. This guard would have caught sealAndAnchor being added while the
+// version stayed 2.1.0 (a silent SemVer drift on a published package).
+test("attest-core export surface is frozen + versioned (drift must be intentional)", () => {
+  const EXPECTED_EXPORTS = [
+    "ATTESTATION_VERSION", "EVENT_TYPES", "SIGNATURE_MODES", "TRUST_LEVELS", "appendEvent",
+    "buildAttestation", "buildRekorHashedrekordEntry", "buildTimestampRequest", "canonicalizeJson",
+    "computeAttestationHash", "createFileStore", "createSession", "extractRekorPayloadHash",
+    "listSessionFiles", "parseTimestampResponse", "recoverSession", "rekorLeafHash", "requestTimestamp",
+    "sealAndAnchor", "sealPartialBundle", "sealSession", "submitRekorEntry", "trustLevelRank",
+    "validateCmsCertChain", "verifyAttestation", "verifyBundle", "verifyCmsSignature",
+    "verifyInclusionProof", "verifyRekorAnchor", "verifyRekorSet", "verifyRfc3161Anchor",
+  ].sort();
+  assert.deepEqual(Object.keys(AttestCore).sort(), EXPECTED_EXPORTS,
+    "attest-core export surface changed — update EXPECTED_EXPORTS AND bump the package version");
+  const pkg = JSON.parse(readFileSync(PKG_PATH, "utf8"));
+  assert.equal(pkg.version, "2.2.0",
+    "sealAndAnchor + Source-Map v1.1 landed after 2.1.0 was published — package is 2.2.0 (pending npm publish)");
+});
+
 
 // ────────────────────────────────────────────────────────────────
 // 2. Contract: zero LLM SDK deps in the transitive import graph
