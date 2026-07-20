@@ -95,6 +95,54 @@ namespace ShadowLens.Tests.PlayMode
             Assert.AreEqual(MockState.Ready, _boot.View.State);
         }
 
+        // ── button-interaction path (the reported Show Source / Show Audit failures) ──
+        [Test] public void ShowSource_CreatesVisibleOverlay()
+        {
+            _boot.View.ShowSource();
+            Assert.IsTrue(_boot.View.SourceOverlayActive, "source overlay must be active");
+            var g = _boot.View.SourceOverlayTransform.GetComponentInChildren<Graphic>(true);
+            Assert.IsNotNull(g, "source overlay must contain a renderable Graphic");
+            Assert.IsTrue(g.enabled, "source overlay renderer must be enabled");
+            Assert.AreEqual("SHOW_SOURCE", _boot.View.LastAction);
+        }
+
+        [Test] public void ShowSource_OverlayInFrustum()
+        {
+            _boot.View.ShowSource();
+            Assert.IsTrue(_boot.View.InFrustum(_boot.View.SourceOverlayTransform), "source overlay must be inside the camera frustum");
+        }
+
+        [Test] public void ShowAudit_CreatesVisibleNodes()
+        {
+            _boot.View.ShowAudit();
+            Assert.IsTrue(_boot.View.AuditRootActive, "AuditArcRoot must be active");
+            Assert.AreEqual(7, _boot.View.ActiveAuditNodeCount, "audit arc must render 7 stage nodes");
+        }
+
+        [Test] public void ShowAudit_ArcInFrustum()
+        {
+            _boot.View.ShowAudit();
+            Assert.IsTrue(_boot.View.InFrustum(_boot.View.AuditRootTransform), "audit arc must be inside the camera frustum");
+        }
+
+        [Test] public void Tamper_ChangesVerifiedToTampered()
+        {
+            _boot.View.Analyze(); _boot.View.Verify();
+            Assert.AreEqual(MockState.Verified, _boot.View.State);
+            _boot.View.Tamper();
+            Assert.AreEqual(MockState.Tampered, _boot.View.State);
+            Assert.IsTrue(FindText("TRUST").text.ToUpper().Contains("TAMPERED"));
+        }
+
+        [Test] public void Reset_ReturnsToReadyAndUnsigned()
+        {
+            _boot.View.Analyze(); _boot.View.Verify();
+            _boot.View.ResetView();
+            Assert.AreEqual(MockState.Ready, _boot.View.State);
+            Assert.AreEqual("UNSIGNED", FindText("TRUST").text);
+            StringAssert.Contains("READY TO ANALYZE", FindText("STATUS").text);
+        }
+
         static Text FindText(string name)
         {
             foreach (var t in Object.FindObjectsByType<Text>(FindObjectsSortMode.None))
