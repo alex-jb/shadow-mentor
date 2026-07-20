@@ -27833,16 +27833,33 @@ IMPACT  ${obj.impact}`;
     renderer2.xr.enabled = true;
     let savedBg;
     renderer2.xr.addEventListener("sessionstart", () => {
-      const blend = renderer2.xr.getSession()?.environmentBlendMode;
-      if (blend && blend !== "opaque") {
+      const session = renderer2.xr.getSession();
+      const blend = session?.environmentBlendMode;
+      const isSeeThrough = blend === "additive" || blend === "alpha-blend";
+      if (isSeeThrough) {
         savedBg = scene2.background;
         scene2.background = null;
+      }
+      const diag = {
+        granted_mode: isSeeThrough ? "IMMERSIVE-AR (see-through)" : "IMMERSIVE-VR (fallback / opaque)",
+        environment_blend_mode: blend ?? "unknown",
+        input_sources: (session?.inputSources ?? []).map((s) => s.targetRayMode),
+        note: "world-lock stability, 6DoF translation, and legibility are NOT asserted by this flag \u2014 verify on-device"
+      };
+      globalThis.__xrDiag = diag;
+      try {
+        console.log("[Shadow XR] session start \u2014", JSON.stringify(diag));
+      } catch {
       }
     });
     renderer2.xr.addEventListener("sessionend", () => {
       if (savedBg !== void 0) {
         scene2.background = savedBg;
         savedBg = void 0;
+      }
+      try {
+        console.log("[Shadow XR] session end");
+      } catch {
       }
     });
     const dolly = new Group();

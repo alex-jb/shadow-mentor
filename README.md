@@ -25,8 +25,8 @@
 **Zero telemetry.** Shadow does not phone home. No usage pings, no crash reports, no analytics — from either the library or the CLI verifiers. Verify by grepping the source: neither `shadow-attest-core` nor any CLI in `bin/` opens an outbound socket to a Shadow-controlled host. Security policy: [`SECURITY.md`](./SECURITY.md).
 
 <!-- readme-stats:begin -->
-**Version**: 2.0.3
-**Tests**: 1586/1589 passing (0 failing)
+**Version**: 2.2.0
+**Tests**: 1588/1591 passing (0 failing)
 **Attestation signed fields**: 21 parameters, 14 append-only conditional bindings
 **Release tags**: 59
 <!-- readme-stats:end -->
@@ -53,7 +53,7 @@ The core primitives ship as [`shadow-attest-core`](https://www.npmjs.com/package
 npm install shadow-attest-core
 ```
 
-Includes all of M1 (evidence bundle) + M3 (external anchoring: RFC 3161 TSA + Sigstore Rekor + CA trust store) + M4 (offline verify). Current published version **2.1.0** (2026-07-17, from operator laptop — provenance to be added on a later version via the CI workflow). The OpenTelemetry adapter ships alongside as [`shadow-adapter-otel`](https://www.npmjs.com/package/shadow-adapter-otel) (`npm install shadow-adapter-otel`): map any instrumented agent's OTel GenAI/MCP spans onto signed evidence.
+Includes all of M1 (evidence bundle) + M3 (external anchoring: RFC 3161 TSA + Sigstore Rekor + CA trust store) + M4 (offline verify). **Published on npm: 2.1.0** (2026-07-17, from operator laptop). **2.2.0 is on `main`, pending publish** — adds `sealAndAnchor()` + Document Source-Map v1.1; the export surface is frozen by a contract test so version + surface can't drift again. The OpenTelemetry adapter ships alongside as [`shadow-adapter-otel`](https://www.npmjs.com/package/shadow-adapter-otel) (`npm install shadow-adapter-otel`): map any instrumented agent's OTel GenAI/MCP spans onto signed evidence.
 
 ## v3 evidence bundle — flight recorder for AI agents
 
@@ -198,14 +198,14 @@ Loredana C. Levitchi — regulatory-domain review and BRD authorship for the ris
 | M1.2 streaming API (`createSession` / `appendEvent` / `sealSession`) | ✅ shipped | `packages/attest-core/session.js` |
 | M1.2 crash-recovery + FileStore | ✅ shipped | `packages/attest-core/store-file.js`, `recoverSession` + `sealPartialBundle` |
 | M1.2 10k-event perf (< 5 s target) | ✅ 69 ms actual | `test/session-perf-10k.test.js` |
-| M2.1 Claude Code hooks adapter | 🚧 next | `packages/adapter-claude-code/` (planned) |
-| M2.2 OpenTelemetry GenAI adapter | 🚧 planned | `packages/adapter-otel/` (planned) |
+| M2.1 Claude Code hooks adapter | ✅ shipped | `packages/adapter-claude-code/` |
+| M2.2 OpenTelemetry GenAI adapter | ✅ shipped | `packages/adapter-otel/` (npm: shadow-adapter-otel) |
 | M2.3 generic HTTP ingest | ✅ shipped | `api/evidence/events.js` |
-| M3 external anchoring (RFC 3161 + Rekor) | 🚧 planned | — |
+| M3 external anchoring (RFC 3161 + Rekor) | ✅ shipped | `packages/attest-core/anchors.js` (verify on CLI + MCP + HTTP) |
 | M4 verify.html static offline verifier | ✅ shipped | [`verify.html`](./verify.html), [`.github/actions/shadow-verify`](./.github/actions/shadow-verify) |
 | M4 shadow-verify CLI + GitHub Action | ✅ shipped | `bin/shadow-verify.mjs`, `.github/actions/shadow-verify/` |
-| M5 forensic replay (2D + XR) | 🚧 planned | — |
-| M6 docs + launch narrative | 🚧 planned | — |
+| M5 forensic replay (2D + spatial) | ✅ shipped (2D + Three.js) | `demos/replay/` (2D) + `demos/replay/3d/` (Three.js Audit Room). WebXR AR/VR entry implemented; **on-device XREAL/Quest validation pending** |
+| M6 docs + launch narrative | 🚧 in progress | `docs/` |
 
 **Other roadmap documents:**
 

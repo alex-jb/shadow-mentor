@@ -1,16 +1,19 @@
 // demos/replay/3d/webxr.js
 // ─────────────────────────────────────────────────────────────────
-// Immersive WebXR — real spatial AR/VR (not the SBS canvas trick). `mode=webxr`.
+// Immersive WebXR entry path. `mode=webxr`. STATUS: entry code IMPLEMENTED; on-device
+// behavior NOT YET VALIDATED (no XREAL/Quest run has happened — do not claim otherwise).
 //
-// XRButton offers immersive-AR first (falls back to immersive-VR), so the SAME
-// scene runs as:
-//   • see-through AR on Android Chrome + XREAL One Pro (the cards float in the
-//     room — the real thing; needs the phone-tethered path, tested 2026-07-22)
-//   • opaque VR on a Quest headset (the original user-study condition)
-// In AR the scene background is nulled on sessionstart so the room shows through
-// the additive optics; restored on VR/sessionend. Interactions (controller ray,
-// hand pinch, thumbstick glide, teleport) are present if the device exposes them
-// and simply stay inert if it doesn't — no crash on a controller-less phone rig.
+// XRButton probes immersive-AR first, falls back to immersive-VR. IF a runtime grants
+// a session, the SAME scene renders; whether XREAL One Pro's browser exposes an
+// immersive-ar (or any) WebXR session is UNPROVEN — XREAL officially supports the
+// native SDK/Unity path, and One-series 6DoF needs the XREAL Eye camera module. This
+// path may or may not work on-device; it must be tested. On no-session it degrades to
+// SBS/flat.
+//
+// In AR the scene background is nulled on sessionstart so the room would show through
+// additive optics; restored on VR/sessionend. Interactions (controller ray, hand pinch,
+// thumbstick glide, teleport) are present if the device exposes them and stay inert
+// otherwise — no crash on a controller-less rig.
 //
 // SECURE CONTEXT: WebXR needs https (or localhost). The deployed Vercel URL
 // satisfies this — file:// cannot grant an immersive session. The flat + SBS
@@ -24,15 +27,27 @@ import { XRHandModelFactory } from "three/examples/jsm/webxr/XRHandModelFactory.
 export function createWebXR({ renderer, scene, camera, room, C, mountButton }) {
   renderer.xr.enabled = true;
 
-  // AR see-through: drop the opaque background when the runtime blends with the
-  // real world (additive on XREAL, alpha-blend on passthrough); restore for VR.
+  // Honest mode detection + diagnostics export. We do NOT claim "AR" — we report
+  // what the runtime actually granted (environmentBlendMode: opaque=VR, additive/
+  // alpha-blend=AR see-through). window.__xrDiag holds the record for post-test export.
   let savedBg;
   renderer.xr.addEventListener("sessionstart", () => {
-    const blend = renderer.xr.getSession()?.environmentBlendMode;
-    if (blend && blend !== "opaque") { savedBg = scene.background; scene.background = null; }
+    const session = renderer.xr.getSession();
+    const blend = session?.environmentBlendMode; // may be undefined on some runtimes
+    const isSeeThrough = blend === "additive" || blend === "alpha-blend";
+    if (isSeeThrough) { savedBg = scene.background; scene.background = null; }
+    const diag = {
+      granted_mode: isSeeThrough ? "IMMERSIVE-AR (see-through)" : "IMMERSIVE-VR (fallback / opaque)",
+      environment_blend_mode: blend ?? "unknown",
+      input_sources: (session?.inputSources ?? []).map((s) => s.targetRayMode),
+      note: "world-lock stability, 6DoF translation, and legibility are NOT asserted by this flag — verify on-device",
+    };
+    globalThis.__xrDiag = diag;
+    try { console.log("[Shadow XR] session start —", JSON.stringify(diag)); } catch {}
   });
   renderer.xr.addEventListener("sessionend", () => {
     if (savedBg !== undefined) { scene.background = savedBg; savedBg = undefined; }
+    try { console.log("[Shadow XR] session end"); } catch {}
   });
 
   // A dolly holds the camera so we can locomote without moving the head rig.
