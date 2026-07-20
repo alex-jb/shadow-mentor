@@ -1,0 +1,30 @@
+// apps/shadow-lens/unity/AndroidBridges/ocr-aar/build.gradle
+// Shadow Lens OCR AAR — ML Kit Text Recognition v2, bundled model (full per-line
+// confidence, no first-run download). SOFTWARE IMPLEMENTED · NOT-COMPILED on this host
+// (no JDK/Android SDK). Build where a JDK + Android SDK exist: `./gradlew :ocr-aar:assembleRelease`.
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'com.shadowlens.ocr'
+    compileSdk 34
+    defaultConfig {
+        minSdk 24
+        targetSdk 34
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions { jvmTarget = '17' }
+}
+
+dependencies {
+    // Bundled text-recognition model → complete confidence + no runtime model download.
+    implementation 'com.google.mlkit:text-recognition:16.0.1'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.json:json:20240303'
+}

@@ -1,0 +1,8 @@
+{
+  "name": "ShadowLens",
+  "rootNamespace": "ShadowLens",
+  "references": [],
+  "includePlatforms": [],
+  "allowUnsafeCode": false,
+  "autoReferenced": true
+}
