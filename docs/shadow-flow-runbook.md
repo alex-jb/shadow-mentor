@@ -10,11 +10,17 @@ Shadow makes it verifiable.* Do not describe Flow's spatial capability as Shadow
 
 `node demos/spatial-finance/flow-adapter.mjs` writes three Flow-importable CSVs:
 
-| Scene | File | Shape |
-|---|---|---|
-| **1 · Investment Overview** | `flow-portfolio.csv` | one row per holding — X=risk, Y=5y return, Z=confidence, size=weight, color=action |
-| **2 · Agent Council** | `flow-council.csv` | center = Final Recommendation; 5 voices as spokes with support/oppose relation + confidence |
-| **3 · Audit Trace** | `flow-audit.csv` | one row per evidence-chain node (real SHA-256 prev-hash chain), verification_status |
+| Scene | File | Data provenance | Shape |
+|---|---|---|---|
+| **3 · Audit Trace** | `flow-audit.csv` | **REAL signed Shadow bundle** (docs/reference/banking-decision.bundle.json, verified with verifyBundle) | one row per evidence-chain event — real seq/actor/payload_hash/prev_hash + verification_status |
+| **1 · Investment Overview** | `flow-portfolio.csv` | **deterministic demonstration fixture** (hard-coded in the adapter) | one row per holding — X=risk, Y=5y return, Z=confidence, size=weight, color=action |
+| **2 · Agent Council** | `flow-council.csv` | **deterministic demonstration fixture** (hard-coded in the adapter) | center = Final Recommendation; 5 voices as spokes with support/oppose + confidence |
+
+**Say it accurately:** the adapter exports **one real signed audit-chain dataset** and
+**two deterministic finance/council demonstration fixtures**. The fixtures are useful
+(they show what the spatial encoding looks like), but only the Audit Trace is a real
+Shadow record — label it that way in any demo so no one thinks the portfolio numbers
+are live.
 
 Import any CSV into Flow Editor → arrange the 3D encoding → view on the glasses.
 
