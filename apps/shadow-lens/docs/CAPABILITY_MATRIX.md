@@ -12,8 +12,9 @@ a device report. Build host had Node only (no Java/Gradle/Android SDK/Unity) —
 | Session builder (real attest-core seal + verify + tamper) | ✅ | ✅ | n/a | ✅ |
 | HTTP pipeline `/api/shadow-lens-analyze` (guards, CORS, fixture+live) | ✅ | ✅ | n/a | ✅ |
 | Flow real-session export (3 scenes, real/fixture tagged) | ✅ | ✅ | n/a | ✅ |
-| Android OCR AAR (ML Kit Kotlin bridge + Gradle) | ✅ | ❌ NOT-COMPILED | ❌ pending | ❌ |
-| Android Voice/TTS AAR | 🟡 spec'd (not yet written) | ❌ | ❌ pending | ❌ |
+| Android OCR AAR (ML Kit Kotlin bridge + Gradle) | ✅ | ❌ NOT-COMPILED (CI dispatch) | ❌ pending | ❌ |
+| Android Voice/TTS AAR (SpeechRecognizer on-device + TTS) | ✅ | 🟡 pure JVM router test (device path NOT-COMPILED) | ❌ pending | ❌ |
+| Gradle multi-module (settings + wrapper + CI dispatch) | ✅ | ❌ needs SDK runner | n/a | ❌ |
 | Unity C# core (providers, mocks, API client, voice router) | ✅ | ❌ NO UNITY COMPILE | ❌ pending | ❌ |
 | Unity spatial UX (panels, source overlay, audit arc) | 🟡 interfaces only | ❌ | ❌ pending | ❌ |
 | Eye RGB capture (GPU readback + official still) | 🟡 interface + spec | ❌ | ❌ pending | ❌ |
