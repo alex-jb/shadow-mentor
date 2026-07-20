@@ -47,8 +47,22 @@
   install, Quest WebXR AR. Procedure: `UNITY_XREAL_BUILD_RUNBOOK.md` +
   `DEVICE_ACCEPTANCE_CHECKLIST.md`.
 
+## Status vocabulary (strict)
+- **REAL AND TESTED** — runs in `npm test` on this host.
+- **COMPILED** — only if CI or a local toolchain produced an artifact. Nothing native qualifies yet.
+- **SOURCE AUTHORED / BUILD CONFIGURED / NOT COMPILED / DEVICE VALIDATION PENDING** — the ladder
+  for Unity + Android. Source is written and the build is configured; it has NOT been compiled
+  in a Unity/Android toolchain here, and possible issues remain (XREAL SDK class/namespace
+  mismatch, Unity/package version conflicts, Manifest merge, ML Kit dep conflicts, min/target SDK
+  or Gradle mismatch, JNI thread rules, SpeechRecognizer main-thread creation, R8/ProGuard
+  stripping the bridge classes). Only a green build promotes these to COMPILED.
+- **DEVICE-VALIDATION-PENDING** — needs XREAL One Pro + Eye / Quest hardware.
+- **CREDENTIAL-BLOCKED** — needs a secret (e.g. `UNITY_LICENSE`, live LLM key) to run.
+- **FIXTURE-ONLY** — exercised with fixtures, not live providers.
+
 ## Honest headline
-The full evidence backbone — capture-metadata → source-map → source-bound analysis →
-signed bundle → verify → Flow — is REAL and TESTED and reachable over HTTP. The native
-client (Unity + AARs) is written to be compile-ready but was neither compiled nor
-device-validated here. No Unity/XREAL completion is claimed without compile + device evidence.
+The full evidence backbone — capture-metadata → source-map → source-bound analysis → signed
+bundle → verify → staged/one-shot HTTP → Flow — is REAL and TESTED and reachable over HTTP.
+The native client (Unity + AARs) is **SOURCE AUTHORED · BUILD CONFIGURED · NOT COMPILED ·
+DEVICE VALIDATION PENDING** — no Unity/XREAL completion or compile is claimed without a build
+artifact + device evidence.
