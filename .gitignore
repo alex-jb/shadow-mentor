@@ -19,3 +19,4 @@ demos/replay/3d/study/trials/
 
 # macOS
 .DS_Store
+apps/shadow-lens/acceptance/out/
