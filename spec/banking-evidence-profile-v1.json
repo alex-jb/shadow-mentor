@@ -99,6 +99,15 @@
       "check": { "kind": "binding_present", "keys": ["retention_status", "retention_until", "redaction"] }
     },
     {
+      "id": "reviewer_interaction",
+      "label": "Reviewer interaction detail (approved / modified / rejected + duration + override rationale)",
+      "level": "recommended",
+      "$comment": "Deepens human_review from a binary approved-bool into the auditable record of WHAT the reviewer did: approved/modified/rejected, how long they spent, and — when they OVERRODE the model (modified/rejected) — WHY (a required non-empty override_rationale). Borrowed from the medical CAAT audit-trail spec (Frontiers in Digital Health 2026), whose minimum record set requires clinician-interaction metadata; the same question a bank examiner asks — did a human exercise independent judgment, or rubber-stamp the model? Recommended (not every bundle carries it yet); when the human_approval payload is supplied, the gate VERIFIES the structure rather than assuming it.",
+      "reg_hooks": ["Reg B (independent human judgment)", "CFPB Circular 2022-03 (factors actually considered)", "SR 26-2 (effective challenge)"],
+      "provided_by": "a reviewer_interaction object in the human_approval event payload",
+      "check": { "kind": "reviewer_interaction_verified", "event_type": "human_approval" }
+    },
+    {
       "id": "document_source_traceability",
       "label": "Document source-map (each cited figure → page/region in a hash-bound source document)",
       "level": "recommended",

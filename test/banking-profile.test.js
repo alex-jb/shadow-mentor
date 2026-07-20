@@ -90,7 +90,10 @@ test("a purpose-built credit-decision bundle conforms (pass, high coverage)", ()
   const r = checkBankingProfileV1(bundle, { verified });
   assert.equal(verified.ok, true);
   assert.equal(r.pass, true, `missing: ${r.missing_required.join(",")}`);
-  assert.ok(r.coverage_pct >= 70, `coverage ${r.coverage_pct}`);
+  // Structural-only (no payloads): the value-gated recommended fields
+  // (reviewer_interaction, document_source_traceability) honestly report "unknown"
+  // here — supply payloads to lift them to present — so a no-payload bundle covers ~65%+.
+  assert.ok(r.coverage_pct >= 65, `coverage ${r.coverage_pct}`);
   // integrity resolves to present once a verify result is supplied
   assert.equal(r.fields.find((f) => f.id === "integrity").status, "present");
 });
