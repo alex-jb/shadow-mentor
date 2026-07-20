@@ -226,10 +226,28 @@ function bytesToB64url(b){let s="";for(const x of b)s+=String.fromCharCode(x);re
 function abToPem(ab,l){const b=new Uint8Array(ab);let s="";for(const x of b)s+=String.fromCharCode(x);const b64=btoa(s).replace(/(.{64})/g,"$1\n");return `-----BEGIN ${l}-----\n${b64}\n-----END ${l}-----`;}
 async function headerSeed(h){return sha256Hex(canonicalBytes({...h,session_ended_at_utc:null}));}
 async function ownHash(e){return sha256Hex(canonicalBytes(signedShape(e)));}
+// Document Source-Map (spec/document-source-map-v1.json): bind each claim to the
+// source document + hash the map, so the sealed bundle is provably tied to the doc.
+async function b64ToBytes(b64){const bin=atob(b64);const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u;}
+async function docHashFor(k){
+  if(k==="scanned" && scannedImage) return "sha256:"+await sha256Hex(await b64ToBytes(scannedImage.base64));
+  return "sha256:"+await sha256Hex(canonicalBytes({demo_artifact:k})); // stable placeholder for built-in artifacts
+}
+function buildSourceMap(k,res,document_hash){
+  return { source_map_version:"1.0.0", document_hash,
+    document_media_type: k==="scanned" ? (scannedImage?.mediaType||"image/png") : "application/x-shadow-demo-artifact",
+    parser: k==="scanned" ? "claude-vision" : "worked-mock", parser_version:null,
+    extracted_at_utc:"2026-07-16T00:00:00.000Z",
+    entries: res.claims.map(c=>({ page:1, content_type:"line", raw_text:String(c.source ?? c.cell ?? c.text ?? "") })) };
+}
+
 async function sealAnalysis(kind,persona,res){
   const kp=await crypto.subtle.generateKey({name:"Ed25519"},true,["sign","verify"]);
   const pem=abToPem(await crypto.subtle.exportKey("spki",kp.publicKey),"PUBLIC KEY");
-  const header={session_id:`scan-${kind}`,session_started_at_utc:"2026-07-16T00:00:00.000Z",session_ended_at_utc:null,agent:{name:"shadow-scan",version:"0.1",identity_ref:null},models:[{model_id:"worked-mock",provider:null,sampling_params_hash:null}],environment_fingerprint:{os:"browser",node_version:"n/a",hostname_hash:null},schema_versions:{bundle:1,attest_core:"2.0.0"}};
+  const document_hash=await docHashFor(kind);
+  const source_map=buildSourceMap(kind,res,document_hash);
+  const source_map_hash="sha256:"+await sha256Hex(canonicalBytes(source_map));
+  const header={session_id:`scan-${kind}`,session_started_at_utc:"2026-07-16T00:00:00.000Z",session_ended_at_utc:null,agent:{name:"shadow-scan",version:"0.1",identity_ref:null},models:[{model_id:"worked-mock",provider:null,sampling_params_hash:null}],environment_fingerprint:{os:"browser",node_version:"n/a",hostname_hash:null},schema_versions:{bundle:1,attest_core:"2.0.0"},extensions:{source_map_hash,document_hash}};
   const events=[];let prev=await headerSeed(header),seq=0;
   const push=async(t,a,p)=>{const ph=await sha256Hex(canonicalBytes(p));const ev={seq:seq++,ts_utc:header.session_started_at_utc,event_type:t,actor:a,payload_hash:ph,payload_ref:`sha256:${ph}`,prev_hash:prev,extensions:{}};events.push(ev);prev=await ownHash(ev);};
   await push("session_start","system",{kind,persona});
@@ -241,7 +259,7 @@ async function sealAnalysis(kind,persona,res){
   const batch_root=await sha256Hex(concat);
   const sig=await crypto.subtle.sign({name:"Ed25519"},kp.privateKey,hexToBytes(batch_root));
   const bundle={bundle_version:1,spec_version:"shadow-evidence/v1",header,events,batch_root,signatures:[{algorithm:"ed25519",key_id:"shadow-scan-demo",signature:bytesToB64url(new Uint8Array(sig)),signed_at_utc:header.session_started_at_utc}]};
-  return {bundle,pem};
+  return {bundle,pem,document_hash,source_map};
 }
 function download(name,text){const b=new Blob([text],{type:"application/octet-stream"});const u=URL.createObjectURL(b);const a=document.createElement("a");a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);}
 
@@ -313,9 +331,11 @@ async function showVerify(bundle, pem){
   const sealed = $("#sealed");
   if(r.ok){
     sealed.className = "";
-    sealed.innerHTML = `✓ VERIFIED offline · Ed25519 signature + hash-chain intact · ${bundle.events.length} events`
+    const doch = bundle.header?.extensions?.document_hash;
+    const bound = doch ? ` · bound to document <code>${doch.slice(0,17)}…</code>` : "";
+    sealed.innerHTML = `✓ VERIFIED offline · Ed25519 signature + hash-chain intact${bound} · ${bundle.events.length} events`
       + `<br>anyone re-checks: <code>shadow-verify bundle.json --public-key public.pem</code>`;
-    speak("Verified. Signature and hash chain intact.");
+    speak("Verified. Signature and hash chain intact, bound to the source document.");
   } else {
     sealed.className = "bad";
     const where = (r.error && r.error.seq != null) ? ` at event ${r.error.seq}` : "";

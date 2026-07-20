@@ -9,6 +9,7 @@ import { generateKeyPairSync } from "node:crypto";
 import { createSession, appendEvent, sealSession, verifyBundle } from "../packages/attest-core/session.js";
 import { checkBankingProfileV1, BANKING_PROFILE_V1 } from "../lib/enforce-banking-profile.js";
 import { computeDictionaryHash } from "../lib/enforce-reason-code-dictionary.js";
+import { buildSourceMapFromClaims } from "../lib/document-source-map.js";
 
 const DICT_HASH = computeDictionaryHash(); // the registered, governed dictionary
 
@@ -45,6 +46,29 @@ test("profile spec is well-formed (every field has a level, reg_hooks, and a che
     assert.ok(Array.isArray(f.reg_hooks) && f.reg_hooks.length, `${f.id} missing reg_hooks`);
     assert.ok(f.check && f.check.kind, `${f.id} missing check`);
   }
+});
+
+test("document_source_traceability: present when a source-map is bound, missing (not failing) otherwise", () => {
+  const k = keys();
+  // bare conforming bundle has no source-map → recommended field MISSING but pass holds
+  const bare = conformingBundle(k);
+  const rBare = checkBankingProfileV1(bare, { verified: verifyBundle(bare, { publicKey: k.pub }) });
+  assert.equal(rBare.fields.find((f) => f.id === "document_source_traceability").status, "missing");
+  assert.equal(rBare.pass, true); // recommended miss does not fail conformance
+
+  // closed loop: claims → buildSourceMapFromClaims → source_map_hash → bound in a bundle
+  const { source_map_hash } = buildSourceMapFromClaims(
+    [{ field: "debt_to_income", text: "DTI 0.41 over ceiling", source: "0.41", value: 0.41, page: 2 }],
+    { documentBytes: Buffer.from("origination-doc-bytes"), extractedAtUtc: "2026-07-20T00:00:00.000Z" });
+  const s = session(k);
+  appendEvent(s, { event_type: "prompt", actor: "user", payload: { q: "credit decision" } });
+  appendEvent(s, { event_type: "model_output", actor: "model",
+    payload: { decision: "deny", reason_codes: ["AA01"] },
+    extensions: { dictionary_hash: DICT_HASH, source_map_hash } });
+  appendEvent(s, { event_type: "human_approval", actor: "user", payload: { approved: true } });
+  const bound = sealSession(s);
+  const rBound = checkBankingProfileV1(bound, { verified: verifyBundle(bound, { publicKey: k.pub }) });
+  assert.equal(rBound.fields.find((f) => f.id === "document_source_traceability").status, "present");
 });
 
 test("a purpose-built credit-decision bundle conforms (pass, high coverage)", () => {

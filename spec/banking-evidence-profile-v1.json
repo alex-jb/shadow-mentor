@@ -97,6 +97,15 @@
       "reg_hooks": ["Reg B 12 CFR 1002.12 (25-month retention; 12 for business credit)"],
       "provided_by": "retention flag in header.extensions or a session_end payload; GDPR-erasure via payload_ref nulling",
       "check": { "kind": "binding_present", "keys": ["retention_status", "retention_until", "redaction"] }
+    },
+    {
+      "id": "document_source_traceability",
+      "label": "Document source-map (each cited figure → page/region in a hash-bound source document)",
+      "level": "recommended",
+      "$comment": "Complements source_citations (text-level, CFPB 2022-03) with document-level, post-hoc-swap-evident binding: a Document Source-Map (spec/document-source-map-v1.json) ties each extracted figure to a page+region in the ORIGINATION document, and its document_hash makes a later file swap fail verification. Recommended, not required — many decisions are not document-derived.",
+      "reg_hooks": ["FCRA accuracy of information relied upon", "examiner ability to trace a cited figure to its origination document"],
+      "provided_by": "a Document Source-Map bound via source_map_hash + document_hash in header.extensions or an event",
+      "check": { "kind": "binding_present", "keys": ["source_map_hash", "document_source_map", "document_hash"] }
     }
   ]
 }

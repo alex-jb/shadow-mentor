@@ -6,6 +6,7 @@ import assert from "node:assert/strict";
 import {
   SOURCE_MAP_VERSION, CONTENT_TYPES,
   computeDocumentHash, computeSourceMapHash, verifyBoundToDocument, validateSourceMap,
+  buildSourceMapFromClaims,
 } from "../lib/document-source-map.js";
 
 const RAW = Buffer.from("%PDF-1.7 ... Cedar Ridge ... DTI 0.41 ...");
@@ -62,6 +63,22 @@ test("MOAT: verifyBoundToDocument true for the real file, false after a post-hoc
   const r = verifyBoundToDocument(map, swapped);
   assert.equal(r.bound, false);
   assert.notEqual(r.actual, r.claimed);
+});
+
+test("buildSourceMapFromClaims: accepts the loose scan {text, source} shape → a valid, bound map", () => {
+  const claims = [
+    { field: "debt_to_income", text: "DTI 0.41 over the 0.36 ceiling", source: "0.41", value: 0.41, page: 2, region: [0.55, 0.41, 0.92, 0.45], confidence: 0.96 },
+    { text: "LTV 0.83 above the 0.80 preferred max", source: "0.83" }, // no field/page → defaults
+  ];
+  const { source_map, source_map_hash, document_hash } = buildSourceMapFromClaims(claims, {
+    documentBytes: RAW, parser: "claude-vision", extractedAtUtc: "2026-07-20T00:00:00.000Z",
+  });
+  assert.equal(validateSourceMap(source_map).valid, true, validateSourceMap(source_map).errors.join("; "));
+  assert.equal(document_hash, computeDocumentHash(RAW));
+  assert.equal(source_map_hash, computeSourceMapHash(source_map));
+  assert.equal(source_map.entries[0].normalized_value, 0.41);
+  assert.equal(source_map.entries[1].page, 1);            // default
+  assert.equal(source_map.entries[1].content_type, "line"); // default
 });
 
 test("computeSourceMapHash is stable, ignores its own field, and moves when content changes", () => {
