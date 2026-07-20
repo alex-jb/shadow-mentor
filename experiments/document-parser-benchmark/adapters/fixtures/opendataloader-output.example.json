@@ -1,0 +1,18 @@
+{
+  "$note": "MOCK OpenDataLoader --format json output (assumed shape: per-page, bbox per element, absolute page units). Verify field names against a real dump when wiring.",
+  "pages": [
+    {
+      "page_number": 2,
+      "width": 612,
+      "height": 792,
+      "elements": [
+        { "type": "heading",    "text": "Credit Metrics",         "bbox": [56, 40, 300, 66] },
+        { "type": "table_cell",  "text": "FICO Score: 706",        "bbox": [56, 300, 556, 322] },
+        { "type": "table_cell",  "text": "Debt-to-Income: 0.41",   "bbox": [56, 326, 556, 348] },
+        { "type": "table_cell",  "text": "Loan-to-Value: 0.83",    "bbox": [56, 352, 556, 374] },
+        { "type": "formula",     "text": "DTI = (debt+pmt)/income","bbox": [56, 500, 400, 522] },
+        { "type": "image",       "text": "",                        "bbox": [400, 600, 556, 720] }
+      ]
+    }
+  ]
+}

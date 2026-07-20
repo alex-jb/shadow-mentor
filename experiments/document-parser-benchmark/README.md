@@ -37,11 +37,26 @@ node experiments/document-parser-benchmark/score.mjs \
 With no args it scores the bundled example (a hand-built candidate vs golden) so the
 harness is runnable today, before any real parser is wired.
 
-## Adding a parser (later, in this experiment dir — NOT core)
+## Adapters
 
-1. `adapters/<parser>.mjs` → takes a file, returns a Document Source-Map v1.
-2. Point it at the fixtures in `golden/` (add 5–10 real financial PDFs, git-ignored
-   if licensing requires).
+- **`adapters/opendataloader.mjs`** — scaffolded. Pure `mapOpenDataLoaderToSourceMap()`
+  (ODL JSON → Source-Map v1, normalizes absolute bboxes to 0..1, maps element types)
+  is validated offline against a mock ODL dump. `extractSourceMap(pdf)` shells out to
+  OpenDataLoader **out of process** (Java 11+; set `OPENDATALOADER_CMD`) and skips
+  gracefully when it's not installed. Verify the JSON field names against a real
+  `--format json` dump when wiring — the one thing the skeleton can't confirm offline.
+
+End to end once a parser is installed:
+```
+node -e "import('./adapters/opendataloader.mjs').then(m=>m.extractSourceMap('golden/loan.pdf')).then(sm=>require('fs').writeFileSync('golden/loan.candidate.json',JSON.stringify(sm)))"
+node score.mjs golden/loan.golden.json golden/loan.candidate.json
+```
+
+## Adding another parser (in this experiment dir — NOT core)
+
+1. `adapters/<parser>.mjs` → same shape: a pure `map…ToSourceMap()` + an
+   `extractSourceMap(file)` runner that degrades gracefully.
+2. Point it at 5–10 real financial PDFs in `golden/` (git-ignore if licensing requires).
 3. `score.mjs` each parser's output vs the golden; compare.
 
 Candidates flagged by the radar: **OpenDataLoader PDF** (Apache-2.0, ~27k★, Java —
