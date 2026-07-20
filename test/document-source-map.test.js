@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  SOURCE_MAP_VERSION, CONTENT_TYPES,
+  SOURCE_MAP_VERSION, SUPPORTED_SOURCE_MAP_VERSIONS, CONTENT_TYPES,
   computeDocumentHash, computeSourceMapHash, verifyBoundToDocument, validateSourceMap,
   buildSourceMapFromClaims,
 } from "../lib/document-source-map.js";
@@ -63,6 +63,29 @@ test("MOAT: verifyBoundToDocument true for the real file, false after a post-hoc
   const r = verifyBoundToDocument(map, swapped);
   assert.equal(r.bound, false);
   assert.notEqual(r.actual, r.claimed);
+});
+
+test("v1.1 render binding: render_hash validates; bad format fails; 1.0.0 stays valid (back-compat)", () => {
+  assert.equal(SOURCE_MAP_VERSION, "1.1.0");
+  assert.deepEqual([...SUPPORTED_SOURCE_MAP_VERSIONS], ["1.0.0", "1.1.0"]);
+  // render_hash present + well-formed → valid
+  const withRender = { ...validMap(), render_hash: computeDocumentHash(Buffer.from("render.png")), render_media_type: "image/png" };
+  assert.equal(validateSourceMap(withRender).valid, true, validateSourceMap(withRender).errors.join("; "));
+  // malformed render_hash → error
+  const badRender = { ...validMap(), render_hash: "nope" };
+  assert.match(validateSourceMap(badRender).errors.join(), /render_hash/);
+  // a 1.0.0 map (no render fields) still validates
+  const legacy = { ...validMap(), source_map_version: "1.0.0" };
+  assert.equal(validateSourceMap(legacy).valid, true);
+});
+
+test("buildSourceMapFromClaims: renderBytes → binds render_hash + render_media_type", () => {
+  const { source_map } = buildSourceMapFromClaims(
+    [{ field: "credit_score", text: "706", value: 706, page: 2 }],
+    { documentBytes: RAW, renderBytes: Buffer.from("a-rendered-png"), renderMediaType: "image/png", extractedAtUtc: "2026-07-20T00:00:00.000Z" });
+  assert.equal(source_map.render_hash, computeDocumentHash(Buffer.from("a-rendered-png")));
+  assert.equal(source_map.render_media_type, "image/png");
+  assert.equal(validateSourceMap(source_map).valid, true);
 });
 
 test("buildSourceMapFromClaims: accepts the loose scan {text, source} shape → a valid, bound map", () => {

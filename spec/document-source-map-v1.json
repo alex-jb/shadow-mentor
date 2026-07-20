@@ -1,11 +1,15 @@
 {
   "$comment": "Shadow Document Source-Map v1. The parser-agnostic binding between a raw source document and the structured values extracted from it: every extracted value carries the page + region + verbatim raw_text it came from, and the whole map is bound to a hash of the raw file. This is the moat piece the OSS-radar (2026-07-20) identified — NOT another parser. The parser (OpenDataLoader PDF, MarkItDown, OfficeCLI, an OCR service) is a swappable backend recorded in `parser`/`parser_version`; Shadow owns the verifiable binding conclusion -> page -> region -> extracted value -> audit event. Discipline: `confidence` is the parser's self-report and is NEVER evidence of correctness — the map records what the parser CLAIMED plus the raw region, so a human or a second parser can verify. document_hash makes the map post-hoc-swap-evident (same pattern as reason_code_dictionary_sha256 governance): swap the underlying file after the fact and verifyBoundToDocument() fails. source_map_hash lets the map be pinned as an attestation-bound evidence field, exactly like dictionary_hash.",
-  "source_map_version": "1.0.0",
+  "source_map_version": "1.1.0",
+  "supported_versions": ["1.0.0", "1.1.0"],
+  "v1_1_note": "1.1.0 adds the OPTIONAL render_hash / render_media_type — bind the human-visible rendering of the document, not just its raw bytes. Surfaced by the office-evidence spike: hidden columns, a formula vs its cached value, or a chart can diverge between 'what the parser extracted' and 'what a reviewer saw', so evidence should be able to bind both. Back-compat: 1.0.0 maps stay valid; the fields are optional.",
   "binds": "one raw source document (PDF / DOCX / XLSX / PPTX / image) to its structured extractions",
   "top_level": {
-    "source_map_version": "schema version, currently 1.0.0",
+    "source_map_version": "schema version; validators accept 1.0.0 or 1.1.0",
     "document_hash": "sha256:<hex> of the RAW source bytes — binds this map to that exact file",
     "document_media_type": "e.g. application/pdf, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, image/png",
+    "render_hash": "OPTIONAL (v1.1) sha256:<hex> of the human-visible RENDERED form (e.g. the page/sheet PNG) — binds what a reviewer saw, catching hidden/derived content the raw value drops",
+    "render_media_type": "OPTIONAL (v1.1) media type of the render, e.g. image/png",
     "parser": "backend id, e.g. opendataloader-pdf | markitdown | officecli | claude-vision",
     "parser_version": "backend version string — part of reproducibility, not correctness",
     "extracted_at_utc": "ISO-8601 timestamp of extraction",
