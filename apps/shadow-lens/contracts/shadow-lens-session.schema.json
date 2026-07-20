@@ -1,0 +1,154 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/alex-jb/shadow-mentor/apps/shadow-lens/contracts/shadow-lens-session.schema.json",
+  "title": "Shadow Lens Session",
+  "$comment": "The ONE signed scene/evidence contract every Shadow Lens renderer consumes (Unity XREAL, WebXR/Quest, Flow, audience mirror). It does NOT replace or modify the frozen Evidence Bundle wire format (spec/EVIDENCE_BUNDLE.md) — spatial/capture/OCR/device/voice metadata lives HERE as a versioned sidecar, and the authoritative signing is still the server-side attest-core seal of the underlying bundle. The LLM never authors source geometry: only the OCR/layout layer writes source_map bounding boxes; claims may only cite source_id values that exist in source_map. A verified record proves integrity, NOT that the analysis is correct. Language discipline: tamper-EVIDENT (reveals tampering), never claimed to PREVENT it.",
+  "type": "object",
+  "required": ["contract_version", "session_id", "build", "device", "capture", "source_map", "claims", "provenance", "verification"],
+  "additionalProperties": true,
+  "properties": {
+    "contract_version": { "type": "string", "const": "shadow-lens-session/1.0" },
+    "session_id": { "type": "string", "minLength": 1 },
+    "build": {
+      "type": "object",
+      "required": ["app_commit"],
+      "properties": {
+        "app_commit": { "type": "string" },
+        "unity_build_version": { "type": "string" },
+        "web_build_version": { "type": "string" },
+        "built_at_utc": { "type": "string" }
+      }
+    },
+    "device": {
+      "type": "object",
+      "required": ["platform", "runtime_mode", "tracking_mode", "camera_mode"],
+      "properties": {
+        "platform": { "type": "string", "enum": ["unity-xreal", "webxr", "browser-flat", "mock-desktop"] },
+        "device_model": { "type": ["string", "null"] },
+        "glasses_model": { "type": ["string", "null"] },
+        "eye_attached": { "type": ["boolean", "null"] },
+        "sdk_version": { "type": ["string", "null"] },
+        "firmware_version": { "type": ["string", "null"] },
+        "runtime_mode": { "type": "string", "enum": ["UNITY_XREAL", "WEBXR_AR", "WEBXR_VR", "SBS_STEREO", "FLAT_HUD", "MOCK"] },
+        "tracking_mode": { "type": "string", "enum": ["6dof", "3dof", "none", "unknown"] },
+        "camera_mode": { "type": "string", "enum": ["xreal-eye", "none", "mock"] },
+        "reference_space": { "type": ["string", "null"] },
+        "app_commit": { "type": ["string", "null"] }
+      }
+    },
+    "capture": {
+      "type": "object",
+      "required": ["capture_id", "capture_sha256", "capture_method"],
+      "properties": {
+        "capture_id": { "type": "string" },
+        "timestamp": { "type": ["string", "null"] },
+        "mime_type": { "type": ["string", "null"] },
+        "pixel_dimensions": { "type": ["array", "null"], "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+        "normalized_rotation": { "type": ["number", "null"] },
+        "capture_sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "privacy_status": { "type": ["string", "null"] },
+        "retention_status": { "type": ["string", "null"], "enum": ["no-store", "short-ttl", "retained", null] },
+        "capture_method": { "type": "string", "enum": ["xreal-eye-still", "upload", "paste", "fixture", "mock"] },
+        "frame_stability_score": { "type": ["number", "null"] },
+        "blur_score": { "type": ["number", "null"] },
+        "perspective_score": { "type": ["number", "null"] }
+      }
+    },
+    "document": { "type": ["object", "null"], "description": "sanitized document metadata (kind, page_count, rectified); NEVER the raw pixels" },
+    "source_map": {
+      "type": "array",
+      "description": "OCR-authored geometry. The ONLY place source_id → bounding box is created. Hashed into provenance.source_map_hash.",
+      "items": { "$ref": "#/definitions/sourceMapEntry" }
+    },
+    "metrics": { "type": ["array", "null"], "items": { "type": "object" } },
+    "claims": { "type": "array", "items": { "$ref": "#/definitions/claim" } },
+    "risks": { "type": ["array", "null"], "items": { "type": "object" } },
+    "scenarios": { "type": ["array", "null"], "items": { "type": "object" } },
+    "reviewers": { "type": ["array", "null"], "items": { "type": "object" }, "description": "5 structured reviewers: stance, short rationale summary, source_ids, confidence, disagreement — NO hidden chain-of-thought" },
+    "decision": { "type": ["object", "null"], "description": "final posture via a transparent aggregator (record aggregator rule/config version); not a majority-vote illusion" },
+    "provenance": {
+      "type": "object",
+      "required": ["capture_hash", "source_map_hash"],
+      "properties": {
+        "capture_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "source_map_hash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+        "ocr_engine": { "type": ["string", "null"] },
+        "ocr_version": { "type": ["string", "null"] },
+        "model_id": { "type": ["string", "null"] },
+        "prompt_hash": { "type": ["string", "null"] },
+        "reason_code_config_version": { "type": ["string", "null"] },
+        "app_commit": { "type": ["string", "null"] }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "required": ["record_integrity"],
+      "description": "SEPARATE statuses — never collapsed into one green VERIFIED badge",
+      "properties": {
+        "record_integrity": { "type": "string", "enum": ["verified", "failed", "unknown"] },
+        "failed_seq": { "type": ["integer", "null"] },
+        "failure_reason": { "type": ["string", "null"] },
+        "external_anchor": { "type": "string", "enum": ["none", "time_anchored_structural", "time_anchored", "log_anchored_structural", "log_anchored", "unknown"] },
+        "source_coverage_pct": { "type": ["number", "null"] },
+        "analysis_confidence": { "type": ["number", "null"] },
+        "human_review": { "type": "string", "enum": ["approved", "modified", "rejected", "pending", "none"] },
+        "data_freshness_sec": { "type": ["number", "null"] }
+      }
+    },
+    "spatial_scene": { "type": ["object", "null"], "description": "renderer-neutral scene: nodes (capture/ocr/analysis/reviewer/human/signature/anchor), edges, layout hints" },
+    "voice_events": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "properties": {
+          "recognized_text": { "type": "string" },
+          "matched_intent": { "type": "string" },
+          "recognition_mode": { "type": "string", "enum": ["on_device", "network", "unknown"] },
+          "audio_retained": { "type": "boolean" },
+          "executed_action": { "type": "string" },
+          "source_ids": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "sourceMapEntry": {
+      "type": "object",
+      "required": ["source_id", "text", "bounding_box_normalized", "confidence"],
+      "properties": {
+        "source_id": { "type": "string", "minLength": 1 },
+        "page_or_frame": { "type": ["integer", "string", "null"] },
+        "level": { "type": "string", "enum": ["block", "line", "element", "symbol"] },
+        "text": { "type": "string" },
+        "normalized_text": { "type": ["string", "null"] },
+        "normalized_value": { "type": ["number", "string", "boolean", "null"] },
+        "bounding_box_normalized": {
+          "type": "object",
+          "required": ["x", "y", "w", "h"],
+          "properties": { "x": { "type": "number" }, "y": { "type": "number" }, "w": { "type": "number" }, "h": { "type": "number" } }
+        },
+        "corner_points_normalized": { "type": ["array", "null"], "items": { "type": "array", "items": { "type": "number" } } },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "language": { "type": ["string", "null"] },
+        "angle_deg": { "type": ["number", "null"] },
+        "parser": { "type": ["string", "null"] },
+        "parser_version": { "type": ["string", "null"] }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "required": ["claim_id", "text", "source_ids", "produced_by", "validation_status"],
+      "properties": {
+        "claim_id": { "type": "string" },
+        "text": { "type": "string" },
+        "category": { "type": ["string", "null"] },
+        "severity": { "type": ["string", "null"], "enum": ["info", "ok", "warn", "bad", "critical", null] },
+        "confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "source_ids": { "type": "array", "items": { "type": "string" }, "description": "MUST all resolve to a source_map entry; unresolvable claims are rejected at the gate. An empty array means UNCITED and must be labeled as such." },
+        "produced_by": { "type": "string", "enum": ["model", "tool", "human", "aggregator"] },
+        "evidence_event_sequences": { "type": ["array", "null"], "items": { "type": "integer" } },
+        "validation_status": { "type": "string", "enum": ["source_bound", "uncited", "rejected"] }
+      }
+    }
+  }
+}

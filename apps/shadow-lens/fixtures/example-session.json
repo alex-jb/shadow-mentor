@@ -1,0 +1,71 @@
+{
+  "contract_version": "shadow-lens-session/1.0",
+  "session_id": "sls-2026-07-20-demo-001",
+  "build": { "app_commit": "local", "unity_build_version": "0.1.0-mock", "built_at_utc": "2026-07-20T00:00:00.000Z" },
+  "device": {
+    "platform": "mock-desktop",
+    "device_model": null,
+    "glasses_model": "XREAL One Pro",
+    "eye_attached": true,
+    "sdk_version": "xreal-sdk-3.1.0",
+    "firmware_version": null,
+    "runtime_mode": "MOCK",
+    "tracking_mode": "unknown",
+    "camera_mode": "mock",
+    "reference_space": null,
+    "app_commit": "local"
+  },
+  "capture": {
+    "capture_id": "cap-001",
+    "timestamp": "2026-07-20T00:00:01.000Z",
+    "mime_type": "image/png",
+    "pixel_dimensions": [1280, 1656],
+    "normalized_rotation": 0,
+    "capture_sha256": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "privacy_status": "captured-with-consent",
+    "retention_status": "no-store",
+    "capture_method": "fixture",
+    "frame_stability_score": 0.94,
+    "blur_score": 0.08,
+    "perspective_score": 0.97
+  },
+  "document": { "kind": "loan financial statement", "page_count": 1, "rectified": true },
+  "source_map": [
+    { "source_id": "L07", "level": "line", "text": "FICO Score: 706", "normalized_value": 706, "bounding_box_normalized": { "x": 0.10, "y": 0.30, "w": 0.40, "h": 0.03 }, "confidence": 0.97, "language": "en", "angle_deg": -0.4, "parser": "mlkit-text-recognition", "parser_version": "bundled" },
+    { "source_id": "L08", "level": "line", "text": "Debt-to-Income Ratio: 0.41", "normalized_value": 0.41, "bounding_box_normalized": { "x": 0.10, "y": 0.34, "w": 0.46, "h": 0.03 }, "confidence": 0.95, "language": "en", "parser": "mlkit-text-recognition", "parser_version": "bundled" },
+    { "source_id": "L09", "level": "line", "text": "Loan-to-Value Ratio: 0.83", "normalized_value": 0.83, "bounding_box_normalized": { "x": 0.10, "y": 0.38, "w": 0.44, "h": 0.03 }, "confidence": 0.96, "language": "en", "parser": "mlkit-text-recognition", "parser_version": "bundled" }
+  ],
+  "claims": [
+    { "claim_id": "c1", "text": "DTI 0.41 is above the 0.36 policy ceiling.", "category": "credit", "severity": "warn", "confidence": 0.9, "source_ids": ["L08"], "produced_by": "model", "evidence_event_sequences": [4], "validation_status": "source_bound" },
+    { "claim_id": "c2", "text": "LTV 0.83 exceeds the 0.80 preferred maximum.", "category": "credit", "severity": "warn", "confidence": 0.88, "source_ids": ["L09"], "produced_by": "model", "evidence_event_sequences": [4], "validation_status": "source_bound" },
+    { "claim_id": "c3", "text": "FICO 706 clears the 700 floor.", "category": "credit", "severity": "ok", "confidence": 0.92, "source_ids": ["L07"], "produced_by": "model", "evidence_event_sequences": [4], "validation_status": "source_bound" }
+  ],
+  "reviewers": [
+    { "voice": "Risk Officer", "stance": "caution", "rationale_summary": "DTI + LTV both over policy", "source_ids": ["L08", "L09"], "confidence": 0.8, "disagrees_with_final": false }
+  ],
+  "decision": { "final_posture": "escalate", "aggregator": "confidence-weighted", "aggregator_config_version": "0.3.3" },
+  "provenance": {
+    "capture_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "source_map_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "ocr_engine": "mlkit-text-recognition",
+    "ocr_version": "bundled",
+    "model_id": "claude-haiku-4-5",
+    "prompt_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "reason_code_config_version": "1.0.0",
+    "app_commit": "local"
+  },
+  "verification": {
+    "record_integrity": "verified",
+    "failed_seq": null,
+    "failure_reason": null,
+    "external_anchor": "none",
+    "source_coverage_pct": 100,
+    "analysis_confidence": 0.9,
+    "human_review": "pending",
+    "data_freshness_sec": 12
+  },
+  "spatial_scene": { "nodes": [], "edges": [] },
+  "voice_events": [
+    { "recognized_text": "show source for claim two", "matched_intent": "SHOW_SOURCE", "recognition_mode": "on_device", "audio_retained": false, "executed_action": "highlight_source", "source_ids": ["L09"] }
+  ]
+}
