@@ -1,30 +1,39 @@
 // demos/replay/3d/webxr.js
 // ─────────────────────────────────────────────────────────────────
-// Phase 6 — Quest 3 immersive-ar/vr (user study only, post-launch).
+// Immersive WebXR — real spatial AR/VR (not the SBS canvas trick). `mode=webxr`.
 //
-// Same scene graph, `mode=webxr`. This mode exists ONLY to run the study:
-// flat 2D report vs. spatially anchored (XREAL) vs. immersive (Quest),
-// measuring time-to-find-tamper and impact-scope accuracy. It gates behind
-// IRB before any participant — but the code is not the blocker, so it is
-// built to feature parity: local-floor reference space, smooth glide with a
-// motion vignette, teleport to arc waypoints, controller-ray select, and
-// hand-pinch select. No new features beyond the flat interactions.
+// XRButton offers immersive-AR first (falls back to immersive-VR), so the SAME
+// scene runs as:
+//   • see-through AR on Android Chrome + XREAL One Pro (the cards float in the
+//     room — the real thing; needs the phone-tethered path, tested 2026-07-22)
+//   • opaque VR on a Quest headset (the original user-study condition)
+// In AR the scene background is nulled on sessionstart so the room shows through
+// the additive optics; restored on VR/sessionend. Interactions (controller ray,
+// hand pinch, thumbstick glide, teleport) are present if the device exposes them
+// and simply stay inert if it doesn't — no crash on a controller-less phone rig.
 //
-// This never runs in the live XREAL demo (macOS Chrome has no immersive-ar).
-// It is inert unless a WebXR device is present and the user enters VR.
-//
-// STUDY-DEPLOYMENT NOTE: WebXR requires a secure context — Quest will NOT
-// grant an immersive session from file://. The Quest study condition must be
-// served over https (a tiny local https host is enough); the 2D + XREAL
-// conditions keep the offline file:// build.
+// SECURE CONTEXT: WebXR needs https (or localhost). The deployed Vercel URL
+// satisfies this — file:// cannot grant an immersive session. The flat + SBS
+// modes keep the offline file:// build.
 // ─────────────────────────────────────────────────────────────────
 import * as THREE from "three";
-import { VRButton } from "three/examples/jsm/webxr/VRButton.js";
+import { XRButton } from "three/examples/jsm/webxr/XRButton.js";
 import { XRControllerModelFactory } from "three/examples/jsm/webxr/XRControllerModelFactory.js";
 import { XRHandModelFactory } from "three/examples/jsm/webxr/XRHandModelFactory.js";
 
 export function createWebXR({ renderer, scene, camera, room, C, mountButton }) {
   renderer.xr.enabled = true;
+
+  // AR see-through: drop the opaque background when the runtime blends with the
+  // real world (additive on XREAL, alpha-blend on passthrough); restore for VR.
+  let savedBg;
+  renderer.xr.addEventListener("sessionstart", () => {
+    const blend = renderer.xr.getSession()?.environmentBlendMode;
+    if (blend && blend !== "opaque") { savedBg = scene.background; scene.background = null; }
+  });
+  renderer.xr.addEventListener("sessionend", () => {
+    if (savedBg !== undefined) { scene.background = savedBg; savedBg = undefined; }
+  });
 
   // A dolly holds the camera so we can locomote without moving the head rig.
   const dolly = new THREE.Group();
@@ -33,7 +42,12 @@ export function createWebXR({ renderer, scene, camera, room, C, mountButton }) {
   scene.add(dolly);
 
   // Entry button — the one DOM affordance this mode needs (mode entry UI).
-  const button = VRButton.createButton(renderer, { requiredFeatures: ["local-floor"] });
+  // Permissive session init so an unknown glasses/phone rig is most likely to
+  // grant a session: nothing REQUIRED, useful things OPTIONAL. XRButton probes
+  // immersive-ar first, then immersive-vr.
+  const button = XRButton.createButton(renderer, {
+    optionalFeatures: ["local-floor", "bounded-floor", "hand-tracking", "layers"],
+  });
   mountButton?.(button);
 
   const raycaster = new THREE.Raycaster();

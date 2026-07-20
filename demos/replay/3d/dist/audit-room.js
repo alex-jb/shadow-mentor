@@ -1,5 +1,5 @@
 (() => {
-  // node_modules/three/build/three.module.js
+  // ../../../node_modules/three/build/three.module.js
   var REVISION = "160";
   var MOUSE = { LEFT: 0, MIDDLE: 1, RIGHT: 2, ROTATE: 0, DOLLY: 1, PAN: 2 };
   var TOUCH = { ROTATE: 0, PAN: 1, DOLLY_PAN: 2, DOLLY_ROTATE: 3 };
@@ -22283,7 +22283,7 @@
     }
   }
 
-  // node_modules/three/examples/jsm/controls/OrbitControls.js
+  // ../../../node_modules/three/examples/jsm/controls/OrbitControls.js
   var _changeEvent = { type: "change" };
   var _startEvent = { type: "start" };
   var _endEvent = { type: "end" };
@@ -22997,7 +22997,7 @@
     }
   };
 
-  // demos/replay/3d/constants.js
+  // constants.js
   var STATUS = Object.freeze({
     intact: "#E8E8E8",
     // trustworthy, verified
@@ -23128,7 +23128,7 @@
   }
   var C = buildConstants("laptop");
 
-  // demos/replay/3d/labels.js
+  // labels.js
   var PX_PER_UNIT = 900;
   var SANS = '-apple-system, "SF Pro Display", "Segoe UI", "PingFang SC", system-ui, sans-serif';
   var MONO = '"SF Mono", "JetBrains Mono", "Cascadia Code", ui-monospace, Menlo, monospace';
@@ -23260,7 +23260,7 @@
     obj.quaternion.copy(camera2.quaternion);
   }
 
-  // demos/replay/verify-browser.js
+  // ../verify-browser.js
   function canonicalize(value) {
     if (value === null || typeof value !== "object") return JSON.stringify(value);
     if (Array.isArray(value)) return "[" + value.map(canonicalize).join(",") + "]";
@@ -23405,7 +23405,7 @@
   }
   var _internal = { canonicalize, canonicalBytes, sha256Hex, signedShape };
 
-  // demos/replay/tamper.js
+  // ../tamper.js
   function clonePristine(bundle) {
     return JSON.parse(JSON.stringify(bundle));
   }
@@ -23451,7 +23451,7 @@
     return { tamperedSeq, verify, caption };
   }
 
-  // demos/replay/3d/demo-data.js
+  // demo-data.js
   var DEMO_BUNDLE = {
     "bundle_version": 1,
     "spec_version": "shadow-evidence/v1",
@@ -23668,7 +23668,7 @@
     { "n": 8, "name": "trust badges", "cam": { "frame": "badges" }, "action": "trust" }
   ];
 
-  // demos/replay/3d/verify.js
+  // verify.js
   var { canonicalBytes: canonicalBytes2, sha256Hex: sha256Hex2, signedShape: signedShape2 } = _internal;
   var REVIEWER_KEY_ID = "reviewer-local-demo";
   function hexToBytes2(hex) {
@@ -23746,7 +23746,7 @@ ${b64}
     return ev;
   }
 
-  // demos/replay/3d/scene.js
+  // scene.js
   var DEG = Math.PI / 180;
   var smooth = (k) => k * k * (3 - 2 * k);
   var clamp01 = (x) => x < 0 ? 0 : x > 1 ? 1 : x;
@@ -24246,7 +24246,7 @@ IMPACT  ${obj.impact}`;
     };
   }
 
-  // demos/replay/3d/stereo.js
+  // stereo.js
   var LS_EYE_SEP = "shadow.auditroom.eyeSep";
   var LS_CONVERGENCE = "shadow.auditroom.convergence";
   function createStereo({ renderer: renderer2, scene: scene2, camera: camera2, C: C3 }) {
@@ -24342,7 +24342,7 @@ IMPACT  ${obj.impact}`;
     };
   }
 
-  // demos/replay/3d/voice.js
+  // voice.js
   var INTENTS = Object.freeze([
     "FOCUS_EVENT",
     "FILTER_BY_TYPE",
@@ -24478,7 +24478,7 @@ IMPACT  ${obj.impact}`;
     } };
   }
 
-  // demos/replay/3d/beats.js
+  // beats.js
   var smooth2 = (k) => k * k * (3 - 2 * k);
   function createBeats({ camera: camera2, controls: controls2, room: room2, C: C3 }) {
     let active = null;
@@ -24569,29 +24569,38 @@ IMPACT  ${obj.impact}`;
     } };
   }
 
-  // node_modules/three/examples/jsm/webxr/VRButton.js
-  var VRButton = class _VRButton {
-    static createButton(renderer2) {
+  // ../../../node_modules/three/examples/jsm/webxr/XRButton.js
+  var XRButton = class {
+    static createButton(renderer2, sessionInit = {}) {
       const button = document.createElement("button");
-      function showEnterVR() {
+      function showStartXR(mode) {
         let currentSession = null;
         async function onSessionStarted(session) {
           session.addEventListener("end", onSessionEnded);
           await renderer2.xr.setSession(session);
-          button.textContent = "EXIT VR";
+          button.textContent = "STOP XR";
           currentSession = session;
         }
         function onSessionEnded() {
           currentSession.removeEventListener("end", onSessionEnded);
-          button.textContent = "ENTER VR";
+          button.textContent = "START XR";
           currentSession = null;
         }
         button.style.display = "";
         button.style.cursor = "pointer";
         button.style.left = "calc(50% - 50px)";
         button.style.width = "100px";
-        button.textContent = "ENTER VR";
-        const sessionInit = { optionalFeatures: ["local-floor", "bounded-floor", "hand-tracking", "layers"] };
+        button.textContent = "START XR";
+        const sessionOptions = {
+          ...sessionInit,
+          optionalFeatures: [
+            "local-floor",
+            "bounded-floor",
+            "hand-tracking",
+            "layers",
+            ...sessionInit.optionalFeatures || []
+          ]
+        };
         button.onmouseenter = function() {
           button.style.opacity = "1.0";
         };
@@ -24600,16 +24609,16 @@ IMPACT  ${obj.impact}`;
         };
         button.onclick = function() {
           if (currentSession === null) {
-            navigator.xr.requestSession("immersive-vr", sessionInit).then(onSessionStarted);
+            navigator.xr.requestSession(mode, sessionOptions).then(onSessionStarted);
           } else {
             currentSession.end();
             if (navigator.xr.offerSession !== void 0) {
-              navigator.xr.offerSession("immersive-vr", sessionInit).then(onSessionStarted);
+              navigator.xr.offerSession(mode, sessionOptions).then(onSessionStarted);
             }
           }
         };
         if (navigator.xr.offerSession !== void 0) {
-          navigator.xr.offerSession("immersive-vr", sessionInit).then(onSessionStarted);
+          navigator.xr.offerSession(mode, sessionOptions).then(onSessionStarted);
         }
       }
       function disableButton() {
@@ -24621,14 +24630,14 @@ IMPACT  ${obj.impact}`;
         button.onmouseleave = null;
         button.onclick = null;
       }
-      function showWebXRNotFound() {
+      function showXRNotSupported() {
         disableButton();
-        button.textContent = "VR NOT SUPPORTED";
+        button.textContent = "XR NOT SUPPORTED";
       }
-      function showVRNotAllowed(exception) {
+      function showXRNotAllowed(exception) {
         disableButton();
         console.warn("Exception when trying to call xr.isSessionSupported", exception);
-        button.textContent = "VR NOT ALLOWED";
+        button.textContent = "XR NOT ALLOWED";
       }
       function stylizeElement(element) {
         element.style.position = "absolute";
@@ -24645,15 +24654,22 @@ IMPACT  ${obj.impact}`;
         element.style.zIndex = "999";
       }
       if ("xr" in navigator) {
-        button.id = "VRButton";
+        button.id = "XRButton";
         button.style.display = "none";
         stylizeElement(button);
-        navigator.xr.isSessionSupported("immersive-vr").then(function(supported) {
-          supported ? showEnterVR() : showWebXRNotFound();
-          if (supported && _VRButton.xrSessionIsGranted) {
-            button.click();
+        navigator.xr.isSessionSupported("immersive-ar").then(function(supported) {
+          if (supported) {
+            showStartXR("immersive-ar");
+          } else {
+            navigator.xr.isSessionSupported("immersive-vr").then(function(supported2) {
+              if (supported2) {
+                showStartXR("immersive-vr");
+              } else {
+                showXRNotSupported();
+              }
+            }).catch(showXRNotAllowed);
           }
-        }).catch(showVRNotAllowed);
+        }).catch(showXRNotAllowed);
         return button;
       } else {
         const message = document.createElement("a");
@@ -24671,19 +24687,9 @@ IMPACT  ${obj.impact}`;
         return message;
       }
     }
-    static registerSessionGrantedListener() {
-      if (typeof navigator !== "undefined" && "xr" in navigator) {
-        if (/WebXRViewer\//i.test(navigator.userAgent)) return;
-        navigator.xr.addEventListener("sessiongranted", () => {
-          _VRButton.xrSessionIsGranted = true;
-        });
-      }
-    }
   };
-  VRButton.xrSessionIsGranted = false;
-  VRButton.registerSessionGrantedListener();
 
-  // node_modules/three/examples/jsm/utils/BufferGeometryUtils.js
+  // ../../../node_modules/three/examples/jsm/utils/BufferGeometryUtils.js
   function toTrianglesDrawMode(geometry, drawMode) {
     if (drawMode === TrianglesDrawMode) {
       console.warn("THREE.BufferGeometryUtils.toTrianglesDrawMode(): Geometry already defined as triangles.");
@@ -24739,7 +24745,7 @@ IMPACT  ${obj.impact}`;
     }
   }
 
-  // node_modules/three/examples/jsm/loaders/GLTFLoader.js
+  // ../../../node_modules/three/examples/jsm/loaders/GLTFLoader.js
   var GLTFLoader = class extends Loader {
     constructor(manager) {
       super(manager);
@@ -27190,7 +27196,7 @@ IMPACT  ${obj.impact}`;
     });
   }
 
-  // node_modules/three/examples/jsm/libs/motion-controllers.module.js
+  // ../../../node_modules/three/examples/jsm/libs/motion-controllers.module.js
   var Constants = {
     Handedness: Object.freeze({
       NONE: "none",
@@ -27481,7 +27487,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js
+  // ../../../node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js
   var DEFAULT_PROFILES_PATH = "https://cdn.jsdelivr.net/npm/@webxr-input-profiles/assets@1.0/dist/profiles";
   var DEFAULT_PROFILE = "generic-trigger";
   var XRControllerModel = class extends Object3D {
@@ -27636,7 +27642,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // node_modules/three/examples/jsm/webxr/XRHandPrimitiveModel.js
+  // ../../../node_modules/three/examples/jsm/webxr/XRHandPrimitiveModel.js
   var _matrix = new Matrix4();
   var _vector = new Vector3();
   var XRHandPrimitiveModel = class {
@@ -27703,7 +27709,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // node_modules/three/examples/jsm/webxr/XRHandMeshModel.js
+  // ../../../node_modules/three/examples/jsm/webxr/XRHandMeshModel.js
   var DEFAULT_HAND_PROFILE_PATH = "https://cdn.jsdelivr.net/npm/@webxr-input-profiles/assets@1.0/dist/profiles/generic-hand/";
   var XRHandMeshModel = class {
     constructor(handModel, controller, path, handedness, loader = null) {
@@ -27775,7 +27781,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // node_modules/three/examples/jsm/webxr/XRHandModelFactory.js
+  // ../../../node_modules/three/examples/jsm/webxr/XRHandModelFactory.js
   var XRHandModel = class extends Object3D {
     constructor(controller) {
       super();
@@ -27822,14 +27828,30 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // demos/replay/3d/webxr.js
+  // webxr.js
   function createWebXR({ renderer: renderer2, scene: scene2, camera: camera2, room: room2, C: C3, mountButton }) {
     renderer2.xr.enabled = true;
+    let savedBg;
+    renderer2.xr.addEventListener("sessionstart", () => {
+      const blend = renderer2.xr.getSession()?.environmentBlendMode;
+      if (blend && blend !== "opaque") {
+        savedBg = scene2.background;
+        scene2.background = null;
+      }
+    });
+    renderer2.xr.addEventListener("sessionend", () => {
+      if (savedBg !== void 0) {
+        scene2.background = savedBg;
+        savedBg = void 0;
+      }
+    });
     const dolly = new Group();
     dolly.name = "xr-dolly";
     dolly.add(camera2);
     scene2.add(dolly);
-    const button = VRButton.createButton(renderer2, { requiredFeatures: ["local-floor"] });
+    const button = XRButton.createButton(renderer2, {
+      optionalFeatures: ["local-floor", "bounded-floor", "hand-tracking", "layers"]
+    });
     mountButton?.(button);
     const raycaster2 = new Raycaster();
     const tmpMatrix = new Matrix4();
@@ -27915,7 +27937,7 @@ IMPACT  ${obj.impact}`;
     } };
   }
 
-  // demos/replay/3d/gamepad.js
+  // gamepad.js
   function createGamepad({ dispatch: dispatch2, nextBeat, prevBeat, gotoBeat, voice: voice2 }) {
     const prev2 = {};
     let talking = false;
@@ -27962,7 +27984,7 @@ IMPACT  ${obj.impact}`;
     } };
   }
 
-  // demos/replay/3d/app.js
+  // app.js
   var params = new URLSearchParams(location.search);
   var preset = params.get("xreal") === "1" ? "xreal" : "laptop";
   var C2 = buildConstants(preset);
