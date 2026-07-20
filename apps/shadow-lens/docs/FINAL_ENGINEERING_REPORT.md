@@ -12,21 +12,35 @@
 - HTTP pipeline `POST /api/shadow-lens-analyze`: analyze→seal→verify + CORS allow-list +
   guards; fixture mode (offline, no key) + live Claude path.
 - Flow real-session export: 3 scenes derived from a real session, each row real_or_fixture.
-- ~25 new tests; full suite green (baseline 1614 preserved + extended).
+- **Staged session lifecycle** (create→capture→source-map→analyze→review→seal→verify) over
+  an InMemory/File store + an **ephemeral HMAC request token** (request auth only, never the
+  Ed25519 evidence key; constant-time verify + expiry). `POST /api/shadow-lens` dispatches the
+  7 stages with the CORS allow-list and an honest `store: "in-memory-ephemeral"` flag.
+- **Web client** (`apps/shadow-lens/web/lens-client.mjs`): honest `LensMode` labels
+  (REAL SOURCE-BOUND / FIXTURE FALLBACK / API UNAVAILABLE / PROVIDER UNAVAILABLE); statuses
+  kept separate, never one green badge.
+- **Spatial geometry core** (`SpatialLayout.cs`, UnityEngine-free): source-overlay placement,
+  audit arc, risk heights (clamped + floor), verification cascade, glance strip — covered by
+  7 EditMode NUnit cases whose expected numbers were cross-checked in Node.
+- ~60 new tests since baseline; full suite **1635/0** (+3 pre-existing skips).
 
 ## IMPLEMENTED BUT NOT COMPILED (no Java/Gradle/Android SDK/Unity on the build host)
 - Android OCR AAR: real Kotlin ML Kit v2 bridge (Block/Line boxes + corners + confidence +
-  language → contract source_map JSON) + Gradle + manifest. Build where a JDK + Android SDK
-  exist; CI workflow committed (gated on a runner).
-- Unity C# core: provider interfaces (tracking/capture/OCR/voice/TTS/placement), mock
-  providers (Editor path), closed-enum voice router (never LLM-routed), API client + request
-  builder, contract models. Project opens (Packages/manifest.json + ProjectSettings + asmdef);
-  XREAL SDK imported from tarball per the runbook (not committed — licensing).
+  language → contract source_map JSON) + Gradle + manifest.
+- Android **Voice/TTS AAR**: on-device SpeechRecognizer (offline-preferred, honest network
+  fallback flag), push-to-talk, TTS, and a pure JVM command router (`normalizeCommand`, 7
+  JUnit cases) so document text can never route UI actions. Gradle multi-module
+  (settings + wrapper) + CI (`shadow-lens-android.yml`) runs the JVM test + assembles both AARs.
+- Unity C# core: provider interfaces, mock providers (Editor path), closed-enum voice router,
+  API client + request builder, contract models.
+- Unity **spatial UX MonoBehaviour** (`ShadowLensSceneController.cs`): thin wrapper composing
+  providers + HTTP pipeline + the tested geometry into Look→Capture→…→Verify. CI
+  (`shadow-lens-unity.yml`) runs the EditMode geometry tests via game-ci (UNITY_LICENSE-gated).
 
-## STILL TO WRITE (software, next)
-- Android Voice/TTS AAR (spec'd), Unity spatial UX MonoBehaviours (glance strip / document
-  plane / source overlay / audit arc / cascade), Unity Edit/PlayMode test sources, the mock
-  end-to-end scene, the web UI migration off worked-mock onto `/api/shadow-lens-analyze`.
+## STILL TO WRITE (Unity-runtime-blocked; low-integrity to author blind)
+- The serialized `.unity` mock end-to-end scene and PlayMode tests (need the Unity Editor to
+  author/serialize + a runtime to execute). The scan web UI already carries honest mock/real
+  labels; the `LensMode` web client is the tested seam for a full swap when served with the app.
 
 ## DEVICE-VALIDATION-PENDING (needs XREAL/Quest hardware + toolchain)
 - Eye frame capture, One Pro 6DoF, session-relative placement, on-device OCR + voice, APK
