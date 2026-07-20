@@ -1,0 +1,14 @@
+{
+  "source_map_version": "1.0.0",
+  "document_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "document_media_type": "application/pdf",
+  "parser": "example-parser",
+  "parser_version": "0.0.1",
+  "extracted_at_utc": "2026-07-20T00:00:00.000Z",
+  "entries": [
+    { "field": "credit_score",   "page": 2, "region": [0.55,0.38,0.92,0.42], "content_type": "table_cell", "raw_text": "706",   "normalized_value": 706 },
+    { "field": "debt_to_income", "page": 2, "region": [0.55,0.42,0.92,0.46], "content_type": "table_cell", "raw_text": "0.41",  "normalized_value": 0.42 },
+    { "field": "loan_to_value",  "page": 2, "content_type": "table_cell", "raw_text": "0.83", "normalized_value": 0.83 },
+    { "field": "amount",         "page": 3, "region": [0.55,0.20,0.92,0.24], "content_type": "table_cell", "raw_text": "$310,000", "normalized_value": 310000 }
+  ]
+}

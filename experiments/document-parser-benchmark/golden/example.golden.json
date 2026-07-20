@@ -1,0 +1,10 @@
+{
+  "document": "sample loan statement (FICO 706 / DTI 0.41 / LTV 0.83 / $310k / industrials)",
+  "fields": [
+    { "field": "credit_score",  "page": 2, "value": 706 },
+    { "field": "debt_to_income","page": 2, "value": 0.41 },
+    { "field": "loan_to_value", "page": 2, "value": 0.83 },
+    { "field": "amount",        "page": 2, "value": 310000 },
+    { "field": "sector",        "page": 2, "value": "industrials" }
+  ]
+}

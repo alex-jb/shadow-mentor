@@ -1,0 +1,26 @@
+{
+  "$comment": "Shadow Document Source-Map v1. The parser-agnostic binding between a raw source document and the structured values extracted from it: every extracted value carries the page + region + verbatim raw_text it came from, and the whole map is bound to a hash of the raw file. This is the moat piece the OSS-radar (2026-07-20) identified — NOT another parser. The parser (OpenDataLoader PDF, MarkItDown, OfficeCLI, an OCR service) is a swappable backend recorded in `parser`/`parser_version`; Shadow owns the verifiable binding conclusion -> page -> region -> extracted value -> audit event. Discipline: `confidence` is the parser's self-report and is NEVER evidence of correctness — the map records what the parser CLAIMED plus the raw region, so a human or a second parser can verify. document_hash makes the map post-hoc-swap-evident (same pattern as reason_code_dictionary_sha256 governance): swap the underlying file after the fact and verifyBoundToDocument() fails. source_map_hash lets the map be pinned as an attestation-bound evidence field, exactly like dictionary_hash.",
+  "source_map_version": "1.0.0",
+  "binds": "one raw source document (PDF / DOCX / XLSX / PPTX / image) to its structured extractions",
+  "top_level": {
+    "source_map_version": "schema version, currently 1.0.0",
+    "document_hash": "sha256:<hex> of the RAW source bytes — binds this map to that exact file",
+    "document_media_type": "e.g. application/pdf, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, image/png",
+    "parser": "backend id, e.g. opendataloader-pdf | markitdown | officecli | claude-vision",
+    "parser_version": "backend version string — part of reproducibility, not correctness",
+    "extracted_at_utc": "ISO-8601 timestamp of extraction",
+    "entries": "array of extraction entries (below)",
+    "source_map_hash": "OPTIONAL sha256:<hex> over the map excluding this field itself — pin it as an attestation-bound evidence field"
+  },
+  "entry": {
+    "field": "OPTIONAL id of the normalized field / claim this entry supports (e.g. debt_to_income, or a claim id)",
+    "page": "1-based page (or sheet index for spreadsheets); positive integer",
+    "region": "OPTIONAL [x0,y0,x1,y1] normalized to 0..1 (page-level if absent); x0<=x1, y0<=y1",
+    "content_type": "one of: line | paragraph | table_cell | table | figure | formula | image | heading | other",
+    "raw_text": "verbatim text the parser read at this region — the ground the value is derived from",
+    "normalized_value": "OPTIONAL typed value the parser derived (number / string / bool)",
+    "confidence": "OPTIONAL parser self-reported 0..1; NOT correctness — never gate a decision on it alone"
+  },
+  "content_types": ["line", "paragraph", "table_cell", "table", "figure", "formula", "image", "heading", "other"],
+  "checker": "lib/document-source-map.js — validateSourceMap (structural), computeDocumentHash (bind), verifyBoundToDocument (post-hoc-swap detection), computeSourceMapHash (attestation pin)"
+}
