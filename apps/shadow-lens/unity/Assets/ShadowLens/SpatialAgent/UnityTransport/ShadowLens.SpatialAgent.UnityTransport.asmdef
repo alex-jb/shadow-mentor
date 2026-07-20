@@ -1,0 +1,13 @@
+{
+  "name": "ShadowLens.SpatialAgent.UnityTransport",
+  "rootNamespace": "ShadowLens.SpatialAgent",
+  "references": ["ShadowLens.SpatialAgent"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": ["UnityEngine.UnityWebRequestModule.dll"],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "noEngineReferences": false
+}
