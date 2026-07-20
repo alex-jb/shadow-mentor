@@ -10,6 +10,76 @@ export const CONTRACT_VERSION = "shadow-lens-session/1.0";
 const isSha = (s) => typeof s === "string" && /^sha256:[0-9a-f]{64}$/i.test(s);
 const RUNTIME_MODES = ["UNITY_XREAL", "WEBXR_AR", "WEBXR_VR", "SBS_STEREO", "FLAT_HUD", "MOCK"];
 
+// The recognized profiles. Shadow Core is generic; a profile adds vertical-specific rules.
+// Banking is the FLAGSHIP profile, not the core boundary.
+export const PROFILES = ["banking-v1", "data-science-v1", "coding-agent-v1"];
+
+/**
+ * GENERIC Shadow Core validation — no banking (or even document-scan) fields are mandatory.
+ * A source is any {source_id, text/content} item; bounding boxes + capture + XR device are
+ * OPTIONAL (validated only if present). The un-hallucinable-citation gate (claims may only
+ * cite source_ids that exist) is the load-bearing invariant and applies to EVERY profile.
+ * @returns {{valid:boolean, errors:string[]}}
+ */
+export function validateBaseSession(s) {
+  const errors = [];
+  const req = (cond, msg) => { if (!cond) errors.push(msg); };
+  if (!s || typeof s !== "object") return { valid: false, errors: ["session must be an object"] };
+
+  req(s.contract_version === CONTRACT_VERSION, `contract_version must be "${CONTRACT_VERSION}"`);
+  req(typeof s.session_id === "string" && s.session_id, "session_id required");
+  req(s.build && typeof s.build.app_commit === "string", "build.app_commit required");
+  if (s.profile !== undefined) req(PROFILES.includes(s.profile?.name), `profile.name must be one of ${PROFILES.join(", ")}`);
+
+  // OPTIONAL experience/scan blocks — validated only when present.
+  if (s.device) {
+    const d = s.device;
+    req(["unity-xreal", "webxr", "browser-flat", "mock-desktop", "cli", "headless"].includes(d.platform), "device.platform invalid");
+    if (d.runtime_mode !== undefined) req(RUNTIME_MODES.includes(d.runtime_mode), "device.runtime_mode invalid");
+  }
+  if (s.capture) {
+    req(isSha(s.capture.capture_sha256), "capture.capture_sha256 must be sha256:<64hex>");
+  }
+
+  // source_map is GENERIC: each entry needs a source_id + textual content; geometry/confidence optional.
+  req(Array.isArray(s.source_map), "source_map must be an array");
+  const ids = new Set();
+  if (Array.isArray(s.source_map)) s.source_map.forEach((e, i) => {
+    if (!e || typeof e.source_id !== "string") { errors.push(`source_map[${i}].source_id required`); return; }
+    ids.add(e.source_id);
+    if (typeof e.text !== "string" && typeof e.content !== "string") errors.push(`source_map[${i}] needs text or content`);
+    if (e.bounding_box_normalized !== undefined) {
+      const b = e.bounding_box_normalized;
+      if (!b || ["x", "y", "w", "h"].some((k) => typeof b[k] !== "number")) errors.push(`source_map[${i}].bounding_box_normalized needs numeric x,y,w,h`);
+    }
+    if (e.confidence !== undefined && (typeof e.confidence !== "number" || e.confidence < 0 || e.confidence > 1)) errors.push(`source_map[${i}].confidence must be 0..1`);
+  });
+
+  // THE invariant — same for every profile.
+  validateClaimsGate(s, ids, errors);
+
+  req(isSha((s.provenance || {}).source_map_hash), "provenance.source_map_hash must be sha256:<64hex>");
+  req(["verified", "failed", "unknown"].includes((s.verification || {}).record_integrity), "verification.record_integrity invalid");
+
+  return { valid: errors.length === 0, errors };
+}
+
+// shared claim-resolvability gate (extracted so base + banking use the identical rule)
+function validateClaimsGate(s, ids, errors) {
+  if (!Array.isArray(s.claims)) return;
+  s.claims.forEach((cl, i) => {
+    if (!cl || typeof cl.claim_id !== "string") { errors.push(`claims[${i}].claim_id required`); return; }
+    if (!Array.isArray(cl.source_ids)) { errors.push(`claims[${i}].source_ids must be an array`); return; }
+    if (!["source_bound", "uncited", "rejected"].includes(cl.validation_status)) errors.push(`claims[${i}].validation_status invalid`);
+    const unresolved = cl.source_ids.filter((id) => !ids.has(id));
+    if (cl.validation_status === "source_bound") {
+      if (cl.source_ids.length === 0) errors.push(`claims[${i}] is source_bound but cites no source_ids`);
+      if (unresolved.length) errors.push(`claims[${i}] is source_bound but cites source_ids NOT in source_map: ${unresolved.join(",")} — must be 'rejected'`);
+    }
+    if (cl.validation_status === "uncited" && cl.source_ids.length > 0) errors.push(`claims[${i}] marked uncited but carries source_ids`);
+  });
+}
+
 /**
  * Structural validation of a Shadow Lens session (not analysis-correctness — that is
  * never knowable). @returns {{valid:boolean, errors:string[]}}

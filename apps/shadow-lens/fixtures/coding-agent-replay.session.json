@@ -1,0 +1,112 @@
+{
+  "contract_version": "shadow-lens-session/1.0",
+  "session_id": "coding_agent_fixture",
+  "build": {
+    "app_commit": "def456"
+  },
+  "device": {
+    "platform": "cli"
+  },
+  "source_map": [
+    {
+      "source_id": "issue",
+      "content": "Fix null deref in config parser",
+      "content_type": "issue"
+    },
+    {
+      "source_id": "file_parser",
+      "content": "src/parser.js @ sha256:e147ad0369cf258be147ad0369cf258be147ad0369cf258be147ad0369cf258b",
+      "content_type": "file"
+    },
+    {
+      "source_id": "diff1",
+      "content": "add null guard sha256:58be147ad0369cf258be147ad0369cf258be147ad0369cf258be147ad0369cf2",
+      "content_type": "diff"
+    },
+    {
+      "source_id": "cmd_test",
+      "content": "npm test → 42 passed, 0 failed",
+      "content_type": "command_output"
+    },
+    {
+      "source_id": "cmd_lint",
+      "content": "eslint → 0 errors, 0 high",
+      "content_type": "command_output"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "c1",
+      "text": "Added a null guard in the config parser",
+      "source_ids": [
+        "diff1",
+        "file_parser"
+      ],
+      "produced_by": "model",
+      "validation_status": "source_bound",
+      "confidence": 0.95
+    },
+    {
+      "claim_id": "c2",
+      "text": "All tests pass after the change",
+      "source_ids": [
+        "cmd_test"
+      ],
+      "produced_by": "tool",
+      "validation_status": "source_bound",
+      "confidence": 1
+    }
+  ],
+  "provenance": {
+    "source_map_hash": "sha256:e54c1549228a81a0b6cff8d3802abb0a8f8dea13684efb1aa978f12d127c9789",
+    "profile": "coding-agent-v1"
+  },
+  "verification": {
+    "record_integrity": "verified",
+    "failed_seq": null,
+    "external_anchor": "none",
+    "source_coverage_pct": 60,
+    "human_review": "approved"
+  },
+  "profile": {
+    "name": "coding-agent-v1",
+    "data": {
+      "issue": "Fix null deref in config parser",
+      "agent_config": {
+        "model": "claude-sonnet",
+        "provider": "anthropic",
+        "temperature": 0
+      },
+      "files_read": [
+        "src/parser.js"
+      ],
+      "commands": [
+        "npm test",
+        "npm run lint"
+      ],
+      "diffs": [
+        "diff1"
+      ],
+      "dependency_changes": [],
+      "test_results": {
+        "passed": 42,
+        "failed": 0,
+        "output_source_id": "cmd_test"
+      },
+      "security_lint": {
+        "high": 0,
+        "medium": 0,
+        "output_source_id": "cmd_lint"
+      },
+      "reviewer_interaction": {
+        "decision": "approved",
+        "override_rationale": null
+      },
+      "human_approval": {
+        "by": "maintainer",
+        "decision": "approved"
+      },
+      "final_commit": "def456"
+    }
+  }
+}

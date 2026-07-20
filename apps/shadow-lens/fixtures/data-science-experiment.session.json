@@ -1,0 +1,125 @@
+{
+  "contract_version": "shadow-lens-session/1.0",
+  "session_id": "ds_experiment_fixture",
+  "build": {
+    "app_commit": "ds-commit-abc123"
+  },
+  "device": {
+    "platform": "cli"
+  },
+  "source_map": [
+    {
+      "source_id": "dataset",
+      "content": "dataset sha256:7ad0369cf258be147ad0369cf258be147ad0369cf258be147ad0369cf258be14",
+      "content_type": "dataset"
+    },
+    {
+      "source_id": "metric_auc",
+      "content": "test AUC = 0.912",
+      "content_type": "metric"
+    },
+    {
+      "source_id": "metric_logloss",
+      "content": "test logloss = 0.281",
+      "content_type": "metric"
+    },
+    {
+      "source_id": "calibration",
+      "content": "Brier = 0.11 (post-Platt)",
+      "content_type": "metric"
+    },
+    {
+      "source_id": "selection",
+      "content": "gbm selected over logreg, rf",
+      "content_type": "decision"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "c1",
+      "text": "GBM selected: highest test AUC among candidates",
+      "source_ids": [
+        "metric_auc",
+        "selection"
+      ],
+      "produced_by": "model",
+      "validation_status": "source_bound",
+      "confidence": 0.9
+    },
+    {
+      "claim_id": "c2",
+      "text": "Calibrated with Platt scaling (Brier 0.11)",
+      "source_ids": [
+        "calibration"
+      ],
+      "produced_by": "model",
+      "validation_status": "source_bound",
+      "confidence": 0.85
+    }
+  ],
+  "provenance": {
+    "source_map_hash": "sha256:344d0eb8f01888cc815c3fcf704580d8036db83b1709e235b25d0f8a07a75f10",
+    "profile": "data-science-v1"
+  },
+  "verification": {
+    "record_integrity": "verified",
+    "failed_seq": null,
+    "external_anchor": "none",
+    "source_coverage_pct": 60,
+    "human_review": "approved"
+  },
+  "profile": {
+    "name": "data-science-v1",
+    "data": {
+      "dataset_hash": "sha256:7ad0369cf258be147ad0369cf258be147ad0369cf258be147ad0369cf258be14",
+      "preprocessing": [
+        "dropna",
+        "standard-scale",
+        "one-hot(category)"
+      ],
+      "split": {
+        "train": 0.8,
+        "test": 0.2,
+        "seed": 42
+      },
+      "feature_config": {
+        "n_features": 24,
+        "selection": "mutual-info top-24"
+      },
+      "model_candidates": [
+        "logreg",
+        "rf",
+        "gbm"
+      ],
+      "eval_metrics": {
+        "auc": {
+          "source_id": "metric_auc",
+          "value": 0.912
+        },
+        "logloss": {
+          "source_id": "metric_logloss",
+          "value": 0.281
+        }
+      },
+      "calibration": {
+        "method": "platt",
+        "brier": 0.11,
+        "source_id": "calibration"
+      },
+      "selected_model": "gbm",
+      "environment": {
+        "python": "3.12",
+        "packages": [
+          "scikit-learn==1.5.0",
+          "numpy==2.0.1",
+          "pandas==2.2.2"
+        ]
+      },
+      "code_commit": "abc123",
+      "human_approval": {
+        "by": "ds-lead",
+        "decision": "approved"
+      }
+    }
+  }
+}
