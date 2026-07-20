@@ -18,6 +18,7 @@
 // Run: node demos/replay/3d/build.mjs
 // ─────────────────────────────────────────────────────────────────
 import { build } from "esbuild";
+import { execSync } from "node:child_process";
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
@@ -47,11 +48,14 @@ export const DEMO_BEATS = ${beats};
   writeFileSync(resolve(HERE, "demo-data.js"), dataModule);
 
   // 2 — bundle the whole app into one classic IIFE the page loads directly.
+  let sha = "";
+  try { sha = execSync("git rev-parse --short HEAD", { cwd: REPO }).toString().trim(); } catch {}
   await build({
     entryPoints: [resolve(HERE, "app.js")],
     bundle: true, format: "iife", legalComments: "none",
     target: ["chrome110"], platform: "browser",
     outfile: resolve(HERE, "dist", "audit-room.js"),
+    define: { "globalThis.__SHADOW_BUILD__": JSON.stringify(sha) }, // stamp the build into the XR report
   });
 
   console.log("[build] demo-data.js       (bundle + pubkey + beats inlined)");

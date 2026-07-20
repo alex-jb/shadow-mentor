@@ -19,6 +19,7 @@ import { createStereo } from "./stereo.js";
 import { createVoice, parseIntent } from "./voice.js";
 import { createBeats } from "./beats.js";
 import { createWebXR } from "./webxr.js";
+import { initPreflight } from "./preflight.js";
 import { createGamepad } from "./gamepad.js";
 import { makeText, billboardInView } from "./labels.js";
 
@@ -116,6 +117,7 @@ function setBeatText(n) {
 const stereo = createStereo({ renderer, scene, camera, C });
 const beats = createBeats({ camera, controls, room, C });
 let webxr = null; // lazy
+let preflight = null; // WebXR diagnostics panel (created on entering webxr mode)
 
 stereo.onChange(({ mode, eyeSep }) => {
   const es = `eye ${(eyeSep * 1000).toFixed(0)}mm`;
@@ -193,6 +195,7 @@ function setMode(mode) {
         } });
         renderer.setAnimationLoop(xrLoop);
       }
+      if (!preflight) preflight = initPreflight({ renderer, appCommit: (globalThis.__SHADOW_BUILD__ || "") });
     } catch (e) { fatal("WebXR unavailable: " + e.message); }
     stereo.setMode("flat");
     showSplash("WEBXR");
@@ -317,6 +320,12 @@ function xrLoop(now, xrFrame) {
   const dt = Math.min(0.05, (now - prev) / 1000); prev = now;
   step(dt, now);
   if (webxr) webxr.update(dt);
+  // Feed the viewer pose to preflight so it can tell 6DoF (real translation) from 3DoF.
+  if (preflight && xrFrame) {
+    const rs = renderer.xr.getReferenceSpace?.();
+    const vp = rs ? xrFrame.getViewerPose(rs) : null;
+    if (vp) preflight.updatePose(vp.transform.position);
+  }
   renderer.render(scene, camera);
 }
 function step(dt, now) {
