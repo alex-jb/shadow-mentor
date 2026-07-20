@@ -1,7 +1,7 @@
 {
   "name": "ShadowLens.Tests.PlayMode",
   "rootNamespace": "ShadowLens.Tests.PlayMode",
-  "references": ["ShadowLens", "UnityEngine.TestRunner", "UnityEditor.TestRunner"],
+  "references": ["ShadowLens", "UnityEngine.TestRunner", "UnityEditor.TestRunner", "UnityEngine.UI"],
   "includePlatforms": [],
   "precompiledReferences": ["nunit.framework.dll"],
   "defineConstraints": ["UNITY_INCLUDE_TESTS"],

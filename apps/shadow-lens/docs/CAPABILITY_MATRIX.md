@@ -18,12 +18,12 @@ a device report. Build host had Node only (no Java/Gradle/Android SDK/Unity) —
 | Android OCR AAR (ML Kit Kotlin bridge + Gradle) | ✅ | ❌ NOT-COMPILED (CI dispatch) | ❌ pending | ❌ |
 | Android Voice/TTS AAR (SpeechRecognizer on-device + TTS) | ✅ | 🟡 pure JVM router test (device path NOT-COMPILED) | ❌ pending | ❌ |
 | Gradle multi-module (settings + wrapper + CI dispatch) | ✅ | ❌ needs SDK runner | n/a | ❌ |
-| Unity C# core (providers, mocks, API client, voice router) | ✅ | ❌ NO UNITY COMPILE | ❌ pending | ❌ |
-| Spatial geometry (source overlay, audit arc, risk, cascade, glance) | ✅ | ✅ pure math, EditMode NUnit (Unity-CI-gated) | n/a | ✅ math |
-| Unity spatial UX MonoBehaviour (scene controller over the tested math) | ✅ | ❌ NO UNITY COMPILE | ❌ pending | ❌ |
-| Provider compile isolation (SHADOW_XREAL_SDK + platform guards; mock default) | ✅ | ❌ NO UNITY COMPILE | ❌ pending | ❌ |
-| Runtime bootstrap + Editor scene generator (no hand-authored .unity) | ✅ | ❌ NO UNITY COMPILE | ❌ pending | ❌ |
-| Unity PlayMode tests (mock e2e flow) | ✅ authored | ❌ NOT EXECUTED (Unity-CI-gated) | ❌ pending | ❌ |
+| Unity C# core (providers, mocks, API client, voice router) | ✅ | ✅ **COMPILED + Play Mode entered, Unity 6.0.0.23f1 (local, 2026-07-20)** | ❌ pending | ❌ |
+| Spatial geometry (source overlay, audit arc, risk, cascade, glance) | ✅ | ✅ pure math, EditMode NUnit | n/a | ✅ math |
+| Visible mock scene (HUD + document + buttons + state; idempotent singletons) | ✅ | 🟡 fix authored — pending Alex regenerate + Play Mode | ❌ pending | ❌ |
+| Provider compile isolation (SHADOW_XREAL_SDK + platform guards; mock default) | ✅ | ✅ compiles in mock/editor mode | ❌ pending | ❌ |
+| Runtime bootstrap + Editor scene generator (idempotent, no hand-authored .unity) | ✅ | 🟡 rewrite authored — pending Alex re-compile | ❌ pending | ❌ |
+| Unity Edit/PlayMode tests (geometry + voice + mock e2e smoke) | ✅ authored | 🟡 run in Unity 6 to execute | ❌ pending | ❌ |
 | Eye RGB capture (GPU readback + official still) | 🟡 interface + spec | ❌ | ❌ pending | ❌ |
 | One Pro 6DoF session-relative placement | 🟡 interface | ❌ | ❌ pending | ❌ |
 | On-device OCR / voice on hardware | ❌ | ❌ | ❌ pending | ❌ |

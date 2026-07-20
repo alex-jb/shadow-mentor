@@ -1,7 +1,7 @@
 {
   "name": "ShadowLens",
   "rootNamespace": "ShadowLens",
-  "references": [],
+  "references": ["UnityEngine.UI"],
   "includePlatforms": [],
   "allowUnsafeCode": false,
   "autoReferenced": true

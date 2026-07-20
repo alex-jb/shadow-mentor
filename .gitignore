@@ -20,3 +20,15 @@ demos/replay/3d/study/trials/
 # macOS
 .DS_Store
 apps/shadow-lens/acceptance/out/
+
+# Unity generated (shadow-lens) — never commit the cache/build
+apps/shadow-lens/unity/Library/
+apps/shadow-lens/unity/Logs/
+apps/shadow-lens/unity/Temp/
+apps/shadow-lens/unity/obj/
+apps/shadow-lens/unity/UserSettings/
+apps/shadow-lens/unity/*.csproj
+apps/shadow-lens/unity/*.sln
+# Buggy scene baked by the pre-fix generator — regenerate via Shadow Lens/Create Mock Demo Scene
+apps/shadow-lens/unity/Assets/ShadowLens/Scenes/ShadowLensMockDemo.unity
+apps/shadow-lens/unity/Assets/ShadowLens/Scenes/ShadowLensMockDemo.unity.meta

@@ -1,97 +1,105 @@
 // apps/shadow-lens/unity/Assets/ShadowLens/Tests/PlayMode/ShadowLensPlayModeTests.cs
-// PlayMode tests for the mock end-to-end flow. AUTHORED — NOT EXECUTED (no Unity runtime on
-// the build host). Run later:
+// PlayMode smoke tests for the mock scene: singletons, visible render, front-of-camera
+// document, deterministic Ready→Analyze→Reset state, no duplicate roots. AUTHORED — run these
+// in Unity 6 to verify (the project compiled + entered Play Mode on 2026-07-20; these updated
+// tests are not yet executed by Alex). Run:
 //   Unity -runTests -batchmode -projectPath apps/shadow-lens/unity \
 //     -testPlatform PlayMode -testResults playmode-results.xml -logFile -
-// (EditMode geometry tests already run via shadow-lens-unity.yml.)
 #if UNITY_INCLUDE_TESTS
 using System.Collections;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using UnityEngine.TestTools;
-using ShadowLens.Core;
-using ShadowLens.Spatial;
 using ShadowLens.Bootstrap;
+using ShadowLens.Mock;
 
 namespace ShadowLens.Tests.PlayMode
 {
     public class ShadowLensPlayModeTests
     {
-        ShadowLensRuntimeBootstrap Boot()
-        {
-            var go = new GameObject("boot");
-            var b = go.AddComponent<ShadowLensRuntimeBootstrap>();
-            b.autoRunOnStart = false;
-            b.BuildHierarchy();
-            return b;
-        }
+        ShadowLensRuntimeBootstrap _boot;
 
-        [UnityTest] // mock capture → result flow reaches at least the Cited state
-        public IEnumerator MockCaptureFlow_ReachesCited()
+        [UnitySetUp]
+        public IEnumerator SetUp()
         {
-            var b = Boot();
-            b.Controller.OnCommand(VoiceCommand.ScanDocument);
-            b.Controller.OnCommand(VoiceCommand.Capture);
-            yield return new WaitForSeconds(0.1f);
-            Assert.That(b.Controller.State, Is.Not.EqualTo(LensState.Failed));
-        }
-
-        [Test] // frozen document plane is created and world-locked in front of the viewer
-        public void FrozenDocumentPlane_IsCreated()
-        {
-            var b = Boot();
-            Assert.IsNotNull(b.Controller.documentPlane);
-            Assert.Less(b.Controller.documentPlane.position.z, 0f); // in front (-Z)
-        }
-
-        [Test] // claim→source highlight lands on the document plane (uses the tested geometry)
-        public void SourceHighlight_MapsOntoPlane()
-        {
-            var box = new NormalizedBox(0.1f, 0.3f, 0.4f, 0.03f);
-            var p = SpatialLayout.SourceOverlayWorld(box, new V3(0, 1.4f, -1.5f), 0.6f, 0.8f);
-            Assert.AreEqual(-1.495f, p.z, 1e-3f); // proud of the page, not behind it
-        }
-
-        [UnityTest] // audit view expands to one node per hash-chain event
-        public IEnumerator AuditView_ExpandsPerEvent()
-        {
-            var b = Boot();
-            b.Controller.PlaceAuditArc(5);
+            // AutoBoot creates one on scene load; ensure exactly one, then grab it.
+            _boot = Object.FindFirstObjectByType<ShadowLensRuntimeBootstrap>();
+            if (_boot == null) _boot = new GameObject("boot").AddComponent<ShadowLensRuntimeBootstrap>();
+            yield return null; // let Awake/Build run
+            _boot.View.SetReady();
             yield return null;
-            Assert.Pass("PlaceAuditArc executed without error (visual count asserted on device).");
         }
 
-        [UnityTest] // verification cascade reaches Verified for an intact chain
-        public IEnumerator VerificationCascade_Verifies()
+        [Test] public void ExactlyOneEventSystem() =>
+            Assert.AreEqual(1, Object.FindObjectsByType<EventSystem>(FindObjectsSortMode.None).Length);
+
+        [Test] public void ExactlyOneBootstrap() =>
+            Assert.AreEqual(1, Object.FindObjectsByType<ShadowLensRuntimeBootstrap>(FindObjectsSortMode.None).Length);
+
+        [Test] public void ExactlyOneActiveMainCamera()
         {
-            var b = Boot();
-            yield return b.Controller.RunVerificationCascade(4, firstBrokenSeq: -1);
-            Assert.AreEqual(LensState.Verified, b.Controller.State);
+            Assert.IsNotNull(Camera.main);
+            Assert.AreEqual(1, Camera.allCameras.Length);
         }
 
-        [UnityTest] // a broken link freezes the cascade at its seq (tampered state)
-        public IEnumerator VerificationCascade_FreezesOnBrokenLink()
+        [Test] public void NoDuplicateGeneratedRoots()
         {
-            var b = Boot();
-            yield return b.Controller.RunVerificationCascade(4, firstBrokenSeq: 2);
-            Assert.AreEqual(LensState.Failed, b.Controller.State);
+            int roots = 0;
+            foreach (var go in Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None))
+                if (go.name == ShadowLensRuntimeBootstrap.RootName) roots++;
+            Assert.AreEqual(1, roots);
         }
 
-        [Test] // reset clears spawned objects and returns to Idle
-        public void Reset_ReturnsToIdle()
+        [Test] public void AtLeastOneVisibleCanvasOrRenderer()
         {
-            var b = Boot();
-            b.Controller.PlaceRiskTiles(new[] { 0.2f, 0.8f });
-            b.Controller.OnCommand(VoiceCommand.Reset);
-            Assert.AreEqual(LensState.Idle, b.Controller.State);
+            int canvases = Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None).Length;
+            int graphics = Object.FindObjectsByType<Graphic>(FindObjectsSortMode.None).Length; // Text/Image render
+            Assert.Greater(canvases, 0, "no Canvas → nothing renders");
+            Assert.Greater(graphics, 0, "no UI graphics → empty scene");
         }
 
-        [Test] // voice/controller command parity — free text maps to the closed enum, never LLM
-        public void VoiceCommandParity()
+        [Test] public void DocumentPlaneIsInFrontOfCamera()
         {
-            Assert.AreEqual(VoiceCommand.Analyze, VoiceCommandRouter.Route("please analyze this"));
-            Assert.AreEqual(VoiceCommand.ShowReview, VoiceCommandRouter.Route("show the council"));
-            Assert.AreEqual(VoiceCommand.None, VoiceCommandRouter.Route("what is the DTI ratio")); // grounded Q → analysis path
+            var doc = GameObject.Find("FrozenDocumentPlane");
+            Assert.IsNotNull(doc, "FrozenDocumentPlane missing");
+            var cam = Camera.main;
+            float dot = Vector3.Dot((doc.transform.position - cam.transform.position).normalized, cam.transform.forward);
+            Assert.Greater(dot, 0f, "document is not in front of the camera");
+        }
+
+        [Test] public void DecisionPanelPopulatesInView()
+        {
+            _boot.View.Analyze();
+            var decision = FindText("DECISION");
+            Assert.IsNotNull(decision);
+            Assert.IsNotEmpty(decision.text, "Analyze must populate a visible decision");
+        }
+
+        [Test] public void MockReachesReady() => Assert.AreEqual(MockState.Ready, _boot.View.State);
+
+        [Test] public void AnalyzeCausesVisibleStateChange()
+        {
+            var status = FindText("STATUS");
+            string before = status.text;
+            _boot.View.Analyze();
+            Assert.AreEqual(MockState.Analyzed, _boot.View.State);
+            Assert.AreNotEqual(before, status.text, "status text must change on Analyze");
+        }
+
+        [Test] public void ResetReturnsToReady()
+        {
+            _boot.View.Analyze();
+            _boot.View.ResetView();
+            Assert.AreEqual(MockState.Ready, _boot.View.State);
+        }
+
+        static Text FindText(string name)
+        {
+            foreach (var t in Object.FindObjectsByType<Text>(FindObjectsSortMode.None))
+                if (t.gameObject.name == name) return t;
+            return null;
         }
     }
 }
