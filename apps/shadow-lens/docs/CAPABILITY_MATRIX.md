@@ -10,7 +10,9 @@ a device report. Build host had Node only (no Java/Gradle/Android SDK/Unity) —
 | Backend input guards (magic-byte, size, injection boundary) | ✅ | ✅ | n/a | ✅ |
 | Source-bound analysis (gate, coverage, provenance) | ✅ | ✅ | n/a | ✅ |
 | Session builder (real attest-core seal + verify + tamper) | ✅ | ✅ | n/a | ✅ |
-| HTTP pipeline `/api/shadow-lens-analyze` (guards, CORS, fixture+live) | ✅ | ✅ | n/a | ✅ |
+| HTTP pipeline `/api/shadow-lens-analyze` (one-shot; guards, CORS, fixture+live) | ✅ | ✅ | n/a | ✅ |
+| Staged lifecycle (store + ephemeral token; create→…→verify) | ✅ | ✅ | n/a | ✅ |
+| Staged HTTP `/api/shadow-lens` (7 stages, token gate, honest ephemeral store) | ✅ | ✅ | n/a | 🟡 stateful host |
 | Flow real-session export (3 scenes, real/fixture tagged) | ✅ | ✅ | n/a | ✅ |
 | Android OCR AAR (ML Kit Kotlin bridge + Gradle) | ✅ | ❌ NOT-COMPILED (CI dispatch) | ❌ pending | ❌ |
 | Android Voice/TTS AAR (SpeechRecognizer on-device + TTS) | ✅ | 🟡 pure JVM router test (device path NOT-COMPILED) | ❌ pending | ❌ |
