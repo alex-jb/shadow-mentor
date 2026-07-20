@@ -91,6 +91,8 @@
   #mic{width:9px;height:9px;border-radius:50%;background:#444}
   #mic.hot{background:var(--bad);box-shadow:0 0 8px var(--bad)}
   body.glasses #voice{font-size:15px}
+  #keyhint{position:fixed;bottom:14px;right:16px;z-index:9;font-family:var(--mono);font-size:12px;color:var(--dim);text-align:right}
+  body.glasses #keyhint{font-size:15px}
 </style>
 </head>
 <body>
@@ -122,6 +124,7 @@
   </aside>
 </div>
 <div id="voice"><span id="mic"></span><span id="voice-txt">hold Space to talk · voice needs network</span></div>
+<div id="keyhint">A analyze · S seal · T tamper · L sample · 1/2 doc · G glasses</div>
 
 <script type="module">
 // Reuse the SAME offline verifier the replay demo uses (prev_hash walk +
@@ -407,7 +410,20 @@ $("#scanfile").addEventListener("change", (e)=>{
 // ── glasses HUD mode (?glasses=1 or key G) — big/high-contrast for XREAL One Pro ──
 function setGlasses(on){ document.body.classList.toggle("glasses", on); }
 if(new URLSearchParams(location.search).get("glasses")==="1") setGlasses(true);
-addEventListener("keydown",(e)=>{ if(e.key.toLowerCase()==="g" && !e.metaKey && !e.ctrlKey){ setGlasses(!document.body.classList.contains("glasses")); }});
+// Keyboard is authoritative — the One Pro is a pointer-less DP-Alt display and voice
+// needs network, so every core action has a key (mirrors spatial-finance's key map).
+addEventListener("keydown",(e)=>{
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  if(e.target && e.target.tagName==="INPUT") return;
+  const k=e.key.toLowerCase();
+  if(k==="g"){ setGlasses(!document.body.classList.contains("glasses")); return; }
+  if(k==="a"){ if(!$("#run").disabled) $("#run").click(); return; }        // Analyze
+  if(k==="s"){ if(!$("#seal").hidden) $("#seal").click(); return; }         // Seal
+  if(k==="t"){ if(!$("#tamper").hidden) $("#tamper").click(); return; }     // Tamper
+  if(k==="l"){ $("#samplebtn").click(); return; }                          // Load sample
+  if(k==="1"){ dispatch("statement"); return; }
+  if(k==="2"){ dispatch("chart"); return; }
+});
 
 // ── voice: TTS reads the answer; hold Space to speak a command ──────
 let ttsOn = true;
