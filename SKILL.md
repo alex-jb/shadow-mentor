@@ -1,6 +1,6 @@
 ---
 name: shadow-mentor
-description: 5-voice AI compliance council for regulated loan origination. 6 MCP tools (loan_council / risk_tools / recall / calibration / scenarios / traceability). FICO < 700 is a hardcoded JS conditional with pinned tests. Strict-JSON enum verdicts. AA01–AA05 adverse-action codes per CFPB Circular 2026-03. MCPTox / OX Security 2026 named-threat coverage mechanically tested.
+description: 5-voice AI compliance council for regulated loan origination. 11 MCP tools (loan_council, loan_council_typed, risk_tools, recall, calibration, scenarios, traceability, verify_attestation, banking_profile, disparity, size_position). FICO < 700 is a hardcoded JS conditional with pinned tests. Strict-JSON enum verdicts. AA01–AA05 adverse-action codes per CFPB Circular 2026-03. MCPTox / OX Security 2026 named-threat coverage mechanically tested.
 version: 1.2.0
 license: MIT
 authors:
@@ -12,11 +12,16 @@ install:
   - node bin/install.mjs --host <claude-desktop|cursor|zed|opencode|openclaw>
 tools:
   - shadow_loan_council
+  - shadow_loan_council_typed
   - shadow_risk_tools
   - shadow_recall
   - shadow_calibration
   - shadow_scenarios
   - shadow_traceability
+  - shadow_verify_attestation
+  - shadow_banking_profile
+  - shadow_disparity
+  - shadow_size_position
 ---
 
 # shadow-mentor
@@ -25,14 +30,19 @@ tools:
 
 ## What it does
 
-Six MCP tools that turn an LLM chat into a procurement-defensible loan-origination compliance surface:
+Eleven MCP tools that turn an LLM chat into a procurement-defensible loan-origination compliance surface:
 
 - `shadow_loan_council` — Deterministic 5-voice verdict (block / escalate / approve) + per-voice rationale + risk packet + thresholds applied. **FICO < 700 is a hardcoded `if` with a pinned test.**
+- `shadow_loan_council_typed` — same council with a typed request/response contract
 - `shadow_risk_tools` — Institutional risk primitives: VaR (historical / parametric / MC), Expected Shortfall, concentration (HHI / Gini), sector exposure, correlation (Pearson / Spearman / EWMA), factor exposures, beta decomposition
 - `shadow_recall` — Cross-session memory recall keyed by persona + scenario
 - `shadow_calibration` — Per-persona Brier calibration stats (for SR 26-2 model risk monitoring)
 - `shadow_scenarios` — Surface enumeration (5 personas × 4 scenarios × 4 device clients × 2 providers)
 - `shadow_traceability` — Source attribution for any threshold (BRD vs Addendum vs Risk Appetite Note) per CFPB / ECOA / SR 26-2
+- `shadow_verify_attestation` — verify a signed request→output attestation (Ed25519 / HMAC)
+- `shadow_banking_profile` — check a bundle against the Banking Evidence Profile ("is this credit decision auditable?"), with optional anchor-trust + examiner packet
+- `shadow_disparity` — Fair-Lending disparity math (SolasAI-aligned)
+- `shadow_size_position` — position-sizing risk primitive
 
 All tools run in-process. No network call from inside the tool body. AA01–AA05 adverse-action codes match CFPB Circular 2026-03.
 
@@ -50,7 +60,7 @@ Test surface:
 - `test/glm-call.test.js` — Multi-provider contract (Anthropic + GLM-5.2)
 - `test/tools-catalog.test.js` — Catalog drift gate
 
-**308/308 tests passing. Shadow Agentic Score 87 ± 3 (n=6).**
+**1592/1595 tests passing. Shadow Agentic Score 87 ± 3 (n=6).**
 
 ## Quick install
 
