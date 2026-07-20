@@ -58,6 +58,11 @@
   #seal{background:transparent;color:var(--ok);border:1px solid rgba(61,220,151,.4);border-radius:8px;
     padding:11px 14px;font-size:12px;cursor:pointer;font-family:var(--mono)}
   #sealed{font-family:var(--mono);font-size:11px;color:var(--ok);line-height:1.5}
+  #sealed.bad{color:var(--bad)}
+  #tamper{background:transparent;color:var(--bad);border:1px solid rgba(240,90,90,.4);border-radius:8px;
+          font-family:var(--mono);font-size:12px;padding:8px 12px;cursor:pointer}
+  #tamper.armed{color:var(--ok);border-color:rgba(61,220,151,.4)}
+  body.glasses #tamper{font-size:16px;padding:12px 16px}
   #source{color:var(--dim);font-size:11px;font-family:var(--mono)}
   .thinking{color:var(--dim);font-size:12px;font-family:var(--mono)}
   /* scanned document (uploaded/captured image) */
@@ -108,12 +113,18 @@
     <div style="margin-top:auto;display:flex;gap:8px">
       <button id="run" style="flex:1">Analyze</button>
       <button id="seal" hidden>Seal evidence</button>
+      <button id="tamper" hidden>Tamper &amp; re-verify</button>
     </div>
   </aside>
 </div>
 <div id="voice"><span id="mic"></span><span id="voice-txt">hold Space to talk · voice needs network</span></div>
 
 <script type="module">
+// Reuse the SAME offline verifier the replay demo uses (prev_hash walk +
+// batch_root recompute + Ed25519 check) — so the "verify" beat below is the real
+// thing, not a demo-only reimplementation.
+import { verifyBundleInBrowser } from "../replay/verify-browser.js";
+
 // ── worked demo data (two verticals) ────────────────────────────────
 const ARTIFACTS = {
   statement: {
@@ -233,6 +244,8 @@ function download(name,text){const b=new Blob([text],{type:"application/octet-st
 // ── UI wiring ───────────────────────────────────────────────────────
 let kind = "statement";
 let lastAnalysis = null;
+let lastSeal = null;   // { bundle, pem } of the most recent seal
+let tampered = false;  // tamper-toggle state for the verify beat
 const $ = s=>document.querySelector(s);
 const body = $("#artifact-body");
 
@@ -246,7 +259,8 @@ function renderArtifact(){
   $("#verdict").className = "thinking";
   $("#verdict").textContent = "Press Analyze to run the council on the captured artifact.";
   $("#claims").innerHTML = ""; $("#source").textContent = "";
-  $("#seal").hidden = true; $("#sealed").textContent = ""; lastAnalysis = null;
+  $("#seal").hidden = true; $("#sealed").textContent = ""; $("#sealed").className = "";
+  $("#tamper").hidden = true; lastAnalysis = null; lastSeal = null; tampered = false;
 }
 function highlight(cell, on){
   document.querySelectorAll(`[data-cell="${cell}"]`).forEach(el=>{
@@ -288,14 +302,54 @@ $("#run").addEventListener("click", async ()=>{
   run.disabled=false;
 });
 
+// Run the SAME offline verifier on-screen and show the verdict — the answer is
+// real AND the record is provable, right here, no network.
+async function showVerify(bundle, pem){
+  const r = await verifyBundleInBrowser(bundle, pem);
+  const sealed = $("#sealed");
+  if(r.ok){
+    sealed.className = "";
+    sealed.innerHTML = `✓ VERIFIED offline · Ed25519 signature + hash-chain intact · ${bundle.events.length} events`
+      + `<br>anyone re-checks: <code>shadow-verify bundle.json --public-key public.pem</code>`;
+    speak("Verified. Signature and hash chain intact.");
+  } else {
+    sealed.className = "bad";
+    const where = (r.error && r.error.seq != null) ? ` at event ${r.error.seq}` : "";
+    sealed.innerHTML = `✗ VERIFICATION FAILED${where} · ${r.reason}<br>${(r.error && r.error.impact) || ""}`;
+    speak("Verification failed. The record was altered.");
+  }
+}
+
 $("#seal").addEventListener("click", async ()=>{
   if(!lastAnalysis) return;
   const seal=$("#seal"); seal.disabled=true; seal.textContent="Sealing…";
   const {bundle,pem} = await sealAnalysis(lastAnalysis.kind, lastAnalysis.persona, lastAnalysis.res);
+  lastSeal = { bundle, pem }; tampered = false;
   download(`shadow-analysis-${lastAnalysis.kind}.bundle.json`, JSON.stringify(bundle,null,2));
   download(`shadow-analysis-${lastAnalysis.kind}.public.pem`, pem);
-  $("#sealed").innerHTML = `✓ sealed · ${bundle.events.length} events · Ed25519<br>verify offline: <code>shadow-verify bundle.json --public-key public.pem</code>`;
+  await showVerify(bundle, pem);                       // verify the pristine bundle → ✓
+  const t=$("#tamper"); t.hidden=false; t.classList.remove("armed"); t.textContent="Tamper & re-verify";
   seal.disabled=false; seal.textContent="Seal evidence";
+});
+
+// The moat, made physical: edit one number in the sealed record and the SAME
+// verifier now rejects it (recomputed batch_root ≠ the signed one). Second press
+// restores the original and it verifies again.
+$("#tamper").addEventListener("click", async ()=>{
+  if(!lastSeal) return;
+  tampered = !tampered;
+  const btn=$("#tamper");
+  if(tampered){
+    const bad = JSON.parse(JSON.stringify(lastSeal.bundle));
+    const ev = bad.events.find(e=>e.event_type==="model_output") || bad.events[1];
+    ev.payload_hash = ev.payload_hash.replace(/^./, c => c==="0" ? "1" : "0"); // flip one nibble
+    ev.payload_ref = `sha256:${ev.payload_hash}`;
+    await showVerify(bad, lastSeal.pem);
+    btn.classList.add("armed"); btn.textContent="Restore original";
+  } else {
+    await showVerify(lastSeal.bundle, lastSeal.pem);
+    btn.classList.remove("armed"); btn.textContent="Tamper & re-verify";
+  }
 });
 
 // ── scan a document: read an uploaded/captured image → the "scanned" artifact ──
@@ -324,7 +378,8 @@ function flashVoice(t){ const v=$("#voice-txt"); if(v) v.textContent=t; }
 function parseIntent(s){ s=(s||"").toLowerCase();
   if(/analy|run|assess|read|review/.test(s)) return "analyze";
   if(/scan|upload|capture|document|photo/.test(s)) return "scan";
-  if(/seal|sign|evidence|attest/.test(s)) return "seal";
+  if(/tamper|alter|forge|break/.test(s)) return "tamper";
+  if(/seal|sign|evidence|attest|verif/.test(s)) return "seal";
   if(/statement|financial/.test(s)) return "statement";
   if(/chart|scatter|data/.test(s)) return "chart";
   if(/glass|big|hud/.test(s)) return "glasses";
@@ -333,6 +388,7 @@ function dispatch(intent){
   if(intent==="analyze") $("#run").click();
   else if(intent==="scan") $("#scanfile").click();
   else if(intent==="seal"){ if(!$("#seal").hidden) $("#seal").click(); }
+  else if(intent==="tamper"){ if(!$("#tamper").hidden) $("#tamper").click(); }
   else if(intent==="statement"||intent==="chart"){ document.querySelectorAll(".toggle button").forEach(x=>x.classList.remove("on")); const b=document.querySelector('.toggle button[data-kind="'+intent+'"]'); if(b){ b.classList.add("on"); kind=intent; renderArtifact(); } }
   else if(intent==="glasses") setGlasses(!document.body.classList.contains("glasses"));
   else flashVoice("didn't catch that");

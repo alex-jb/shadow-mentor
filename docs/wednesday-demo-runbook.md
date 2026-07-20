@@ -12,6 +12,13 @@ the Mac — no Eye/Beam Pro needed). Everything runs in the browser. Each act ha
    Act 2's stereo beat.
 3. Move the browser window onto the glasses display, full-screen (`⌃⌘F`).
 
+**Serve over http, not `file://`.** Act 1 loads a shared verifier module, and
+browsers only allow ES-module imports over http(s). Two ways:
+- **Online:** open the live URL — `https://shadow-mentor-phi.vercel.app/demos/`.
+- **Offline venue:** from the repo root run `python3 -m http.server 8127`, then open
+  `http://localhost:8127/demos/` (localhost needs no internet — fully offline-safe).
+The old `open file://…` shortcut no longer works for Act 1.
+
 ## Act 1 — scan a document → answer in the glasses
 
 `demos/scan-analyze/index.html`
@@ -28,12 +35,17 @@ the Mac — no Eye/Beam Pro needed). Everything runs in the browser. Each act ha
   - **Offline fallback** (reliable): the two built-in artifacts ("financial
     statement" / "data chart") return a worked analysis with clickable
     citation pills — no network. **Recommended if the venue Wi-Fi is shaky.**
-- Press **Seal evidence** → downloads a signed bundle + public key. The point on
-  stage: *the answer is real, and the record is tamper-evident* — verify it
-  offline with `shadow-verify`.
+- Press **Seal evidence** → downloads a signed bundle + public key, AND runs the
+  real offline verifier right on screen → **✓ VERIFIED offline · Ed25519 + hash-chain
+  intact**. This is the moat, live: the answer is real, and the record is provable.
+- **The tamper beat (the closer):** press **Tamper & re-verify** → it edits one
+  number in the sealed record and re-runs the SAME verifier → **✗ VERIFICATION FAILED
+  at event N** (the chain breaks exactly where the edit happened). Press again to
+  restore → ✓ again. Say: *"nobody can silently rewrite an AI's answer — change one
+  digit and the proof fails."* Voice: hold Space, say "seal" then "tamper".
 - **Recommended demo path:** rehearse both. Lead with a real scan if Wi-Fi is
   solid; keep the offline "financial statement" artifact one click away as the
-  safety net.
+  safety net. The seal→verify→tamper beat works offline regardless.
 
 ## Act 2 — 3D spatial view
 
@@ -69,8 +81,10 @@ rewrite the record.
 
 ## Pre-flight checklist
 
+- [ ] Served over http (live URL or `python3 -m http.server`), NOT `file://`
 - [ ] Glasses show the browser (DP-Alt), full-screen, `?glasses=1`
 - [ ] Act 1 offline artifact works (Analyze → answer → pills) with Wi-Fi off
+- [ ] Seal → shows **✓ VERIFIED**; Tamper → shows **✗ FAILED**; Tamper again → ✓
 - [ ] (If using real vision) endpoint deployed + `ANTHROPIC_API_KEY` set; test one scan
 - [ ] Act 2 SBS fuses on-device (else plan flat)
 - [ ] Voice tested on the venue network (else keyboard-only)
