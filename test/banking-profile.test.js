@@ -48,16 +48,18 @@ test("profile spec is well-formed (every field has a level, reg_hooks, and a che
   }
 });
 
-test("document_source_traceability: present when a source-map is bound, missing (not failing) otherwise", () => {
+test("document_source_traceability is VERIFIED, not just present (C2): missing → unknown → present → missing-on-swap", () => {
   const k = keys();
-  // bare conforming bundle has no source-map → recommended field MISSING but pass holds
+  const stat = (r) => r.fields.find((f) => f.id === "document_source_traceability").status;
+
+  // no binding at all → missing (recommended, so pass still holds)
   const bare = conformingBundle(k);
   const rBare = checkBankingProfileV1(bare, { verified: verifyBundle(bare, { publicKey: k.pub }) });
-  assert.equal(rBare.fields.find((f) => f.id === "document_source_traceability").status, "missing");
-  assert.equal(rBare.pass, true); // recommended miss does not fail conformance
+  assert.equal(stat(rBare), "missing");
+  assert.equal(rBare.pass, true);
 
-  // closed loop: claims → buildSourceMapFromClaims → source_map_hash → bound in a bundle
-  const { source_map_hash } = buildSourceMapFromClaims(
+  // build a real source-map, bind its hash into the bundle
+  const { source_map, source_map_hash } = buildSourceMapFromClaims(
     [{ field: "debt_to_income", text: "DTI 0.41 over ceiling", source: "0.41", value: 0.41, page: 2 }],
     { documentBytes: Buffer.from("origination-doc-bytes"), extractedAtUtc: "2026-07-20T00:00:00.000Z" });
   const s = session(k);
@@ -67,8 +69,18 @@ test("document_source_traceability: present when a source-map is bound, missing 
     extensions: { dictionary_hash: DICT_HASH, source_map_hash } });
   appendEvent(s, { event_type: "human_approval", actor: "user", payload: { approved: true } });
   const bound = sealSession(s);
-  const rBound = checkBankingProfileV1(bound, { verified: verifyBundle(bound, { publicKey: k.pub }) });
-  assert.equal(rBound.fields.find((f) => f.id === "document_source_traceability").status, "present");
+  const verified = verifyBundle(bound, { publicKey: k.pub });
+
+  // binding present but map NOT supplied → UNKNOWN (honest: we did not verify it)
+  assert.equal(stat(checkBankingProfileV1(bound, { verified })), "unknown");
+
+  // map supplied + hash matches → PRESENT (actually verified authentic)
+  assert.equal(stat(checkBankingProfileV1(bound, { verified, payloads: { sm: source_map } })), "present");
+
+  // map altered after signing → MISSING (hash mismatch caught — the moat, enforced)
+  const swapped = JSON.parse(JSON.stringify(source_map));
+  swapped.entries[0].normalized_value = 0.29;
+  assert.equal(stat(checkBankingProfileV1(bound, { verified, payloads: { sm: swapped } })), "missing");
 });
 
 test("a purpose-built credit-decision bundle conforms (pass, high coverage)", () => {
