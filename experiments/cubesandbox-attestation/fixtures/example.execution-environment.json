@@ -1,0 +1,12 @@
+{
+  "provider": "cubesandbox",
+  "template_digest": "sha256:a34c9f438055e081873b8b87fa2084a6c5ac680bd908b4f81a418d9f64160fc5",
+  "image_digest": "sha256:ee9b2a8d09ca6822c7968ebe1abc19c80a357d74f78f9cfd5d111419e123964f",
+  "snapshot_id": "snap-2026-07-20-a442",
+  "network_policy_hash": "sha256:19c653d5135d9de63f09b6c4c9c1cdb5a63f43f12ddc9310b99e51d73c17f110",
+  "credential_policy_hash": "sha256:711c55571a5a867589644b17db981fa8c8f26309669a8dcc97ab350e79ea8fcf",
+  "egress_log_hash": "sha256:ccb231e4f17ffbe560f923c714fb70bab7ed7b822d0a6efcc0758a09b51deb5e",
+  "outbound_domains": ["api.anthropic.com"],
+  "resource_limits": { "cpu": "1", "memory_mb": 2048 },
+  "process_exit_code": 0
+}
