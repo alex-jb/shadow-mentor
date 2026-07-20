@@ -18,12 +18,13 @@
 //
 // Run: node demos/replay/... no — from this dir: node flow-adapter.mjs
 // ─────────────────────────────────────────────────────────────────
-import { createHash } from "node:crypto";
-import { writeFileSync } from "node:fs";
+import { writeFileSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
+import { verifyBundle } from "../../packages/attest-core/session.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
+const REPO = resolve(HERE, "..", "..");
 
 // Mirrors the demo's unified contract (the single source both read).
 const POSITIONS = [
@@ -39,18 +40,6 @@ const POSITIONS = [
   { t:"TSLA", w:.07, rc:.10, risk:.55, ret:.55, conf:.52, action:"trim" },
 ];
 
-// The evidence chain (mirrors the demo's 6-node bundle). Real SHA-256 prev-hash
-// chaining so the exported audit graph is faithful to a Shadow bundle.
-const CHAIN = [
-  { actor:"User",        event_type:"prompt",        produced_by:"human", payload:{ q:"balanced 5y portfolio" } },
-  { actor:"Market data", event_type:"tool_call",     produced_by:"tool",  payload:{ tool:"market_data_api" } },
-  { actor:"Model",       event_type:"model_output",  produced_by:"AI",    payload:{ weights: POSITIONS.map(p=>[p.t,p.w]) } },
-  { actor:"Council",     event_type:"tool_result",   produced_by:"AI",    payload:{ stances:["bullish","cautious","neutral","clear","positive"] } },
-  { actor:"Human",       event_type:"human_approval",produced_by:"human", payload:{ approved:true } },
-  { actor:"Signed",      event_type:"session_end",   produced_by:"system",payload:{ event_count:6 } },
-];
-
-const sha = (s) => createHash("sha256").update(s).digest("hex");
 function csv(rows) {
   const head = Object.keys(rows[0]);
   return [head.join(","), ...rows.map(r => head.map(h => JSON.stringify(r[h] ?? "")).join(","))].join("\n") + "\n";
@@ -62,18 +51,19 @@ const portfolioRows = POSITIONS.map(p => ({
   weight_pct: Math.round(p.w * 100), risk_contribution_pct: Math.round(p.rc * 100), action: p.action,
 }));
 
-// audit dataset → the 3D audit graph in Flow (real hash chain)
-let prev = sha("genesis");
-const auditRows = CHAIN.map((e, i) => {
-  const payload_hash = sha(JSON.stringify(e.payload));
-  const row = {
-    seq: i, actor: e.actor, event_type: e.event_type, produced_by: e.produced_by,
-    payload_hash_8: payload_hash.slice(0, 8), prev_hash_8: prev.slice(0, 8),
-    verification_status: "verified",
-  };
-  prev = sha(prev + payload_hash); // chain
-  return row;
-});
+// audit dataset → the 3D audit graph in Flow. Reads the REAL signed reference banking
+// bundle + verifies it, so every row is an actual event with its real hashes + a real
+// per-event verification status — not a mock. Tamper the bundle and rows flip to BROKEN.
+const refBundle = JSON.parse(readFileSync(resolve(REPO, "docs", "reference", "banking-decision.bundle.json"), "utf8"));
+const refPem = readFileSync(resolve(REPO, "docs", "reference", "banking-decision.public.pem"), "utf8");
+const verified = verifyBundle(refBundle, { publicKey: refPem });
+const auditRows = refBundle.events.map((e) => ({
+  seq: e.seq, actor: e.actor, event_type: e.event_type,
+  payload_hash_8: String(e.payload_hash).slice(0, 8),
+  prev_hash_8: e.prev_hash ? String(e.prev_hash).slice(0, 8) : "genesis",
+  verification_status: verified.ok ? "verified"
+    : (verified.failedSeq != null && e.seq >= verified.failedSeq ? "BROKEN" : "verified"),
+}));
 
 // council dataset → the 3D agent-council graph in Flow: center = Final
 // Recommendation, spokes = the 5 voices, each with a support/oppose relation.
@@ -96,5 +86,5 @@ writeFileSync(resolve(HERE, "flow-council.csv"), csv(councilRows));
 
 console.log("[flow-adapter] flow-portfolio.csv  — %d holdings (Scene 1: risk-return cloud)", portfolioRows.length);
 console.log("[flow-adapter] flow-council.csv    — %d nodes (Scene 2: agent-council graph, center=Final)", councilRows.length);
-console.log("[flow-adapter] flow-audit.csv      — %d chain nodes (Scene 3: audit trace, real hash chain)", auditRows.length);
+console.log("[flow-adapter] flow-audit.csv      — %d chain nodes (Scene 3: audit trace from the REAL signed reference bundle, verified)", auditRows.length);
 console.log("[flow-adapter] import into Flow Editor (CSV), or push the same rows via the Push Dataset API once its contract is confirmed. Flow renders the spatial layer; Shadow signs + verifies the data — the spatial engine is Flow's, not Shadow's.");

@@ -1,7 +1,6 @@
-seq,actor,event_type,produced_by,payload_hash_8,prev_hash_8,verification_status
-0,"User","prompt","human","6e3e6a67","aeebad4a","verified"
-1,"Market data","tool_call","tool","f6cf63e3","2278d496","verified"
-2,"Model","model_output","AI","860bee2d","d98d1f19","verified"
-3,"Council","tool_result","AI","556ac3cf","1e97b6e9","verified"
-4,"Human","human_approval","human","20ec2f38","2d7e05c7","verified"
-5,"Signed","session_end","system","d1abbfca","d93fc879","verified"
+seq,actor,event_type,payload_hash_8,prev_hash_8,verification_status
+0,"user","prompt","66169d2c","e36cd7fa","verified"
+1,"tool","tool_call","94772df6","9c840220","verified"
+2,"model","model_output","10f75cbd","64072e48","verified"
+3,"user","human_approval","764d349c","c8fd8690","verified"
+4,"system","session_end","5c7659c0","f41ff579","verified"
