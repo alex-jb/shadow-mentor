@@ -18,7 +18,8 @@ a device report. Build host had Node only (no Java/Gradle/Android SDK/Unity) —
 | Android Voice/TTS AAR (SpeechRecognizer on-device + TTS) | ✅ | 🟡 pure JVM router test (device path NOT-COMPILED) | ❌ pending | ❌ |
 | Gradle multi-module (settings + wrapper + CI dispatch) | ✅ | ❌ needs SDK runner | n/a | ❌ |
 | Unity C# core (providers, mocks, API client, voice router) | ✅ | ❌ NO UNITY COMPILE | ❌ pending | ❌ |
-| Unity spatial UX (panels, source overlay, audit arc) | 🟡 interfaces only | ❌ | ❌ pending | ❌ |
+| Spatial geometry (source overlay, audit arc, risk, cascade, glance) | ✅ | ✅ pure math, EditMode NUnit (Unity-CI-gated) | n/a | ✅ math |
+| Unity spatial UX MonoBehaviour (scene controller over the tested math) | ✅ | ❌ NO UNITY COMPILE | ❌ pending | ❌ |
 | Eye RGB capture (GPU readback + official still) | 🟡 interface + spec | ❌ | ❌ pending | ❌ |
 | One Pro 6DoF session-relative placement | 🟡 interface | ❌ | ❌ pending | ❌ |
 | On-device OCR / voice on hardware | ❌ | ❌ | ❌ pending | ❌ |
