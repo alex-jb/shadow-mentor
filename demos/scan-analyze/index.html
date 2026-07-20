@@ -171,9 +171,17 @@ let scannedImage = null; // { dataUrl, base64, mediaType }
 ARTIFACTS.scanned = {
   persona: "Scanned document",
   render(el){ el.innerHTML = scannedImage
-    ? `<img id="scanimg" src="${scannedImage.dataUrl}" alt="scanned document">`
+    ? `<div id="scanwrap" style="position:relative;display:inline-block;max-width:100%"><img id="scanimg" src="${scannedImage.dataUrl}" alt="scanned document" style="display:block;max-width:100%"><div id="scanoverlay" style="position:absolute;inset:0;pointer-events:none"></div></div>`
     : `<div class="thinking">Click "scan a document" to upload / capture an image, then Analyze.</div>`; },
 };
+
+// JARVIS source-binding: draw the claim's source region as a box on the scanned image.
+function showRegion(region){
+  const ov = document.getElementById("scanoverlay"); if(!ov || !Array.isArray(region) || region.length!==4) return;
+  const [x0,y0,x1,y1] = region.map(Number);
+  ov.innerHTML = `<div style="position:absolute;left:${x0*100}%;top:${y0*100}%;width:${(x1-x0)*100}%;height:${(y1-y0)*100}%;border:2px solid var(--accent,#6ea8ff);border-radius:3px;box-shadow:0 0 0 9999px rgba(0,0,0,.28);transition:all .15s"></div>`;
+}
+function clearRegion(){ const ov=document.getElementById("scanoverlay"); if(ov) ov.innerHTML=""; }
 
 // Vision endpoint for scanned images. Override with ?api=<url>. Falls back to the
 // offline mock if unreachable (no key / not deployed / airplane-mode venue).
@@ -189,7 +197,7 @@ async function analyze(kind){
         body: JSON.stringify({ image_base64: scannedImage.base64, media_type: scannedImage.mediaType, kind:"financial document" })});
       if(!r.ok){ const j=await r.json().catch(()=>({})); throw new Error(j.error || ("HTTP "+r.status)); }
       const j = await r.json();
-      return { verdict: j.verdict, claims: (j.claims||[]).map(c=>({text:c.text, source:c.source})) };
+      return { verdict: j.verdict, claims: (j.claims||[]).map(c=>({text:c.text, source:c.source, region:c.region})) };
     }catch(e){
       return { verdict:{text:"Vision endpoint unavailable — offline demo. ("+e.message+")", tone:"warn"},
         claims:[{text:"Set ANTHROPIC_API_KEY on the deployment (or ?api=<url>) for real analysis. The signing + verification below is real regardless.", source:"—"}] };
@@ -306,13 +314,15 @@ $("#run").addEventListener("click", async ()=>{
   $("#verdict").className="";
   $("#verdict").innerHTML = `<span class="tag ${tone}">${tone.toUpperCase()}</span>${res.verdict.text}`;
   speak(`${tone}. ${res.verdict.text}`); // read the answer aloud — hands-free on the glasses
-  $("#claims").innerHTML = res.claims.map((c)=>{
+  $("#claims").innerHTML = res.claims.map((c,i)=>{
     const ref = (c.cell!=null)
       ? `<span class="pill" data-cell="${c.cell}">source ↩</span>`
-      : (c.source && c.source!=="—") ? `<span class="pill" title="${(""+c.source).replace(/"/g,"&quot;")}">source: ${c.source}</span>` : "";
+      : Array.isArray(c.region)
+        ? `<span class="pill" data-region="${i}" title="show source region on the document">source ⌖</span>`
+        : (c.source && c.source!=="—") ? `<span class="pill" title="${(""+c.source).replace(/"/g,"&quot;")}">source: ${c.source}</span>` : "";
     return `<div class="claim">${c.text}${ref}</div>`;
   }).join("");
-  $("#source").textContent = res.claims.some(c=>c.cell!=null)
+  $("#source").textContent = res.claims.some(c=>c.cell!=null || Array.isArray(c.region))
     ? "every claim links to its source region — click a pill"
     : "each claim names the figure it came from";
   // citation pills highlight the exact source cell/point (the trust UX; mock artifacts only)
@@ -321,6 +331,13 @@ $("#run").addEventListener("click", async ()=>{
     p.addEventListener("mouseenter",()=>highlight(cell,true));
     p.addEventListener("mouseleave",()=>highlight(cell,false));
     p.addEventListener("click",()=>{ document.querySelectorAll(".cell.hot,.dot.hot").forEach(e=>e.classList.remove("hot")); highlight(cell,true); });
+  });
+  // JARVIS source-binding: a scanned claim's pill draws its region box on the document
+  document.querySelectorAll(".claim .pill[data-region]").forEach(p=>{
+    const region = res.claims[Number(p.dataset.region)]?.region;
+    p.addEventListener("mouseenter",()=>showRegion(region));
+    p.addEventListener("click",()=>showRegion(region));
+    p.addEventListener("mouseleave",clearRegion);
   });
   lastAnalysis = { kind, persona: ARTIFACTS[kind].persona, res };
   $("#seal").hidden = false;

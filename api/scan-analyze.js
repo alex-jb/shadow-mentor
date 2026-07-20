@@ -49,8 +49,9 @@ export default async function handler(req, res) {
           { type: "image", source: { type: "base64", media_type, data: image_base64 } },
           { type: "text", text:
             `You are a financial-review assistant reading a scanned ${kind}. Analyze it and return ONLY a JSON object, no prose, of the form:\n` +
-            `{"verdict":{"text":"<one-sentence bottom line>","tone":"ok|warn|bad"},"claims":[{"text":"<a specific finding>","source":"<the line/figure it came from>"}]}\n` +
-            `Give 3-6 claims, each tied to a specific figure or line in the document. Be concrete (numbers, ratios). tone: ok=healthy, warn=attention, bad=material concern.` },
+            `{"verdict":{"text":"<one-sentence bottom line>","tone":"ok|warn|bad"},"claims":[{"text":"<a specific finding>","source":"<the line/figure it came from>","region":[x0,y0,x1,y1]}]}\n` +
+            `Give 3-6 claims, each tied to a specific figure or line in the document. Be concrete (numbers, ratios). tone: ok=healthy, warn=attention, bad=material concern.\n` +
+            `"region" is the bounding box of that source on the page, as [x0,y0,x1,y1] NORMALIZED to 0..1 (x0/y0 top-left, x1/y1 bottom-right); estimate it from where the figure sits on the page so a reviewer can be pointed to the exact spot. Omit region only if you truly cannot locate it.` },
         ],
       }],
     });
