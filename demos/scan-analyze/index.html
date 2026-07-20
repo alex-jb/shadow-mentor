@@ -68,6 +68,9 @@
   /* scanned document (uploaded/captured image) */
   #scanimg{max-width:560px;max-height:60vh;border:1px solid var(--line);border-radius:8px;display:block}
   .scanbtn{position:relative;overflow:hidden}
+  #samplebtn{font-family:var(--mono);font-size:12px;padding:8px 12px;border-radius:8px;cursor:pointer;
+             background:transparent;color:var(--dim);border:1px solid rgba(255,255,255,.15)}
+  body.glasses #samplebtn{font-size:15px;padding:11px 15px}
   .scanbtn input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
   /* glasses HUD mode (?glasses=1 or key G): big, high-contrast, single-column
      for the small XREAL One Pro FOV — the answer is the star. */
@@ -99,6 +102,7 @@
       <button data-kind="statement" class="on">financial statement</button>
       <button data-kind="chart">data chart</button>
       <button class="scanbtn" id="scanbtn">scan a document<input type="file" id="scanfile" accept="image/*"></button>
+      <button id="samplebtn">load sample doc</button>
     </div>
     <div id="artifact-body"></div>
   </section>
@@ -353,6 +357,20 @@ $("#tamper").addEventListener("click", async ()=>{
 });
 
 // ── scan a document: read an uploaded/captured image → the "scanned" artifact ──
+// one-click rehearsal: load the bundled sample statement → press Analyze for the
+// real vision path without hunting for a document (needs http serving + the API).
+$("#samplebtn").addEventListener("click", async ()=>{
+  try{
+    const r = await fetch("sample-statement.png");
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const blob = await r.blob();
+    const dataUrl = await new Promise((res,rej)=>{ const fr=new FileReader(); fr.onload=()=>res(fr.result); fr.onerror=rej; fr.readAsDataURL(blob); });
+    scannedImage = { dataUrl, base64: dataUrl.split(",")[1], mediaType: "image/png" };
+    document.querySelectorAll(".toggle button").forEach(x=>x.classList.remove("on"));
+    kind = "scanned"; renderArtifact(); $("#scanbtn").classList.add("on");
+  }catch(err){ flashVoice("sample needs http serving ("+err.message+")"); }
+});
+
 $("#scanfile").addEventListener("change", (e)=>{
   const f = e.target.files && e.target.files[0]; if(!f) return;
   const reader = new FileReader();
