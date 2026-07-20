@@ -170,7 +170,9 @@ const TOOLS = [
         bundle: { type: "object", description: "The Shadow evidence bundle (header, events, batch_root, signatures) for one credit decision." },
         public_key: { type: "string", description: "Ed25519 public key (PEM). If provided, integrity is verified; otherwise the integrity field is reported 'unknown'." },
         payloads: { type: "object", description: "Optional map {seq|payload_ref -> payload} enabling value-level checks (principal reason-code count, adverse-decision detection)." },
-        packet: { type: "boolean", description: "If true, also return an examiner-ready markdown evidence packet." }
+        packet: { type: "boolean", description: "If true, also return an examiner-ready markdown evidence packet." },
+        check_anchors: { type: "string", enum: ["off", "structural", "full"], description: "Verify bundle.external_anchors[] (RFC 3161 TSA + Sigstore Rekor): 'structural' = messageImprint/body-hash match; 'full' = also verify the TSA CMS signature + Rekor inclusion proof/SET. Reports the external trust level (SELF_SIGNED → TIME/LOG_ANCHORED). Parity with the CLI's --check-anchors." },
+        rekor_pub_key: { type: "string", description: "Rekor public key (PEM) for check_anchors='full' Rekor SET verification." }
       },
       required: ["bundle"]
     }
@@ -433,12 +435,18 @@ export function handleToolCall(name, args) {
   }
 
   if (name === "shadow_banking_profile") {
-    const { bundle, public_key, payloads, packet } = args;
+    const { bundle, public_key, payloads, packet, check_anchors, rekor_pub_key } = args;
     if (!bundle || typeof bundle !== "object") return { error: "bundle required" };
-    const verified = public_key ? verifyBundle(bundle, { publicKey: public_key }) : null;
+    const anchorMode = (check_anchors === "structural" || check_anchors === "full") ? check_anchors : false;
+    const verified = public_key
+      ? verifyBundle(bundle, { publicKey: public_key, checkAnchors: anchorMode, rekorPubKey: rekor_pub_key })
+      : null;
     const conformance = checkBankingProfileV1(bundle, { verified, payloads: payloads ?? null });
     const out = {
       conformance,
+      // Anchor trust surfaced on MCP too (parity with the CLI): without this a bank
+      // analyst in Claude Desktop silently sees only SELF_SIGNED.
+      ...(verified && anchorMode ? { trust_level: verified.trustLevel, anchors: verified.anchors ?? [] } : {}),
       interpretation: conformance.pass
         ? `Conforms to ${conformance.profile} (${conformance.coverage_pct}% of evidence slots present): the examiner-required evidence is present and tamper-evident. This does NOT certify the decision was correct, fair, or compliant.`
         : `NON-CONFORMANT to ${conformance.profile}: missing required evidence — ${conformance.missing_required.join(", ") || "none"}.`

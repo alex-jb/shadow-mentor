@@ -33,19 +33,25 @@ export default async function handler(req, res) {
     });
   }
 
-  const { bundle, public_key, payloads, packet } = req.body ?? {};
+  const { bundle, public_key, payloads, packet, check_anchors, rekor_pub_key } = req.body ?? {};
   if (!bundle || typeof bundle !== "object") {
     return res.status(400).json({ error: "missing 'bundle' in request body", docs: "spec/evidence-bundle.schema.json" });
   }
 
   const t0 = Date.now();
-  const verified = public_key ? verifyBundle(bundle, { publicKey: public_key }) : null;
+  const anchorMode = (check_anchors === "structural" || check_anchors === "full") ? check_anchors : false;
+  const verified = public_key
+    ? verifyBundle(bundle, { publicKey: public_key, checkAnchors: anchorMode, rekorPubKey: rekor_pub_key })
+    : null;
   const conformance = checkBankingProfileV1(bundle, { verified, payloads: payloads ?? null });
   const latency_ms = Date.now() - t0;
 
   const body = {
     ok: conformance.pass,
     conformance,
+    // Anchor trust surfaced on HTTP too (parity with the CLI): a SIEM curl-verifying
+    // a bundle can now see + gate on the external anchor trust level.
+    ...(verified && anchorMode ? { trust_level: verified.trustLevel, anchors: verified.anchors ?? [] } : {}),
     interpretation: conformance.pass
       ? `Conforms to ${conformance.profile} (${conformance.coverage_pct}% of evidence slots present): the examiner-required evidence is present and tamper-evident. This does NOT certify the decision was correct, fair, or compliant.`
       : `NON-CONFORMANT to ${conformance.profile}: missing required evidence — ${conformance.missing_required.join(", ") || "none"}.`,

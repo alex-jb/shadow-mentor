@@ -43,6 +43,20 @@ test("POST a conforming bundle → 200 ok, CONFORMS, packet when requested", asy
   assert.equal(typeof res.body.latency_ms, "number");
 });
 
+test("C1: check_anchors surfaces the external trust level on HTTP (parity with the CLI)", async () => {
+  const { bundle, pub } = conforming();
+  // no external_anchors on this bundle → the base level, but the field is now PRESENT
+  // (before C1, HTTP/MCP callers could never see anchor trust at all)
+  const on = mockRes();
+  await handler(mockReq({ bundle, public_key: pub, check_anchors: "structural" }), on);
+  assert.equal(on.body.trust_level, "SELF_SIGNED");
+  assert.ok(Array.isArray(on.body.anchors));
+  // omitted by default → no trust_level noise for callers that don't ask
+  const off = mockRes();
+  await handler(mockReq({ bundle, public_key: pub }), off);
+  assert.equal(off.body.trust_level, undefined);
+});
+
 test("POST a bare bundle → 200 with ok:false + named missing evidence", async () => {
   const { privateKey } = generateKeyPairSync("ed25519");
   const s = createSession({ agent: { name: "x", version: "1" }, models: [], environmentFingerprint: { os: "m", node_version: "v1" },
