@@ -124,7 +124,7 @@
   </aside>
 </div>
 <div id="voice"><span id="mic"></span><span id="voice-txt">hold Space to talk · voice needs network</span></div>
-<div id="keyhint">A analyze · S seal · T tamper · L sample · 1/2 doc · G glasses</div>
+<div id="keyhint">⌘V paste screenshot · A analyze · S seal · T tamper · L sample · G glasses</div>
 
 <script type="module">
 // Reuse the SAME offline verifier the replay demo uses (prev_hash walk +
@@ -380,6 +380,20 @@ $("#tamper").addEventListener("click", async ()=>{
 });
 
 // ── scan a document: read an uploaded/captured image → the "scanned" artifact ──
+// Paste an image from the clipboard (screenshot → ⌘V) — the smoothest way to
+// "scan" a document or data chart that's on the computer screen (the One Pro is a
+// display, no camera). Screenshot it (⌘⇧4 / ⌘⇧⌃4 to clipboard), paste here, press A.
+addEventListener("paste", async (e)=>{
+  const item = [...(e.clipboardData?.items||[])].find(i=>i.type && i.type.startsWith("image/"));
+  if(!item) return;
+  const blob = item.getAsFile(); if(!blob) return;
+  const dataUrl = await new Promise((res,rej)=>{ const fr=new FileReader(); fr.onload=()=>res(fr.result); fr.onerror=rej; fr.readAsDataURL(blob); });
+  scannedImage = { dataUrl, base64: dataUrl.split(",")[1], mediaType: blob.type || "image/png" };
+  document.querySelectorAll(".toggle button").forEach(x=>x.classList.remove("on"));
+  kind = "scanned"; renderArtifact(); $("#scanbtn").classList.add("on");
+  flashVoice("pasted image — press A to analyze");
+});
+
 // one-click rehearsal: load the bundled sample statement → press Analyze for the
 // real vision path without hunting for a document (needs http serving + the API).
 $("#samplebtn").addEventListener("click", async ()=>{
