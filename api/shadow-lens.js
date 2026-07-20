@@ -12,13 +12,10 @@ import { generateKeyPairSync } from "node:crypto";
 import {
   createSession, registerCapture, validateSourceMap, analyze, review, sealEvidence, verify, STAGES,
 } from "../apps/shadow-lens/backend/lens-api.mjs";
-import { InMemoryLensStore } from "../apps/shadow-lens/backend/session-store.mjs";
+import { resolveLensStore, NO_DURABLE_STORE } from "../apps/shadow-lens/backend/session-store.mjs";
 
 const DEFAULT_ORIGINS = (process.env.SHADOW_LENS_ALLOWED_ORIGINS || "https://shadow-mentor-phi.vercel.app,http://localhost:8127")
   .split(",").map((s) => s.trim()).filter(Boolean);
-
-// Module-scoped store — shared only within one warm instance. Explicitly ephemeral.
-const STORE = new InMemoryLensStore();
 
 function applyCors(req, res) {
   const origin = req.headers?.origin;
@@ -48,44 +45,55 @@ export default async function handler(req, res) {
   const stage = body.stage;
   if (!STAGES.includes(stage)) return res.status(400).json({ error: `stage must be one of ${STAGES.join(", ")}` });
 
+  // Serverless boundary: staged (cross-request) ops need a durable store. If none is
+  // configured on a production runtime, refuse explicitly — never fake durability with
+  // process memory or an ephemeral filesystem. Use POST /api/shadow-lens/run instead.
+  const { store, durable, backend } = resolveLensStore(process.env);
+  if (!store) {
+    return res.status(501).json({
+      code: NO_DURABLE_STORE,
+      error: "staged lifecycle needs a durable session store (set SHADOW_LENS_STORE_DIR, or use the one-shot POST /api/shadow-lens/run for the deployed demo)",
+    });
+  }
+
   try {
     let out;
     switch (stage) {
       case "create":
-        out = await createSession({ device: body.device, build: body.build, store: STORE });
-        // don't leak the store object over HTTP
-        out = { ok: true, session_id: out.session_id, token: out.token, store: "in-memory-ephemeral" };
+        out = await createSession({ device: body.device, build: body.build, store });
+        out = { ok: true, session_id: out.session_id, token: out.token, store_backend: backend, durable };
         break;
       case "capture":
-        out = await registerCapture({ token: body.token, base64: body.capture_image_base64, capture_method: body.capture_method, store: STORE });
+        out = await registerCapture({ token: body.token, base64: body.capture_image_base64, capture_method: body.capture_method, store });
         break;
       case "source-map":
-        out = await validateSourceMap({ token: body.token, sourceMap: body.source_map, store: STORE });
+        out = await validateSourceMap({ token: body.token, sourceMap: body.source_map, store });
         break;
       case "analyze": {
         // live path only if a key exists; otherwise fixture (findings) — never silently mock.
         if (!Array.isArray(body.findings) && process.env.ANTHROPIC_API_KEY) {
           const { makeClaudeLlm } = await import("../apps/shadow-lens/backend/analyze.mjs");
-          out = await analyze({ token: body.token, llm: makeClaudeLlm({ apiKey: process.env.ANTHROPIC_API_KEY }), store: STORE });
+          out = await analyze({ token: body.token, llm: makeClaudeLlm({ apiKey: process.env.ANTHROPIC_API_KEY }), store });
         } else {
-          out = await analyze({ token: body.token, findings: body.findings, store: STORE });
+          out = await analyze({ token: body.token, findings: body.findings, store });
         }
         break;
       }
       case "review":
-        out = await review({ token: body.token, reviewer: body.reviewer, store: STORE });
+        out = await review({ token: body.token, reviewer: body.reviewer, store });
         break;
       case "seal": {
         const k = serverKeys();
-        out = await sealEvidence({ token: body.token, signingKeyPem: k.priv, publicKeyPem: k.pub, keyId: body.key_id, store: STORE });
+        out = await sealEvidence({ token: body.token, signingKeyPem: k.priv, publicKeyPem: k.pub, keyId: body.key_id, idempotency_key: body.idempotency_key, expected_version: body.expected_version, store });
         if (out.ok) { out.public_key_pem = k.pub; out.signing_key = k.ephemeral ? "ephemeral-demo" : "server-configured"; }
         break;
       }
       case "verify":
-        out = await verify({ token: body.token, store: STORE });
+        out = await verify({ token: body.token, store });
         break;
     }
-    const status = out.ok ? 200 : (out.http || (out.code === "unauthorized" ? 401 : 400));
+    const codeStatus = { unauthorized: 401, version_conflict: 409, already_sealed: 409, not_found: 404 };
+    const status = out.ok ? 200 : (out.http || codeStatus[out.code] || 400);
     return res.status(status).json(out);
   } catch (e) {
     return res.status(500).json({ error: `stage ${stage} failed: ${e?.message ?? String(e)}` });

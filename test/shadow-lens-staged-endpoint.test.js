@@ -26,7 +26,8 @@ const SM = [
 test("full staged lifecycle over HTTP → verified, contract-valid", async () => {
   const create = await call({ stage: "create", device: { platform: "unity-xreal", runtime_mode: "UNITY_XREAL", tracking_mode: "6dof", camera_mode: "xreal-eye" }, build: { app_commit: "t" } });
   assert.equal(create.statusCode, 200);
-  assert.equal(create.body.store, "in-memory-ephemeral");   // honest durability flag
+  assert.equal(create.body.store_backend, "memory");        // honest backend + durability flags
+  assert.equal(create.body.durable, false);
   const token = create.body.token;
   assert.ok(token);
 

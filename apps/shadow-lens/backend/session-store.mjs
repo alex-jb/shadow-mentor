@@ -77,3 +77,29 @@ export function resolveSessionSecret(env = process.env) {
 }
 
 export function newSessionId() { return `sls_${crypto.randomBytes(9).toString("base64url")}`; }
+
+// ── serverless store boundary ────────────────────────────────────────────────
+// In-memory and single-host file stores are NOT durable across serverless instances.
+// resolveLensStore() makes the boundary explicit so the staged API never pretends a
+// cross-request session survives when it cannot.
+//   - SHADOW_LENS_STORE_DIR set        → FileLensStore, durable on a single-instance host.
+//   - non-production, no dir            → a process-scoped in-memory singleton (dev/test).
+//   - production, no durable store      → { store: null } → callers MUST refuse staged ops
+//                                          with PERSISTENT_SESSION_STORE_NOT_CONFIGURED.
+export const NO_DURABLE_STORE = "PERSISTENT_SESSION_STORE_NOT_CONFIGURED";
+
+let _memSingleton = null;
+export function isProductionRuntime(env = process.env) {
+  return env.NODE_ENV === "production" || env.VERCEL_ENV === "production";
+}
+export function resolveLensStore(env = process.env) {
+  if (env.SHADOW_LENS_STORE_DIR) {
+    return { store: new FileLensStore(env.SHADOW_LENS_STORE_DIR), durable: true, backend: "file" };
+  }
+  if (isProductionRuntime(env)) {
+    // No durable backend in a serverless prod runtime — staged lifecycle is not safe here.
+    return { store: null, durable: false, backend: "none" };
+  }
+  if (!_memSingleton) _memSingleton = new InMemoryLensStore();
+  return { store: _memSingleton, durable: false, backend: "memory" };
+}
