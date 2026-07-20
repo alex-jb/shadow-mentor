@@ -60,6 +60,31 @@
 - **CREDENTIAL-BLOCKED** — needs a secret (e.g. `UNITY_LICENSE`, live LLM key) to run.
 - **FIXTURE-ONLY** — exercised with fixtures, not live providers.
 
+## Six-category status (2026-07-20)
+
+**REAL AND TESTED (Node, `npm test` — 1651/0):** session contract + validator + resolveClaims
+gate · input guards (magic-byte, size, injection boundary) · source-bound analysis · session
+builder (real attest-core seal + verify + tamper) · one-shot `/api/shadow-lens-analyze` +
+`/api/shadow-lens/run` · staged lifecycle (version/idempotency/pristine/serverless-boundary
+guards) · restart-safety · Flow real-session export · contract-drift fingerprint · reproducible
+acceptance package · web client honest-mode labels · spatial geometry (also EditMode NUnit).
+
+**COMPILED (local toolchain):** Unity C# core — compiles + enters Play Mode in Unity 6.0.0.23f1
+(Alex, 2026-07-20).
+
+**IMPLEMENTED BUT NOT COMPILED:** the mock-scene idempotency + visible-render fix (newly authored,
+pending Alex's regenerate + Play) · Android OCR AAR · Android Voice/TTS AAR (built by
+`shadow-lens-android.yml` on a hosted runner) · Unity Edit/PlayMode test execution.
+
+**DEVICE-VALIDATION-PENDING:** Eye RGB capture, One Pro 6DoF (needs the Eye), session-relative
+placement, on-device OCR/voice, APK install, Quest WebXR AR.
+
+**CREDENTIAL-BLOCKED:** live source-bound analysis (`ANTHROPIC_API_KEY`) · Unity EditMode/PlayMode
+CI (`UNITY_LICENSE`).
+
+**FIXTURE-ONLY:** the acceptance package + demos run on the sanitized fixture document with an
+ephemeral demo key; no live LLM, no real customer document.
+
 ## Honest headline
 The full evidence backbone — capture-metadata → source-map → source-bound analysis → signed
 bundle → verify → staged/one-shot HTTP → Flow — is REAL and TESTED and reachable over HTTP.

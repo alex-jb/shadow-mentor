@@ -1,17 +1,23 @@
 # Local toolchain report (B1)
 
-Detected on the build host 2026-07-20 (`command -v` + version probes):
+Two hosts now matter: the **Claude build host** (Node only) and **Alex's macOS machine**
+(has Unity 6). Native compilation happens on Alex's machine, not the Claude host.
 
-| Tool | Status |
-|---|---|
-| Node.js | ✅ v24.14.1 |
-| Java / JDK (`java`,`javac`) | ❌ not installed |
-| Gradle | ❌ not found |
-| Android SDK / `ANDROID_HOME` | ❌ not found |
-| `adb` | ❌ not found |
-| Android NDK | ❌ not found |
-| Unity Hub / Editor | ❌ not found |
-| `dotnet` | ❌ not found |
+| Tool | Claude build host | Alex's macOS |
+|---|---|---|
+| Node.js | ✅ v24.14.1 | ✅ |
+| Unity Hub / Editor | ❌ not found | ✅ **Unity 6.0.0.23f1 — project COMPILES + enters Play Mode (2026-07-20)** |
+| Java / JDK (`java`,`javac`) | ❌ not installed | (via Unity/Android toolchain) |
+| Gradle | ❌ not found | (via Unity Android build) |
+| Android SDK / `ANDROID_HOME` | ❌ not found | (Unity-managed, for APK) |
+| `adb` | ❌ not found | — |
+| `dotnet` | ❌ not found | (Unity's own compiler used) |
+
+**Update 2026-07-20:** Alex confirmed the Unity C# core COMPILES and enters Play Mode in
+Unity 6.0.0.23f1. That promotes the Unity C# core from NOT-COMPILED → **COMPILED (local
+toolchain)**. The mock-scene idempotency + visible-render fix is newly authored on top and is
+pending Alex's regenerate + Play Mode re-verification. The Android AARs remain NOT COMPILED
+(built by the hosted-runner CI, `shadow-lens-android.yml`).
 
 ## Consequence (honest scope of Part B)
 
