@@ -1,0 +1,12 @@
+{
+  "document": "risk-model.xlsx",
+  "document_media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "raw_bytes_ref": "PK-mock-xlsx-bytes: Risk Model workbook, 3 sheets, VaR block B17:B18",
+  "render_image": "../../demos/scan-analyze/sample-statement.png",
+  "render_media_type": "image/png",
+  "cells": [
+    { "sheet": "Risk Model", "ref": "B17", "field": "portfolio_var",   "value": 0.74,   "formula": "=SUM(B2:B16)/B1", "region": [0.40, 0.32, 0.52, 0.35] },
+    { "sheet": "Risk Model", "ref": "B18", "field": "max_single_name", "value": 0.61,   "formula": "=MAX(B2:B16)",    "region": [0.40, 0.36, 0.52, 0.39] },
+    { "sheet": "Inputs",     "ref": "C4",  "field": "exposure",        "value": 310000,                               "region": [0.55, 0.20, 0.72, 0.23] }
+  ]
+}
