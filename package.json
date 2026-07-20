@@ -34,7 +34,8 @@
     "calibration": "curl -s 'http://localhost:3000/api/calibration?persona=compliance'",
     "mcp": "node mcp/server.js",
     "shadow-lens:acceptance": "node scripts/gen-acceptance-package.mjs",
-    "shadow-lens:contract": "node scripts/contract-fingerprint.mjs"
+    "shadow-lens:contract": "node scripts/contract-fingerprint.mjs",
+    "shadow-lens:spatial-acceptance": "node scripts/gen-spatial-acceptance.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.107.0",
