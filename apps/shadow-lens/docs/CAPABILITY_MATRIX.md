@@ -21,6 +21,9 @@ a device report. Build host had Node only (no Java/Gradle/Android SDK/Unity) —
 | Unity C# core (providers, mocks, API client, voice router) | ✅ | ❌ NO UNITY COMPILE | ❌ pending | ❌ |
 | Spatial geometry (source overlay, audit arc, risk, cascade, glance) | ✅ | ✅ pure math, EditMode NUnit (Unity-CI-gated) | n/a | ✅ math |
 | Unity spatial UX MonoBehaviour (scene controller over the tested math) | ✅ | ❌ NO UNITY COMPILE | ❌ pending | ❌ |
+| Provider compile isolation (SHADOW_XREAL_SDK + platform guards; mock default) | ✅ | ❌ NO UNITY COMPILE | ❌ pending | ❌ |
+| Runtime bootstrap + Editor scene generator (no hand-authored .unity) | ✅ | ❌ NO UNITY COMPILE | ❌ pending | ❌ |
+| Unity PlayMode tests (mock e2e flow) | ✅ authored | ❌ NOT EXECUTED (Unity-CI-gated) | ❌ pending | ❌ |
 | Eye RGB capture (GPU readback + official still) | 🟡 interface + spec | ❌ | ❌ pending | ❌ |
 | One Pro 6DoF session-relative placement | 🟡 interface | ❌ | ❌ pending | ❌ |
 | On-device OCR / voice on hardware | ❌ | ❌ | ❌ pending | ❌ |

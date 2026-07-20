@@ -1,9 +1,17 @@
 name: shadow-lens-android-aars
-# Builds + unit-tests the Shadow Lens Android AARs (OCR, voice). NOT run on the dev host
-# (no JDK/Android SDK). Manual dispatch on a runner that has the Android SDK.
-# The voice AAR ships a pure JVM test (command router) that runs with no device.
+# Builds + unit-tests the Shadow Lens Android AARs (OCR, Voice/TTS) on a HOSTED GitHub
+# runner — self-installs JDK + Android SDK, so it does NOT need a self-hosted runner and
+# does NOT need UNITY_LICENSE (no Unity Editor is involved; Unity compilation lives in
+# shadow-lens-unity.yml). The Voice AAR ships a pure JVM router test that runs with no device.
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'apps/shadow-lens/unity/AndroidBridges/**'
+      - '.github/workflows/shadow-lens-android.yml'
+  pull_request:
+    paths:
+      - 'apps/shadow-lens/unity/AndroidBridges/**'
 jobs:
   aars:
     runs-on: ubuntu-latest
@@ -14,11 +22,16 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '17' }
-      - uses: android-actions/setup-android@v3
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: android-actions/setup-android@v3   # installs the Android SDK + build-tools/platforms
+      - uses: gradle/actions/setup-gradle@v4     # Gradle + dependency cache
       - name: Voice router unit test (pure JVM, no device)
-        run: gradle :voice-aar:testDebugUnitTest --no-daemon
-      - name: Assemble OCR + Voice AARs
-        run: gradle :ocr-aar:assembleRelease :voice-aar:assembleRelease --no-daemon
+        run: gradle :voice-aar:testDebugUnitTest --no-daemon --stacktrace
+      - name: Assemble OCR + Voice AARs (release)
+        run: gradle :ocr-aar:assembleRelease :voice-aar:assembleRelease --no-daemon --stacktrace
+      - name: List built AARs
+        run: find . -name '*.aar' -path '*/build/outputs/*' -print
       - uses: actions/upload-artifact@v4
-        with: { name: shadow-lens-aars, path: 'apps/shadow-lens/unity/AndroidBridges/**/build/outputs/aar/*.aar', if-no-files-found: ignore }
+        with:
+          name: shadow-lens-aars
+          path: 'apps/shadow-lens/unity/AndroidBridges/**/build/outputs/aar/*.aar'
+          if-no-files-found: error   # a green run MUST produce artifacts, or it fails honestly

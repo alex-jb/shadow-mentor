@@ -6,8 +6,12 @@ name: shadow-lens-unity-editmode
 on:
   workflow_dispatch:
 jobs:
-  editmode:
+  tests:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        testMode: [editmode, playmode]   # editmode = pure geometry; playmode = mock e2e flow
     steps:
       - uses: actions/checkout@v4
       - uses: game-ci/unity-test-runner@v4
@@ -15,8 +19,8 @@ jobs:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           projectPath: apps/shadow-lens/unity
-          testMode: editmode
-          artifactsPath: unity-test-results
+          testMode: ${{ matrix.testMode }}
+          artifactsPath: unity-test-results-${{ matrix.testMode }}
       - uses: actions/upload-artifact@v4
         if: always()
-        with: { name: unity-editmode-results, path: unity-test-results, if-no-files-found: ignore }
+        with: { name: unity-${{ matrix.testMode }}-results, path: unity-test-results-${{ matrix.testMode }}, if-no-files-found: ignore }
