@@ -63,10 +63,18 @@ namespace ShadowLens.Bootstrap
 
         static void EnsureCamera()
         {
-            if (Camera.main != null) return;
-            var cam = new GameObject("XR Origin (Mock Camera)", typeof(Camera), typeof(AudioListener));
-            cam.tag = "MainCamera";
-            cam.transform.position = new Vector3(0, 1.5f, 0); // standing height
+            Camera cam = Camera.main;
+            if (cam == null)
+            {
+                var go = new GameObject("XR Origin (Mock Camera)", typeof(Camera), typeof(AudioListener));
+                go.tag = "MainCamera";
+                go.transform.position = new Vector3(0, 1.5f, 0); // standing height
+                cam = go.GetComponent<Camera>();
+            }
+            // Institutional dark neutral environment — no default skybox/brown horizon (desktop mock).
+            // In passthrough/XR the panels carry their own opacity/border, so this is harmless there.
+            cam.clearFlags = CameraClearFlags.SolidColor;
+            cam.backgroundColor = ShadowLens.Design.ShadowDesignTokens.Background;
         }
 
         static Transform EnsureRoot()
