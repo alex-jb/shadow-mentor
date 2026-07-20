@@ -46,6 +46,19 @@ export default async function handler(req, res) {
   const raw = JSON.stringify(req.body ?? {});
   if (raw.length > MAX_BODY) return res.status(413).json({ error: "payload too large" });
   const body = req.body ?? {};
+
+  // Load branch — the client fetches the SERVER-built real session + scene graph (source of truth).
+  if (body.load === true) {
+    const profile = ["banking-v1", "data-science-v1", "coding-agent-v1"].includes(body.profile) ? body.profile : "data-science-v1";
+    try {
+      const { session, publicKeyPem } = buildProfileSession(profile === "banking-v1" ? "data-science-v1" : profile);
+      const scene = sessionToSceneGraph(session);
+      return res.status(200).json({ session_id: session.session_id, profile: scene.profile_id, scene, public_key_pem: publicKeyPem, verification: session.verification });
+    } catch (e) {
+      return res.status(500).json({ error: `load failed: ${e?.message ?? String(e)}` });
+    }
+  }
+
   const query = typeof body.query === "string" ? body.query.trim() : "";
   if (!query) return res.status(400).json({ error: "query required" });
 

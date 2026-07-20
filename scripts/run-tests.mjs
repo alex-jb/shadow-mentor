@@ -6,22 +6,31 @@
 // This script enumerates test/*.test.js in-process and invokes the
 // runtime test runner directly.
 
-import { readdirSync, statSync } from "fs";
+import { readdirSync, existsSync } from "fs";
 import { spawnSync } from "child_process";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, "..");
-const TEST_DIR = join(REPO_ROOT, "test");
 
-const files = readdirSync(TEST_DIR)
-  .filter((f) => f.endsWith(".test.js"))
-  .map((f) => join("test", f))
-  .sort();
+// Test roots: the repo test/ dir (.test.js) + the web spatial-agent client tests
+// (.test.ts — Node 24 strips types). Both run in one unified suite.
+const ROOTS = [
+  { dir: "test", exts: [".test.js"] },
+  { dir: "apps/shadow-lens/web/spatial-agent/src/tests", exts: [".test.ts", ".test.mjs", ".test.js"] },
+];
+
+const files = [];
+for (const { dir, exts } of ROOTS) {
+  const abs = join(REPO_ROOT, dir);
+  if (!existsSync(abs)) continue;
+  for (const f of readdirSync(abs)) if (exts.some((e) => f.endsWith(e))) files.push(join(dir, f));
+}
+files.sort();
 
 if (files.length === 0) {
-  console.error("no test files found under test/");
+  console.error("no test files found");
   process.exit(1);
 }
 

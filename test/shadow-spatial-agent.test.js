@@ -66,7 +66,7 @@ test("client actions: allowlist + id existence + no arbitrary args", () => {
   assert.equal(validateAction({ name: "highlight_source", args: { source_id: "metric_auc" } }, scene).ok, true);
   assert.equal(validateAction({ name: "highlight_source", args: { source_id: "ghost" } }, scene).ok, false);
   assert.equal(validateAction({ name: "eval_js", args: {} }, scene).ok, false);
-  assert.equal(validateAction({ name: "focus_node", args: { object_id: "metric_auc", extra: 1 } }, scene).ok, false); // extra arg rejected
+  assert.equal(validateAction({ name: "focus_object", args: { object_id: "metric_auc", extra: 1 } }, scene).ok, false); // extra arg rejected
 });
 
 test("deterministic routing bypasses the LLM for closed commands", () => {

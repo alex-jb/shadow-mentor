@@ -26,7 +26,7 @@ export function routeDeterministic(query) {
   return null;
 }
 
-const modeAction = (mode) => ({ document: "open_document", source: "open_source_mode", risk: "open_risk_mode", review: "open_review_mode", audit: "open_audit_mode" }[mode]);
+const modeAction = (mode) => ({ document: "open_document_mode", source: "open_source_mode", risk: "open_risk_mode", review: "open_review_mode", audit: "open_audit_mode" }[mode]);
 
 /**
  * @param {object} p - { session, scene, bundle, publicKeyPem, query, current_mode }
