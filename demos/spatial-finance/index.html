@@ -24,6 +24,9 @@
   #stage{position:relative;height:100vh;width:100vw}
   canvas{position:absolute;inset:0;display:none}
   canvas.on{display:block}
+  /* SBS stereo: normal 2D HTML can't render per-eye, so hide the flat chrome —
+     only the canvas (drawn twice, one per eye) fuses to 3D. Drive by keyboard. */
+  body.stereo #hint,body.stereo #present,body.stereo .legend{display:none !important}
   /* top bar */
   #top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;
     padding:16px 26px;z-index:5;pointer-events:none}
@@ -334,6 +337,7 @@ function drawCloudEye(cx, s, eye){
   ctxC.fillStyle="#8b95a8";ctxC.font="12px "+font;
   const put=(txt,pp)=>{const q=project(pp,cx,cyc,s,eye);ctxC.fillText(txt,q.sx,q.sy);};
   put("← risk →",{x:0,y:-1.12,z:1}); put("↑ 5y return",{x:-1.15,y:0,z:1}); put("depth = confidence",{x:1,y:-1.12,z:0});
+  if(stereo){ ctxC.save();ctxC.fillStyle="#8b95a8";ctxC.font="14px "+font;ctxC.textAlign="center";ctxC.fillText("SHADOW · risk-return cloud · SBS 3D", cx, 36);ctxC.restore(); } // per-eye caption (fuses) since 2D chrome is hidden
   const pts=PORTFOLIO.positions.map(p=>{
     const P={x:(p.vol-0.35)/0.3, y:(p.ret-0.4)/0.7, z:(p.conf-0.7)/0.25, p};
     P.proj=project(P,cx,cyc,s,eye); return P;
@@ -625,7 +629,7 @@ addEventListener("keydown",e=>{
   if(e.key.toLowerCase()==="r")return doReset().then(()=>{setView("decision");speak("Portfolio restored. Verified.");});
   if(e.key.toLowerCase()==="g"){present=!present;renderPresent();flash(present?"presenter rail on (audience never sees it)":"presenter rail off");return;}
   if(e.key.toLowerCase()==="m"){ttsOn=!ttsOn;if(!ttsOn)speechSynthesis?.cancel();flash(ttsOn?"voice on":"voice muted");return;}
-  if(e.key.toLowerCase()==="s"){stereo=!stereo;if(stereo&&view!=="analytics")setView("analytics");flash(stereo?"SBS stereo on (XREAL)":"flat");return;}
+  if(e.key.toLowerCase()==="s"){stereo=!stereo;document.body.classList.toggle("stereo",stereo);if(stereo&&view!=="analytics")setView("analytics");flash(stereo?"SBS stereo on (XREAL) — 2D chrome hidden; drive by keyboard":"flat");return;}
   if(e.key==="["){eyeSep=Math.max(0,eyeSep-3);localStorage.setItem("sf.eyeSep",eyeSep);flash("eye-sep "+eyeSep+"px");return;}
   if(e.key==="]"){eyeSep+=3;localStorage.setItem("sf.eyeSep",eyeSep);flash("eye-sep "+eyeSep+"px");return;}
   if(m[e.key])dispatch(m[e.key]);
@@ -655,7 +659,7 @@ function loop(){
   loop();
   // self-drive for headless verification
   const qp=new URLSearchParams(location.search);
-  if(qp.get("stereo")==="1")stereo=true;
+  if(qp.get("stereo")==="1"){stereo=true;setView("analytics");document.body.classList.add("stereo");}
   if(qp.get("present")==="1"){present=true;renderPresent();}
   if(qp.has("shot")){const seq=(qp.get("shot")||"analytics").split(",");let d=300;for(const s of seq){setTimeout(()=>dispatch(s),d);d+=400;}}
 })();
