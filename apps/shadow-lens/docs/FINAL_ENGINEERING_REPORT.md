@@ -60,6 +60,26 @@
 - **CREDENTIAL-BLOCKED** — needs a secret (e.g. `UNITY_LICENSE`, live LLM key) to run.
 - **FIXTURE-ONLY** — exercised with fixtures, not live providers.
 
+## §10 status categories (2026-07-21) — kept SEPARATE, never combined
+
+- **REAL AND TESTED (Node):** contract/profiles, guards, source-bound analysis, session builder,
+  one-shot + staged HTTP, restart-safety, Flow export, spatial-agent (scene graph / server tools /
+  client actions / grounded routing), durable query-sequence recovery, model provider adapter. **1716/0.**
+- **COMPILED:** Unity C# core + spatial-agent protocol (local Unity 6, Alex). **Android OCR AAR +
+  Voice/TTS AAR (CI, debug+release, SHA-256 in `ANDROID_AAR_BUILD.md`).**
+- **ANDROID BUILD VALIDATED:** ❌ not yet — the mock APK build script is authored
+  (`ShadowLensAndroidBuild.cs`) but no APK exists; blocked on the operator's Unity Android modules
+  (run `scripts/check-unity-android.sh`).
+- **LIVE PROVIDER ADAPTER TESTED:** ✅ (mock transport — fixture/live/unavailable, error classes,
+  injection, verifier-not-overridable).
+- **LIVE PROVIDER ACTUALLY CALLED:** ❌ not run (no configured key; `shadow-lens:spatial-live-smoke`
+  reports LIVE TEST NOT CONFIGURED). Live is NOT enabled.
+- **XREAL SDK COMPILED:** ❌ — adapters are behind `SHADOW_XREAL_SDK` with placeholder API names;
+  compiling against the real SDK needs the licensed package imported (operator).
+- **DEVICE-VALIDATED:** ❌ — Eye capture, on-device OCR/voice, One Pro 6DoF, APK-on-hardware.
+- **STAGE-READY:** the Node evidence + spatial-agent backbone; the Unity mock (pending Alex's Game-view
+  sign-off); NOT the native device path.
+
 ## Six-category status (2026-07-20)
 
 **REAL AND TESTED (Node, `npm test` — 1651/0):** session contract + validator + resolveClaims
