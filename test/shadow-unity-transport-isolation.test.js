@@ -51,3 +51,20 @@ test("core asmdef stays minimal (no override/module needed there)", () => {
   const core = JSON.parse(readFileSync(join(SA, "ShadowLens.SpatialAgent.asmdef"), "utf8"));
   assert.notEqual(core.overrideReferences, true, "core must not need overrideReferences");
 });
+
+test("Android build script imports the official build-report namespace (guards CS0246)", () => {
+  const p = join(ROOT, "apps/shadow-lens/unity/Assets/ShadowLens/Editor/ShadowLensAndroidBuild.cs");
+  const src = readFileSync(p, "utf8");
+  // BuildResult/BuildReport must be reachable: either the using, or fully-qualified references.
+  const hasUsing = /using UnityEditor\.Build\.Reporting;/.test(src);
+  const fullyQualified = /UnityEditor\.Build\.Reporting\.BuildResult/.test(src);
+  assert.ok(hasUsing || fullyQualified, "must import UnityEditor.Build.Reporting or fully-qualify BuildResult");
+  assert.match(src, /BuildReport\s+\w+\s*=\s*BuildPipeline\.BuildPlayer/, "must use the official BuildReport return type");
+  assert.match(src, /using UnityEditor;/, "must keep using UnityEditor (BuildPipeline/BuildPlayerOptions)");
+});
+
+test("Android build script lives in an Editor-only asmdef (not the Android player)", () => {
+  const editorAsm = JSON.parse(readFileSync(join(ROOT, "apps/shadow-lens/unity/Assets/ShadowLens/Editor/ShadowLens.Editor.asmdef"), "utf8"));
+  assert.deepEqual(editorAsm.includePlatforms, ["Editor"], "Editor asmdef must be Editor-only");
+  assert.notEqual(editorAsm.overrideReferences, true, "Editor asmdef must not override-block Unity editor modules");
+});

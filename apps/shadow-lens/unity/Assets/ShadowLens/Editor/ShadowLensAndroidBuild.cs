@@ -7,7 +7,8 @@
 #if UNITY_EDITOR
 using System.IO;
 using UnityEditor;
-using UnityEditor.Build;
+using UnityEditor.Build;              // NamedBuildTarget, BuildFailedException
+using UnityEditor.Build.Reporting;    // BuildReport, BuildResult
 using UnityEngine;
 
 namespace ShadowLens.EditorTools
@@ -58,8 +59,10 @@ namespace ShadowLens.EditorTools
                 ? System.Array.ConvertAll(EditorBuildSettings.scenes, s => s.path)
                 : new[] { "Assets/ShadowLens/Scenes/ShadowLensMockDemo.unity" };
             var opts = new BuildPlayerOptions { scenes = scenes, locationPathName = apkPath, target = BuildTarget.Android, options = BuildOptions.None };
-            var report = BuildPipeline.BuildPlayer(opts);
+            BuildReport report = BuildPipeline.BuildPlayer(opts);
             Debug.Log($"[ShadowLens] Android build: {report.summary.result} → {apkPath} ({report.summary.totalSize} bytes)");
+            if (report.summary.result != BuildResult.Succeeded)
+                Debug.LogError($"[ShadowLens] Android build failed: {report.summary.result}");
             return report.summary.result;
         }
     }
