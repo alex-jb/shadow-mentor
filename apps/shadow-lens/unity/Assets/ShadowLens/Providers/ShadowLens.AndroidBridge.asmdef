@@ -1,0 +1,12 @@
+{
+  "name": "ShadowLens.AndroidBridge",
+  "rootNamespace": "ShadowLens.Providers",
+  "references": ["ShadowLens"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": ["UnityEngine.AndroidJNIModule.dll"],
+  "noEngineReferences": false,
+  "autoReferenced": true
+}

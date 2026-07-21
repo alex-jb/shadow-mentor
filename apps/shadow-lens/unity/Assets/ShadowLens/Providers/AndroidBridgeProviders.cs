@@ -22,7 +22,9 @@ namespace ShadowLens.Providers
                 using var bridge = new AndroidJavaObject("com.shadowlens.ocr.OcrBridge");
                 // string json = bridge.Call<string>("recognizeFromBytes", frame.Bytes, frame.Width, frame.Height, frame.RotationDeg);
                 // → parse json into SourceEntry[] (source_id, text, x,y,w,h, confidence, language)
-                onError?.Invoke("AndroidOcrProvider: bind the AAR + JSON parse (NOT COMPILED here)");
+                // Honest state: the OCR AAR is COMPILED, but the JNI round-trip is DEVICE-VALIDATION
+                // PENDING — this does not claim OCR executed until a real device produces a source_map.
+                onError?.Invoke("AndroidOcrProvider: JNI wired to the compiled OCR AAR — DEVICE VALIDATION PENDING");
             }
             catch (Exception e) { onError?.Invoke(e.Message); }
         }
