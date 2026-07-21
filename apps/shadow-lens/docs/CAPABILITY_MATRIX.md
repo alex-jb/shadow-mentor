@@ -15,9 +15,9 @@ a device report. Build host had Node only (no Java/Gradle/Android SDK/Unity) —
 | Staged lifecycle (store + ephemeral token; version/idempotency/pristine guards) | ✅ | ✅ | n/a | ✅ |
 | Staged HTTP `/api/shadow-lens` (7 stages; refuses 501 `PERSISTENT_SESSION_STORE_NOT_CONFIGURED` w/o durable store) | ✅ | ✅ | n/a | 🟡 durable-store host |
 | Flow real-session export (3 scenes, real/fixture tagged) | ✅ | ✅ | n/a | ✅ |
-| Android OCR AAR (ML Kit Kotlin bridge + Gradle) | ✅ | ❌ NOT-COMPILED (CI dispatch) | ❌ pending | ❌ |
-| Android Voice/TTS AAR (SpeechRecognizer on-device + TTS) | ✅ | 🟡 pure JVM router test (device path NOT-COMPILED) | ❌ pending | ❌ |
-| Gradle multi-module (settings + wrapper + CI dispatch) | ✅ | ❌ needs SDK runner | n/a | ❌ |
+| Android OCR AAR (ML Kit Kotlin bridge + Gradle) | ✅ | ✅ **COMPILED (CI, debug+release .aar, SHA-256)** | ❌ pending (device OCR) | ❌ |
+| Android Voice/TTS AAR (SpeechRecognizer on-device + TTS) | ✅ | ✅ **COMPILED (CI) + JVM router test green** | ❌ pending (device voice) | ❌ |
+| Gradle multi-module build (hosted CI: licenses + platform + SHA-256 report) | ✅ | ✅ **runs on ubuntu-latest** | n/a | ✅ |
 | Unity C# core (providers, mocks, API client, voice router) | ✅ | ✅ **COMPILED + Play Mode entered, Unity 6.0.0.23f1 (local, 2026-07-20)** | ❌ pending | ❌ |
 | Spatial geometry (source overlay, audit arc, risk, cascade, glance) | ✅ | ✅ pure math, EditMode NUnit | n/a | ✅ math |
 | Visible mock scene (HUD + document + buttons + state; idempotent singletons) | ✅ | 🟡 fix authored — pending Alex regenerate + Play Mode | ❌ pending | ❌ |

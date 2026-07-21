@@ -15,9 +15,18 @@ Two hosts now matter: the **Claude build host** (Node only) and **Alex's macOS m
 
 **Update 2026-07-20:** Alex confirmed the Unity C# core COMPILES and enters Play Mode in
 Unity 6.0.0.23f1. That promotes the Unity C# core from NOT-COMPILED → **COMPILED (local
-toolchain)**. The mock-scene idempotency + visible-render fix is newly authored on top and is
-pending Alex's regenerate + Play Mode re-verification. The Android AARs remain NOT COMPILED
-(built by the hosted-runner CI, `shadow-lens-android.yml`).
+toolchain)**.
+
+**Update 2026-07-21 — Android AARs are now COMPILED (CI):** `shadow-lens-android.yml` builds
+the OCR + Voice/TTS AARs (debug + release) on a hosted `ubuntu-latest` runner — real `.aar`
+artifacts + SHA-256 in `apps/shadow-lens/docs/ANDROID_AAR_BUILD.md`. No `UNITY_LICENSE` needed.
+
+**Android APK / Eye / XREAL — operator toolchain check required.** A compiling desktop project
+does NOT imply the Mac Unity has Android Build Support. Before building the mock Android APK, run
+`bash scripts/check-unity-android.sh` on the Unity machine — it verifies Android Build Support,
+Android SDK, NDK, OpenJDK, adb, and IL2CPP Android support, and prints exact install steps for any
+missing module. The APK build, Eye capture, and XREAL SDK adapters remain DEVICE-VALIDATION-PENDING
+(and, for the APK, blocked on the operator's Android modules being installed).
 
 ## Consequence (honest scope of Part B)
 
