@@ -175,7 +175,8 @@ namespace ShadowLens.Narrative
                     _decision.text = "DTI 0.41 · FICO 706 · LTV 0.83"; _flowCard.text = ""; break;
                 case ShadowNarrativeState.COUNCIL:
                     var v = ShadowBankingNarrativeData.Voices[_dominant];
-                    _council.text = $"{v.voice}\nstance: {v.stance}\nconfidence: {v.confidence:0.00}\nvote: {v.vote}\n\n{v.reason}";
+                    // persona prior, NOT model confidence — labeled per product-facts.json confidence_semantics
+                    _council.text = $"{v.voice}\nstance: {v.stance}\nSTANCE STRENGTH: {v.confidence:0.00}\nvote: {v.vote}\n\n{v.reason}";
                     _decision.text = "Council deliberating…"; _flowCard.text = ""; break;
                 case ShadowNarrativeState.DECISION:
                     _council.text = CouncilStanceChips();
