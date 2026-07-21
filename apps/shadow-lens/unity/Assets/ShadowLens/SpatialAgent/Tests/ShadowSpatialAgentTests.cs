@@ -207,6 +207,16 @@ namespace ShadowLens.SpatialAgent.Tests
             Assert.AreEqual(ShadowFlowState.DONE, s2); // DONE -> QUERYING -> ... -> DONE, no exception
         }
 
+        [Test] public void QueryIds_UniqueAcrossControllerRecreation()
+        {
+            // profile switch recreates the controller; query_id must stay globally unique.
+            var c1 = Fx.Controller(new MockRenderer(), _ => ShadowSpatialAgentMockTransport.Grounded("metric_auc", "x"));
+            c1.RunQuery("s", "q", Fx.Scene(), "document", (_) => {});
+            var c2 = Fx.Controller(new MockRenderer(), _ => ShadowSpatialAgentMockTransport.Grounded("metric_auc", "x"));
+            c2.RunQuery("s", "q", Fx.Scene(), "document", (_) => {});
+            Assert.AreNotEqual(c1.LastQueryId, c2.LastQueryId, "query_id reused across profile switch");
+        }
+
         [Test] public void FailedThenRetry_Works()
         {
             var r = new MockRenderer();

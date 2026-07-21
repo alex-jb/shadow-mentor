@@ -31,6 +31,10 @@ namespace ShadowLens.Mock
         Font _font;
         bool _built;
 
+        // profile-specific artifact workspaces (one shared shell; only the active artifact shows)
+        IShadowArtifactWorkspace _banking, _ds, _coding;
+        string _activeProfile = "banking-v1";
+
         const int CitedRow = 1;               // Doc[1] = the cited "Debt-to-Income" row (source_id B0L1)
         static readonly string[] AuditStages = { "1 Capture", "2 OCR", "3 Source Map", "4 Analysis", "5 Review", "6 Signed Bundle", "7 Verify" };
 
@@ -57,17 +61,38 @@ namespace ShadowLens.Mock
             if (Layout == null) Layout = GetComponent<ShadowInstitutionalLayoutController>() ?? gameObject.AddComponent<ShadowInstitutionalLayoutController>();
             _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             BuildHud();
-            BuildDocument();
+            BuildDocument();                 // banking artifact (the loan document)
+            _banking = new ShadowBankingWorkspace(this);
+            _ds = new ShadowDataScienceWorkspace(); _ds.Build(transform, Camera.main, _font);
+            _coding = new ShadowCodingWorkspace(); _coding.Build(transform, Camera.main, _font);
             _built = true;
+            SetWorkspace("banking-v1");      // banking artifact visible by default
             SetReady();
         }
+
+        // ── profile workspace host: only the selected profile's artifact is visible ──
+        public string ActiveProfile => _activeProfile;
+        public bool BankingDocumentActive => _docWorld && _docWorld.gameObject.activeSelf;
+        public void SetBankingDocumentActive(bool on) { if (_docWorld) _docWorld.gameObject.SetActive(on); if (!on && _srcGroup) _srcGroup.SetActive(false); }
+
+        public void SetWorkspace(string profile)
+        {
+            _activeProfile = profile;
+            _banking.SetActive(profile == "banking-v1");
+            _ds.SetActive(profile == "data-science-v1");
+            _coding.SetActive(profile == "coding-agent-v1");
+            if (_auditCanvas) _auditCanvas.gameObject.SetActive(false); // clear stale audit
+        }
+        IShadowArtifactWorkspace Active => _activeProfile == "data-science-v1" ? _ds : _activeProfile == "coding-agent-v1" ? _coding : _banking;
+        public bool WorkspaceHighlight(string id) => Active.Highlight(id);
+        public bool WorkspaceFocus(string id) => Active.Focus(id);
 
         // ── chrome, built into the SHARED layout regions (no independent canvas → no overlap) ──
         void BuildHud()
         {
             var title = Layout.Region("title");
             MakeText(title, "TITLE", "SHADOW LENS", 26, new Vector2(0f, 1f), new Vector2(6, -6), new Color(0.85f, 0.95f, 1f), TextAnchor.UpperLeft);
-            _status = MakeText(title, "STATUS", "READY", 15, new Vector2(0f, 0f), new Vector2(6, 6), ShadowLens.Design.ShadowDesignTokens.TextSecondary, TextAnchor.LowerLeft);
+            _status = null; // no top status label — the spatial-agent panel owns the single status row (§4)
 
             _trust = MakeText(Layout.Region("trust"), "TRUST", "UNSIGNED", 18, new Vector2(1f, 0.5f), new Vector2(-12, 0), new Color(0.7f, 0.7f, 0.7f), TextAnchor.MiddleRight);
             _decision = null; // the FINDING now renders inside the document footer (set in BuildDocument)
@@ -117,9 +142,9 @@ namespace ShadowLens.Mock
             for (int i = 0; i < Doc.Length; i++)
                 MakeText(bg.transform, "Line" + i, $"{Doc[i].id}   {Doc[i].line}", 32, new Vector2(0f, 1f), new Vector2(40, -120 - i * 64), new Color(0.12f, 0.12f, 0.12f), TextAnchor.UpperLeft);
 
-            // the FINDING now lives in the document footer (replaces the old floating decision text)
-            _finding = MakeText(bg.transform, "Finding", "", 26, new Vector2(0f, 0f), new Vector2(40, 40), new Color(0.55f, 0.15f, 0.1f), TextAnchor.LowerLeft);
-            _finding.rectTransform.sizeDelta = new Vector2(540, 120);
+            // The FINDING is shown by exactly one renderer: the source-overlay finding tag (on Show
+            // Source) + the grounded answer card. No separate footer banner (removed the clipped leak).
+            _finding = null;
 
             BuildSourceOverlay(bg.transform);
         }
@@ -155,7 +180,7 @@ namespace ShadowLens.Mock
         public void SetReady()
         {
             State = MockState.Ready;
-            _status.text = "READY";
+            if (_status) _status.text = "READY";
             _trust.text = "UNSIGNED"; _trust.color = new Color(0.7f, 0.7f, 0.7f);
             if (_finding) _finding.text = "";
             if (_srcGroup) _srcGroup.SetActive(false);
@@ -165,7 +190,7 @@ namespace ShadowLens.Mock
         {
             LogAction("ANALYZE");
             State = MockState.Analyzed;
-            _status.text = "ANALYZED · 1 source-bound finding";
+            if (_status) _status.text = "ANALYZED · 1 source-bound finding";
             if (_finding) _finding.text = "FINDING · DTI 0.41 exceeds the 0.36 policy ceiling (cites B0L1)";
         }
         public void ShowSource()
@@ -174,7 +199,7 @@ namespace ShadowLens.Mock
             if (State == MockState.Ready) Analyze();
             State = MockState.SourceShown;
             if (_srcGroup) _srcGroup.SetActive(true);
-            _status.text = "SOURCE\nfinding bound to B0L1";
+            if (_status) _status.text = "SOURCE\nfinding bound to B0L1";
             Debug.Log($"[ShadowLens] SHOW_SOURCE → overlay active={SourceOverlayActive} inFrustum={InFrustum(SourceOverlayTransform)}");
         }
         public void ShowAudit()
@@ -183,7 +208,7 @@ namespace ShadowLens.Mock
             if (State == MockState.Ready) Analyze();
             State = MockState.AuditShown;
             BuildOrRefreshAuditArc();
-            _status.text = "AUDIT\n7-stage evidence chain";
+            if (_status) _status.text = "AUDIT\n7-stage evidence chain";
             Debug.Log($"[ShadowLens] SHOW_AUDIT → nodes={ActiveAuditNodeCount} rootActive={AuditRootActive} inFrustum={InFrustum(AuditRootTransform)}");
         }
         public void Verify()
@@ -191,14 +216,14 @@ namespace ShadowLens.Mock
             LogAction("VERIFY");
             State = MockState.Verified;
             _trust.text = "SEALED · VERIFIED"; _trust.color = new Color(0.4f, 1f, 0.6f);
-            _status.text = "VERIFIED\nrecord integrity intact";
+            if (_status) _status.text = "VERIFIED\nrecord integrity intact";
         }
         public void Tamper()
         {
             LogAction("TAMPER");
             State = MockState.Tampered; // visual only — never mutates a real pristine bundle
             _trust.text = "TAMPERED · chain broken @ seq 3"; _trust.color = new Color(1f, 0.4f, 0.4f);
-            _status.text = "TAMPERED\nverification fails";
+            if (_status) _status.text = "TAMPERED\nverification fails";
             foreach (var n in _auditNodes) { var img = n ? n.GetComponent<Image>() : null; if (img) img.color = new Color(1f, 0.4f, 0.4f); }
         }
         public void ResetView() { LogAction("RESET"); SetReady(); }

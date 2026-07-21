@@ -155,7 +155,7 @@ namespace ShadowLens.Mock
             Profile = profile;
             Rewire();                     // new scene index + responder + display label + selected highlight
             ClearTransient();             // clear answer, citations, LAST ACTION, focus
-            if (View) View.SetReady();    // spatial workspace back to the default mode
+            if (View) { View.SetWorkspace(profile); View.SetReady(); } // rebuild the profile's artifact + default mode
             SetState("READY");
             UpdatePlaceholder();
             Debug.Log("[spatial-agent] PROFILE_CONTEXT_RESET " + profile);

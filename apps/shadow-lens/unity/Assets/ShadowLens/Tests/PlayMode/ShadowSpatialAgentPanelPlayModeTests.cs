@@ -154,6 +154,55 @@ namespace ShadowLens.Tests.PlayMode
                 if (t.text == "banking-v1" || t.text == "data-science-v1" || t.text == "coding-agent-v1") sawRawId = true;
             Assert.IsFalse(sawRawId, "raw profile ids must not be shown; use BANKING / DATA SCIENCE / CODING AGENT");
         }
+
+        // ── §7 profile-workspace content correctness ──
+        static bool ActiveTextContains(string needle)
+        {
+            foreach (var t in Object.FindObjectsByType<UnityEngine.UI.Text>(FindObjectsSortMode.None))
+                if (t.gameObject.activeInHierarchy && t.text != null && t.text.Contains(needle)) return true;
+            return false;
+        }
+
+        [Test] public void Banking_ShowsOnlyBankingArtifact()
+        {
+            _panel.SetProfile("banking-v1");
+            Assert.IsTrue(ActiveTextContains("LOAN APPLICATION"));
+            Assert.IsTrue(_view.BankingDocumentActive);
+        }
+
+        [Test] public void DataScience_ShowsNoLoanOrDti()
+        {
+            _panel.SetProfile("data-science-v1");
+            Assert.IsFalse(_view.BankingDocumentActive, "banking document must be deactivated");
+            Assert.IsFalse(ActiveTextContains("LOAN APPLICATION"));
+            Assert.IsFalse(ActiveTextContains("Debt-to-income"));
+            Assert.IsTrue(ActiveTextContains("MODEL SELECTION"));    // the ds artifact is visible
+        }
+
+        [Test] public void Coding_ShowsNoBankingOrModelSelection()
+        {
+            _panel.SetProfile("coding-agent-v1");
+            Assert.IsFalse(ActiveTextContains("LOAN APPLICATION"));
+            Assert.IsFalse(ActiveTextContains("MODEL SELECTION"));
+            Assert.IsTrue(ActiveTextContains("CODE REPLAY"));
+        }
+
+        [Test] public void SwitchingRebuildsArtifactAndReturnsToBanking()
+        {
+            _panel.SetProfile("data-science-v1"); Assert.IsFalse(_view.BankingDocumentActive);
+            _panel.SetProfile("coding-agent-v1"); Assert.IsTrue(ActiveTextContains("CODE REPLAY"));
+            _panel.SetProfile("banking-v1");      // reconstructs banking
+            Assert.IsTrue(_view.BankingDocumentActive);
+            Assert.IsTrue(ActiveTextContains("LOAN APPLICATION"));
+        }
+
+        [UnityTest] public IEnumerator DataScienceFocus_HighlightsModelAndMetric()
+        {
+            _panel.SetProfile("data-science-v1");
+            _panel.RunQuery("why was this model selected?");
+            yield return null;
+            StringAssert.Contains("selection", _panel.FocusText); // focus_object selection visible
+        }
     }
 }
 #endif

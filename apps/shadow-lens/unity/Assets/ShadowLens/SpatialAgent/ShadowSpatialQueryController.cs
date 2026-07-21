@@ -23,11 +23,12 @@ namespace ShadowLens.SpatialAgent
         readonly ShadowSpatialAgentStateMachine _sm;
         readonly IShadowActionStatusView _status;
         readonly ShadowActionExecutionReporter _reporter;
-        int _queryCounter;
+        static int _globalQuerySeq;   // session-global — query_id stays unique across profile switches
         int _gen;               // request generation — a stale/older response is ignored
         bool _inFlight;
 
         public string LastActionLine { get; private set; } = "LAST ACTION: —";
+        public string LastQueryId { get; private set; }   // session-global unique id of the last query
         public string State => _sm.State;
         public bool IsQueryInFlight => _inFlight;
 
@@ -46,7 +47,8 @@ namespace ShadowLens.SpatialAgent
         public void RunQuery(string sessionId, string query, IShadowSceneObjectResolver scene, string currentMode, Action<Outcome> done)
         {
             if (_inFlight) { Log("QUERY_REJECTED_INFLIGHT"); return; } // duplicate submit guard
-            string queryId = "q" + (++_queryCounter);
+            string queryId = "q" + System.Threading.Interlocked.Increment(ref _globalQuerySeq); // session-global unique
+            LastQueryId = queryId;
             int myGen = ++_gen;
             _inFlight = true;
             OnControlsEnabled?.Invoke(false);

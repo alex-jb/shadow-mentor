@@ -31,13 +31,11 @@ namespace ShadowLens.Mock
             }
             return true;
         }
-        public bool SelectObject(string id) => Focus("SELECT: " + id);
-        public bool FocusObject(string id) => Focus("FOCUS: " + id);
-        public bool Highlight(string id)
-        {
-            if (id == "B0L1") { _view.ShowSource(); return true; } // the banking DTI source = real overlay
-            return Focus("HIGHLIGHT: " + id);
-        }
+        // Route to the ACTIVE profile workspace (banking source overlay, or a ds/coding node), and
+        // also surface a FOCUS line on the panel so cross-profile focus is visible.
+        public bool SelectObject(string id) { _view.WorkspaceFocus(id); return Focus("SELECT: " + id); }
+        public bool FocusObject(string id) { _view.WorkspaceFocus(id); return Focus("FOCUS: " + id); }
+        public bool Highlight(string id) { _view.WorkspaceHighlight(id); return Focus("HIGHLIGHT: " + id); }
         public bool MoveCameraTo(string id) => Focus("CAMERA: " + id);
         public bool StartWalkthrough(string kind) { _view.ShowAudit(); return Focus("WALKTHROUGH: " + kind); }
         public bool ShowTamperDiff() { _view.Tamper(); return true; }
