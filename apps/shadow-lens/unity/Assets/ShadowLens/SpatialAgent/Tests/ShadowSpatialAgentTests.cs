@@ -44,12 +44,12 @@ namespace ShadowLens.SpatialAgent.Tests
             if (argKey == "object_id") a.args.object_id = id; else if (argKey == "source_id") a.args.source_id = id; else if (argKey == "claim_id") a.args.claim_id = id;
             return a;
         }
-        public static ShadowSpatialQueryController Controller(MockRenderer r, System.Func<string, ShadowTransportResult> responder)
+        public static ShadowSpatialQueryController Controller(MockRenderer r, System.Func<string, ShadowTransportResult> responder, IShadowQuerySequenceStore store = null)
         {
             var cfg = new ShadowSpatialAgentConfig();
             var transport = new ShadowSpatialAgentMockTransport { Responder = responder };
             var client = new ShadowSpatialAgentClient(cfg, transport);
-            return new ShadowSpatialQueryController(client, r, new ShadowSpatialAgentStateMachine());
+            return new ShadowSpatialQueryController(client, r, new ShadowSpatialAgentStateMachine(), null, null, store);
         }
     }
 
@@ -207,24 +207,40 @@ namespace ShadowLens.SpatialAgent.Tests
             Assert.AreEqual(ShadowFlowState.DONE, s2); // DONE -> QUERYING -> ... -> DONE, no exception
         }
 
-        [Test] public void QueryId_IsSessionScoped_AndUniqueAcrossProfileSwitch()
+        [Test] public void QuerySequence_ParseAndNext()
         {
-            // query_id is <session_id>:q<sequence> — bound to the signed session, unique across
-            // profile switches (different session_id), incrementing within one session.
-            var bank1 = Fx.Controller(new MockRenderer(), _ => ShadowSpatialAgentMockTransport.Grounded("metric_auc", "x"));
-            bank1.RunQuery("banking-v1-demo", "q", Fx.Scene(), "document", (_) => {});
-            StringAssert.StartsWith("banking-v1-demo:q", bank1.LastQueryId);
+            Assert.AreEqual(7, ShadowQuerySequence.ParseSeq("s", "s:q7"));
+            Assert.AreEqual(0, ShadowQuerySequence.ParseSeq("s", "other:q7"));
+            Assert.AreEqual("s:q3", ShadowQuerySequence.NextId("s", new[] { "s:q2", "other:q9" }));
+        }
 
-            // profile switch → new controller, different session_id → different prefix
-            var ds = Fx.Controller(new MockRenderer(), _ => ShadowSpatialAgentMockTransport.Grounded("metric_auc", "x"));
-            ds.RunQuery("data-science-v1-demo", "q", Fx.Scene(), "document", (_) => {});
-            StringAssert.StartsWith("data-science-v1-demo:q", ds.LastQueryId);
-            Assert.AreNotEqual(bank1.LastQueryId, ds.LastQueryId);
+        [Test] public void QueryId_SessionScoped_RecoveredFromStore_NoQ1Reuse()
+        {
+            var store = new ShadowInMemoryQuerySequenceStore(); // shared across controller recreation
+            // same session continues q1, q2, q3
+            var c1 = Fx.Controller(new MockRenderer(), _ => ShadowSpatialAgentMockTransport.Grounded("metric_auc", "x"), store);
+            c1.RunQuery("banking-v1-demo", "q", Fx.Scene(), "document", (_) => {});
+            Assert.AreEqual("banking-v1-demo:q1", c1.LastQueryId);
+            c1.RunQuery("banking-v1-demo", "q", Fx.Scene(), "document", (_) => {});
+            Assert.AreEqual("banking-v1-demo:q2", c1.LastQueryId);
 
-            // returning to the same session_id keeps incrementing (no q1 reuse)
-            var bank2 = Fx.Controller(new MockRenderer(), _ => ShadowSpatialAgentMockTransport.Grounded("metric_auc", "x"));
-            bank2.RunQuery("banking-v1-demo", "q", Fx.Scene(), "document", (_) => {});
-            Assert.AreNotEqual(bank1.LastQueryId, bank2.LastQueryId, "sequence must not reuse within a session");
+            // profile switch recreates the controller but shares the store → continues at q3 (no reuse)
+            var c2 = Fx.Controller(new MockRenderer(), _ => ShadowSpatialAgentMockTransport.Grounded("metric_auc", "x"), store);
+            c2.RunQuery("banking-v1-demo", "q", Fx.Scene(), "document", (_) => {});
+            Assert.AreEqual("banking-v1-demo:q3", c2.LastQueryId);
+
+            // a different session independently starts at q1
+            c2.RunQuery("data-science-v1-demo", "q", Fx.Scene(), "document", (_) => {});
+            Assert.AreEqual("data-science-v1-demo:q1", c2.LastQueryId);
+        }
+
+        [Test] public void QueryId_ReconstructedSession_ContinuesFromHydratedSeq()
+        {
+            var store = new ShadowInMemoryQuerySequenceStore();
+            store.Hydrate("banking-v1-demo", 3); // recovered from persisted execution events (q1..q3)
+            var c = Fx.Controller(new MockRenderer(), _ => ShadowSpatialAgentMockTransport.Grounded("metric_auc", "x"), store);
+            c.RunQuery("banking-v1-demo", "q", Fx.Scene(), "document", (_) => {});
+            Assert.AreEqual("banking-v1-demo:q4", c.LastQueryId); // continues at q4, no q1 reuse
         }
 
         [Test] public void FailedThenRetry_Works()

@@ -23,24 +23,13 @@ namespace ShadowLens.SpatialAgent
         readonly ShadowSpatialAgentStateMachine _sm;
         readonly IShadowActionStatusView _status;
         readonly ShadowActionExecutionReporter _reporter;
-        // Session-scoped query identity: <session_id>:q<sequence>. Bound to the signed session
-        // (durable identity), NOT a process-global counter — so ids are unique across profile
-        // switches AND meaningfully tied to the evidence session. The sequence persists per
-        // session_id across controller recreation (profile switch reloads the controller).
-        static readonly Dictionary<string, int> _seqBySession = new Dictionary<string, int>();
-        static readonly object _seqLock = new object();
+        // Session-scoped query identity: <session_id>:q<sequence>. The authority is an injectable
+        // STORE that recovers the last sequence from persisted session state (§1) — NOT a
+        // process-global counter — so the sequence continues across profile reconstruction, domain
+        // reload, app restart, and session reload (never reuses q1). Default = PlayerPrefs-backed.
+        readonly IShadowQuerySequenceStore _seqStore;
         int _gen;               // request generation — a stale/older response is ignored
         bool _inFlight;
-
-        static string NextQueryId(string sessionId)
-        {
-            lock (_seqLock)
-            {
-                _seqBySession.TryGetValue(sessionId, out int n);
-                n += 1; _seqBySession[sessionId] = n;
-                return sessionId + ":q" + n;
-            }
-        }
 
         public string LastActionLine { get; private set; } = "LAST ACTION: —";
         public string LastQueryId { get; private set; }   // session-global unique id of the last query
@@ -53,16 +42,18 @@ namespace ShadowLens.SpatialAgent
         public Action<string> Log = _ => { };  // structured logging (QUERY_START / … )
 
         public ShadowSpatialQueryController(ShadowSpatialAgentClient client, IShadowSpatialRenderer renderer,
-            ShadowSpatialAgentStateMachine sm, IShadowActionStatusView status = null, ShadowActionExecutionReporter reporter = null)
+            ShadowSpatialAgentStateMachine sm, IShadowActionStatusView status = null, ShadowActionExecutionReporter reporter = null,
+            IShadowQuerySequenceStore seqStore = null)
         {
             _client = client; _router = new ShadowSpatialActionRouter(renderer); _sm = sm; _status = status; _reporter = reporter;
+            _seqStore = seqStore ?? new ShadowInMemoryQuerySequenceStore(); // production injects the PlayerPrefs store
             if (status != null) _sm.OnState += status.SetState;
         }
 
         public void RunQuery(string sessionId, string query, IShadowSceneObjectResolver scene, string currentMode, Action<Outcome> done)
         {
             if (_inFlight) { Log("QUERY_REJECTED_INFLIGHT"); return; } // duplicate submit guard
-            string queryId = NextQueryId(sessionId); // <session_id>:q<sequence> — durable, session-scoped
+            string queryId = _seqStore.Issue(sessionId); // <session_id>:q<sequence> — recovered from session state
             LastQueryId = queryId;
             int myGen = ++_gen;
             _inFlight = true;

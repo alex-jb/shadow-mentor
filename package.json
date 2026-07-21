@@ -36,7 +36,8 @@
     "shadow-lens:acceptance": "node scripts/gen-acceptance-package.mjs",
     "shadow-lens:contract": "node scripts/contract-fingerprint.mjs",
     "shadow-lens:spatial-acceptance": "node scripts/gen-spatial-acceptance.mjs",
-    "shadow-lens:unity-contract": "node scripts/gen-unity-contract.mjs"
+    "shadow-lens:unity-contract": "node scripts/gen-unity-contract.mjs",
+    "shadow-lens:spatial-live-smoke": "node scripts/spatial-live-smoke.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.107.0",

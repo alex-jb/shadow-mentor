@@ -9,6 +9,7 @@ import type { FlowStateT, SceneGraph, AgentResponse, ExecutionRecord, SpatialVie
 import { SpatialActionExecutor } from "../actions/SpatialActionExecutor.ts";
 import { SpatialAgentClient } from "./SpatialAgentClient.ts";
 import { ActionExecutionReporter } from "./ActionExecutionReporter.ts";
+import { QuerySequenceStore } from "../../query-sequence.mjs";
 
 export interface QueryOutcome {
   state: FlowStateT;
@@ -22,12 +23,13 @@ export class ShadowSpatialApp {
   state: FlowStateT = FlowState.READY;
   lastActionLine = "LAST ACTION: —";
   private executor: SpatialActionExecutor;
-  private queryCounter = 0;
+  private seq: QuerySequenceStore;
   private deps: {
     client: SpatialAgentClient;
     view: SpatialView;
     reporter?: ActionExecutionReporter;
     onState?: (s: FlowStateT) => void;
+    sequenceStore?: QuerySequenceStore; // durable, recovered from execution events (§1)
   };
 
   constructor(deps: {
@@ -35,9 +37,11 @@ export class ShadowSpatialApp {
     view: SpatialView;
     reporter?: ActionExecutionReporter;
     onState?: (s: FlowStateT) => void;
+    sequenceStore?: QuerySequenceStore;
   }) {
     this.deps = deps;
     this.executor = new SpatialActionExecutor(deps.view);
+    this.seq = deps.sequenceStore ?? new QuerySequenceStore();
   }
 
   private set(s: FlowStateT) { this.state = s; this.deps.onState?.(s); }
@@ -47,7 +51,7 @@ export class ShadowSpatialApp {
     current_mode?: string; screenshotEnabled?: boolean; screenshot_base64?: string;
     client_capabilities?: string[];
   }): Promise<QueryOutcome> {
-    const query_id = `q${++this.queryCounter}`;
+    const query_id = this.seq.issue(params.session_id); // <session_id>:q<sequence>, recovered from events
     const empty: QueryOutcome = { state: this.state, records: [], verdict: "FAILED", lastAction: this.lastActionLine };
     this.set(FlowState.QUERYING);
 

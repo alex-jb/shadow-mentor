@@ -29,6 +29,9 @@ namespace ShadowLens.Mock
         readonly System.Collections.Generic.Dictionary<string, Image> _segButtons = new System.Collections.Generic.Dictionary<string, Image>();
         ShadowSpatialQueryController _controller;
         ShadowSpatialSceneIndex _scene;
+        // durable query-sequence store, kept across controller recreation (profile switch) + PlayerPrefs
+        // so the sequence survives domain reload / restart (§1).
+        readonly ShadowLens.SpatialAgent.ShadowPlayerPrefsQuerySequenceStore _seqStore = new ShadowLens.SpatialAgent.ShadowPlayerPrefsQuerySequenceStore();
         bool _built;
 
         static readonly (string id, string label)[] PROFILES = {
@@ -138,7 +141,7 @@ namespace ShadowLens.Mock
             var transport = new ShadowSpatialAgentMockTransport { Responder = ShadowSpatialDemoFixtures.ResponderFor(Profile) };
             var client = new ShadowSpatialAgentClient(cfg, transport);
             var bridge = new ShadowLensRendererBridge(View, SetFocus);
-            _controller = new ShadowSpatialQueryController(client, bridge, new ShadowSpatialAgentStateMachine(), this, new ShadowActionExecutionReporter { Platform = "unity" });
+            _controller = new ShadowSpatialQueryController(client, bridge, new ShadowSpatialAgentStateMachine(), this, new ShadowActionExecutionReporter { Platform = "unity" }, _seqStore);
             _controller.OnBeginQuery = ClearTransient;               // clear prev answer/citations/LAST ACTION before QUERYING
             _controller.OnControlsEnabled = SetControlsEnabled;      // disable while querying, re-enable after
             _controller.Log = (m) => Debug.Log("[spatial-agent] " + m);
