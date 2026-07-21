@@ -1,7 +1,19 @@
 # Shadow explainer integration plan
 
-Three self-contained, license-clean explainer animations are complete. This is the **integration plan
-only** — no frozen verifier or production Unity scene is modified here.
+Three self-contained, license-clean explainer animations are complete, and the **docs/demo integration
+surfaces are now built + browser-accepted** (this slice). No frozen verifier or production Unity scene is
+modified — the surfaces reference `verify.html` read-only via a sandboxed iframe.
+
+## Built this slice (docs/demo integration — DONE)
+- `demos/shadow-explainer-landing.html` — landing: 3 explainer cards (poster previews, proves / does-not-prove),
+  click-to-open sandboxed iframes, one at a time, no autoplay, prev/next/restart/close, bilingual, network transparency.
+- `demos/guided-shadow-demo.html` — 3–5 min guided flow: INTRO → 3 explainers → Verify CTA → Spatial replay CTA →
+  final honest statement; explicit Next only.
+- `verify-explainers.html` — non-frozen companion: **Verify evidence** (embeds the real `verify.html` read-only) +
+  **How Shadow works** (3 compact cards). The frozen Wednesday package is untouched.
+- `demos/shadow-embed-protocol.mjs` — `shadow-explainer-embed-v1` postMessage validator (origin/id/type/payload
+  allowlisted). See `EXPLAINER_EMBEDDING_SECURITY.md`. Runbook: `SHADOW_GUIDED_DEMO_RUNBOOK.md`.
+- Tests: `test/explainer-integration.test.js`. Media: `media/explainer-integration/` (Chromium 149, 0 external/CSP/error).
 
 ## The three explainers
 1. **audit-chain** — `apps/shadow-lens/explainers/audit-chain.html` (hash-chained provenance + tamper propagation).

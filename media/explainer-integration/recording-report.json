@@ -1,0 +1,21 @@
+{
+  "tool": "playwright",
+  "chromium": "149.0.7827.55",
+  "viewports": {
+    "1280x720": 0,
+    "1440x900": 0,
+    "390x844": 0
+  },
+  "console_errors": [],
+  "external_requests": [],
+  "csp_violations": [],
+  "steps": [
+    "landing-en",
+    "audit-chain tamper",
+    "reason-code dictionary_modified",
+    "reason-code first_fail=Dictionary hash",
+    "persona majority_weak_evidence",
+    "iframe unloaded after close: true",
+    "verify tabs how<->verify OK"
+  ]
+}

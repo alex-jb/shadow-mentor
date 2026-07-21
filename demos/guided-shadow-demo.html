@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; frame-src 'self'; base-uri 'none'; form-action 'none'; connect-src 'none'" />
+<title>Shadow — guided demo</title>
+<style>
+  :root{--bg:#0b0d10;--panel:#14181e;--bd:#232830;--text:#e6e6e6;--dim:#8a92a0;--ok:#4ade80;--warn:#fbbf24;--accent:#60a5fa;--mono:ui-monospace,Menlo,Consolas,monospace}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+  .wrap{max-width:1000px;margin:0 auto;padding:18px 16px}
+  header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px}
+  h1{font-size:19px;margin:0} .prog{color:var(--dim);font-family:var(--mono);font-size:13px}
+  button{font:inherit;cursor:pointer;border-radius:7px;border:1px solid var(--bd);background:var(--panel);color:var(--text);padding:6px 12px}
+  button:focus-visible{outline:2px solid var(--accent);outline-offset:2px} button[aria-pressed="true"]{background:var(--accent);color:#0b0d10;border-color:var(--accent)}
+  .badge{font-size:11px;font-family:var(--mono);color:var(--warn);border:1px solid var(--warn);border-radius:5px;padding:1px 6px}
+  .stage{background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-top:14px}
+  .stage h2{font-size:17px;margin:0 0 4px} .stage .exp{color:var(--dim);font-size:14px;margin:0 0 10px}
+  .frameWrap{position:relative;width:100%;aspect-ratio:16/9;background:#0e1420;border-radius:8px;overflow:hidden;margin:8px 0}
+  .frameWrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0} .loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:13px}
+  .tl{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin:10px 0;font-size:13px} @media(max-width:560px){.tl{grid-template-columns:1fr}}
+  .tl .take{color:var(--ok)} .tl .lim{color:var(--warn)}
+  .cta{background:#0e1420;border:1px solid var(--accent);border-radius:10px;padding:12px;margin-top:8px}
+  .cta a{color:var(--accent)}
+  .final{border-color:var(--warn)} .nav{display:flex;gap:8px;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><div><h1 id="t-title">Shadow — guided demo</h1> <span class="badge" id="t-fix">FIXTURE DEMONSTRATION</span></div>
+    <div><span class="prog" id="prog"></span> <button id="lang-en" aria-pressed="true">EN</button><button id="lang-zh" aria-pressed="false">中文</button> <button id="reduce" aria-pressed="false" data-i="reduce">Reduced motion</button></div></header>
+  <div class="stage" id="stage" role="region" aria-live="polite"></div>
+  <div class="nav"><button id="back" data-i="back">◀ Back</button><button id="next" data-i="next">Next ▶</button></div>
+</div>
+<script>
+"use strict";
+let LANG="en", STEP=0;
+const EX={ "audit-chain":"../apps/shadow-lens/explainers/audit-chain.html", "reason-code":"animations/reason-code-attestation.html", "persona-deliberation":"animations/persona-deliberation.html" };
+const STEPS = {
+ en:[
+  {kind:"intro", title:"Shadow — three layers of inspectable trust", exp:"In the next few minutes: seal & replay a record, bind reasons to evidence, and preserve deliberation — all as deterministic fixtures.", take:"Evidence you can inspect, replay and independently verify.", lim:"This is a FIXTURE demonstration, not a production banking system."},
+  {kind:"demo", ex:"audit-chain", title:"1 · Audit chain", exp:"Was the recorded workflow changed after it was sealed?", take:"A hash-chained, signed record catches any post-hoc edit at the exact broken link.", lim:"A green chain proves integrity, not that the decision was correct."},
+  {kind:"demo", ex:"reason-code", title:"2 · Reason-code binding", exp:"Is the displayed reason the same version bound to the original attestation?", take:"Changing a reason's text or version after signing breaks the dictionary-hash binding.", lim:"A valid binding does not prove the reason is adequate, fair, legal or correct."},
+  {kind:"demo", ex:"persona-deliberation", title:"3 · Persona deliberation", exp:"How are several analytical perspectives combined without treating a vote as truth?", take:"Dissent, unsupported claims and abstention are preserved; the synthesis traces to evidence.", lim:"Majority does not prove correctness; analytical correctness is NOT evaluated."},
+  {kind:"cta", title:"Verify it yourself", exp:"Open the offline verifier and check a bundle + the verifier's own signed manifest.", take:"Verify evidence · verify the verifier.", lim:"The verifier proves integrity + provenance, not source truth or compliance.", href:"../verify-explainers.html", link:"Open Verify + How Shadow Works"},
+  {kind:"cta", title:"Explore the spatial replay", exp:"The same audit story can be replayed in 3D in the browser.", take:"Spatial replay of the provenance chain.", lim:"Browser Three.js only — not device-validated.", href:"replay/3d/index.html", link:"Open spatial replay"},
+  {kind:"final", title:"What Shadow does and does not do", exp:"Shadow verifies evidence integrity and provenance. Shadow does not automatically prove source truth, analytical correctness, legal compliance or human approval.", take:"Integrity + provenance — verifiable.", lim:"Truth · correctness · compliance · human approval — not automatic."},
+ ],
+ zh:[
+  {kind:"intro", title:"Shadow — 三层可检查的信任", exp:"接下来几分钟:封存并回放记录、把理由绑定到证据、保留审议——全部为确定性测试数据。", take:"可检查、可回放、可独立验证的证据。", lim:"这是测试数据演示,并非生产银行系统。"},
+  {kind:"demo", ex:"audit-chain", title:"1 · 审计链", exp:"封存后的工作流程记录是否被修改?", take:"哈希链 + 签名的记录能在确切断点抓到事后修改。", lim:"绿色的链只证明完整性,不证明决策正确。"},
+  {kind:"demo", ex:"reason-code", title:"2 · 理由代码绑定", exp:"当前显示的理由是否就是原始证明中绑定的版本?", take:"签名后改理由文字或版本会破坏字典哈希绑定。", lim:"绑定有效不证明理由充分、公平、合法或正确。"},
+  {kind:"demo", ex:"persona-deliberation", title:"3 · Persona 审议", exp:"多个分析视角如何综合,同时避免把多数当作事实?", take:"保留分歧、无证据主张与弃权;综合可溯源到证据。", lim:"多数不证明正确;分析正确性未评估。"},
+  {kind:"cta", title:"自己验证", exp:"打开离线验证器,检查证据包与验证器自身的已签名清单。", take:"验证证据 · 验证验证器。", lim:"验证器证明完整性+来源,不证明来源真实或合规。", href:"../verify-explainers.html", link:"打开 Verify + SHADOW 如何工作"},
+  {kind:"cta", title:"探索空间回放", exp:"同一审计故事可在浏览器里以 3D 回放。", take:"溯源链的空间回放。", lim:"仅浏览器 Three.js——非设备验证。", href:"replay/3d/index.html", link:"打开空间回放"},
+  {kind:"final", title:"Shadow 做什么、不做什么", exp:"Shadow 验证证据完整性与来源关系。Shadow 不会自动证明来源真实、分析正确、法律合规或已获得人工批准。", take:"完整性 + 来源——可验证。", lim:"真实 · 正确 · 合规 · 人工批准——非自动。"},
+ ],
+};
+const I18N={ en:{title:"Shadow — guided demo",fix:"FIXTURE DEMONSTRATION",back:"◀ Back",next:"Next ▶",reduce:"Reduced motion",loading:"Loading…",take:"KEY TAKEAWAY",lim:"LIMITATION"}, zh:{title:"Shadow — 引导演示",fix:"测试数据演示",back:"◀ 上一步",next:"下一步 ▶",reduce:"减弱动效",loading:"加载中……",take:"关键结论",lim:"局限"} };
+const T=()=>I18N[LANG], esc=(s)=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function render(){
+  const s=STEPS[LANG][STEP], n=STEPS[LANG].length;
+  document.getElementById("prog").textContent=`${STEP+1} / ${n}`;
+  let html=`<h2>${esc(s.title)}</h2><p class="exp">${esc(s.exp)}</p>`;
+  if(s.kind==="demo"){ html+=`<div class="frameWrap" id="fw"><div class="loading">${esc(T().loading)}</div></div>`; }
+  if(s.kind==="cta"){ html+=`<div class="cta"><a href="${esc(s.href)}">${esc(s.link)} →</a></div>`; }
+  html+=`<div class="tl"><div><b class="take">${esc(T().take)}</b><div>${esc(s.take)}</div></div><div><b class="lim">${esc(T().lim)}</b><div>${esc(s.lim)}</div></div></div>`;
+  const stage=document.getElementById("stage"); stage.innerHTML=html; if(s.kind==="final")stage.classList.add("final"); else stage.classList.remove("final");
+  if(s.kind==="demo"){ const fw=document.getElementById("fw"); const f=document.createElement("iframe"); f.title=s.title+" explainer"; f.loading="lazy"; f.setAttribute("sandbox","allow-scripts"); f.src=EX[s.ex]; f.addEventListener("load",()=>{const l=fw.querySelector(".loading");if(l)l.remove();}); fw.appendChild(f); }
+}
+function applyLang(){ document.documentElement.lang=LANG==="zh"?"zh-CN":"en"; document.getElementById("t-title").textContent=T().title; document.getElementById("t-fix").textContent=T().fix;
+  document.getElementById("back").textContent=T().back; document.getElementById("next").textContent=T().next; document.getElementById("reduce").textContent=T().reduce;
+  document.getElementById("lang-en").setAttribute("aria-pressed",String(LANG==="en")); document.getElementById("lang-zh").setAttribute("aria-pressed",String(LANG==="zh")); render(); }
+document.getElementById("next").onclick=()=>{ if(STEP<STEPS[LANG].length-1){STEP++;render();} };  // explicit click only — no auto-advance
+document.getElementById("back").onclick=()=>{ if(STEP>0){STEP--;render();} };
+document.getElementById("reduce").onclick=(e)=>{ const on=document.body.dataset.reduce!=="true"; document.body.dataset.reduce=String(on); e.target.setAttribute("aria-pressed",String(on)); };
+document.getElementById("lang-en").onclick=()=>{LANG="en";applyLang();}; document.getElementById("lang-zh").onclick=()=>{LANG="zh";applyLang();};
+document.addEventListener("keydown",(e)=>{ if(e.key==="ArrowRight")document.getElementById("next").click(); else if(e.key==="ArrowLeft")document.getElementById("back").click(); });
+applyLang(); window.__ready=true;
+</script>
+</body>
+</html>
