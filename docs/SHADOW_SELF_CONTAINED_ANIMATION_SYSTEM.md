@@ -10,6 +10,7 @@ runtime dependency**.
 |---|---|---|
 | Audit chain + tamper propagation | `apps/shadow-lens/explainers/audit-chain.html` | a hash-chained Ed25519 provenance chain; tamper one link → downstream fails |
 | Reason-code → attestation binding | `demos/animations/reason-code-attestation.html` | a reason is bound to a hashed, versioned dictionary; changing the text after signing is caught |
+| Persona deliberation → synthesis | `demos/animations/persona-deliberation.html` | perspectives → evidence-grounded synthesis; majority ≠ correctness; dissent/unsupported/abstention preserved |
 
 Reusable prompt: `apps/shadow-lens/explainers/SYSTEM_PROMPT.md`. Authoring-time generator:
 `apps/shadow-lens/explainers/generate.mjs` (needs `ANTHROPIC_API_KEY`; not a runtime dependency).
@@ -40,8 +41,9 @@ node --test test/shadow-explainers.test.js test/reason-code-attestation.test.js
 ```
 
 ## Roadmap (per Alex's ordering)
-1. Reason-code dictionary binding — **done** (this slice).
-2. Persona deliberation explainer — next (must state: personas aren't five real experts; count ≠
-   confidence; majority ≠ correct; the conclusion still needs evidence + verification).
-3. Embed both into docs/demo.
-4. Later: Unity/Three.js reuse the same story contract (`shadow-3d-scene-v1`).
+1. Reason-code dictionary binding — **done**.
+2. Persona deliberation explainer — **done** (personas = configured analytical perspectives, not experts;
+   count ≠ confidence; majority ≠ correct; conclusion still needs evidence + verification; see
+   `PERSONA_DELIBERATION_EXPLAINER.md`).
+3. Embed all three into docs/demo — planned in `EXPLAINER_INTEGRATION_PLAN.md`.
+4. Later: Unity/Three.js reuse the same story contract (`shadow-3d-scene-v1`) — planned, not implemented.

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'" />
+<title>Shadow — persona deliberation → evidence-grounded synthesis</title>
+<style>
+  :root{--bg:#0b0d10;--panel:#14181e;--bd:#232830;--text:#e6e6e6;--dim:#8a92a0;--ok:#4ade80;--bad:#ef4444;--warn:#fbbf24;--accent:#60a5fa;--mono:ui-monospace,Menlo,Consolas,monospace}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+  .wrap{max-width:1180px;margin:0 auto;padding:16px 14px}
+  h1{font-size:17px;margin:0 0 4px} p.sub{color:var(--dim);font-size:13px;margin:0 0 6px}
+  .honest{background:#0e1420;border:1px solid var(--bd);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--dim);margin-bottom:10px}
+  .honest b{color:var(--text)}
+  .bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+  button,select{font:inherit;cursor:pointer;border-radius:7px;border:1px solid var(--bd);background:var(--panel);color:var(--text);padding:5px 10px}
+  button:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  button[aria-pressed="true"]{background:var(--accent);color:#0b0d10;border-color:var(--accent)}
+  .cap{background:#0e1420;border:1px solid var(--bd);border-radius:8px;padding:8px 10px;font-size:13px;margin-bottom:10px;min-height:20px}
+  .grid{display:grid;grid-template-columns:1fr 1.4fr 1.2fr;gap:10px} @media(max-width:860px){.grid{grid-template-columns:1fr}}
+  .col{background:var(--panel);border:1px solid var(--bd);border-radius:10px;padding:10px} .col h2{font-size:13px;margin:0 0 8px;color:var(--dim)}
+  .ev,.pn,.syn{border:1px solid var(--bd);border-radius:7px;padding:6px 8px;margin-bottom:6px;cursor:pointer}
+  .ev .id,.pn .id{font-family:var(--mono);font-weight:600}
+  .pn{border-left-width:4px} .pn.CF{border-left-color:#60a5fa}.pn.RO{border-left-color:#fbbf24}.pn.FL{border-left-color:#a78bfa}.pn.CA{border-left-color:#4ade80}.pn.MC{border-left-color:#f472b6}
+  .pn .meta{color:var(--dim);font-size:12px} .pn.abst{opacity:.7}
+  .tag{font-size:10px;font-family:var(--mono);border:1px solid;border-radius:4px;padding:0 4px;margin-left:5px}
+  .tag.warn{color:var(--warn);border-color:var(--warn)} .tag.bad{color:var(--bad);border-color:var(--bad)} .tag.abst{color:var(--accent);border-color:var(--accent)}
+  table.m{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px} table.m th,table.m td{text-align:left;padding:5px 7px;border-bottom:1px solid var(--bd)}
+  td.st{font-family:var(--mono);white-space:nowrap}
+  .s.ok{color:var(--ok)}.s.bad{color:var(--bad)}.s.warn{color:var(--warn)}.s.dim{color:var(--dim)}.s.abst{color:var(--accent)}
+  tr.firstwarn{background:#241a10}
+  .verdict{margin-top:8px;font-size:13px} .verdict b{color:var(--warn)}
+  .note{color:var(--dim);font-size:11px;margin-top:10px}
+  #drawer{position:fixed;inset:auto 0 0 0;max-height:60vh;overflow:auto;background:var(--panel);border-top:1px solid var(--accent);padding:14px;display:none} #drawer.open{display:block}
+  #drawer pre{font-family:var(--mono);font-size:12px;white-space:pre-wrap;word-break:break-all}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body data-reduce="false">
+<div class="wrap">
+  <h1 id="t-title">Persona deliberation → evidence-grounded synthesis</h1>
+  <p class="sub" id="t-sub">How does Shadow combine several analytical perspectives without pretending that voting creates truth?</p>
+  <div class="honest" id="honest"></div>
+  <div class="bar">
+    <button id="play" data-i="play">▶ Play</button><button id="prev" data-i="prev">◀ Prev</button><button id="next" data-i="next">Next ▶</button><button id="restart" data-i="restart">↻ Restart</button>
+    <label class="sr" for="scn" id="t-scnl">Scenario</label><select id="scn" aria-labelledby="t-scnl"></select>
+    <button id="reduce" aria-pressed="false" data-i="reduce">Reduced motion</button>
+    <button id="openev" data-i="openev">Open evidence</button><button id="openp" data-i="openp">Open persona output</button><button id="opensyn" data-i="opensyn">Synthesis provenance</button><button id="copy" data-i="copy">Copy explanation</button>
+    <button id="lang-en" aria-pressed="true">EN</button><button id="lang-zh" aria-pressed="false">中文</button>
+  </div>
+  <div class="cap" id="cap" role="status" aria-live="polite"></div>
+  <div class="grid">
+    <div class="col"><h2 id="t-ev">Shared evidence</h2><div id="evc"></div></div>
+    <div class="col"><h2 id="t-pers">Five analytical perspectives</h2><div id="pnc"></div></div>
+    <div class="col"><h2 id="t-syn">Evidence-grounded synthesis</h2><div id="sync"></div><div class="verdict" id="verdict"></div></div>
+  </div>
+  <table class="m"><thead><tr><th id="t-check">check</th><th id="t-status">status</th></tr></thead><tbody id="mbody"></tbody></table>
+  <p class="note" id="t-note">Self-contained · offline · no third-party code · DEMONSTRATION FIXTURE — not bank policy. Independent statuses stay independent.</p>
+</div>
+<div id="drawer" role="dialog" aria-modal="false" aria-label="details"><button id="closedraw" style="float:right">✕ <span id="t-close">Close</span></button><pre id="drawpre"></pre></div>
+<script>
+"use strict";
+const FIX = {"story_version":"shadow-explainer-story/1","fixture_status":"FIXTURE","fixture_note":"DEMONSTRATION FIXTURE — configured analytical perspectives, not human experts; not bank policy.","shared_evidence":{"E-101":{"en":"High revolving utilization","zh":"循环额度使用率高","quote":"revolving utilization 78% (policy pref ≤ 30%)"},"E-102":{"en":"Verified income documentation","zh":"已核验收入文件","quote":"income verified via 2y W-2 + paystubs"},"E-103":{"en":"Recent delinquency record","zh":"近期逾期记录","quote":"30-day delinquency 4 months ago"},"E-104":{"en":"Long-standing customer relationship","zh":"长期客户关系","quote":"11-year relationship, prior loans repaid"},"E-105":{"en":"Policy exception criteria","zh":"政策例外条件","quote":"exception §4.3 requires a compensating factor"}},"personas":{"CF":{"en":"Credit Fundamentals","zh":"信贷基本面"},"RO":{"en":"Risk Officer","zh":"风险官"},"FL":{"en":"Fair Lending Compliance","zh":"公平放贷合规"},"CA":{"en":"Customer Advocate","zh":"客户倡导"},"MC":{"en":"Macro Contrarian","zh":"宏观逆向"}},"checks":["SHARED_SOURCE_EVIDENCE","SOURCE_RESOLUTION","PERSONA_OUTPUT_INTEGRITY","CLAIM_EVIDENCE_BINDING","UNSUPPORTED_CLAIMS","CONTRADICTORY_EVIDENCE","ABSTENTION","SYNTHESIS_PROVENANCE","MAJORITY_AGREEMENT","ANALYTICAL_CORRECTNESS","LEGAL_FAIRNESS_REVIEW","HUMAN_APPROVAL"],"scenarios":{"consensus_with_evidence":{"label_en":"Consensus with evidence","label_zh":"有证据的共识","first_warning":null,"outputs":[{"perspective_id":"CF","claim_id":"CF-util-high","stance":"CAUTION","stance_strength":0.7,"supporting_evidence_ids":["E-101"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"RO","claim_id":"RO-delinquency-risk","stance":"CAUTION","stance_strength":0.75,"supporting_evidence_ids":["E-103"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"FL","claim_id":"FL-no-disparate-driver","stance":"NEUTRAL","stance_strength":0.6,"supporting_evidence_ids":["E-105"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"CA","claim_id":"CA-relationship-mitigant","stance":"SUPPORT","stance_strength":0.5,"supporting_evidence_ids":["E-104"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"MC","claim_id":"MC-macro-buffer","stance":"CAUTION","stance_strength":0.55,"supporting_evidence_ids":["E-102"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false}]},"disagreement":{"label_en":"Disagreement","label_zh":"分歧","first_warning":"MAJORITY_AGREEMENT","outputs":[{"perspective_id":"CF","claim_id":"CF-util-high","stance":"CAUTION","stance_strength":0.7,"supporting_evidence_ids":["E-101"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"RO","claim_id":"RO-delinquency-risk","stance":"OPPOSE","stance_strength":0.75,"supporting_evidence_ids":["E-104"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"FL","claim_id":"FL-no-disparate-driver","stance":"NEUTRAL","stance_strength":0.6,"supporting_evidence_ids":["E-105"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"CA","claim_id":"CA-relationship-mitigant","stance":"SUPPORT","stance_strength":0.8,"supporting_evidence_ids":["E-104"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"MC","claim_id":"MC-macro-buffer","stance":"CAUTION","stance_strength":0.55,"supporting_evidence_ids":["E-102"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false}]},"unsupported_claim":{"label_en":"Unsupported claim","label_zh":"无证据主张","first_warning":"UNSUPPORTED_CLAIMS","outputs":[{"perspective_id":"CF","claim_id":"CF-util-high","stance":"CAUTION","stance_strength":0.7,"supporting_evidence_ids":["E-101"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"RO","claim_id":"RO-delinquency-risk","stance":"CAUTION","stance_strength":0.75,"supporting_evidence_ids":["E-103"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"FL","claim_id":"FL-no-disparate-driver","stance":"NEUTRAL","stance_strength":0.6,"supporting_evidence_ids":["E-105"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"CA","claim_id":"CA-relationship-mitigant","stance":"SUPPORT","stance_strength":0.5,"supporting_evidence_ids":["E-104"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"MC","claim_id":"MC-approve-anyway","stance":"SUPPORT","stance_strength":0.55,"supporting_evidence_ids":[],"contradictory_evidence_ids":[],"unsupported_claim_ids":["MC-approve-anyway"],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false}]},"contradictory_evidence":{"label_en":"Contradictory evidence","label_zh":"矛盾证据","first_warning":"CONTRADICTORY_EVIDENCE","outputs":[{"perspective_id":"CF","claim_id":"CF-util-high","stance":"CAUTION","stance_strength":0.7,"supporting_evidence_ids":["E-101"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"RO","claim_id":"RO-delinquency-risk","stance":"CAUTION","stance_strength":0.75,"supporting_evidence_ids":["E-103"],"contradictory_evidence_ids":["E-104"],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"FL","claim_id":"FL-no-disparate-driver","stance":"NEUTRAL","stance_strength":0.6,"supporting_evidence_ids":["E-105"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"CA","claim_id":"CA-relationship-mitigant","stance":"SUPPORT","stance_strength":0.5,"supporting_evidence_ids":["E-104"],"contradictory_evidence_ids":["E-103"],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"MC","claim_id":"MC-macro-buffer","stance":"CAUTION","stance_strength":0.55,"supporting_evidence_ids":["E-102"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false}]},"abstain":{"label_en":"Abstain — insufficient evidence","label_zh":"弃权——证据不足","first_warning":"ABSTENTION","outputs":[{"perspective_id":"CF","claim_id":"CF-util-high","stance":"CAUTION","stance_strength":0.7,"supporting_evidence_ids":["E-101"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"RO","claim_id":"RO-delinquency-risk","stance":"CAUTION","stance_strength":0.75,"supporting_evidence_ids":["E-103"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"FL","claim_id":"FL-no-disparate-driver","stance":"NEUTRAL","stance_strength":0.6,"supporting_evidence_ids":[],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":"Insufficient verified evidence to assess disparate impact.","source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"CA","claim_id":"CA-relationship-mitigant","stance":"SUPPORT","stance_strength":0.5,"supporting_evidence_ids":["E-104"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"MC","claim_id":"MC-macro-buffer","stance":"CAUTION","stance_strength":0.55,"supporting_evidence_ids":["E-102"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false}]},"majority_weak_evidence":{"label_en":"Majority but weak evidence","label_zh":"多数但证据弱","first_warning":"CLAIM_EVIDENCE_BINDING","outputs":[{"perspective_id":"CF","claim_id":"CF-util-high","stance":"SUPPORT","stance_strength":0.7,"supporting_evidence_ids":["E-104"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":true},{"perspective_id":"RO","claim_id":"RO-delinquency-risk","stance":"SUPPORT","stance_strength":0.75,"supporting_evidence_ids":["E-104"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":true},{"perspective_id":"FL","claim_id":"FL-no-disparate-driver","stance":"NEUTRAL","stance_strength":0.6,"supporting_evidence_ids":["E-105"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":false},{"perspective_id":"CA","claim_id":"CA-relationship-mitigant","stance":"SUPPORT","stance_strength":0.5,"supporting_evidence_ids":["E-104"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":true},{"perspective_id":"MC","claim_id":"MC-macro-buffer","stance":"SUPPORT","stance_strength":0.55,"supporting_evidence_ids":["E-104"],"contradictory_evidence_ids":[],"unsupported_claim_ids":[],"abstain_reason":null,"source_resolution_status":"RESOLVED","weak_evidence":true}]}},"accessibility_descriptions":{"majority":"Majority agreement is descriptive metadata only; it does not set analytical correctness.","human":"Human approval is not present; regulated outcomes require human review."}}; /*__END_FIX__*/;
+const I18N = {
+ en:{ title:"Persona deliberation → evidence-grounded synthesis", sub:"How does Shadow combine several analytical perspectives without pretending that voting creates truth?",
+  honest:["<b>Personas are configured analytical perspectives, not independent human experts.</b>","More agreeing personas do not create statistical confidence or prove correctness.","Shadow preserves disagreement, unsupported claims and abstention rather than hiding them."],
+  play:["▶ Play","⏸ Pause"], prev:"◀ Prev", next:"Next ▶", restart:"↻ Restart", reduce:"Reduced motion", openev:"Open evidence", openp:"Open persona output", opensyn:"Synthesis provenance", copy:"Copy explanation", close:"Close",
+  ev:"Shared evidence", pers:"Five analytical perspectives", syn:"Evidence-grounded synthesis", check:"check", status:"status", note:"Self-contained · offline · no third-party code · DEMONSTRATION FIXTURE — not bank policy. Independent statuses stay independent.",
+  stanceStrength:"stance strength", cited:"cited evidence", unsupp:"unsupported", abstain:"ABSTAIN",
+  majNote:"MAJORITY DOES NOT PROVE CORRECTNESS", notEval:"ANALYTICAL CORRECTNESS: NOT EVALUATED", insufficient:"INSUFFICIENT EVIDENCE TO CONCLUDE",
+  firstwarn:"FIRST", excluded:"excluded (unsupported)", disagree:"unresolved disagreement", abstained:"abstained",
+  steps:["Shared evidence enters Shadow.","Five analytical perspectives receive the same evidence.","Each perspective forms a different claim or stance.","Each stance shows the evidence it cites.","One perspective makes a claim with no supporting evidence.","Shadow flags: UNSUPPORTED CLAIM.","One perspective detects contradictory evidence.","Two perspectives disagree on the same conclusion.","One perspective abstains for insufficient evidence: ABSTAIN.","Synthesis aggregates supported claims, disagreement, contradictions, unsupported-claim warnings, and abstention.","Final synthesis keeps only evidence-bound content.","Verifier checks evidence references, claim-evidence graph, persona output integrity, synthesis provenance. Majority does not prove correctness; analytical correctness is NOT evaluated."] },
+ zh:{ title:"Persona 审议 → 证据接地综合", sub:"Shadow 如何综合多个分析视角,同时避免把多数意见误当成事实或正确答案?",
+  honest:["<b>Persona 是配置化的分析视角,并非独立的人类专家。</b>","更多 Persona 表示同意,并不会产生统计置信度,也不能证明结论正确。","Shadow 会保留分歧、无证据支持的主张与弃权,而不是隐藏它们。"],
+  play:["▶ 播放","⏸ 暂停"], prev:"◀ 上一步", next:"下一步 ▶", restart:"↻ 重来", reduce:"减弱动效", openev:"打开证据", openp:"打开 persona 输出", opensyn:"综合溯源", copy:"复制说明", close:"关闭",
+  ev:"共享证据", pers:"五个分析视角", syn:"证据接地综合", check:"检查项", status:"状态", note:"自足 · 离线 · 无第三方代码 · 演示测试数据——非银行政策。各状态相互独立。",
+  stanceStrength:"立场强度", cited:"引用证据", unsupp:"无证据", abstain:"弃权",
+  majNote:"多数意见不能证明结论正确", notEval:"分析正确性:未评估", insufficient:"证据不足,无法得出结论",
+  firstwarn:"首个", excluded:"已排除(无证据)", disagree:"未解决的分歧", abstained:"已弃权",
+  steps:["共享证据进入 Shadow。","五个分析视角接收同一份证据。","每个视角形成不同的主张或立场。","每个立场显示所引用的证据。","一个视角提出没有证据支持的主张。","Shadow 标记:无证据主张。","一个视角检测到矛盾证据。","两个视角对同一结论产生分歧。","一个视角因证据不足而弃权。","综合层聚合有证据的主张、分歧、矛盾、无证据主张警告与弃权。","最终综合只保留有证据绑定的内容。","验证器检查证据引用、声明-证据图、persona 输出完整性、综合溯源。多数不能证明正确;分析正确性未评估。"] },
+};
+const STT={ VERIFIED:{en:"VERIFIED",zh:"已验证"},FAILED:{en:"FAILED",zh:"失败"},PRESENT:{en:"PRESENT",zh:"存在"},NOT_PRESENT:{en:"NOT PRESENT",zh:"不存在"},WARNING:{en:"WARNING",zh:"警告"},NOT_CHECKED:{en:"NOT CHECKED",zh:"未检查"},NOT_EVALUATED:{en:"NOT EVALUATED",zh:"未评估"},ABSTAINED:{en:"ABSTAINED",zh:"已弃权"},REQUIRES_HUMAN_REVIEW:{en:"REQUIRES HUMAN REVIEW",zh:"需人工复核"} };
+const CL={ SHARED_SOURCE_EVIDENCE:{en:"Shared source evidence",zh:"共享来源证据"},SOURCE_RESOLUTION:{en:"Source resolution",zh:"来源解析"},PERSONA_OUTPUT_INTEGRITY:{en:"Persona output integrity",zh:"persona 输出完整性"},CLAIM_EVIDENCE_BINDING:{en:"Claim-evidence binding",zh:"声明-证据绑定"},UNSUPPORTED_CLAIMS:{en:"Unsupported claims",zh:"无证据主张"},CONTRADICTORY_EVIDENCE:{en:"Contradictory evidence",zh:"矛盾证据"},ABSTENTION:{en:"Abstention",zh:"弃权"},SYNTHESIS_PROVENANCE:{en:"Synthesis provenance",zh:"综合溯源"},MAJORITY_AGREEMENT:{en:"Majority agreement",zh:"多数同意"},ANALYTICAL_CORRECTNESS:{en:"Analytical correctness",zh:"分析正确性"},LEGAL_FAIRNESS_REVIEW:{en:"Legal / fairness review",zh:"法律 / 公平性审查"},HUMAN_APPROVAL:{en:"Human approval",zh:"人工批准"} };
+let LANG="en", STEP=0, SCEN="consensus_with_evidence", playing=false, timer=null;
+const T=()=>I18N[LANG], esc=(s)=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const resolves=(id)=>Object.prototype.hasOwnProperty.call(FIX.shared_evidence,id);
+
+function computeState(){
+  const sc=FIX.scenarios[SCEN], out=sc.outputs;
+  const active=out.filter(o=>!o.abstain_reason);
+  const unresolved=active.flatMap(o=>o.supporting_evidence_ids).filter(id=>!resolves(id));
+  const unsupported=out.filter(o=>o.unsupported_claim_ids.length);
+  const contradictory=out.filter(o=>o.contradictory_evidence_ids.length);
+  const abstains=out.filter(o=>o.abstain_reason);
+  const weak=out.some(o=>o.weak_evidence);
+  const grounded=out.filter(o=>!o.abstain_reason && !o.unsupported_claim_ids.length);
+  const allBound=grounded.every(o=>o.supporting_evidence_ids.some(resolves));
+  const stances=active.map(o=>o.stance); const hasOpp=stances.includes("SUPPORT")&&stances.includes("OPPOSE");
+  const modal=Math.max(...Object.values(stances.reduce((m,s)=>((m[s]=(m[s]||0)+1),m),{})));
+  const st={};
+  st.SHARED_SOURCE_EVIDENCE="PRESENT"; st.SOURCE_RESOLUTION=unresolved.length?"WARNING":"VERIFIED"; st.PERSONA_OUTPUT_INTEGRITY="VERIFIED";
+  st.CLAIM_EVIDENCE_BINDING=!allBound?"FAILED":(weak?"WARNING":"VERIFIED");
+  st.UNSUPPORTED_CLAIMS=unsupported.length?"WARNING":"NOT_PRESENT"; st.CONTRADICTORY_EVIDENCE=contradictory.length?"WARNING":"NOT_PRESENT"; st.ABSTENTION=abstains.length?"ABSTAINED":"NOT_PRESENT";
+  st.SYNTHESIS_PROVENANCE="VERIFIED"; st.MAJORITY_AGREEMENT=hasOpp?"WARNING":(modal>active.length/2?"PRESENT":"NOT_PRESENT");
+  st.ANALYTICAL_CORRECTNESS="NOT_EVALUATED"; st.LEGAL_FAIRNESS_REVIEW="NOT_EVALUATED";
+  const attention=(s)=>["WARNING","FAILED","ABSTAINED","REQUIRES_HUMAN_REVIEW"].includes(s);
+  st.HUMAN_APPROVAL=(FIX.checks.slice(0,9).some(c=>attention(st[c]))||weak)?"REQUIRES_HUMAN_REVIEW":"NOT_PRESENT";
+  const firstWarn=FIX.checks.find(c=>attention(st[c]))||null;
+  // grounded synthesis sentences (only evidence-bound, non-unsupported, non-abstain)
+  const sentences=grounded.map(o=>({pid:o.perspective_id,claim:o.claim_id,stance:o.stance,ev:o.supporting_evidence_ids.filter(resolves)}));
+  const insufficient = weak || !allBound;
+  return {sc,out,st,firstWarn,unsupported,contradictory,abstains,sentences,hasOpp,insufficient,majority:st.MAJORITY_AGREEMENT};
+}
+window.__computeState=computeState;
+
+function render(){
+  const S=computeState();
+  document.getElementById("evc").innerHTML=Object.entries(FIX.shared_evidence).map(([id,e])=>`<div class="ev" tabindex="0" data-ev="${id}"><span class="id">${esc(id)}</span> ${esc(LANG==="zh"?e.zh:e.en)}<div class="meta note" style="margin:2px 0 0">${esc(e.quote)}</div></div>`).join("");
+  document.getElementById("pnc").innerHTML=S.out.map(o=>{
+    const p=FIX.personas[o.perspective_id];
+    const tags=(o.unsupported_claim_ids.length?`<span class="tag bad">${T().unsupp}</span>`:"")+(o.contradictory_evidence_ids.length?`<span class="tag warn">≠</span>`:"")+(o.abstain_reason?`<span class="tag abst">${T().abstain}</span>`:"");
+    return `<div class="pn ${o.perspective_id} ${o.abstain_reason?"abst":""}" tabindex="0" data-p="${o.perspective_id}"><div class="id">${esc(LANG==="zh"?p.zh:p.en)} <span class="note">· ${LANG==="zh"?"分析视角":"analytical perspective"}</span>${tags}</div><div class="meta">${LANG==="zh"?"立场":"stance"}: <b>${esc(o.stance)}</b> · ${T().stanceStrength}: ${o.stance_strength.toFixed(2)} · ${T().cited}: ${o.supporting_evidence_ids.filter(resolves).length}${o.abstain_reason?` · ${esc(o.abstain_reason)}`:""}</div></div>`;
+  }).join("");
+  // synthesis
+  let syn=S.sentences.map(s=>`<div class="syn" tabindex="0" data-syn="${s.pid}"><b>${esc(FIX.personas[s.pid][LANG==="zh"?"zh":"en"])}</b>: ${esc(s.stance)} — ${LANG==="zh"?"证据":"evidence"} ${esc(s.ev.join(", ")||"—")}</div>`).join("");
+  if(S.unsupported.length) syn+=`<div class="note s bad">${T().excluded}: ${S.unsupported.map(o=>o.claim_id).join(", ")}</div>`;
+  if(S.hasOpp) syn+=`<div class="note s warn">${T().disagree}</div>`;
+  if(S.abstains.length) syn+=`<div class="note s abst">${T().abstained}: ${S.abstains.map(o=>FIX.personas[o.perspective_id][LANG==="zh"?"zh":"en"]).join(", ")}</div>`;
+  if(S.insufficient) syn+=`<div class="note s warn"><b>${T().insufficient}</b></div>`;
+  document.getElementById("sync").innerHTML=syn;
+  document.getElementById("verdict").innerHTML=`<div class="s warn"><b>${T().majNote}</b></div><div class="s dim">${T().notEval}</div>`+(S.majority==="PRESENT"?`<div class="note">${LANG==="zh"?"多数存在(仅描述性元数据)":"majority present (descriptive metadata only)"}</div>`:"");
+  const mb=document.getElementById("mbody"); mb.innerHTML="";
+  FIX.checks.forEach(c=>{ const s=S.st[c], first=c===S.firstWarn;
+    const cls=s==="VERIFIED"||s==="PRESENT"?"ok":s==="FAILED"?"bad":s==="WARNING"?"warn":s==="ABSTAINED"?"abst":s==="REQUIRES_HUMAN_REVIEW"?"warn":"dim";
+    const tr=document.createElement("tr"); if(first)tr.className="firstwarn";
+    tr.innerHTML=`<td>${esc(CL[c][LANG])}${first?`<span class="tag warn">${T().firstwarn}</span>`:""}</td><td class="st s ${cls}">${esc(STT[s][LANG])}</td>`; mb.appendChild(tr); });
+  document.getElementById("cap").textContent = SCEN==="consensus_with_evidence" ? T().steps[Math.min(STEP,T().steps.length-1)] : (S.sc["label_"+LANG]+" — "+T().steps[T().steps.length-1]);
+}
+function applyLang(){
+  const t=T(); document.documentElement.lang=LANG==="zh"?"zh-CN":"en";
+  document.getElementById("t-title").textContent=t.title; document.getElementById("t-sub").textContent=t.sub;
+  document.getElementById("honest").innerHTML=t.honest.map(h=>`<div>• ${h}</div>`).join("");
+  document.getElementById("play").textContent=t.play[playing?1:0];
+  for(const id of ["prev","next","restart","reduce","openev","openp","opensyn","copy"]) document.getElementById(id).textContent=t[id];
+  document.getElementById("t-close").textContent=t.close;
+  document.getElementById("t-ev").textContent=t.ev; document.getElementById("t-pers").textContent=t.pers; document.getElementById("t-syn").textContent=t.syn;
+  document.getElementById("t-check").textContent=t.check; document.getElementById("t-status").textContent=t.status; document.getElementById("t-note").textContent=t.note;
+  const sel=document.getElementById("scn"); sel.innerHTML=Object.entries(FIX.scenarios).map(([k,v])=>`<option value="${k}" ${k===SCEN?"selected":""}>${esc(v["label_"+LANG])}</option>`).join("");
+  document.getElementById("lang-en").setAttribute("aria-pressed",String(LANG==="en")); document.getElementById("lang-zh").setAttribute("aria-pressed",String(LANG==="zh"));
+  render();
+}
+function stop(){ playing=false; if(timer){clearInterval(timer);timer=null;} document.getElementById("play").textContent=T().play[0]; }
+function play(){ if(SCEN!=="consensus_with_evidence"){SCEN="consensus_with_evidence";document.getElementById("scn").value=SCEN;} playing=true; document.getElementById("play").textContent=T().play[1]; timer=setInterval(()=>{STEP++; if(STEP>=T().steps.length){STEP=T().steps.length-1;stop();} render();}, document.body.dataset.reduce==="true"?1:1300); }
+document.getElementById("play").onclick=()=>playing?stop():play();
+document.getElementById("prev").onclick=()=>{stop();STEP=Math.max(0,STEP-1);render();};
+document.getElementById("next").onclick=()=>{stop();STEP=Math.min(T().steps.length-1,STEP+1);render();};
+document.getElementById("restart").onclick=()=>{stop();STEP=0;SCEN="consensus_with_evidence";document.getElementById("scn").value=SCEN;render();};
+document.getElementById("scn").onchange=(e)=>{stop();SCEN=e.target.value;render();};
+document.getElementById("reduce").onclick=(e)=>{const on=document.body.dataset.reduce!=="true";document.body.dataset.reduce=String(on);e.target.setAttribute("aria-pressed",String(on));};
+const drawer=document.getElementById("drawer"), openDraw=(o)=>{document.getElementById("drawpre").textContent=JSON.stringify(o,null,2);drawer.classList.add("open");};
+document.getElementById("openev").onclick=()=>openDraw(FIX.shared_evidence);
+document.getElementById("openp").onclick=()=>openDraw(FIX.scenarios[SCEN].outputs);
+document.getElementById("opensyn").onclick=()=>openDraw(computeState().sentences);
+document.getElementById("closedraw").onclick=()=>drawer.classList.remove("open");
+document.getElementById("copy").onclick=async()=>{try{await navigator.clipboard.writeText(document.getElementById("cap").textContent);}catch(e){}};
+document.getElementById("lang-en").onclick=()=>{LANG="en";applyLang();}; document.getElementById("lang-zh").onclick=()=>{LANG="zh";applyLang();};
+document.getElementById("evc").addEventListener("click",e=>{const el=e.target.closest("[data-ev]");if(el)openDraw(FIX.shared_evidence[el.dataset.ev]);});
+document.getElementById("pnc").addEventListener("click",e=>{const el=e.target.closest("[data-p]");if(el)openDraw(FIX.scenarios[SCEN].outputs.find(o=>o.perspective_id===el.dataset.p));});
+document.getElementById("sync").addEventListener("click",e=>{const el=e.target.closest("[data-syn]");if(el)openDraw(computeState().sentences.find(s=>s.pid===el.dataset.syn));});
+document.addEventListener("keydown",(e)=>{ if(e.target.tagName==="SELECT")return;
+  if(e.key===" "){e.preventDefault();playing?stop():play();} else if(e.key==="ArrowRight")document.getElementById("next").click(); else if(e.key==="ArrowLeft")document.getElementById("prev").click();
+  else if(e.key==="r"||e.key==="R")document.getElementById("restart").click(); else if(e.key==="Escape")drawer.classList.remove("open");
+  else if("123456".includes(e.key)){const keys=Object.keys(FIX.scenarios);const idx=+e.key-1;if(keys[idx]){SCEN=keys[idx];document.getElementById("scn").value=SCEN;stop();render();}} });
+applyLang(); window.__ready=true;
+</script>
+</body>
+</html>
