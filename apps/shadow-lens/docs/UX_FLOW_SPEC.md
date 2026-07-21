@@ -22,6 +22,16 @@ Back steps one state toward READY (never below READY). Reset Demo → Banking RE
 - **Head-directed focus** (`ShadowHeadDirectedFocus`) = a ray from the camera's **head-forward** direction (3DoF; **not** eye tracking, no Eye add-on). Hover + highlight **only** — never approves, submits, or dwells-to-confirm. Pointer/controller (Beam Pro) remains the sole action path. XRI-compatible: swap in an XR Gaze Interactor without changing the contract.
 - **Confidence semantics**: per-voice numbers render as **STANCE STRENGTH** (persona prior), never "model confidence" (see `product-facts.json` → `confidence_semantics`).
 
+### Legibility + performance baseline (Slice F)
+- **Editor preview profiles** (`ShadowLegibilityProfiles`): Desktop 16:9 · Narrow Landscape ·
+  Low-Resolution Landscape · Glasses Central Safe Zone · High-Complexity Passthrough. Pure
+  checks catch clipped text, controls outside the safe zone, CaseCore/label overlap,
+  undersized hit areas, and >30° head-turn before the headset arrives.
+- **Perf baseline** (`ShadowPerfBaseline`): init/transition ms, editor/android FPS, draw calls,
+  canvas rebuilds, GC alloc on transition, StageWorld/HUD/EventSystem counts. **Every sample is
+  labeled `NOT_BEAM_PRO_DEVICE_EVIDENCE`** — Mac-editor numbers catch gross regressions only and
+  are never presented as device performance.
+
 Only **one** council voice is visually dominant at a time during COUNCIL. No large paragraphs — one
 reason line per voice.
 
