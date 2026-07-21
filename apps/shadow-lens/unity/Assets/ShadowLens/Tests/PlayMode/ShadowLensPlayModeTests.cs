@@ -28,6 +28,11 @@ namespace ShadowLens.Tests.PlayMode
             _boot = Object.FindFirstObjectByType<ShadowLensRuntimeBootstrap>();
             if (_boot == null) _boot = new GameObject("boot").AddComponent<ShadowLensRuntimeBootstrap>();
             yield return null; // let Awake/Build run
+            // These tests exercise the LEGACY MockView/panel; force that path (the runtime default is
+            // now the guided stage). BuildHierarchy is idempotent.
+            _boot.useGuidedStage = false;
+            _boot.BuildHierarchy();
+            yield return null;
             _boot.View.SetReady();
             yield return null;
         }

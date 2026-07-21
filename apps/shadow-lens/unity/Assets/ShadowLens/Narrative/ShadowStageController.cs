@@ -29,6 +29,7 @@ namespace ShadowLens.Narrative
         int _dominant = 1;               // default dominant = Risk Officer (highest relevance)
         bool _built;
         ShadowFlowHandoff _handoff;
+        System.Action<string> _onStateHandler;
 
         // ── test accessors ──
         public string State => _sm.State;
@@ -76,10 +77,13 @@ namespace ShadowLens.Narrative
 
             BuildWorld();
             _built = true;
-            _sm.OnState += (_) => Render();
+            _onStateHandler = (_) => Render();   // stored so it registers ONCE + can be removed
+            _sm.OnState += _onStateHandler;
             _sm.Reset();
             Render();
         }
+
+        void OnDestroy() { if (_onStateHandler != null) { _sm.OnState -= _onStateHandler; _onStateHandler = null; } }
 
         void BuildWorld()
         {

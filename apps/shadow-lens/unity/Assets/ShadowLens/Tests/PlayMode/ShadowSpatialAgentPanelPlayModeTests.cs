@@ -23,6 +23,11 @@ namespace ShadowLens.Tests.PlayMode
             _boot = Object.FindFirstObjectByType<ShadowLensRuntimeBootstrap>();
             if (_boot == null) _boot = new GameObject("boot").AddComponent<ShadowLensRuntimeBootstrap>();
             yield return null;
+            // These tests exercise the LEGACY spatial-agent panel; force that path (runtime default is
+            // now the guided stage). BuildHierarchy is idempotent.
+            _boot.useGuidedStage = false;
+            _boot.BuildHierarchy();
+            yield return null;
             _panel = _boot.SpatialPanel; _view = _boot.View;
             Assert.IsNotNull(_panel, "spatial panel must be built by the bootstrap");
             _panel.SetProfile("banking-v1"); _view.SetReady();

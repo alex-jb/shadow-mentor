@@ -9,6 +9,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using ShadowLens.Mock;
+using ShadowLens.Narrative;
 
 namespace ShadowLens.Bootstrap
 {
@@ -17,6 +18,10 @@ namespace ShadowLens.Bootstrap
     {
         public const string RootName = "ShadowLensMockDemoRoot";
         public bool autoRunOnStart = false; // Ready state waits for the operator's Analyze
+        public bool useGuidedStage = true;  // Wednesday: boot straight into the guided Banking READY stage
+
+        public ShadowStageController Stage { get; private set; }
+        public bool GuidedStageActive { get; private set; }
 
         static ShadowLensRuntimeBootstrap _instance;
         public ShadowLensMockView View { get; private set; }
@@ -43,23 +48,51 @@ namespace ShadowLens.Bootstrap
         public ShadowSpatialAgentPanel SpatialPanel { get; private set; }
         public ShadowInstitutionalLayoutController LayoutController { get; private set; }
 
-        // Idempotent: reuses existing critical objects instead of appending new ones.
+        // Idempotent: reuses existing critical objects instead of appending new ones. Boots into the
+        // guided stage when it initializes; otherwise falls back to the legacy MockView/panel. Never
+        // creates a second stage / HUD / StageWorld / EventSystem, and never destroys working legacy
+        // objects merely because the guided stage exists.
         public void BuildHierarchy()
         {
             EnsureEventSystem();
             EnsureCamera();
             var root = EnsureRoot();
-            // ONE shared layout authority, created BEFORE the view/panel so both build into its
-            // regions (no independent canvases → no overlap). MockView.Build finds it via GetComponent.
+
+            if (useGuidedStage && TryEnsureGuidedStage(root))
+            {
+                GuidedStageActive = true;   // guided Banking READY — deterministic, offline
+                return;                     // do NOT also build the legacy UI (avoids overlap)
+            }
+
+            // ── legacy fallback: the existing MockView + spatial-agent panel ──
+            GuidedStageActive = false;
             LayoutController = root.GetComponent<ShadowInstitutionalLayoutController>();
             if (LayoutController == null) LayoutController = root.gameObject.AddComponent<ShadowInstitutionalLayoutController>();
-
             View = root.GetComponent<ShadowLensMockView>();
             if (View == null) View = root.gameObject.AddComponent<ShadowLensMockView>();
             View.Layout = LayoutController;
             View.Build();
-            EnsureSpatialPanel(root);            // Gate 2 — additive; does NOT touch the existing view/buttons
+            EnsureSpatialPanel(root);
             if (autoRunOnStart) View.Analyze();
+        }
+
+        // Exactly one guided stage on the demo root. Idempotent (reuses an existing one). On any init
+        // failure, logs ONE material error + returns false so the legacy path runs (no per-frame spam).
+        bool TryEnsureGuidedStage(Transform root)
+        {
+            try
+            {
+                Stage = root.GetComponent<ShadowStageController>();
+                if (Stage == null) Stage = root.gameObject.AddComponent<ShadowStageController>();
+                Stage.Build();                              // idempotent; initializes to Banking READY
+                return Stage.State == ShadowNarrativeState.READY;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("[bootstrap] guided stage init failed — falling back to legacy: " + e.Message);
+                if (Stage != null) { Destroy(Stage); Stage = null; }
+                return false;
+            }
         }
 
         // Gate 2 spatial-agent panel — exactly one, bound to the existing MockView. Idempotent.
