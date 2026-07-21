@@ -24,6 +24,8 @@ a device report. Build host had Node only (no Java/Gradle/Android SDK/Unity) —
 | Provider compile isolation (SHADOW_XREAL_SDK + platform guards; mock default) | ✅ | ✅ compiles in mock/editor mode | ❌ pending | ❌ |
 | Runtime bootstrap + Editor scene generator (idempotent, no hand-authored .unity) | ✅ | 🟡 rewrite authored — pending Alex re-compile | ❌ pending | ❌ |
 | Unity Edit/PlayMode tests (geometry + voice + mock e2e smoke) | ✅ authored | 🟡 run in Unity 6 to execute | ❌ pending | ❌ |
+| Unity spatial-agent protocol (Gate 1: contract/validator/router/state machine/client) | ✅ | ✅ **COMPILED + 12/12 EditMode (Unity 6, local)** | ❌ pending | ❌ |
+| Unity spatial-agent visual wiring (Gate 2: query bar/answer card/citations/profile selector) | ✅ | 🟡 authored — pending Alex regenerate + Play | ❌ pending | ❌ |
 | Eye RGB capture (GPU readback + official still) | 🟡 interface + spec | ❌ | ❌ pending | ❌ |
 | One Pro 6DoF session-relative placement | 🟡 interface | ❌ | ❌ pending | ❌ |
 | On-device OCR / voice on hardware | ❌ | ❌ | ❌ pending | ❌ |

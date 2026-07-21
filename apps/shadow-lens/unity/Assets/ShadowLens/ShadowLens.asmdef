@@ -1,7 +1,7 @@
 {
   "name": "ShadowLens",
   "rootNamespace": "ShadowLens",
-  "references": ["UnityEngine.UI"],
+  "references": ["UnityEngine.UI", "ShadowLens.SpatialAgent"],
   "includePlatforms": [],
   "allowUnsafeCode": false,
   "autoReferenced": true

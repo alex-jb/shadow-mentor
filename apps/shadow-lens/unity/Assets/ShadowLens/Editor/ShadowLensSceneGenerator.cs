@@ -72,6 +72,7 @@ namespace ShadowLens.EditorTools
 
             Count("EventSystem", Object.FindObjectsByType<EventSystem>(FindObjectsSortMode.None).Length, 1);
             Count("ShadowLensRuntimeBootstrap", Object.FindObjectsByType<ShadowLensRuntimeBootstrap>(FindObjectsSortMode.None).Length, 1);
+            Count("ShadowSpatialAgentPanel", Object.FindObjectsByType<ShadowLens.Mock.ShadowSpatialAgentPanel>(FindObjectsSortMode.None).Length, 1);
             Count("Main Camera", Camera.allCameras.Length, 1);
             var roots = 0; foreach (var go in Object.FindObjectsByType<GameObject>(FindObjectsSortMode.None)) if (go.name == ShadowLensRuntimeBootstrap.RootName) roots++;
             Count(ShadowLensRuntimeBootstrap.RootName, roots, roots <= 1 ? roots : 1);

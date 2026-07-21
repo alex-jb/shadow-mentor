@@ -40,6 +40,8 @@ namespace ShadowLens.Bootstrap
 
         void OnDestroy() { if (_instance == this) _instance = null; }
 
+        public ShadowSpatialAgentPanel SpatialPanel { get; private set; }
+
         // Idempotent: reuses existing critical objects instead of appending new ones.
         public void BuildHierarchy()
         {
@@ -49,7 +51,17 @@ namespace ShadowLens.Bootstrap
             View = root.GetComponent<ShadowLensMockView>();
             if (View == null) View = root.gameObject.AddComponent<ShadowLensMockView>();
             View.Build();
+            EnsureSpatialPanel(root);            // Gate 2 — additive; does NOT touch the existing view/buttons
             if (autoRunOnStart) View.Analyze();
+        }
+
+        // Gate 2 spatial-agent panel — exactly one, bound to the existing MockView. Idempotent.
+        void EnsureSpatialPanel(Transform root)
+        {
+            SpatialPanel = root.GetComponent<ShadowSpatialAgentPanel>();
+            if (SpatialPanel == null) SpatialPanel = root.gameObject.AddComponent<ShadowSpatialAgentPanel>();
+            SpatialPanel.View = View;
+            SpatialPanel.Build();
         }
 
         static void EnsureEventSystem()
