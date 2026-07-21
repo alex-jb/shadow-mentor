@@ -32,3 +32,8 @@ apps/shadow-lens/unity/*.sln
 # Buggy scene baked by the pre-fix generator — regenerate via Shadow Lens/Create Mock Demo Scene
 apps/shadow-lens/unity/Assets/ShadowLens/Scenes/ShadowLensMockDemo.unity
 apps/shadow-lens/unity/Assets/ShadowLens/Scenes/ShadowLensMockDemo.unity.meta
+
+# Shadow Lens Wednesday demo artifacts (operator-built, large — not committed)
+apps/shadow-lens/demo/wednesday/frozen/
+apps/shadow-lens/demo/wednesday/logs/
+apps/shadow-lens/demo/wednesday/backup/

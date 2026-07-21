@@ -58,6 +58,7 @@ namespace ShadowLens.Mock
             BuildAnswerCard();
             BuildQueryBar();
             BuildStatusRow();
+            BuildPresenterControls();       // §8 one-tap reset to Banking READY
             Rewire();
             _built = true;
             UpdatePlaceholder();
@@ -152,6 +153,26 @@ namespace ShadowLens.Mock
 
         // §3 full profile-context reset: cancel any in-flight query, clear stale UI, default mode, READY.
         // Preserves the underlying signed session/verification (a fresh fixture session is loaded per profile).
+        // §8 presenter shortcut — one tap resets the WHOLE demo to the Banking READY state (cancels
+        // any query, clears answer/citations/LAST ACTION/focus + tamper/audit, default mode). Safe
+        // to hit between runs. Deterministic + offline (no network / no LLM).
+        public void PresenterReset()
+        {
+            SetProfile("banking-v1");   // full context reset + banking artifact + READY
+            Debug.Log("[spatial-agent] PRESENTER_RESET → banking READY");
+        }
+
+        void BuildPresenterControls()
+        {
+            // A distinct, always-visible presenter button (top-right corner of the HUD canvas).
+            var root = Layout != null ? Layout.Canvas.transform : transform;
+            var go = new GameObject("Btn_PresenterReset", typeof(Image), typeof(Button)); go.transform.SetParent(root, false);
+            go.GetComponent<Image>().color = ShadowDesignTokens.Warning;
+            var rt = go.GetComponent<RectTransform>(); rt.anchorMin = rt.anchorMax = rt.pivot = new Vector2(1, 1); rt.anchoredPosition = new Vector2(-14, -14); rt.sizeDelta = new Vector2(150, 34);
+            Centered(go.transform, "⟲ Reset Demo", 15, ShadowDesignTokens.Background);
+            var b = go.GetComponent<Button>(); b.onClick.RemoveAllListeners(); b.onClick.AddListener(PresenterReset);
+        }
+
         public void SetProfile(string profile)
         {
             if (_controller != null) _controller.Cancel();

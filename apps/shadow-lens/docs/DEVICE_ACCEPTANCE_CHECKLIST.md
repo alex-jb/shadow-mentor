@@ -14,3 +14,27 @@ Mark DEVICE-VALIDATED only for the exact phone / firmware / SDK tested — never
 - [ ] Reset restores pristine verified state
 - [ ] Voice: push-to-talk; on-device path when available; closed-command routing; no audio retained
 - [ ] Full flow runs twice without crash
+
+---
+
+## Wednesday stage acceptance (2026-07-22)
+
+**Guaranteed (deterministic, offline) — must pass before stage:**
+- [ ] Stable Mock APK installs + launches on the Beam Pro (`install-apk.sh`).
+- [ ] Opens in Banking · READY; FIXTURE MODEL + REAL SIGNED labels visible; one status row.
+- [ ] Banking grounded query highlights the B0L1 source; `LAST ACTION: … — EXECUTED`.
+- [ ] Verify → SEALED · VERIFIED; Tamper → TAMPERED; Reset works.
+- [ ] Profile switch to Data Science (no loan/DTI) and Coding (no banking/model) rebuilds the artifact.
+- [ ] Presenter ⟲ Reset Demo returns to Banking READY.
+- [ ] Works in airplane mode (no network, no live LLM).
+- [ ] Desktop backup recording captured (`DESKTOP_BACKUP_RECORDING.md`).
+
+**DEVICE VALIDATION PENDING — do NOT claim on stage until the Beam Pro produces real evidence:**
+- [ ] XREAL SDK version identified in the capability report (candidate APK).
+- [ ] Eye RGB preview / still capture producing a non-black frame with a changing timestamp.
+- [ ] 6DoF positional translation observed.
+- [ ] On-device OCR source_map from a real captured frame.
+- [ ] On-device voice recognition (push-to-talk) routing a command.
+
+The XREAL candidate APK is labeled **XREAL SDK COMPILED / DEVICE VALIDATION PENDING** — Eye, 6DoF,
+and RGB capture stay unclaimed until the above are checked on hardware.

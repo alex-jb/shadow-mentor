@@ -203,6 +203,31 @@ namespace ShadowLens.Tests.PlayMode
             yield return null;
             StringAssert.Contains("selection", _panel.FocusText); // focus_object selection visible
         }
+
+        // ── §7/§8 stage mode ──
+        [Test] public void PresenterReset_FromAnyProfile_ReturnsToBankingReady()
+        {
+            _panel.SetProfile("coding-agent-v1");
+            _panel.RunQuery("which change fixed the duplicate EventSystem?");
+            _panel.PresenterReset();
+            Assert.AreEqual("banking-v1", _view.ActiveProfile, "presenter reset must return to Banking");
+            Assert.IsTrue(_view.BankingDocumentActive);
+            Assert.AreEqual(0, _panel.CitationCount);
+            Assert.AreEqual("LAST ACTION: —", _panel.LastActionText);
+            Assert.AreEqual(MockState.Ready, _view.State);
+        }
+
+        [Test] public void StatusRow_ShowsFixtureAndRealSignedLabels()
+        {
+            bool fixture = false, signed = false;
+            foreach (var t in Object.FindObjectsByType<UnityEngine.UI.Text>(FindObjectsSortMode.None))
+            {
+                if (t.text != null && t.text.Contains("MODEL: FIXTURE")) fixture = true;
+                if (t.text != null && t.text.Contains("SESSION: REAL SIGNED")) signed = true;
+            }
+            Assert.IsTrue(fixture, "the FIXTURE MODEL label must be visible on stage");
+            Assert.IsTrue(signed, "the REAL SIGNED session label must be visible");
+        }
     }
 }
 #endif
