@@ -41,3 +41,41 @@ reason line per voice.
   reads "prepared offline — launched separately." Never a network error on stage.
 - The 3D semantic model must return to **Banking READY** after Reset from any state, with no
   duplicated panels and no stale dominant voice.
+
+## Automatic bootstrap (Wednesday: no manual component wiring)
+`ShadowLensRuntimeBootstrap` boots the guided stage automatically + deterministically — no dragging
+components, binding buttons, or saving a scene by hand.
+
+- **Path:** `AutoBoot` (RuntimeInitializeOnLoad, once) → `Awake` (singleton guard) → `BuildHierarchy` →
+  `TryEnsureGuidedStage(root)`. If the stage initializes to READY, `GuidedStageActive = true` and the
+  legacy UI is **not** built (no overlap). `useGuidedStage` (default true) can be turned off to force
+  the legacy MockView/panel.
+- **Idempotency:** the stage is fetched with `GetComponent<ShadowStageController>()` first and only
+  `AddComponent`ed if absent; `Build()` is `_built`-guarded; `OnState` registers once and is removed in
+  `OnDestroy`. Calling `BuildHierarchy` again creates no second stage / `StageWorld` / `ShadowStageHUD`
+  / `EventSystem`. Reset never instantiates a new root.
+- **Legacy fallback:** if guided-stage init throws, it logs **one** material error (never per-frame,
+  never re-thrown), destroys the half-built stage, and falls back to the legacy MockView + spatial
+  panel. Working legacy objects are never destroyed merely because the guided stage exists.
+- **Deterministic initial state after bootstrap:** narrative = READY · Banking · no selected voice
+  (voices hidden) · READY geometry · FIXTURE MODEL + REAL SIGNED visible · Reset Demo visible ·
+  Flow presenter = `ShadowOfflineFlowPresenter` · `network_used = false`.
+
+### Expected Play Mode hierarchy (guided path)
+```
+ShadowLensRuntimeBootstrap
+EventSystem
+XR Origin (Mock Camera)
+ShadowLensMockDemoRoot        (+ ShadowStageController)
+  ├─ ShadowStageHUD           (title · FIXTURE MODEL · REAL SIGNED · state · council-left · decision-right · Back/Next Step/Explore in Flow/⟲ Reset Demo)
+  └─ StageWorld
+       ├─ CaseNode            (central sphere = the banking case)
+       └─ Nodes/Voice_*       (5 council spheres — size=importance, distance=relevance, one plane)
+```
+
+## Test-count reconciliation (2026-07-21)
+This UX/Flow phase added exactly **+12 Node tests** (9 `shadow-flow-export` + 3 `shadow-narrative-contract`;
+isolation-verified: suite 1736 without the two files → 1748 with them). A prior report said "+21" —
+that was wrong. The bootstrap slice added **+3 Node** (`shadow-bootstrap-contract`) → **1751** total.
+Unity authored: **9 EditMode** (`ShadowNarrativeTests`) + **7 + 6 PlayMode** (`ShadowStagePlayModeTests`
++ `ShadowStageBootstrapPlayModeTests`) — authored, executed in the Unity editor, not on the Node host.
