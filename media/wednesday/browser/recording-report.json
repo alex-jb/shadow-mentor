@@ -1,0 +1,20 @@
+{
+  "videos": [
+    "shadow-verify-full-demo.webm",
+    "shadow-verify-short-demo.webm"
+  ],
+  "screenshots": [
+    "01-en-valid-evidence.png",
+    "02-en-tampered-evidence.png",
+    "03-en-verifier-valid.png",
+    "04-en-verifier-mismatch.png",
+    "05-zh-valid-evidence.png",
+    "06-zh-tampered-evidence.png",
+    "07-zh-verifier-valid.png",
+    "08-zh-verifier-mismatch.png",
+    "09-en-limitations.png",
+    "doc-1440x900-en-valid.png"
+  ],
+  "tool": "playwright",
+  "chromium": "149.0.7827.55"
+}

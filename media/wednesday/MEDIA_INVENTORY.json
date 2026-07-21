@@ -1,0 +1,238 @@
+{
+  "generated_note": "deterministic; regenerate with build-media-package.mjs",
+  "browser": "MEDIA GENERATED",
+  "unity": "CAPTURE HARNESS READY (video needs Unity Recorder + one click)",
+  "files": [
+    {
+      "path": "media/wednesday/browser/recording-report.json",
+      "sha256": "b868fe9534babf89e537a8da0e63492891fa494b74ff262e0ff8bdf6749c8717",
+      "bytes": 501,
+      "duration_s": null,
+      "resolution": null,
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "authored",
+      "locale": "en",
+      "status": "authored"
+    },
+    {
+      "path": "media/wednesday/browser/screenshots/01-en-valid-evidence.png",
+      "sha256": "280dba04cf418fe0fd00d31b118b17317502fef1d55cd4955cca1451a2833137",
+      "bytes": 83326,
+      "duration_s": null,
+      "resolution": "1280x720 (doc image 1440x900)",
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "playwright chromium 149.0.7827.55",
+      "locale": "en",
+      "status": "BROWSER-RENDERED / FIXTURE"
+    },
+    {
+      "path": "media/wednesday/browser/screenshots/02-en-tampered-evidence.png",
+      "sha256": "dcdd6a6d628422ca613e68870531884962ea964147ce1aff4f8cdcfb2ec0e6f2",
+      "bytes": 78460,
+      "duration_s": null,
+      "resolution": "1280x720 (doc image 1440x900)",
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "playwright chromium 149.0.7827.55",
+      "locale": "en",
+      "status": "BROWSER-RENDERED / FIXTURE"
+    },
+    {
+      "path": "media/wednesday/browser/screenshots/03-en-verifier-valid.png",
+      "sha256": "9874a7f85baa3ca86231bac26eb0b1015f0dcb58c520102f7286a4fd752283ab",
+      "bytes": 93592,
+      "duration_s": null,
+      "resolution": "1280x720 (doc image 1440x900)",
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "playwright chromium 149.0.7827.55",
+      "locale": "en",
+      "status": "BROWSER-RENDERED / FIXTURE"
+    },
+    {
+      "path": "media/wednesday/browser/screenshots/04-en-verifier-mismatch.png",
+      "sha256": "13cdd2a74fed5177044c600cacaac2ce9b6690b8021c9d286c45de290801da37",
+      "bytes": 94782,
+      "duration_s": null,
+      "resolution": "1280x720 (doc image 1440x900)",
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "playwright chromium 149.0.7827.55",
+      "locale": "en",
+      "status": "BROWSER-RENDERED / FIXTURE"
+    },
+    {
+      "path": "media/wednesday/browser/screenshots/05-zh-valid-evidence.png",
+      "sha256": "45765a4dd77f3318275b14dc23542386619fe4306c1233ee88c72c4be76b37fa",
+      "bytes": 81840,
+      "duration_s": null,
+      "resolution": "1280x720 (doc image 1440x900)",
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "playwright chromium 149.0.7827.55",
+      "locale": "zh-CN",
+      "status": "BROWSER-RENDERED / FIXTURE"
+    },
+    {
+      "path": "media/wednesday/browser/screenshots/06-zh-tampered-evidence.png",
+      "sha256": "e04047e99e3460f7112e1646a26ccc90f9d6f43f9a4dfaadb0b6060e4678c0f0",
+      "bytes": 78467,
+      "duration_s": null,
+      "resolution": "1280x720 (doc image 1440x900)",
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "playwright chromium 149.0.7827.55",
+      "locale": "zh-CN",
+      "status": "BROWSER-RENDERED / FIXTURE"
+    },
+    {
+      "path": "media/wednesday/browser/screenshots/07-zh-verifier-valid.png",
+      "sha256": "2049d84f769ee0c383b8dad33f4a7dd724e953c8ffb01096206f92ffe849f856",
+      "bytes": 97859,
+      "duration_s": null,
+      "resolution": "1280x720 (doc image 1440x900)",
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "playwright chromium 149.0.7827.55",
+      "locale": "zh-CN",
+      "status": "BROWSER-RENDERED / FIXTURE"
+    },
+    {
+      "path": "media/wednesday/browser/screenshots/08-zh-verifier-mismatch.png",
+      "sha256": "154db3a4c1ca74d7a3278b59101285169796be2e08b0979cae5bd98cc304ebc4",
+      "bytes": 102138,
+      "duration_s": null,
+      "resolution": "1280x720 (doc image 1440x900)",
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "playwright chromium 149.0.7827.55",
+      "locale": "zh-CN",
+      "status": "BROWSER-RENDERED / FIXTURE"
+    },
+    {
+      "path": "media/wednesday/browser/screenshots/09-en-limitations.png",
+      "sha256": "28394b512d14ae252f19e076921a8039f7f6fdbc72df30f3787e36b9992048a4",
+      "bytes": 100183,
+      "duration_s": null,
+      "resolution": "1280x720 (doc image 1440x900)",
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "playwright chromium 149.0.7827.55",
+      "locale": "en",
+      "status": "BROWSER-RENDERED / FIXTURE"
+    },
+    {
+      "path": "media/wednesday/browser/screenshots/doc-1440x900-en-valid.png",
+      "sha256": "a6d972eaf8ca3869ec6f6f2e616eb62f210cebd0f4c4b18acd838359e0abdcb7",
+      "bytes": 109316,
+      "duration_s": null,
+      "resolution": "1280x720 (doc image 1440x900)",
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "playwright chromium 149.0.7827.55",
+      "locale": "en",
+      "status": "BROWSER-RENDERED / FIXTURE"
+    },
+    {
+      "path": "media/wednesday/browser/shadow-verify-full-demo.mp4",
+      "sha256": "42d0c951aa5b1fc4c75371c0f32b79d7bdaedbc1b04d5735624235c34f4a3afe",
+      "bytes": 1694078,
+      "duration_s": 113.16,
+      "resolution": "1280x720 (doc image 1440x900)",
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "playwright chromium 149.0.7827.55",
+      "locale": "en+zh-CN",
+      "status": "BROWSER-RENDERED / FIXTURE"
+    },
+    {
+      "path": "media/wednesday/browser/shadow-verify-full-demo.webm",
+      "sha256": "78c1fb0b93131aa64f8988a01c0f8c6ef3f96f076ab344152becc79350b72ca8",
+      "bytes": 5496001,
+      "duration_s": 113.16,
+      "resolution": "1280x720 (doc image 1440x900)",
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "playwright chromium 149.0.7827.55",
+      "locale": "en+zh-CN",
+      "status": "BROWSER-RENDERED / FIXTURE"
+    },
+    {
+      "path": "media/wednesday/browser/shadow-verify-short-demo.mp4",
+      "sha256": "569ab164db1ecbffa747914e171a6f217c0f39773e9e7bb41abf979f25268bf5",
+      "bytes": 853724,
+      "duration_s": 64.04,
+      "resolution": "1280x720 (doc image 1440x900)",
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "playwright chromium 149.0.7827.55",
+      "locale": "en+zh-CN",
+      "status": "BROWSER-RENDERED / FIXTURE"
+    },
+    {
+      "path": "media/wednesday/browser/shadow-verify-short-demo.webm",
+      "sha256": "729e235fff5a4bb1647e1b89f03cd11b586d8706cd503d1a10511e2346cf03af",
+      "bytes": 3155054,
+      "duration_s": 64.04,
+      "resolution": "1280x720 (doc image 1440x900)",
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "playwright chromium 149.0.7827.55",
+      "locale": "en+zh-CN",
+      "status": "BROWSER-RENDERED / FIXTURE"
+    },
+    {
+      "path": "media/wednesday/narration/full-demo.en.md",
+      "sha256": "ea2304388546faace75edff037b1d58723e1e0d1bf8c726238f329086073339f",
+      "bytes": 1376,
+      "duration_s": null,
+      "resolution": null,
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "authored",
+      "locale": "en",
+      "status": "authored"
+    },
+    {
+      "path": "media/wednesday/narration/full-demo.en.srt",
+      "sha256": "2ccd52893801cd88d25b2d9f9cd0b0286fc55080328d142dc2930bf12e8bb921",
+      "bytes": 877,
+      "duration_s": null,
+      "resolution": null,
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "authored",
+      "locale": "en",
+      "status": "authored"
+    },
+    {
+      "path": "media/wednesday/narration/full-demo.zh-CN.md",
+      "sha256": "fcadfd4f0c307bcd1f18884410a92c2adf627113391e8fbcba9cf6e506da8c91",
+      "bytes": 1221,
+      "duration_s": null,
+      "resolution": null,
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "authored",
+      "locale": "zh-CN",
+      "status": "authored"
+    },
+    {
+      "path": "media/wednesday/narration/full-demo.zh-CN.srt",
+      "sha256": "31a181f6208f14c1b996a6ac58513491c7d3e4ed39e00d8f430d3f00e379e43e",
+      "bytes": 873,
+      "duration_s": null,
+      "resolution": null,
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "authored",
+      "locale": "zh-CN",
+      "status": "authored"
+    },
+    {
+      "path": "media/wednesday/narration/short-demo.en.md",
+      "sha256": "69fbd8ef1f042b8c2533617cd603941884ee9144bb03c93f1e699ca4f75b68bd",
+      "bytes": 333,
+      "duration_s": null,
+      "resolution": null,
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "authored",
+      "locale": "en",
+      "status": "authored"
+    },
+    {
+      "path": "media/wednesday/narration/short-demo.zh-CN.md",
+      "sha256": "f0fd2590b0ae0be66e42f9237a8a7776f39e17a611b8567314445aa85ff19923",
+      "bytes": 293,
+      "duration_s": null,
+      "resolution": null,
+      "source_commit": "browser-acceptance 9e0385c (verifier) / capture branch",
+      "capture_tool": "authored",
+      "locale": "zh-CN",
+      "status": "authored"
+    }
+  ]
+}
