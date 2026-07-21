@@ -1,0 +1,35 @@
+{
+  "$comment": "Shared semantic spatial tokens for Unity + Three.js. Every state carries text + shape/icon + colour + accessible description — NEVER colour alone. Generate Unity constants and CSS/JS tokens from this file.",
+  "version": "shadow-spatial-tokens/1",
+  "status": {
+    "VERIFIED":     { "text": "VERIFIED",     "text_zh": "已验证",   "shape": "icosahedron", "icon": "check",   "color": "#4ade80", "a11y": "verified — record matches the sealed evidence" },
+    "TAMPERED":     { "text": "TAMPERED",     "text_zh": "已篡改",   "shape": "octahedron",  "icon": "alert",   "color": "#ef4444", "a11y": "tampered — the mutated node; verification fails here" },
+    "NOT_VERIFIED": { "text": "NOT VERIFIED", "text_zh": "未验证",   "shape": "box",         "icon": "dash",    "color": "#8a92a0", "a11y": "not verified — downstream of a tamper; frozen" },
+    "NOT_CHECKED":  { "text": "NOT CHECKED",  "text_zh": "未检查",   "shape": "box",         "icon": "question","color": "#fbbf24", "a11y": "not checked in this pass" },
+    "NOT_PRESENT":  { "text": "NOT PRESENT",  "text_zh": "不存在",   "shape": "ring",        "icon": "empty",   "color": "#8a92a0", "a11y": "not present in the bundle" },
+    "UNSUPPORTED":  { "text": "UNSUPPORTED",  "text_zh": "不支持",   "shape": "box",         "icon": "block",   "color": "#fbbf24", "a11y": "unsupported by this verifier" }
+  },
+  "verification_checks": ["record_integrity", "signature", "hash_chain", "profile", "source_resolution", "external_anchor"],
+  "analytical_correctness": { "value": "NOT_EVALUATED", "text": "NOT EVALUATED", "text_zh": "不评估", "a11y": "analytical correctness is not judged by the verifier" },
+  "node_type_shape": {
+    "$note": "shape encodes STATUS, not type; type is shown by LABEL + icon glyph, not by a colour.",
+    "source": "disc", "snapshot": "disc", "evidence": "diamond", "claim": "hex", "recommendation": "pill", "signature": "seal", "audit_record": "ledger",
+    "dataset": "disc", "feature": "diamond", "model": "hex", "metric": "pill", "experiment": "flask",
+    "issue": "ticket", "tool_call": "wrench", "diff": "diff", "test": "beaker", "commit": "commit"
+  },
+  "edge_type": {
+    "SUPPORTS":     { "line": "solid",  "color": "#556", "a11y": "supports" },
+    "CONTRADICTS":  { "line": "dashed", "color": "#ef4444", "a11y": "contradicts" },
+    "DERIVED_FROM": { "line": "solid",  "color": "#556", "a11y": "derived from" },
+    "APPLIES_POLICY": { "line": "dotted", "color": "#60a5fa", "a11y": "applies policy" },
+    "CHALLENGED_BY": { "line": "dashdot", "color": "#fbbf24", "a11y": "challenged by" },
+    "SEALED_BY":    { "line": "double", "color": "#4ade80", "a11y": "sealed by signature" },
+    "SUPERSEDES":   { "line": "arrow",  "color": "#8a92a0", "a11y": "supersedes" }
+  },
+  "provenance_mode": { "FIXTURE": { "text": "FIXTURE MODEL", "text_zh": "测试模型", "color": "#fbbf24" }, "LIVE": { "text": "LIVE MODEL", "text_zh": "实时模型", "color": "#60a5fa" }, "DEVICE": { "text": "DEVICE", "text_zh": "设备", "color": "#4ade80" } },
+  "surface": { "panel": "#14181e", "panel_border": "#232830", "scrim_alpha_over_passthrough": 0.86, "focus_ring": "#60a5fa", "selected": "#172232" },
+  "text_hierarchy": { "hero": 26, "subhead": 18, "body": 15, "seq_mono": 13, "note": 11, "mono_font": "ui-monospace" },
+  "depth": { "primary_work_plane_m": 2.0, "context_layer_m_range": [1.5, 3.0], "audit_trajectory_layer_m": 2.2, "$note": "HYPOTHESES — measure on One Pro before treating as truth" },
+  "animation": { "transition_ms": 220, "cascade_reveal_ms": 400, "reduced_motion": { "transition_ms": 0, "cascade_reveal_ms": 0, "$note": "reduced-motion: no tween, instant state; no continuous decoration" } },
+  "spatial_hypotheses": { "$note": "NOT Beam Pro measurements — device-validation-pending", "min_text_x_height_deg": 0.2, "min_interactive_target_deg": 1.5, "text_plate_contrast_min": "5:1", "content_safe_zone_deg": { "horizontal": 20, "vertical": 12 }, "head_comfort_deg": { "horizontal": 30, "vertical_up": 15, "vertical_down": 20 }, "motion_to_photon_ms_max": 20 }
+}

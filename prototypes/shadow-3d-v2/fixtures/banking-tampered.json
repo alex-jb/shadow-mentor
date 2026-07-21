@@ -1,0 +1,270 @@
+{
+  "scene_version": "shadow-3d-scene-v1",
+  "profile_id": "banking-v1",
+  "profile_version": "1.0",
+  "bundle_id": "banking-v1-fixture",
+  "bundle_hash": "40b09b8c54863e5edae88e16902636edb95350bb10f9a99446ef11bb0026d1f5",
+  "status_mode": "FIXTURE",
+  "view_mode": "audit",
+  "layout_mode": "arc",
+  "layout_seed": 20260721,
+  "nodes": [
+    {
+      "id": "banking-v1:n0:source",
+      "type": "source",
+      "sequence": 0,
+      "timestamp": null,
+      "status": "VERIFIED",
+      "claim_ids": [],
+      "evidence_ids": [],
+      "source_ids": [
+        "banking-v1:src0"
+      ],
+      "agent": "loan-council",
+      "tool": null,
+      "model": null,
+      "label_short": "Loan file",
+      "label_full": "Loan file (seq 0, source)",
+      "accessibility": "source at sequence 0: Loan file, status VERIFIED",
+      "label_priority": "P2",
+      "focus_state": false,
+      "selected_state": false,
+      "expanded_state": false,
+      "layout_hint": {
+        "ring": 0.9,
+        "angle_deg": -60,
+        "height": -0.35,
+        "column": 0
+      },
+      "evidence_ref": "banking-v1:src0"
+    },
+    {
+      "id": "banking-v1:n1:snapshot",
+      "type": "snapshot",
+      "sequence": 1,
+      "timestamp": null,
+      "status": "VERIFIED",
+      "claim_ids": [],
+      "evidence_ids": [],
+      "source_ids": [],
+      "agent": "loan-council",
+      "tool": null,
+      "model": null,
+      "label_short": "Intake snapshot",
+      "label_full": "Intake snapshot (seq 1, snapshot)",
+      "accessibility": "snapshot at sequence 1: Intake snapshot, status VERIFIED",
+      "label_priority": "P2",
+      "focus_state": false,
+      "selected_state": false,
+      "expanded_state": false,
+      "layout_hint": {
+        "ring": 0.9,
+        "angle_deg": -40,
+        "height": -0.35,
+        "column": 1
+      },
+      "evidence_ref": null
+    },
+    {
+      "id": "banking-v1:n2:evidence",
+      "type": "evidence",
+      "sequence": 2,
+      "timestamp": null,
+      "status": "VERIFIED",
+      "claim_ids": [],
+      "evidence_ids": [
+        "banking-v1:ev2"
+      ],
+      "source_ids": [],
+      "agent": "loan-council",
+      "tool": null,
+      "model": null,
+      "label_short": "DTI / FICO / LTV",
+      "label_full": "DTI / FICO / LTV (seq 2, evidence)",
+      "accessibility": "evidence at sequence 2: DTI / FICO / LTV, status VERIFIED",
+      "label_priority": "P1",
+      "focus_state": false,
+      "selected_state": false,
+      "expanded_state": false,
+      "layout_hint": {
+        "ring": 0.9,
+        "angle_deg": -20,
+        "height": -0.35,
+        "column": 2
+      },
+      "evidence_ref": null
+    },
+    {
+      "id": "banking-v1:n3:claim",
+      "type": "claim",
+      "sequence": 3,
+      "timestamp": null,
+      "status": "TAMPERED",
+      "claim_ids": [
+        "banking-v1:claim0"
+      ],
+      "evidence_ids": [],
+      "source_ids": [],
+      "agent": "loan-council",
+      "tool": null,
+      "model": null,
+      "label_short": "Council claims",
+      "label_full": "Council claims (seq 3, claim)",
+      "accessibility": "claim at sequence 3: Council claims, status TAMPERED — the mutated node",
+      "label_priority": "P0",
+      "focus_state": false,
+      "selected_state": false,
+      "expanded_state": false,
+      "layout_hint": {
+        "ring": 0.9,
+        "angle_deg": 0,
+        "height": -0.35,
+        "column": 3
+      },
+      "evidence_ref": null
+    },
+    {
+      "id": "banking-v1:n4:recommendation",
+      "type": "recommendation",
+      "sequence": 4,
+      "timestamp": null,
+      "status": "NOT_VERIFIED",
+      "claim_ids": [],
+      "evidence_ids": [],
+      "source_ids": [],
+      "agent": "loan-council",
+      "tool": null,
+      "model": null,
+      "label_short": "REVIEW",
+      "label_full": "REVIEW (seq 4, recommendation)",
+      "accessibility": "recommendation at sequence 4: REVIEW, status NOT VERIFIED — downstream of the tamper",
+      "label_priority": "P1",
+      "focus_state": false,
+      "selected_state": false,
+      "expanded_state": false,
+      "layout_hint": {
+        "ring": 0.9,
+        "angle_deg": 20,
+        "height": -0.35,
+        "column": 4
+      },
+      "evidence_ref": null
+    },
+    {
+      "id": "banking-v1:n5:signature",
+      "type": "signature",
+      "sequence": 5,
+      "timestamp": null,
+      "status": "NOT_VERIFIED",
+      "claim_ids": [],
+      "evidence_ids": [],
+      "source_ids": [],
+      "agent": "loan-council",
+      "tool": null,
+      "model": null,
+      "label_short": "Ed25519 seal",
+      "label_full": "Ed25519 seal (seq 5, signature)",
+      "accessibility": "signature at sequence 5: Ed25519 seal, status NOT VERIFIED — downstream of the tamper",
+      "label_priority": "P2",
+      "focus_state": false,
+      "selected_state": false,
+      "expanded_state": false,
+      "layout_hint": {
+        "ring": 0.9,
+        "angle_deg": 40,
+        "height": -0.35,
+        "column": 5
+      },
+      "evidence_ref": null
+    },
+    {
+      "id": "banking-v1:n6:audit_record",
+      "type": "audit_record",
+      "sequence": 6,
+      "timestamp": null,
+      "status": "NOT_VERIFIED",
+      "claim_ids": [],
+      "evidence_ids": [],
+      "source_ids": [],
+      "agent": "loan-council",
+      "tool": null,
+      "model": null,
+      "label_short": "Audit record",
+      "label_full": "Audit record (seq 6, audit_record)",
+      "accessibility": "audit_record at sequence 6: Audit record, status NOT VERIFIED — downstream of the tamper",
+      "label_priority": "P2",
+      "focus_state": false,
+      "selected_state": false,
+      "expanded_state": false,
+      "layout_hint": {
+        "ring": 0.9,
+        "angle_deg": 60,
+        "height": -0.35,
+        "column": 6
+      },
+      "evidence_ref": null
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "type": "DERIVED_FROM",
+      "from": "banking-v1:n1:snapshot",
+      "to": "banking-v1:n0:source",
+      "direction": "backward"
+    },
+    {
+      "id": "e2",
+      "type": "DERIVED_FROM",
+      "from": "banking-v1:n2:evidence",
+      "to": "banking-v1:n1:snapshot",
+      "direction": "backward"
+    },
+    {
+      "id": "e3",
+      "type": "DERIVED_FROM",
+      "from": "banking-v1:n3:claim",
+      "to": "banking-v1:n2:evidence",
+      "direction": "backward"
+    },
+    {
+      "id": "e4",
+      "type": "DERIVED_FROM",
+      "from": "banking-v1:n4:recommendation",
+      "to": "banking-v1:n3:claim",
+      "direction": "backward"
+    },
+    {
+      "id": "e5",
+      "type": "SEALED_BY",
+      "from": "banking-v1:n5:signature",
+      "to": "banking-v1:n4:recommendation",
+      "direction": "backward"
+    },
+    {
+      "id": "e6",
+      "type": "DERIVED_FROM",
+      "from": "banking-v1:n6:audit_record",
+      "to": "banking-v1:n5:signature",
+      "direction": "backward"
+    }
+  ],
+  "tamper": {
+    "failed_sequence": 3,
+    "reason": "prev_hash_mismatch",
+    "downstream_sequences": [
+      4,
+      5,
+      6
+    ]
+  },
+  "verification": {
+    "record_integrity": "FAILED",
+    "signature": "FAILED",
+    "hash_chain": "FAILED",
+    "profile": "VERIFIED",
+    "source_resolution": "NOT_PRESENT",
+    "external_anchor": "NOT_PRESENT",
+    "analytical_correctness": "NOT_EVALUATED"
+  }
+}
