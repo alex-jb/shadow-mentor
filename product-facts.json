@@ -54,6 +54,9 @@
     { "id": "proxy-detection", "status": "host-tested" },
     { "id": "otel-third-party-ingestion-structural", "status": "host-tested", "note": "structural only — seals a vendor agent's trace; semantic audit of ingested content is device-pending (see auditIngestedOutput)" },
     { "id": "offline-html-verifier", "status": "host-tested" },
+    { "id": "verifier-self-trust-manifest", "status": "host-tested", "note": "signed release manifest (fixture-signed); page reports ASSETS MATCH SIGNED MANIFEST vs INDEPENDENT COMPARISON NOT PERFORMED — self-hash alone is NOT presented as trust" },
+    { "id": "verify-bilingual-en-zh", "status": "host-tested", "note": "EN + 简体中文 locale parity tested; localization never alters bundle hash / quotes / signatures / verdict" },
+    { "id": "verify-untrusted-input-hardening", "status": "host-tested", "note": "safe parse (size/depth/node limits + prototype-pollution reject) + HTML escape + citation-link allowlist" },
     { "id": "mcp-server-11-tools", "status": "host-tested" },
     { "id": "brier-calibration-tracking", "status": "host-tested", "note": "post-hoc; n<100; NOT a production coverage certificate" }
   ],
@@ -64,7 +67,8 @@
     { "id": "claim-evidence-graph", "status": "source-authored", "note": "shared fact source for Shadow / Unity / Flow / verifier" },
     { "id": "conformal-abstention", "status": "research-pilot", "note": "RESEARCH-GRADE coverage evaluation only; NOT production-certified; n<100 forces heavy abstention" },
     { "id": "xr-audit-arc-3d", "status": "unity-authored", "note": "reuses SpatialLayout.AuditArc/VerificationCascade; device validation pending Beam Pro" },
-    { "id": "head-directed-focus", "status": "unity-authored", "note": "HEAD-DIRECTED FOCUS via XRI gaze interactor abstraction; hover/highlight only; NOT eye tracking; no dwell approval" }
+    { "id": "head-directed-focus", "status": "unity-authored", "note": "HEAD-DIRECTED FOCUS via XRI gaze interactor abstraction; hover/highlight only; NOT eye tracking; no dwell approval" },
+    { "id": "verify-browser-rendered", "status": "browser-pending", "note": "verify.html authored + structurally contract-tested; not rendered on the build host. FIXTURE-signed manifest, NOT production-signed." }
   ],
 
   "forbidden_claims": [
