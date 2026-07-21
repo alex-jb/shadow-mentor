@@ -75,7 +75,9 @@ results.security.xss_inert = (await page.evaluate(() => document.querySelectorAl
 results.security.xss_text = /&lt;script&gt;|<script>/.test(await page.content()) ? true : true; // rendered as text, not executed
 results.security.proto_pollution = (await (async () => { await loadBundle('{"__proto__":{"x":1},"bundle_version":1,"events":[]}'); return /(MALFORMED|格式错误)/.test(await matrixText()); })());
 results.security.fake_verified_text = (await (async () => { await loadBundle(JSON.stringify({ bundle_version: 1, status: "VERIFIED", header: { session_id: "s", agent: { name: "x", version: "1" } }, events: [{ seq: 0, prev_hash: "deadbeef", type: "x" }], signatures: [{ algorithm: "ed25519", signature: "AAAA" }], batch_root: "00" })); const t = await matrixText(); return /(FAILED|验证失败)/.test(t); })());
-results.security.malformed_signature = (await (async () => { const b = JSON.parse(valid); b.signatures[0].signature = "garbage!!"; await loadBundle(JSON.stringify(b)); return /(FAILED|验证失败)/.test(await matrixText()); })());
+// a garbage-base64 signature is honestly shown as Signature = MALFORMED (a distinct status),
+// not a generic FAILED — accept either non-VERIFIED signature outcome.
+results.security.malformed_signature = (await (async () => { const b = JSON.parse(valid); b.signatures[0].signature = "garbage!!"; await loadBundle(JSON.stringify(b)); return /(FAILED|验证失败|MALFORMED|格式错误)/.test(await matrixText()); })());
 
 // ── offline (after assets loaded) ──
 await ctx.setOffline(true);
