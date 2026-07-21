@@ -23,7 +23,7 @@ namespace ShadowLens.Mock
         public MockState State { get; private set; } = MockState.Ready;
         public string LastAction { get; private set; } = "—";
 
-        Text _status, _trust, _decision, _lastActionText;
+        Text _status, _trust, _decision, _lastActionText, _finding;
         GameObject _srcGroup;                 // source-highlight overlay group (box+label+connector+finding)
         Transform _docWorld;
         Transform _auditCanvas;               // AuditArcRoot (world-space canvas, built in front of the camera)
@@ -35,10 +35,9 @@ namespace ShadowLens.Mock
         static readonly string[] AuditStages = { "1 Capture", "2 OCR", "3 Source Map", "4 Analysis", "5 Review", "6 Signed Bundle", "7 Verify" };
 
         static readonly (string id, string line)[] Doc = {
-            ("B0L0", "FICO Score: 706"),
-            ("B0L1", "Debt-to-Income: 0.41"),
-            ("B0L2", "Loan-to-Value: 0.83"),
-            ("B0L3", "Annual Income: $92,400"),
+            ("B0L0", "Annual income: $82,400"),
+            ("B0L1", "Debt-to-income: 0.41"),   // the cited source (CitedRow = 1, source_id B0L1)
+            ("B0L2", "Policy ceiling: 0.36"),
         };
 
         // ── test / diagnostics accessors ──
@@ -48,11 +47,14 @@ namespace ShadowLens.Mock
         public Transform AuditRootTransform => _auditCanvas;
         public int ActiveAuditNodeCount { get { int n = 0; foreach (var g in _auditNodes) if (g && g.activeInHierarchy) n++; return n; } }
 
+        public ShadowInstitutionalLayoutController Layout;
+
         void Awake() { Build(); }
 
         public void Build()
         {
             if (_built) return;
+            if (Layout == null) Layout = GetComponent<ShadowInstitutionalLayoutController>() ?? gameObject.AddComponent<ShadowInstitutionalLayoutController>();
             _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             BuildHud();
             BuildDocument();
@@ -60,51 +62,64 @@ namespace ShadowLens.Mock
             SetReady();
         }
 
-        // ── screen-space HUD ──
+        // ── chrome, built into the SHARED layout regions (no independent canvas → no overlap) ──
         void BuildHud()
         {
-            var canvasGo = new GameObject("ShadowLensHUD", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
-            canvasGo.transform.SetParent(transform, false);
-            canvasGo.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
-            var scaler = canvasGo.GetComponent<CanvasScaler>();
-            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-            scaler.referenceResolution = new Vector2(1280, 720);
-            var c = canvasGo.transform;
+            var title = Layout.Region("title");
+            MakeText(title, "TITLE", "SHADOW LENS", 26, new Vector2(0f, 1f), new Vector2(6, -6), new Color(0.85f, 0.95f, 1f), TextAnchor.UpperLeft);
+            _status = MakeText(title, "STATUS", "READY", 15, new Vector2(0f, 0f), new Vector2(6, 6), ShadowLens.Design.ShadowDesignTokens.TextSecondary, TextAnchor.LowerLeft);
 
-            MakeText(c, "TITLE", "SHADOW LENS", 40, new Vector2(0.5f, 1f), new Vector2(0, -40), new Color(0.85f, 0.95f, 1f), TextAnchor.UpperCenter);
-            _status = MakeText(c, "STATUS", "", 26, new Vector2(0.5f, 1f), new Vector2(0, -100), Color.white, TextAnchor.UpperCenter);
-            _lastActionText = MakeText(c, "LASTACTION", "LAST ACTION: —", 20, new Vector2(0.5f, 1f), new Vector2(0, -160), new Color(0.6f, 0.9f, 1f), TextAnchor.UpperCenter);
-            _trust = MakeText(c, "TRUST", "UNSIGNED", 22, new Vector2(0f, 1f), new Vector2(20, -20), new Color(0.7f, 0.7f, 0.7f), TextAnchor.UpperLeft);
-            _decision = MakeText(c, "DECISION", "", 22, new Vector2(1f, 0.5f), new Vector2(-30, 0), new Color(1f, 0.85f, 0.6f), TextAnchor.UpperRight);
+            _trust = MakeText(Layout.Region("trust"), "TRUST", "UNSIGNED", 18, new Vector2(1f, 0.5f), new Vector2(-12, 0), new Color(0.7f, 0.7f, 0.7f), TextAnchor.MiddleRight);
+            _decision = null; // the FINDING now renders inside the document footer (set in BuildDocument)
+            _lastActionText = null; // the spatial-agent panel owns the single LAST ACTION line (no duplicate)
 
-            string[] labels = { "Analyze", "Show Source", "Show Audit", "Verify", "Tamper", "Reset" };
-            System.Action[] acts = { Analyze, ShowSource, ShowAudit, Verify, Tamper, ResetView };
-            for (int i = 0; i < labels.Length; i++)
-            {
-                var btn = MakeButton(c, labels[i], new Vector2(20, 20 + i * 46), acts[i]);
-                // exactly-one-listener guarantee (defensive against a double Build)
-                if (btn.onClick.GetPersistentEventCount() == 0 && ListenerCount(btn) > 1) Debug.LogWarning($"[ShadowLens] {labels[i]} has >1 listener");
-            }
+            // §7 horizontal action rail (Analyze/Source/Audit/Verify) + separated presenter (Tamper/Reset)
+            var rail = HGroup(Layout.Region("actionRail"));
+            RailButton(rail, "Analyze", Analyze); RailButton(rail, "Show Source", ShowSource);
+            RailButton(rail, "Show Audit", ShowAudit); RailButton(rail, "Verify", Verify);
+            var pres = HGroup(Layout.Region("presenter"));
+            RailButton(pres, "Tamper", Tamper); RailButton(pres, "Reset", ResetView);
+        }
+
+        Transform HGroup(RectTransform region)
+        {
+            var go = new GameObject("Rail", typeof(RectTransform), typeof(HorizontalLayoutGroup)); go.transform.SetParent(region, false);
+            var rt = go.GetComponent<RectTransform>(); rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one; rt.offsetMin = Vector2.zero; rt.offsetMax = Vector2.zero;
+            var h = go.GetComponent<HorizontalLayoutGroup>(); h.spacing = 6; h.childControlWidth = true; h.childForceExpandWidth = true; h.childControlHeight = true; h.childForceExpandHeight = true;
+            return go.transform;
+        }
+        void RailButton(Transform parent, string label, System.Action onClick)
+        {
+            var go = new GameObject("Btn_" + label, typeof(Image), typeof(Button)); go.transform.SetParent(parent, false);
+            go.GetComponent<Image>().color = ShadowLens.Design.ShadowDesignTokens.PanelSecondary;
+            go.AddComponent<Outline>().effectColor = ShadowLens.Design.ShadowDesignTokens.Border;
+            MakeText(go.transform, "Label", label, 15, new Vector2(0.5f, 0.5f), Vector2.zero, ShadowLens.Design.ShadowDesignTokens.TextPrimary, TextAnchor.MiddleCenter);
+            var b = go.GetComponent<Button>(); b.onClick.RemoveAllListeners(); b.onClick.AddListener(() => onClick());
         }
 
         // ── world-space "frozen document" ~1.6 m in front of the camera ──
         void BuildDocument()
         {
             var cam = Camera.main;
-            var pos = cam != null ? cam.transform.position + cam.transform.forward * 1.6f - cam.transform.up * 0.1f : new Vector3(0, 1.4f, -1.6f);
+            // Larger + slightly closer for headset readability, positioned toward the left of view.
+            var pos = cam != null ? cam.transform.position + cam.transform.forward * 1.45f + cam.transform.right * -0.18f - cam.transform.up * 0.05f : new Vector3(-0.2f, 1.45f, -1.45f);
             var docGo = new GameObject("FrozenDocumentPlane", typeof(Canvas));
             docGo.transform.SetParent(transform, false);
             docGo.transform.position = pos;
             if (cam != null) docGo.transform.rotation = Quaternion.LookRotation(pos - cam.transform.position, cam.transform.up);
             docGo.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
             var rt = docGo.GetComponent<RectTransform>();
-            rt.sizeDelta = new Vector2(600, 800); rt.localScale = Vector3.one * 0.0011f;
+            rt.sizeDelta = new Vector2(620, 820); rt.localScale = Vector3.one * 0.00165f; // ~1.0 m tall, readable
             _docWorld = docGo.transform;
 
-            var bg = MakeImage(docGo.transform, "Paper", new Color(0.97f, 0.96f, 0.93f), Vector2.zero, new Vector2(600, 800), new Vector2(0.5f, 0.5f));
-            MakeText(bg.transform, "DocTitle", "LOAN FILE — FIXTURE", 34, new Vector2(0.5f, 1f), new Vector2(0, -40), new Color(0.2f, 0.1f, 0.1f), TextAnchor.UpperCenter);
+            var bg = MakeImage(docGo.transform, "Paper", new Color(0.97f, 0.96f, 0.93f), Vector2.zero, new Vector2(620, 820), new Vector2(0.5f, 0.5f));
+            MakeText(bg.transform, "DocTitle", "LOAN APPLICATION — FIXTURE", 34, new Vector2(0.5f, 1f), new Vector2(0, -40), new Color(0.2f, 0.1f, 0.1f), TextAnchor.UpperCenter);
             for (int i = 0; i < Doc.Length; i++)
-                MakeText(bg.transform, "Line" + i, $"{Doc[i].id}   {Doc[i].line}", 30, new Vector2(0f, 1f), new Vector2(40, -120 - i * 60), new Color(0.12f, 0.12f, 0.12f), TextAnchor.UpperLeft);
+                MakeText(bg.transform, "Line" + i, $"{Doc[i].id}   {Doc[i].line}", 32, new Vector2(0f, 1f), new Vector2(40, -120 - i * 64), new Color(0.12f, 0.12f, 0.12f), TextAnchor.UpperLeft);
+
+            // the FINDING now lives in the document footer (replaces the old floating decision text)
+            _finding = MakeText(bg.transform, "Finding", "", 26, new Vector2(0f, 0f), new Vector2(40, 40), new Color(0.55f, 0.15f, 0.1f), TextAnchor.LowerLeft);
+            _finding.rectTransform.sizeDelta = new Vector2(540, 120);
 
             BuildSourceOverlay(bg.transform);
         }
@@ -140,9 +155,9 @@ namespace ShadowLens.Mock
         public void SetReady()
         {
             State = MockState.Ready;
-            _status.text = "FIXTURE MODE\nREADY TO ANALYZE";
+            _status.text = "READY";
             _trust.text = "UNSIGNED"; _trust.color = new Color(0.7f, 0.7f, 0.7f);
-            _decision.text = "";
+            if (_finding) _finding.text = "";
             if (_srcGroup) _srcGroup.SetActive(false);
             if (_auditCanvas) _auditCanvas.gameObject.SetActive(false);
         }
@@ -150,8 +165,8 @@ namespace ShadowLens.Mock
         {
             LogAction("ANALYZE");
             State = MockState.Analyzed;
-            _status.text = "ANALYZED\n1 source-bound finding";
-            _decision.text = "FINDING\nDTI 0.41 exceeds the\n0.36 policy ceiling\n(cites B0L1)";
+            _status.text = "ANALYZED · 1 source-bound finding";
+            if (_finding) _finding.text = "FINDING · DTI 0.41 exceeds the 0.36 policy ceiling (cites B0L1)";
         }
         public void ShowSource()
         {

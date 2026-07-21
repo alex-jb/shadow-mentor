@@ -25,6 +25,11 @@ namespace ShadowLens.SpatialAgent
             { ShadowFlowState.UNGROUNDED, new[] { ShadowFlowState.READY } },
         };
 
+        static readonly string[] Terminal = {
+            ShadowFlowState.READY, ShadowFlowState.DONE, ShadowFlowState.PARTIAL,
+            ShadowFlowState.FAILED, ShadowFlowState.UNGROUNDED };
+        public bool IsTerminal => Array.IndexOf(Terminal, State) >= 0;
+
         public bool CanGo(string to) => Allowed.TryGetValue(State, out var outs) && Array.IndexOf(outs, to) >= 0;
 
         public void Go(string to)
@@ -32,6 +37,23 @@ namespace ShadowLens.SpatialAgent
             if (!CanGo(to)) throw new InvalidOperationException($"illegal transition {State} -> {to}");
             State = to; OnState?.Invoke(to);
         }
+
+        // The ONLY legal way to start a query: any terminal state (READY/DONE/PARTIAL/FAILED/
+        // UNGROUNDED) → QUERYING. UI/controller code must call this, never Go("QUERYING") directly.
+        public void BeginQuery()
+        {
+            if (!IsTerminal) throw new InvalidOperationException($"cannot begin a query from non-terminal state {State}");
+            State = ShadowFlowState.QUERYING; OnState?.Invoke(State);
+        }
+
+        // Error recovery — force FAILED from ANY state so an unexpected exception can't leave the
+        // machine stuck half-way (§4). Never throws.
+        public void Fail()
+        {
+            if (State == ShadowFlowState.FAILED) return;
+            State = ShadowFlowState.FAILED; OnState?.Invoke(State);
+        }
+
         public void Reset() { State = ShadowFlowState.READY; OnState?.Invoke(State); }
     }
 }

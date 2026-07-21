@@ -165,6 +165,59 @@ namespace ShadowLens.SpatialAgent.Tests
             ctrl.Reset();
             Assert.AreEqual(ShadowFlowState.READY, ctrl.State);
         }
+
+        // ── multi-query lifecycle (the DONE -> QUERYING bug) ──
+        [Test] public void BeginQuery_LegalFromEveryTerminalState()
+        {
+            foreach (var terminal in new[] { ShadowFlowState.DONE, ShadowFlowState.PARTIAL, ShadowFlowState.FAILED, ShadowFlowState.UNGROUNDED })
+            {
+                var sm = new ShadowSpatialAgentStateMachine();
+                sm.Go(ShadowFlowState.QUERYING);
+                if (terminal == ShadowFlowState.UNGROUNDED) { sm.Go(ShadowFlowState.ANSWER_RECEIVED); sm.Go(ShadowFlowState.UNGROUNDED); }
+                else { sm.Go(ShadowFlowState.ANSWER_RECEIVED); sm.Go(ShadowFlowState.VALIDATING_ACTION); sm.Go(ShadowFlowState.EXECUTING_ACTION); sm.Go(terminal); }
+                Assert.AreEqual(terminal, sm.State);
+                Assert.DoesNotThrow(() => sm.BeginQuery());   // terminal -> QUERYING is legal
+                Assert.AreEqual(ShadowFlowState.QUERYING, sm.State);
+            }
+        }
+
+        [Test] public void BeginQuery_RejectedFromNonTerminal()
+        {
+            var sm = new ShadowSpatialAgentStateMachine();
+            sm.BeginQuery(); // READY -> QUERYING
+            Assert.Throws<System.InvalidOperationException>(() => sm.BeginQuery()); // QUERYING is not terminal
+        }
+
+        [Test] public void Fail_ForcesFailedFromAnyState()
+        {
+            var sm = new ShadowSpatialAgentStateMachine();
+            sm.BeginQuery(); sm.Go(ShadowFlowState.ANSWER_RECEIVED);
+            Assert.DoesNotThrow(() => sm.Fail());
+            Assert.AreEqual(ShadowFlowState.FAILED, sm.State);
+        }
+
+        [Test] public void TwoConsecutiveQueries_DoneThenDone_NoIllegalTransition()
+        {
+            var r = new MockRenderer();
+            var ctrl = Fx.Controller(r, _ => ShadowSpatialAgentMockTransport.Grounded("metric_auc", "AUC"));
+            string s1 = null, s2 = null;
+            ctrl.RunQuery("s", "show source", Fx.Scene(), "document", (o) => s1 = o.state);
+            Assert.AreEqual(ShadowFlowState.DONE, s1);
+            Assert.DoesNotThrow(() => ctrl.RunQuery("s", "show source again", Fx.Scene(), "document", (o) => s2 = o.state));
+            Assert.AreEqual(ShadowFlowState.DONE, s2); // DONE -> QUERYING -> ... -> DONE, no exception
+        }
+
+        [Test] public void FailedThenRetry_Works()
+        {
+            var r = new MockRenderer();
+            bool first = true;
+            var ctrl = Fx.Controller(r, _ => { if (first) { first = false; return ShadowSpatialAgentMockTransport.Unavailable(); } return ShadowSpatialAgentMockTransport.Grounded("metric_auc", "AUC"); });
+            string s1 = null, s2 = null;
+            ctrl.RunQuery("s", "show source", Fx.Scene(), "document", (o) => s1 = o.state);
+            Assert.AreEqual(ShadowFlowState.FAILED, s1);
+            ctrl.RunQuery("s", "retry", Fx.Scene(), "document", (o) => s2 = o.state); // FAILED -> QUERYING legal
+            Assert.AreEqual(ShadowFlowState.DONE, s2);
+        }
     }
 }
 #endif

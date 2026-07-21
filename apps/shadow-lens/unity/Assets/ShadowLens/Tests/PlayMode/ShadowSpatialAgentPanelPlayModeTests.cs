@@ -93,6 +93,67 @@ namespace ShadowLens.Tests.PlayMode
             Assert.AreEqual(MockState.Ready, _view.State);
             Assert.IsFalse(_view.SourceOverlayActive);
         }
+
+        // ── multi-query lifecycle (the DONE -> QUERYING bug) ──
+        [UnityTest] public IEnumerator SecondQueryAfterDone_NoException()
+        {
+            _panel.RunQuery("show the source supporting the highest-risk finding");
+            yield return null;
+            Assert.DoesNotThrow(() => _panel.RunQuery("show the source again"));
+            StringAssert.Contains("GROUNDED", _panel.GroundedText);
+        }
+
+        [Test] public void BankingThenDataScience_NoStaleCrossProfileState()
+        {
+            _panel.RunQuery("show the source supporting the highest-risk finding");
+            Assert.GreaterOrEqual(_panel.CitationCount, 1);
+            _panel.SetProfile("data-science-v1");
+            Assert.AreEqual("LAST ACTION: —", _panel.LastActionText); // stale banking LAST ACTION cleared
+            Assert.AreEqual(0, _panel.CitationCount);                 // old citations cleared
+            StringAssert.Contains("Ask a grounded question", _panel.AnswerText);
+        }
+
+        [Test] public void DataScienceThenCoding_SwitchesCleanly()
+        {
+            _panel.SetProfile("data-science-v1");
+            _panel.RunQuery("why was this model selected?");
+            _panel.SetProfile("coding-agent-v1");
+            Assert.AreEqual(0, _panel.CitationCount);
+            Assert.AreEqual("", _panel.FocusText);
+        }
+
+        // ── layout (no overlap of the key screen regions) ──
+        [Test] public void ProfileSelector_DoesNotOverlapTitleOrTrust()
+        {
+            var lay = _boot.LayoutController;
+            Assert.IsFalse(lay.Overlaps("profile", "title"), "profile selector overlaps the title");
+            Assert.IsFalse(lay.Overlaps("profile", "trust"), "profile selector overlaps the trust bar");
+        }
+
+        [Test] public void PrimaryRegions_DoNotOverlap()
+        {
+            var lay = _boot.LayoutController;
+            Assert.IsFalse(lay.Overlaps("answer", "query"));
+            Assert.IsFalse(lay.Overlaps("actionRail", "query"));
+            Assert.IsFalse(lay.Overlaps("status", "actionRail"));
+            Assert.IsFalse(lay.Overlaps("document", "answer"));
+        }
+
+        [Test] public void ExactlyOneLastActionLabel()
+        {
+            int n = 0;
+            foreach (var t in Object.FindObjectsByType<UnityEngine.UI.Text>(FindObjectsSortMode.None))
+                if (t.text != null && t.text.StartsWith("LAST ACTION")) n++;
+            Assert.AreEqual(1, n, "there must be exactly one LAST ACTION label (no duplicate)");
+        }
+
+        [Test] public void ProfileLabelsAreUserFacing_NotRawIds()
+        {
+            bool sawRawId = false;
+            foreach (var t in Object.FindObjectsByType<UnityEngine.UI.Text>(FindObjectsSortMode.None))
+                if (t.text == "banking-v1" || t.text == "data-science-v1" || t.text == "coding-agent-v1") sawRawId = true;
+            Assert.IsFalse(sawRawId, "raw profile ids must not be shown; use BANKING / DATA SCIENCE / CODING AGENT");
+        }
     }
 }
 #endif

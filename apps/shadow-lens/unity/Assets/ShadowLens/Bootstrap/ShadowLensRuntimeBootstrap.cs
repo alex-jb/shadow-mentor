@@ -41,6 +41,7 @@ namespace ShadowLens.Bootstrap
         void OnDestroy() { if (_instance == this) _instance = null; }
 
         public ShadowSpatialAgentPanel SpatialPanel { get; private set; }
+        public ShadowInstitutionalLayoutController LayoutController { get; private set; }
 
         // Idempotent: reuses existing critical objects instead of appending new ones.
         public void BuildHierarchy()
@@ -48,8 +49,14 @@ namespace ShadowLens.Bootstrap
             EnsureEventSystem();
             EnsureCamera();
             var root = EnsureRoot();
+            // ONE shared layout authority, created BEFORE the view/panel so both build into its
+            // regions (no independent canvases → no overlap). MockView.Build finds it via GetComponent.
+            LayoutController = root.GetComponent<ShadowInstitutionalLayoutController>();
+            if (LayoutController == null) LayoutController = root.gameObject.AddComponent<ShadowInstitutionalLayoutController>();
+
             View = root.GetComponent<ShadowLensMockView>();
             if (View == null) View = root.gameObject.AddComponent<ShadowLensMockView>();
+            View.Layout = LayoutController;
             View.Build();
             EnsureSpatialPanel(root);            // Gate 2 — additive; does NOT touch the existing view/buttons
             if (autoRunOnStart) View.Analyze();
@@ -61,6 +68,7 @@ namespace ShadowLens.Bootstrap
             SpatialPanel = root.GetComponent<ShadowSpatialAgentPanel>();
             if (SpatialPanel == null) SpatialPanel = root.gameObject.AddComponent<ShadowSpatialAgentPanel>();
             SpatialPanel.View = View;
+            SpatialPanel.Layout = LayoutController;   // shared layout authority (no independent canvas)
             SpatialPanel.Build();
         }
 
