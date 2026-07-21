@@ -37,3 +37,6 @@ apps/shadow-lens/unity/Assets/ShadowLens/Scenes/ShadowLensMockDemo.unity.meta
 apps/shadow-lens/demo/wednesday/frozen/
 apps/shadow-lens/demo/wednesday/logs/
 apps/shadow-lens/demo/wednesday/backup/
+apps/shadow-lens/unity/Build/
+apps/shadow-lens/unity/.utmp/
+builds/
