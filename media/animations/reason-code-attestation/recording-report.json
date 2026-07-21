@@ -1,0 +1,18 @@
+{
+  "tool": "playwright",
+  "chromium": "149.0.7827.55",
+  "viewports": {
+    "1280x720": 0,
+    "1440x900": 0,
+    "390x844": 0
+  },
+  "console_errors": [],
+  "external_requests": [],
+  "csp_violations": [],
+  "scenario_first_fail": {
+    "en-pristine": null,
+    "dictionary_modified": "Dictionary hash",
+    "reason_replaced": "Reason code exists",
+    "evidence_removed": "Evidence references"
+  }
+}
