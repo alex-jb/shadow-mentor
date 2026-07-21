@@ -31,7 +31,7 @@ Full-catalog matrix — one skill per Shadow persona plus one for the aggregate 
 
 ## Why skills, not just an MCP server?
 
-The MCP server (`bin/install.mjs --host <name>`) is the primary integration path — it exposes 6 tools Claude can invoke. But installing an MCP server requires running a Node process on the user's machine.
+The MCP server (`bin/install.mjs --host <name>`) is the primary integration path — it exposes 11 tools Claude can invoke (see `product-facts.json` → `mcp_tools`). But installing an MCP server requires running a Node process on the user's machine.
 
 Skills are lighter: they're just system-prompt-shaped documents users can install with one command. Perfect for:
 

@@ -1,0 +1,107 @@
+{
+  "$comment": "CANONICAL PRODUCT FACTS — single source of truth. README, llms.txt, index.html, skills/README, and presentation copy are validated against this by test/product-facts-drift.test.js. Change a fact HERE, then let the drift guard tell you which surfaces still disagree. Do not hand-edit a number in six places.",
+  "product_name": "Shadow",
+  "positioning": "Independent evidence and decision audit layer for AI systems",
+  "one_line": "Cryptographic evidence + independent audit layer for AI decisions — signs, grounds, and adversarially checks what an agent (yours or a third party's) actually decided.",
+  "council_voice_count": 5,
+  "tool_count": 11,
+  "mcp_tools": [
+    "shadow_loan_council",
+    "shadow_loan_council_typed",
+    "shadow_risk_tools",
+    "shadow_recall",
+    "shadow_calibration",
+    "shadow_scenarios",
+    "shadow_traceability",
+    "shadow_verify_attestation",
+    "shadow_banking_profile",
+    "shadow_size_position",
+    "shadow_disparity"
+  ],
+  "license": "MIT",
+  "repository": "https://github.com/alex-jb/shadow-mentor",
+
+  "regulatory_references": {
+    "$discipline": "These alias/complement rules are enforced by the drift guard. Do NOT delete a superseded standard — keep it as a searchable legacy alias with an explicit supersession note.",
+    "current": [
+      { "id": "SR 26-2", "title": "Revised Guidance on Model Risk Management", "note": "superseding SR 11-7", "supersedes": "SR 11-7" },
+      { "id": "EU AI Act Article 14", "title": "Human oversight of high-risk AI", "regulation": "Regulation (EU) 2024/1689", "note": "in force; complementary to GDPR Art. 22, NOT replaced by it" },
+      { "id": "GDPR Article 22", "title": "Automated individual decision-making", "note": "complementary to EU AI Act Art. 14 and the Schufa interpretation" },
+      { "id": "Schufa (C-634/21)", "title": "ECJ interpretation of automated credit scoring", "note": "enforceable today" },
+      { "id": "CFPB Circular 2026-03", "title": "Adverse-action reason-code specificity", "note": "AA01–AA06 mapping" },
+      { "id": "Reg B / ECOA (12 CFR 1002)", "title": "Equal Credit Opportunity / adverse action" }
+    ],
+    "legacy_aliases": [
+      { "id": "SR 11-7", "status": "superseded", "superseded_by": "SR 26-2", "keep_for": "search, migration, historical audit trail" }
+    ],
+    "scope_honesty": "SR 26-2 (like SR 11-7) currently scopes generative/agentic AI OUT of its model-risk guidance pending a future study. Shadow positions as an independent evidence layer filling that governance gap — it does NOT claim regulation already mandates it."
+  },
+
+  "capability_status_ladder": [
+    "source-authored",
+    "host-tested",
+    "unity-authored",
+    "device-pending",
+    "device-validated"
+  ],
+
+  "verified_capabilities": [
+    { "id": "deterministic-5-voice-council", "status": "host-tested", "note": "rule-based loan council; verdicts are deterministic if/else, NOT LLM-decided" },
+    { "id": "ed25519-attestation", "status": "host-tested" },
+    { "id": "hash-chain-verify", "status": "host-tested" },
+    { "id": "reason-code-dictionary-AA01-AA06", "status": "host-tested" },
+    { "id": "disparity-metrics-AIR-SMD", "status": "host-tested" },
+    { "id": "proxy-detection", "status": "host-tested" },
+    { "id": "otel-third-party-ingestion-structural", "status": "host-tested", "note": "structural only — seals a vendor agent's trace; semantic audit of ingested content is device-pending (see auditIngestedOutput)" },
+    { "id": "offline-html-verifier", "status": "host-tested" },
+    { "id": "mcp-server-11-tools", "status": "host-tested" },
+    { "id": "brier-calibration-tracking", "status": "host-tested", "note": "post-hoc; n<100; NOT a production coverage certificate" }
+  ],
+
+  "pending_capabilities": [
+    { "id": "semantic-audit-of-ingested-llm-output", "status": "source-authored", "note": "auditIngestedOutput ingestion boundary — the third-party differentiator" },
+    { "id": "registry-grounded-citation-gate-on-llm-prose", "status": "source-authored" },
+    { "id": "claim-evidence-graph", "status": "source-authored", "note": "shared fact source for Shadow / Unity / Flow / verifier" },
+    { "id": "conformal-abstention", "status": "research-pilot", "note": "RESEARCH-GRADE coverage evaluation only; NOT production-certified; n<100 forces heavy abstention" },
+    { "id": "xr-audit-arc-3d", "status": "unity-authored", "note": "reuses SpatialLayout.AuditArc/VerificationCascade; device validation pending Beam Pro" },
+    { "id": "head-directed-focus", "status": "unity-authored", "note": "HEAD-DIRECTED FOCUS via XRI gaze interactor abstraction; hover/highlight only; NOT eye tracking; no dwell approval" }
+  ],
+
+  "forbidden_claims": [
+    "eye tracking",
+    "user is looking at",
+    "6DoF (on Mock build / without hardware)",
+    "RGB capture",
+    "hand tracking",
+    "live Flow integration",
+    "guaranteed 90% correctness",
+    "certified banking decision",
+    "production-certified conformal",
+    "SR 11-7 compliant (use SR 26-2, superseding SR 11-7)"
+  ],
+
+  "confidence_semantics": {
+    "$note": "The per-voice numbers in the deterministic council (0.82 / 0.78 / 0.91 / 0.74 / 0.69) are FIXED persona priors, not model probabilities. Never render them as 'model confidence' or 'probability correct'.",
+    "deterministic_council": "persona_prior",
+    "allowed_values": ["persona_prior", "model_probability", "calibrated_probability", "fixture_score", "unknown"],
+    "ui_labels": { "persona_prior": "STANCE STRENGTH", "fixture_score": "FIXTURE SCORE", "calibrated_probability": "CALIBRATED P", "model_probability": "MODEL P" }
+  },
+
+  "fixture_versions": {
+    "banking_narrative": "shadow-banking-narrative/1.0",
+    "flow_export": "shadow-flow-export/1.0",
+    "claim_evidence_graph": "shadow-claim-evidence-graph/1.0"
+  },
+
+  "retired_narrative_terms": [
+    "intern mentor",
+    "four device clients",
+    "4 device clients",
+    "five persona packs",
+    "5 persona packs",
+    "$982K ACV",
+    "982K",
+    "XReal Air 2 Ultra",
+    "6DoF spatial AR"
+  ]
+}
