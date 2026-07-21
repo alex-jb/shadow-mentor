@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'" />
+<title>Shadow — audit chain explainer</title>
+<style>
+  :root{--bg:#0b0d10;--panel:#14181e;--bd:#232830;--text:#e6e6e6;--dim:#8a92a0;--ok:#4ade80;--bad:#ef4444;--warn:#fbbf24;--accent:#60a5fa;--mono:ui-monospace,Menlo,Consolas,monospace}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+  .wrap{max-width:920px;margin:0 auto;padding:22px 16px}
+  h1{font-size:18px;margin:0 0 4px}
+  p.sub{color:var(--dim);font-size:13px;margin:0 0 16px}
+  .bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  button{font:inherit;cursor:pointer;border-radius:7px;border:1px solid var(--bd);background:var(--panel);color:var(--text);padding:6px 12px}
+  button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  button[aria-pressed="true"]{background:var(--accent);color:#0b0d10;border-color:var(--accent)}
+  svg{width:100%;height:auto;background:var(--panel);border:1px solid var(--bd);border-radius:12px;display:block}
+  .legend{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;margin-top:14px;font-size:13px}
+  @media(max-width:620px){.legend{grid-template-columns:1fr}}
+  .legend .row{display:flex;gap:8px;align-items:center}
+  .legend .k{color:var(--dim)}
+  .note{color:var(--dim);font-size:12px;margin-top:12px}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  /* node reveal + tamper cascade — CSS only, no particles/glow. reduced-motion respected. */
+  .node{opacity:0;transition:opacity .25s ease}
+  body[data-play="true"] .node{opacity:1}
+  body[data-play="true"] .node{transition-delay:calc(var(--i)*.28s)}
+  .edge{stroke-dasharray:60;stroke-dashoffset:60;transition:stroke-dashoffset .28s linear}
+  body[data-play="true"] .edge{stroke-dashoffset:0;transition-delay:calc(var(--i)*.28s)}
+  body[data-tamper="true"] .downstream .fill{fill:var(--bad)}
+  body[data-tamper="true"] .downstream .stat{fill:var(--bad)}
+  body[data-tamper="true"] .tampered .fill{fill:var(--bad)}
+  body[data-tamper="true"] .downstream-edge{stroke:var(--bad)}
+  body[data-reduce="true"] .node,body[data-reduce="true"] .edge{transition:none!important;opacity:1;stroke-dashoffset:0}
+  @media(prefers-reduced-motion:reduce){.node,.edge{transition:none;opacity:1;stroke-dashoffset:0}}
+</style>
+</head>
+<body data-play="false" data-tamper="false" data-reduce="false">
+<div class="wrap">
+  <h1 id="t-title">How Shadow's audit chain proves integrity (not correctness)</h1>
+  <p class="sub" id="t-sub">Each decision seals into a hash-chained, Ed25519-signed provenance chain. Tamper one link and every downstream link fails — but a green chain proves the record wasn't altered, <b>not</b> that the decision was right.</p>
+  <div class="bar">
+    <button id="play" data-i="play">▶ Play</button>
+    <button id="tamper" aria-pressed="false" data-i="tamper">Tamper seq 3</button>
+    <button id="reduce" aria-pressed="false" data-i="reduce">Reduced motion</button>
+    <button id="lang-en" aria-pressed="true">EN</button>
+    <button id="lang-zh" aria-pressed="false">中文</button>
+  </div>
+  <svg viewBox="0 0 900 220" role="img" aria-labelledby="t-title" id="svg"></svg>
+  <div class="legend" id="legend"></div>
+  <p class="note" id="t-note">Self-contained · no network · no third-party code · FIXTURE illustration. Colour is backed by shape + label — status never depends on colour alone.</p>
+</div>
+<script>
+"use strict";
+const NODES = [
+  { id:"source", en:"Loan file", zh:"贷款文件", shape:"disc" },
+  { id:"snapshot", en:"Snapshot", zh:"快照", shape:"disc" },
+  { id:"evidence", en:"DTI/FICO/LTV", zh:"DTI/FICO/LTV", shape:"diamond" },
+  { id:"claim", en:"Council claim", zh:"council 声明", shape:"hex" },
+  { id:"recommendation", en:"REVIEW", zh:"REVIEW", shape:"pill" },
+  { id:"signature", en:"Ed25519 seal", zh:"Ed25519 封签", shape:"seal" },
+  { id:"audit", en:"Audit record", zh:"审计记录", shape:"ledger" },
+];
+const TAMPER_SEQ = 3;
+const I18N = {
+  en:{ title:"How Shadow's audit chain proves integrity (not correctness)", sub:"Each decision seals into a hash-chained, Ed25519-signed provenance chain. Tamper one link and every downstream link fails — but a green chain proves the record wasn't altered, not that the decision was right.", play:["▶ Play","↻ Replay"], tamper:["Tamper seq 3","Repair"], reduce:"Reduced motion", note:"Self-contained · no network · no third-party code · FIXTURE illustration. Colour is backed by shape + label — status never depends on colour alone.", verified:"VERIFIED", tampered:"TAMPERED", notver:"NOT VERIFIED", legend:{ integrity:"Record integrity", signature:"Signature", hashchain:"Hash chain", analytical:"Analytical correctness" }, notjudged:"NOT judged by the chain" },
+  zh:{ title:"Shadow 的审计链如何证明完整性(而非正确性)", sub:"每个决策封存进一条哈希链 + Ed25519 签名的溯源链。篡改任一环,其后每一环都失败——但绿色的链只证明记录未被改动,不证明决策正确。", play:["▶ 播放","↻ 重播"], tamper:["篡改序号 3","修复"], reduce:"减弱动效", note:"自足 · 无网络 · 无第三方代码 · 测试示意。颜色由形状+文字支撑——状态从不只靠颜色。", verified:"已验证", tampered:"已篡改", notver:"未验证", legend:{ integrity:"记录完整性", signature:"数字签名", hashchain:"哈希链", analytical:"分析正确性" }, notjudged:"审计链不判断" },
+};
+let LANG="en";
+const svg=document.getElementById("svg");
+function shapePath(shape,x,y,r){
+  if(shape==="disc") return `<circle class="fill" cx="${x}" cy="${y}" r="${r}"/>`;
+  if(shape==="diamond") return `<polygon class="fill" points="${x},${y-r} ${x+r},${y} ${x},${y+r} ${x-r},${y}"/>`;
+  if(shape==="hex"){let p=[];for(let k=0;k<6;k++){const a=Math.PI/6+k*Math.PI/3;p.push(`${(x+r*Math.cos(a)).toFixed(1)},${(y+r*Math.sin(a)).toFixed(1)}`);}return `<polygon class="fill" points="${p.join(" ")}"/>`;}
+  if(shape==="pill") return `<rect class="fill" x="${x-r*1.3}" y="${y-r*0.7}" width="${r*2.6}" height="${r*1.4}" rx="${r*0.7}"/>`;
+  if(shape==="seal") return `<rect class="fill" x="${x-r}" y="${y-r}" width="${r*2}" height="${r*2}" transform="rotate(45 ${x} ${y})" rx="2"/>`;
+  return `<rect class="fill" x="${x-r}" y="${y-r*0.8}" width="${r*2}" height="${r*1.6}" rx="2"/>`; // ledger
+}
+function draw(){
+  const N=NODES.length, r=17, y=88, x0=70, dx=(900-2*x0)/(N-1);
+  let s="";
+  // edges
+  for(let i=1;i<N;i++){const x1=x0+(i-1)*dx,x2=x0+i*dx;const ds=i>TAMPER_SEQ?"downstream-edge":"";
+    s+=`<line class="edge ${ds}" style="--i:${i}" x1="${x1+r}" y1="${y}" x2="${x2-r}" y2="${y}" stroke="#556" stroke-width="2"/>`;}
+  // nodes
+  NODES.forEach((n,i)=>{
+    const x=x0+i*dx; const cls=i===TAMPER_SEQ?"tampered":(i>TAMPER_SEQ?"downstream":"verified");
+    const statTxt=i===TAMPER_SEQ?I18N[LANG].tampered:(i>TAMPER_SEQ?I18N[LANG].notver:I18N[LANG].verified);
+    s+=`<g class="node ${cls}" style="--i:${i}">`;
+    s+=`<g fill="#4ade80">${shapePath(n.shape,x,y,r)}</g>`;
+    s+=`<text x="${x}" y="${y-30}" text-anchor="middle" fill="#e6e6e6" font-size="12">${n[LANG]}</text>`;
+    s+=`<text x="${x}" y="${y+38}" text-anchor="middle" fill="#8a92a0" font-size="11" font-family="ui-monospace">#${i}</text>`;
+    s+=`<text class="stat" x="${x}" y="${y+54}" text-anchor="middle" fill="#4ade80" font-size="10">${statTxt}</text>`;
+    s+=`</g>`;
+  });
+  svg.innerHTML=s;
+}
+function applyLang(){
+  const t=I18N[LANG]; document.documentElement.lang=LANG==="zh"?"zh-CN":"en";
+  document.getElementById("t-title").textContent=t.title;
+  document.getElementById("t-sub").innerHTML=t.sub.replace(/not that the decision was right|不证明决策正确/,"<b>$&</b>");
+  document.getElementById("play").textContent=t.play[document.body.dataset.play==="true"?1:0];
+  document.getElementById("tamper").textContent=t.tamper[document.body.dataset.tamper==="true"?1:0];
+  document.getElementById("reduce").textContent=t.reduce;
+  document.getElementById("t-note").textContent=t.note;
+  document.getElementById("lang-en").setAttribute("aria-pressed",String(LANG==="en"));
+  document.getElementById("lang-zh").setAttribute("aria-pressed",String(LANG==="zh"));
+  const L=t.legend; document.getElementById("legend").innerHTML=
+    `<div class="row"><span class="k">${L.integrity}</span></div><div class="row"><span class="k">${L.signature}</span></div>`+
+    `<div class="row"><span class="k">${L.hashchain}</span></div><div class="row"><span class="k">${L.analytical}:</span> <b>${t.notjudged}</b></div>`;
+  draw();
+}
+document.getElementById("play").onclick=()=>{ const on=document.body.dataset.play!=="true"; document.body.dataset.play=String(on); applyLang(); };
+document.getElementById("tamper").onclick=()=>{ const on=document.body.dataset.tamper!=="true"; document.body.dataset.tamper=String(on); document.getElementById("tamper").setAttribute("aria-pressed",String(on)); document.body.dataset.play="true"; applyLang(); };
+document.getElementById("reduce").onclick=(e)=>{ const on=document.body.dataset.reduce!=="true"; document.body.dataset.reduce=String(on); e.target.setAttribute("aria-pressed",String(on)); };
+document.getElementById("lang-en").onclick=()=>{ LANG="en"; applyLang(); };
+document.getElementById("lang-zh").onclick=()=>{ LANG="zh"; applyLang(); };
+applyLang();
+</script>
+</body>
+</html>
