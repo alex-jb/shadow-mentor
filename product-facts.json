@@ -68,7 +68,7 @@
     { "id": "conformal-abstention", "status": "research-pilot", "note": "RESEARCH-GRADE coverage evaluation only; NOT production-certified; n<100 forces heavy abstention" },
     { "id": "xr-audit-arc-3d", "status": "unity-authored", "note": "reuses SpatialLayout.AuditArc/VerificationCascade; device validation pending Beam Pro" },
     { "id": "head-directed-focus", "status": "unity-authored", "note": "HEAD-DIRECTED FOCUS via XRI gaze interactor abstraction; hover/highlight only; NOT eye tracking; no dwell approval" },
-    { "id": "verify-browser-rendered", "status": "browser-pending", "note": "verify.html authored + structurally contract-tested; not rendered on the build host. FIXTURE-signed manifest, NOT production-signed." }
+    { "id": "verify-browser-rendered", "status": "browser-rendered", "note": "Chromium 149 (Playwright), EN + zh-CN, 8 flows + security + CSP(0 external/0 violations) + responsive; screenshots in verify-acceptance/screenshots/. Evidence verification offline-validated; full page = offline-after-initial-asset-load. FIXTURE-signed manifest, NOT production-signed; DEVICE-VALIDATED n/a." }
   ],
 
   "forbidden_claims": [

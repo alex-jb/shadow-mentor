@@ -52,6 +52,16 @@ export function buildAll() {
   }), FIXTURE_RELEASE_PRIVATE_PEM);
   write("verify-manifest.v1.json", manifest);
 
+  // A VALIDLY-signed manifest that deliberately lists a wrong hash for verify.html → the page
+  // verifies the signature, fetches the real asset, and reports ASSET MISMATCH (expected/actual).
+  const mismatchAssets = assets.map((a, i) => (i === 0 ? { ...a, sha256: "0".repeat(64) } : a));
+  const mismatchManifest = signManifest(buildManifest({
+    verifier_version: VERIFIER_VERSION, commit_sha: COMMIT, built_at: BUILT_AT,
+    supported_profiles: ["banking-v1"], assets: mismatchAssets,
+    release_public_key_fingerprint: keyFingerprint(FIXTURE_RELEASE_PUBLIC_PEM),
+  }), FIXTURE_RELEASE_PRIVATE_PEM);
+  write("verify-manifest.mismatch.json", mismatchManifest);
+
   // ── bilingual verification reports (deterministic; original evidence values preserved) ──
   const baseReport = {
     verifier_version: VERIFIER_VERSION, verifier_build_commit: COMMIT, verification_timestamp: BUILT_AT,
