@@ -1,0 +1,26 @@
+{
+  "manifest_id": "shadow-verify-manifest-v1",
+  "manifest_signature": "VERIFIED",
+  "release_key_fingerprint": "727d29d3204231f7",
+  "signing": "FIXTURE RELEASE KEY",
+  "asset_check": "ASSETS_MATCH_SIGNED_MANIFEST",
+  "assets": [
+    {
+      "path": "verify.html",
+      "status": "MATCH",
+      "actual": "48417f370d4caf3b75c372512aa5234c8df721ee43bcca8a181e48084424812a"
+    },
+    {
+      "path": "verify/locales/en.json",
+      "status": "MATCH",
+      "actual": "44a42af0331ede1cbe782e1486325421513fcaed3c997850de2eefa7e014e1ab"
+    },
+    {
+      "path": "verify/locales/zh-CN.json",
+      "status": "MATCH",
+      "actual": "305a02065247864daaa177c3da0d86840ca805e4c8c0c317498315a317b949ad"
+    }
+  ],
+  "independent_comparison": "INDEPENDENT_COMPARISON_NOT_PERFORMED",
+  "note": "Assets match the signed manifest. Cross-check the release_key_fingerprint against the GitHub Release / npm to close the trust loop."
+}

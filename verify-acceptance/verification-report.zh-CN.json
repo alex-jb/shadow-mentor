@@ -1,0 +1,20 @@
+{
+  "verifier_version": "2.2.0",
+  "verifier_build_commit": "fixture-acceptance",
+  "verification_timestamp": "2026-07-21T00:00:00Z",
+  "bundle_id": "sess-acceptance-0001",
+  "bundle_hash": "a62144bf379c1ed01469642217870b6a4e70976a0a38d46b58c6934aefd3c211",
+  "signing_algorithm": "ed25519",
+  "public_key_fingerprint": "727d29d3204231f7",
+  "matrix": {
+    "record_integrity": "VERIFIED",
+    "signature": "VERIFIED",
+    "hash_chain": "VERIFIED",
+    "profile": "VERIFIED",
+    "source_resolution": "NOT_PRESENT",
+    "external_anchor": "NOT_PRESENT"
+  },
+  "analytical_correctness": "NOT_JUDGED_BY_VERIFIER",
+  "signing": "FIXTURE RELEASE KEY",
+  "ui_language": "zh-CN"
+}
