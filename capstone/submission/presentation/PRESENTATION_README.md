@@ -5,7 +5,7 @@
 |---|---|
 | `SHADOW_CAPSTONE_PRACTICE_PRESENTATION.pptx` | Editable deck (pandoc from `SLIDE_SOURCE.md`) |
 | `SHADOW_CAPSTONE_PRACTICE_PRESENTATION.pdf` | Present-from PDF (beamer) |
-| `SLIDE_SOURCE.md` | Authoritative slide source — edit here, regenerate |
+| `build_deck.py` | **Authoritative deck design** (python-pptx) — edit here, rebuild |
 | `SPEAKER_NOTES.md` | Full spoken script with per-slide timing (~8:30) |
 | `PRACTICE_SCRIPT.md` | One-line-per-slide cue cards |
 | `DEMO_RUNBOOK.md` | Live-demo sequence, fallback levels A–D, exact commands |
@@ -16,8 +16,9 @@
 ## Regenerate the deck
 ```bash
 cd capstone/submission/presentation
-pandoc SLIDE_SOURCE.md -o SHADOW_CAPSTONE_PRACTICE_PRESENTATION.pptx --slide-level=1
-pandoc SLIDE_SOURCE.md -o SHADOW_CAPSTONE_PRACTICE_PRESENTATION.pdf -t beamer --slide-level=1 --pdf-engine=tectonic
+python3 build_deck.py                                        # hand-designed pptx (python-pptx)
+soffice --headless --convert-to pdf --outdir . SHADOW_CAPSTONE_PRACTICE_PRESENTATION.pptx
+pdftoppm -png -r 90 SHADOW_CAPSTONE_PRACTICE_PRESENTATION.pdf previews/slide
 ```
 
 ## Design intent

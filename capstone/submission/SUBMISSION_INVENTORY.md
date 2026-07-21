@@ -11,7 +11,7 @@ Generated 2026-07-21. Worktree branch `chore/capstone-final-report-and-practice`
 | `FIGURE_INVENTORY.md` | figure catalog | 2553 | `013c31f5062d0ccd…` | hand | COMPLETE |
 | `REFERENCES.md` | references | 2160 | `afbc38b05390ac1e…` | hand | COMPLETE |
 | `SLIDE_SOURCE.md` | deck source (authoritative) | 5270 | `f74a9df42e02ae58…` | hand | COMPLETE |
-| `SHADOW_CAPSTONE_PRACTICE_PRESENTATION.pptx` | deck (editable) | 43852 | `64b6567b868445c7…` | pandoc | PRESENTATION-GENERATED |
+| `SHADOW_CAPSTONE_PRACTICE_PRESENTATION.pptx` | deck (editable) | 43852 | `64b6567b868445c7…` | python-pptx (hand-designed) | PRESENTATION-GENERATED |
 | `SHADOW_CAPSTONE_PRACTICE_PRESENTATION.pdf` | deck (present-from) | 40322 | `a95174018ca1c5bf…` | pandoc-beamer | PRESENTATION-RENDERED |
 | `SPEAKER_NOTES.md` | full spoken script + timing | 7536 | `f463555f4c980f4d…` | hand | PRACTICE-SCRIPT-COMPLETE |
 | `PRACTICE_SCRIPT.md` | cue cards | 1925 | `e8070ed28bd7fd88…` | hand | COMPLETE |
