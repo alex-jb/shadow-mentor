@@ -78,6 +78,15 @@ namespace ShadowLens.Tests.PlayMode
             Assert.IsFalse(_stage.FlowNetworkUsed, "Flow handoff must not use the network");
         }
 
+        [Test] public void CaseCore_ShowsBankingIdentity_InReady_VoicesHidden()
+        {
+            Assert.AreEqual(ShadowNarrativeState.READY, _stage.State);
+            StringAssert.Contains("MID-MARKET LOAN", _stage.CaseCoreText);
+            StringAssert.Contains("CASE #SL-2026-014", _stage.CaseCoreText);
+            StringAssert.Contains("$8.4M REQUEST", _stage.CaseCoreText);
+            Assert.AreEqual(0, _stage.VisibleVoiceNodeCount, "council voice nodes must stay hidden in READY");
+        }
+
         [Test] public void ExactlyOneStageControllerAndCanvas()
         {
             Assert.AreEqual(1, Object.FindObjectsByType<ShadowStageController>(FindObjectsSortMode.None).Length);

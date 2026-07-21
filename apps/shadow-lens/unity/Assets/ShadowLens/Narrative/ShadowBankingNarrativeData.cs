@@ -16,6 +16,10 @@ namespace ShadowLens.Narrative
     {
         public const string CaseId = "case-2026-Q3-0042";
         public const string CaseLabel = "Mid-market loan applicant";
+        // The central case core reads these three lines (legible banking-case identity, not a bare sphere).
+        public const string CaseTitle = "MID-MARKET LOAN";
+        public const string CaseNumber = "CASE #SL-2026-014";
+        public const string CaseAmount = "$8.4M REQUEST";
         public const string ModeLabel = "FIXTURE MODEL";
         public const string SignedStatus = "REAL SIGNED";   // the Node acceptance package proves the Ed25519
 

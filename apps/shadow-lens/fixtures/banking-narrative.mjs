@@ -8,6 +8,8 @@ export const BANKING_NARRATIVE = {
   case_id: "case-2026-Q3-0042",
   fixture_timestamp: "2026-07-22T00:00:00.000Z",     // deterministic (not Date.now)
   borrower: { label: "Mid-market loan applicant", exposure_usd: 310000 },
+  // the three lines the central 3D case core shows (mirrored 1:1 in ShadowBankingNarrativeData.cs)
+  case_display: { title: "MID-MARKET LOAN", number: "CASE #SL-2026-014", amount: "$8.4M REQUEST" },
 
   metrics: [
     { name: "DTI", value: 0.41, category: "warn" },    // over the 0.36 policy ceiling

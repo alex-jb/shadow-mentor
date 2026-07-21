@@ -22,7 +22,7 @@ namespace ShadowLens.Narrative
         readonly IShadowFlowPresenter _flow = new ShadowOfflineFlowPresenter();
 
         Font _font;
-        Text _title, _mode, _signed, _stateLabel, _council, _decision, _flowCard;
+        Text _title, _mode, _signed, _stateLabel, _council, _decision, _flowCard, _caseCoreLabel;
         Transform _worldRoot, _nodesRoot;
         Image _caseNode;
         readonly List<GameObject> _voiceNodes = new List<GameObject>();
@@ -40,6 +40,7 @@ namespace ShadowLens.Narrative
         public bool FlowHandoffPrepared => _handoff.prepared;
         public bool FlowNetworkUsed => _handoff.networkUsed;
         public bool HonestyLabelsVisible => _mode && _mode.text.Contains("FIXTURE MODEL") && _signed && _signed.text.Contains("REAL SIGNED");
+        public string CaseCoreText => _caseCoreLabel ? _caseCoreLabel.text : "";
 
         void Awake() { Build(); }
 
@@ -88,13 +89,12 @@ namespace ShadowLens.Narrative
         void BuildWorld()
         {
             var cam = Camera.main;
-            var center = cam != null ? cam.transform.position + cam.transform.forward * 1.9f : new Vector3(0, 1.5f, -1.9f);
+            var camForward = cam != null ? cam.transform.forward : Vector3.forward;
+            var center = cam != null ? cam.transform.position + camForward * 1.9f : new Vector3(0, 1.5f, -1.9f);
             _worldRoot = new GameObject("StageWorld").transform; _worldRoot.SetParent(transform, false); _worldRoot.position = center;
             _nodesRoot = new GameObject("Nodes").transform; _nodesRoot.SetParent(_worldRoot, false);
             _caseNode = null;
-            var caseGo = GameObject.CreatePrimitive(PrimitiveType.Sphere); caseGo.name = "CaseNode"; caseGo.transform.SetParent(_worldRoot, false);
-            caseGo.transform.localPosition = Vector3.zero; caseGo.transform.localScale = Vector3.one * 0.22f;
-            var r = caseGo.GetComponent<Renderer>(); if (r) r.material.color = ShadowDesignTokens.Information;
+            BuildCaseCore(_worldRoot, camForward);   // the semantic center: a legible banking-case core (label + ring), not a bare sphere
 
             var v0 = new V3(0, 0, 0);
             for (int i = 0; i < ShadowBankingNarrativeData.Voices.Length; i++)
@@ -107,6 +107,51 @@ namespace ShadowLens.Narrative
                 node.transform.localScale = Vector3.one * size * 2f;
                 _voiceNodes.Add(node);
             }
+        }
+
+        // The semantic center = the banking case identity, legible as a "case core": a restrained core
+        // sphere + ONE static containment ring + a 3-line world-space label (title / number / amount).
+        // Everything is placed once — no Update loop, no coroutine, no continuous decorative animation.
+        void BuildCaseCore(Transform worldRoot, Vector3 camForward)
+        {
+            var caseGo = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            caseGo.name = "CaseNode"; caseGo.transform.SetParent(worldRoot, false);
+            caseGo.transform.localPosition = Vector3.zero;
+            caseGo.transform.localScale = Vector3.one * 0.16f;   // slightly smaller so the ring + label read as the case
+            var r = caseGo.GetComponent<Renderer>(); if (r) r.material.color = ShadowDesignTokens.Information;
+
+            // one static containment ring, face-on to the (fixed) camera — reads as a data node, not a plain ball
+            var ringGo = new GameObject("CaseRing", typeof(LineRenderer)); ringGo.transform.SetParent(caseGo.transform, false);
+            var lr = ringGo.GetComponent<LineRenderer>();
+            lr.useWorldSpace = false; lr.loop = true; lr.widthMultiplier = 0.05f; lr.numCapVertices = 2;
+            lr.material = new Material(Shader.Find("Sprites/Default"));
+            lr.startColor = lr.endColor = ShadowDesignTokens.Border;
+            var right = Vector3.Cross(camForward, Vector3.up).normalized; if (right.sqrMagnitude < 1e-4f) right = Vector3.right;
+            var up = Vector3.Cross(right, camForward).normalized;
+            const int seg = 48; lr.positionCount = seg;
+            for (int i = 0; i < seg; i++)
+            {
+                float a = (i / (float)seg) * Mathf.PI * 2f;
+                lr.SetPosition(i, (right * Mathf.Cos(a) + up * Mathf.Sin(a)) * 1.5f);  // local units (core scale 0.16)
+            }
+
+            // 3-line world-space label under the core: MID-MARKET LOAN / CASE #SL-2026-014 / $8.4M REQUEST
+            var labelGo = new GameObject("CaseCoreLabel", typeof(Canvas)); labelGo.transform.SetParent(worldRoot, false);
+            labelGo.transform.localPosition = new Vector3(0f, -0.27f, 0f);
+            labelGo.transform.rotation = Quaternion.LookRotation(camForward);   // static — set once, no billboard loop
+            labelGo.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+            ((RectTransform)labelGo.transform).sizeDelta = new Vector2(440, 150);
+            labelGo.transform.localScale = Vector3.one * 0.0011f;
+
+            var bg = new GameObject("Backing", typeof(Image)); bg.transform.SetParent(labelGo.transform, false);
+            bg.GetComponent<Image>().color = ShadowDesignTokens.PanelPrimary;
+            var brt = bg.GetComponent<Image>().rectTransform; brt.anchorMin = Vector2.zero; brt.anchorMax = Vector2.one; brt.offsetMin = brt.offsetMax = Vector2.zero;
+            bg.AddComponent<Outline>().effectColor = ShadowDesignTokens.Border;
+
+            _caseCoreLabel = Label(labelGo.transform,
+                ShadowBankingNarrativeData.CaseTitle + "\n" + ShadowBankingNarrativeData.CaseNumber + "\n" + ShadowBankingNarrativeData.CaseAmount,
+                34, new Vector2(0.5f, 0.5f), Vector2.zero, ShadowDesignTokens.TextPrimary, TextAnchor.MiddleCenter);
+            _caseCoreLabel.rectTransform.sizeDelta = new Vector2(420, 140);
         }
 
         // ── narrative rendering (idempotent — no duplicate panels, no stale dominant) ──

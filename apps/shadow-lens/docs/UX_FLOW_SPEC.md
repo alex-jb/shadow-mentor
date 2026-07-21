@@ -11,7 +11,7 @@ Back steps one state toward READY (never below READY). Reset Demo → Banking RE
 ## Per-state visible elements (one obvious primary action = **Next Step**)
 | State | Central 3D | Left (Council) | Right (Decision/Evidence) | Bottom (stage controls) |
 |---|---|---|---|---|
-| **READY** | dim case node only | collapsed | "Ready" + FIXTURE MODEL / REAL SIGNED | Next Step · Reset Demo |
+| **READY** | **labeled case core** (core sphere + one static ring + 3-line label: MID-MARKET LOAN / CASE #SL-2026-014 / $8.4M REQUEST); voices hidden | collapsed | "Ready" + FIXTURE MODEL / REAL SIGNED | Next Step · Reset Demo |
 | **CASE** | case node + metric halo | collapsed | borrower + 3 key metrics (DTI/FICO/LTV) | Back · Next Step · Reset Demo |
 | **COUNCIL** | 5 voice nodes revealed, one dominant | active voice: stance/confidence/1 reason/vote | evidence the voice cites | Back · Next Step · Reset Demo |
 | **DECISION** | edges (cites/disagrees) lit | all 5 collapsed to stance chips | recommendation/risk/compliance/confidence/dissent/evidence count/signed/audit | Back · Next Step · Reset Demo |
@@ -21,7 +21,10 @@ Only **one** council voice is visually dominant at a time during COUNCIL. No lar
 reason line per voice.
 
 ## 3D semantic encoding (exact — see the encoding constants in `ShadowSemanticEncoding.cs`)
-- **central object** = the banking case / borrower / portfolio decision.
+- **central object** = the banking case / borrower / portfolio decision, shown as a **legible case core**:
+  a restrained core sphere + one static containment ring + a 3-line world-space label (title / number /
+  amount) — a data node, not a bare sphere. The label lines are mirrored 1:1 in the `.mjs` fixture
+  (`case_display`) and `ShadowBankingNarrativeData.cs` (`CaseTitle`/`CaseNumber`/`CaseAmount`).
 - **surrounding nodes** = the five Shadow council voices.
 - **node size** = the voice's exposure/importance to this decision (mapped from its confidence·weight).
 - **distance from center** = relevance to the decision (higher relevance → closer).
