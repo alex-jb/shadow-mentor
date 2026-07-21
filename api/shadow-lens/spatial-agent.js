@@ -13,6 +13,7 @@ import { buildEvidenceSession } from "../../apps/shadow-lens/backend/build-evide
 import { dataScienceSpec, codingAgentSpec } from "../../apps/shadow-lens/fixtures/profile-fixtures.mjs";
 import { sessionToSceneGraph } from "../../apps/shadow-lens/web/spatial-agent/scene-graph.mjs";
 import { runSpatialAgent } from "../../apps/shadow-lens/web/spatial-agent/agent-core.mjs";
+import { resolveProvider } from "../../apps/shadow-lens/web/spatial-agent/providers.mjs";
 
 const DEFAULT_ORIGINS = (process.env.SHADOW_LENS_ALLOWED_ORIGINS || "https://shadow-mentor-phi.vercel.app,http://localhost:8127")
   .split(",").map((s) => s.trim()).filter(Boolean);
@@ -77,14 +78,18 @@ export default async function handler(req, res) {
   try {
     const { session, bundle, publicKeyPem } = buildProfileSession(profile);
     const scene = sessionToSceneGraph(session);              // SERVER source of truth (not client's)
-    const r = runSpatialAgent({ session, scene, bundle, publicKeyPem, query, current_mode: body.current_mode });
+    // Provider: FIXTURE by default; LIVE only if SHADOW_LENS_LIVE_MODEL=1 AND an llm is configured
+    // (none is injected here, so live requests resolve to UNAVAILABLE — never a silent switch).
+    const provider = resolveProvider({ env: process.env, llm: null });
+    const r = await runSpatialAgent({ session, scene, bundle, publicKeyPem, query, current_mode: body.current_mode, provider });
     return res.status(200).json({
       text: r.text,
       citations: r.citations,
       actions: r.actions,                                    // already validated against the scene
       verification_summary: r.verification_summary,
       grounded: r.grounded,
-      model,
+      model: r.model || model,
+      provider: provider.kind,
       latency_ms: Date.now() - t0,
       scene_object_count: scene.objects.length,
     });

@@ -207,14 +207,24 @@ namespace ShadowLens.SpatialAgent.Tests
             Assert.AreEqual(ShadowFlowState.DONE, s2); // DONE -> QUERYING -> ... -> DONE, no exception
         }
 
-        [Test] public void QueryIds_UniqueAcrossControllerRecreation()
+        [Test] public void QueryId_IsSessionScoped_AndUniqueAcrossProfileSwitch()
         {
-            // profile switch recreates the controller; query_id must stay globally unique.
-            var c1 = Fx.Controller(new MockRenderer(), _ => ShadowSpatialAgentMockTransport.Grounded("metric_auc", "x"));
-            c1.RunQuery("s", "q", Fx.Scene(), "document", (_) => {});
-            var c2 = Fx.Controller(new MockRenderer(), _ => ShadowSpatialAgentMockTransport.Grounded("metric_auc", "x"));
-            c2.RunQuery("s", "q", Fx.Scene(), "document", (_) => {});
-            Assert.AreNotEqual(c1.LastQueryId, c2.LastQueryId, "query_id reused across profile switch");
+            // query_id is <session_id>:q<sequence> — bound to the signed session, unique across
+            // profile switches (different session_id), incrementing within one session.
+            var bank1 = Fx.Controller(new MockRenderer(), _ => ShadowSpatialAgentMockTransport.Grounded("metric_auc", "x"));
+            bank1.RunQuery("banking-v1-demo", "q", Fx.Scene(), "document", (_) => {});
+            StringAssert.StartsWith("banking-v1-demo:q", bank1.LastQueryId);
+
+            // profile switch → new controller, different session_id → different prefix
+            var ds = Fx.Controller(new MockRenderer(), _ => ShadowSpatialAgentMockTransport.Grounded("metric_auc", "x"));
+            ds.RunQuery("data-science-v1-demo", "q", Fx.Scene(), "document", (_) => {});
+            StringAssert.StartsWith("data-science-v1-demo:q", ds.LastQueryId);
+            Assert.AreNotEqual(bank1.LastQueryId, ds.LastQueryId);
+
+            // returning to the same session_id keeps incrementing (no q1 reuse)
+            var bank2 = Fx.Controller(new MockRenderer(), _ => ShadowSpatialAgentMockTransport.Grounded("metric_auc", "x"));
+            bank2.RunQuery("banking-v1-demo", "q", Fx.Scene(), "document", (_) => {});
+            Assert.AreNotEqual(bank1.LastQueryId, bank2.LastQueryId, "sequence must not reuse within a session");
         }
 
         [Test] public void FailedThenRetry_Works()

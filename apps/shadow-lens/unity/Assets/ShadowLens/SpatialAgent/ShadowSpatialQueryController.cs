@@ -23,9 +23,24 @@ namespace ShadowLens.SpatialAgent
         readonly ShadowSpatialAgentStateMachine _sm;
         readonly IShadowActionStatusView _status;
         readonly ShadowActionExecutionReporter _reporter;
-        static int _globalQuerySeq;   // session-global — query_id stays unique across profile switches
+        // Session-scoped query identity: <session_id>:q<sequence>. Bound to the signed session
+        // (durable identity), NOT a process-global counter — so ids are unique across profile
+        // switches AND meaningfully tied to the evidence session. The sequence persists per
+        // session_id across controller recreation (profile switch reloads the controller).
+        static readonly Dictionary<string, int> _seqBySession = new Dictionary<string, int>();
+        static readonly object _seqLock = new object();
         int _gen;               // request generation — a stale/older response is ignored
         bool _inFlight;
+
+        static string NextQueryId(string sessionId)
+        {
+            lock (_seqLock)
+            {
+                _seqBySession.TryGetValue(sessionId, out int n);
+                n += 1; _seqBySession[sessionId] = n;
+                return sessionId + ":q" + n;
+            }
+        }
 
         public string LastActionLine { get; private set; } = "LAST ACTION: —";
         public string LastQueryId { get; private set; }   // session-global unique id of the last query
@@ -47,7 +62,7 @@ namespace ShadowLens.SpatialAgent
         public void RunQuery(string sessionId, string query, IShadowSceneObjectResolver scene, string currentMode, Action<Outcome> done)
         {
             if (_inFlight) { Log("QUERY_REJECTED_INFLIGHT"); return; } // duplicate submit guard
-            string queryId = "q" + System.Threading.Interlocked.Increment(ref _globalQuerySeq); // session-global unique
+            string queryId = NextQueryId(sessionId); // <session_id>:q<sequence> — durable, session-scoped
             LastQueryId = queryId;
             int myGen = ++_gen;
             _inFlight = true;

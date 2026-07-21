@@ -28,7 +28,7 @@ const CASES = [
 
 function buildCommit() { try { return execFileSync("git", ["rev-parse", "--short", "HEAD"], { cwd: ROOT }).toString().trim(); } catch { return "unknown"; } }
 
-export function generate(outDir) {
+export async function generate(outDir) {
   mkdirSync(outDir, { recursive: true });
   const items = [];
   for (let i = 0; i < CASES.length; i++) {
@@ -37,7 +37,7 @@ export function generate(outDir) {
     const k = { signingKeyPem: privateKey.export({ type: "pkcs8", format: "pem" }), publicKeyPem: publicKey.export({ type: "spki", format: "pem" }) };
     const built = buildEvidenceSession(spec(k));                 // REAL SESSION
     const scene = sessionToSceneGraph(built.session);
-    const resp = runSpatialAgent({ session: built.session, scene, bundle: built.bundle, publicKeyPem: k.publicKeyPem, query: question }); // FIXTURE MODEL
+    const resp = await runSpatialAgent({ session: built.session, scene, bundle: built.bundle, publicKeyPem: k.publicKeyPem, query: question }); // FIXTURE MODEL
 
     // client-side validation + simulated execution confirmation (CLIENT LOGIC, not a real device)
     const { valid, rejected } = validateActions(resp.actions, scene);
@@ -79,7 +79,7 @@ export function generate(outDir) {
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   const out = process.argv[2] || join(ROOT, "apps/shadow-lens/acceptance/spatial-out");
-  const r = generate(out);
+  const r = await generate(out);
   console.log("spatial acceptance →", r.outDir);
   for (const c of r.manifest.cases) console.log(`  case ${c.case} [${c.profile}] grounded=${c.grounded} tamper=${c.tamper_detected} · ${c.labels.client_execution}`);
 }

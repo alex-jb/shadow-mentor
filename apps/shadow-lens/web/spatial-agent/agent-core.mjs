@@ -9,6 +9,7 @@
 // routing vocabulary is a fixed closed set, not model-chosen).
 import { runServerTool } from "./server-tools.mjs";
 import { validateActions } from "./client-actions.mjs";
+import { FixtureSpatialAgentProvider } from "./providers.mjs";
 
 const DET = [
   { re: /\b(show|open)\s+sources?\b|source mode/, mode: "source", cmd: "SHOW_SOURCE" },
@@ -29,10 +30,12 @@ export function routeDeterministic(query) {
 const modeAction = (mode) => ({ document: "open_document_mode", source: "open_source_mode", risk: "open_risk_mode", review: "open_review_mode", audit: "open_audit_mode" }[mode]);
 
 /**
- * @param {object} p - { session, scene, bundle, publicKeyPem, query, current_mode }
- * @returns {{text, citations, actions, verification_summary, grounded, model}}
+ * @param {object} p - { session, scene, bundle, publicKeyPem, query, current_mode, provider? }
+ *   provider (optional) resolves grounded questions; defaults to the deterministic FIXTURE provider.
+ *   The deterministic command path (verify/show X) NEVER uses a model.
+ * @returns {Promise<{text, citations, actions, verification_summary, grounded, model}>}
  */
-export function runSpatialAgent(p) {
+export async function runSpatialAgent(p) {
   const { session, scene, query } = p;
   const out = { text: "", citations: [], actions: [], verification_summary: null, grounded: false, model: "deterministic" };
 
@@ -53,41 +56,24 @@ export function runSpatialAgent(p) {
     return out;
   }
 
-  // Grounded question path (fixture/offline heuristic — a live LLM would slot in here, still
-  // constrained to the same tools + validation). Resolve a source/claim the query references.
-  const src = firstReferencedSource(session, query);
-  if (src) {
-    const r = runServerTool("resolve_source", { source_id: src }, session, p);
-    if (r.ok) {
-      out.citations = [{ source_id: r.source_id, evidence_sequence: null, quote: r.quote }];
-      out.text = `Source ${r.source_id}: "${r.quote}" (confidence ${r.confidence ?? "n/a"}). Supports ${r.related_claim_ids.join(", ") || "no claim"}.`;
-      out.actions = validateActions([{ name: "open_source_mode", args: {} }, { name: "highlight_source", args: { source_id: r.source_id } }], scene).valid;
-      out.grounded = true;
-      return out;
-    }
+  // Grounded question path — delegated to the resolved provider (FIXTURE by default; LIVE only via
+  // explicit env). The provider is constrained to the same tools + validation; citations must cite
+  // real source_ids and actions are validated against the scene. No silent fixture→live switch.
+  const provider = p.provider ?? new FixtureSpatialAgentProvider();
+  const g = await provider.resolveGrounded({ session, scene, query });
+  out.model = g.model ?? out.model;
+  if (g.grounded) {
+    out.grounded = true;
+    out.text = g.text;
+    out.citations = g.citations ?? [];
+    // re-validate the provider's actions against the scene at THIS boundary too (defense in depth)
+    out.actions = validateActions(g.actions ?? [], scene).valid;
+    return out;
   }
 
   // Cannot ground → honest, no spatial/destructive actions.
-  out.text = "I can't ground that in this session's evidence. Try naming a source or claim, or use Show Sources / Show Audit / Verify.";
+  out.text = g.text || "I can't ground that in this session's evidence. Try naming a source or claim, or use Show Sources / Show Audit / Verify.";
   out.grounded = false;
   out.actions = [];
   return out;
-}
-
-// Find a source the query references — by explicit source_id, or by a claim it names. Never
-// invents an id; only returns ids present in the session.
-function firstReferencedSource(session, query) {
-  const q = String(query ?? "").toLowerCase();
-  for (const e of session?.source_map ?? []) if (q.includes(e.source_id.toLowerCase())) return e.source_id;
-  // "first finding / first claim" → the first source-bound claim's first cited source
-  if (/first (finding|claim)|the finding/.test(q)) {
-    const c = (session?.claims ?? []).find((x) => x.validation_status === "source_bound");
-    if (c?.source_ids?.length) return c.source_ids[0];
-  }
-  // match a source by a keyword in its text (e.g. "DTI")
-  for (const e of session?.source_map ?? []) {
-    const kw = (e.text ?? e.content ?? "").toLowerCase().split(/[\s:]+/).filter((w) => w.length > 3);
-    if (kw.some((w) => q.includes(w))) return e.source_id;
-  }
-  return null;
 }

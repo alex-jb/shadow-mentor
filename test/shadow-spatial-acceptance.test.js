@@ -6,9 +6,9 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { generate } from "../scripts/gen-spatial-acceptance.mjs";
 
-test("acceptance package covers 3 cases with honest labels + tamper detection", () => {
+test("acceptance package covers 3 cases with honest labels + tamper detection", async () => {
   const dir = mkdtempSync(join(tmpdir(), "sls-spatial-"));
-  const r = generate(dir);
+  const r = await generate(dir);
   assert.equal(r.cases.length, 3);
   assert.equal(existsSync(join(dir, "MANIFEST.json")), true);
   for (const c of r.cases) {
