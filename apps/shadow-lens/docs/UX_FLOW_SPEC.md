@@ -13,9 +13,14 @@ Back steps one state toward READY (never below READY). Reset Demo → Banking RE
 |---|---|---|---|---|
 | **READY** | **labeled case core** (core sphere + one static ring + 3-line label: MID-MARKET LOAN / CASE #SL-2026-014 / $8.4M REQUEST); voices hidden | collapsed | "Ready" + FIXTURE MODEL / REAL SIGNED | Next Step · Reset Demo |
 | **CASE** | case node + metric halo | collapsed | borrower + 3 key metrics (DTI/FICO/LTV) | Back · Next Step · Reset Demo |
-| **COUNCIL** | 5 voice nodes revealed, one dominant | active voice: stance/confidence/1 reason/vote | evidence the voice cites | Back · Next Step · Reset Demo |
-| **DECISION** | edges (cites/disagrees) lit | all 5 collapsed to stance chips | recommendation/risk/compliance/confidence/dissent/evidence count/signed/audit | Back · Next Step · Reset Demo |
-| **FLOW_OR_AUDIT** | full graph | collapsed | Flow handoff card (prepared, offline) OR audit chain | Back · **Explore in Flow** · Reset Demo |
+| **COUNCIL** | 5 voice nodes revealed **each with a flat perspective label** (name + vote), one dominant | active voice: stance / **STANCE STRENGTH** / 1 reason / vote | evidence the voice cites | Back · Next Step · Reset Demo |
+| **DECISION** | edges (cites/disagrees) lit | all 5 collapsed to stance chips | recommendation/risk/compliance/**council strength**/dissent/evidence count/signed/audit | Back · Next Step · Reset Demo |
+| **FLOW_OR_AUDIT** | **3D provenance audit arc** (source→snapshot→evidence→claim→recommendation→signature→audit_record; VERIFIED green, at/after a broken link → NOT VERIFIED, frozen) | collapsed | Flow handoff card (prepared, offline) OR audit chain | Back · **Explore in Flow** · Reset Demo |
+
+### XR interaction + Rule-15 3D (Slice E)
+- **Audit arc** is the one element that genuinely earns its 3D (Rule 15): built once in FLOW_OR_AUDIT from the tested `SpatialLayout.AuditArc()` geometry, walking the Claim–Evidence provenance spine (`ShadowAuditChainData`, mirrored from `provenanceChain()`). STATIC verification state — no timed coroutine; the cascade timing is data (`CascadeDelaysSec`) for the device build. Council spheres stay as perspective **topology** (kept, now labelled), not deleted.
+- **Head-directed focus** (`ShadowHeadDirectedFocus`) = a ray from the camera's **head-forward** direction (3DoF; **not** eye tracking, no Eye add-on). Hover + highlight **only** — never approves, submits, or dwells-to-confirm. Pointer/controller (Beam Pro) remains the sole action path. XRI-compatible: swap in an XR Gaze Interactor without changing the contract.
+- **Confidence semantics**: per-voice numbers render as **STANCE STRENGTH** (persona prior), never "model confidence" (see `product-facts.json` → `confidence_semantics`).
 
 Only **one** council voice is visually dominant at a time during COUNCIL. No large paragraphs — one
 reason line per voice.

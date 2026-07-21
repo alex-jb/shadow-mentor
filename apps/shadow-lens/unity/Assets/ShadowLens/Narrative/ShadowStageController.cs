@@ -26,6 +26,10 @@ namespace ShadowLens.Narrative
         Transform _worldRoot, _nodesRoot;
         Image _caseNode;
         readonly List<GameObject> _voiceNodes = new List<GameObject>();
+        readonly List<Text> _voiceLabels = new List<Text>();   // flat camera-facing perspective labels
+        Transform _auditRoot;                                  // 3D provenance arc (built once in FLOW_OR_AUDIT)
+        int _auditVerified;                                    // links rendered VERIFIED (before any break)
+        Vector3 _camForward = Vector3.forward;                 // captured once (fixed viewpoint) for static labels
         int _dominant = 1;               // default dominant = Risk Officer (highest relevance)
         bool _built;
         ShadowFlowHandoff _handoff;
@@ -41,6 +45,12 @@ namespace ShadowLens.Narrative
         public bool FlowNetworkUsed => _handoff.networkUsed;
         public bool HonestyLabelsVisible => _mode && _mode.text.Contains("FIXTURE MODEL") && _signed && _signed.text.Contains("REAL SIGNED");
         public string CaseCoreText => _caseCoreLabel ? _caseCoreLabel.text : "";
+        public int VoiceLabelCount => _voiceLabels.Count;
+        public string VoiceLabelText(int i) => (i >= 0 && i < _voiceLabels.Count && _voiceLabels[i]) ? _voiceLabels[i].text : "";
+        public int AuditChainNodeCount => ShadowAuditChainData.Chain.Length;
+        public int AuditChainVerifiedCount => _auditVerified;
+        public bool AuditChainBuilt => _auditRoot != null;
+        public ShadowLens.Spatial.ShadowHeadDirectedFocus Focus { get; private set; }
 
         void Awake() { Build(); }
 
@@ -77,6 +87,8 @@ namespace ShadowLens.Narrative
             StageButton(c, "⟲ Reset Demo", 0.74f, ShadowDesignTokens.Warning, ResetDemo);
 
             BuildWorld();
+            // head-directed hover (NOT eye tracking); hover/highlight only, never approves
+            Focus = GetComponent<ShadowHeadDirectedFocus>() ?? gameObject.AddComponent<ShadowHeadDirectedFocus>();
             _built = true;
             _onStateHandler = (_) => Render();   // stored so it registers ONCE + can be removed
             _sm.OnState += _onStateHandler;
@@ -90,6 +102,7 @@ namespace ShadowLens.Narrative
         {
             var cam = Camera.main;
             var camForward = cam != null ? cam.transform.forward : Vector3.forward;
+            _camForward = camForward;
             var center = cam != null ? cam.transform.position + camForward * 1.9f : new Vector3(0, 1.5f, -1.9f);
             _worldRoot = new GameObject("StageWorld").transform; _worldRoot.SetParent(transform, false); _worldRoot.position = center;
             _nodesRoot = new GameObject("Nodes").transform; _nodesRoot.SetParent(_worldRoot, false);
@@ -106,7 +119,66 @@ namespace ShadowLens.Narrative
                 float size = ShadowSemanticEncoding.NodeSize(voice.importance);
                 node.transform.localScale = Vector3.one * size * 2f;
                 _voiceNodes.Add(node);
+
+                // flat, camera-facing perspective label (voice name + vote) — so the 5 spheres are
+                // readable topology, not anonymous balls. One dominant at a time is handled in Render.
+                var lbl = FlatWorldLabel(node.transform, voice.voice + "\n(" + voice.vote + ")",
+                    new Vector3(0f, -(size + 0.05f), 0f), camForward, 0.0009f, 26, new Vector2(300, 90));
+                _voiceLabels.Add(lbl);
             }
+        }
+
+        // A small, flat, camera-facing world-space label (Perplexity-pill style). Static: oriented
+        // once toward the fixed viewpoint, no per-frame billboard, no decorative motion.
+        Text FlatWorldLabel(Transform parent, string text, Vector3 localPos, Vector3 camForward, float worldScale, int fontSize, Vector2 size)
+        {
+            var go = new GameObject("Label", typeof(Canvas)); go.transform.SetParent(parent, false);
+            go.transform.localPosition = localPos;
+            go.transform.rotation = Quaternion.LookRotation(camForward);
+            go.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+            ((RectTransform)go.transform).sizeDelta = size;
+            go.transform.localScale = Vector3.one * worldScale;
+            var bg = new GameObject("Backing", typeof(Image)); bg.transform.SetParent(go.transform, false);
+            bg.GetComponent<Image>().color = ShadowDesignTokens.PanelPrimary;
+            var brt = bg.GetComponent<Image>().rectTransform; brt.anchorMin = Vector2.zero; brt.anchorMax = Vector2.one; brt.offsetMin = brt.offsetMax = Vector2.zero;
+            return Label(go.transform, text, fontSize, new Vector2(0.5f, 0.5f), Vector2.zero, ShadowDesignTokens.TextPrimary, TextAnchor.MiddleCenter);
+        }
+
+        // ── the 3D provenance audit arc (Rule 15: the one thing that genuinely earns its 3D) ──
+        // Built once when the stage first enters FLOW_OR_AUDIT. Walks the provenance spine
+        // (ShadowAuditChainData, mirrored from the Claim-Evidence Graph): source → … → audit_record.
+        // Nodes at/after a broken link render NOT VERIFIED (frozen). STATIC verification state — the
+        // cascade timing is data (CascadeDelaysSec) applied on device, not a coroutine here.
+        void BuildAuditChain(Vector3 camForward)
+        {
+            if (_auditRoot != null) return;   // idempotent: one arc only
+            var chain = ShadowAuditChainData.Chain;
+            _auditRoot = new GameObject("AuditChain").transform; _auditRoot.SetParent(_worldRoot, false);
+            var pts = SpatialLayout.AuditArc(chain.Length, 0.9f, 120f, 0f, -0.35f); // below the council plane
+
+            var lr = new GameObject("ChainLink", typeof(LineRenderer)).GetComponent<LineRenderer>();
+            lr.transform.SetParent(_auditRoot, false);
+            lr.useWorldSpace = false; lr.widthMultiplier = 0.015f; lr.numCapVertices = 2;
+            lr.material = new Material(Shader.Find("Sprites/Default"));
+            lr.positionCount = chain.Length;
+
+            _auditVerified = 0;
+            for (int i = 0; i < chain.Length; i++)
+            {
+                var wp = new Vector3(pts[i].x, pts[i].y, pts[i].z);
+                lr.SetPosition(i, wp);
+                bool verified = ShadowAuditChainData.IsVerified(i);
+                if (verified) _auditVerified++;
+                var pill = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                pill.name = "Link_" + chain[i].seq + "_" + chain[i].type;
+                pill.transform.SetParent(_auditRoot, false); pill.transform.localPosition = wp; pill.transform.localScale = Vector3.one * 0.06f;
+                var rr = pill.GetComponent<Renderer>(); if (rr) rr.material.color = verified ? ShadowDesignTokens.Verified : ShadowDesignTokens.Tampered;
+                string tag = verified ? chain[i].hashPrefix : "NOT VERIFIED";
+                FlatWorldLabel(pill.transform, chain[i].label + "\n" + tag, new Vector3(0f, -0.09f, 0f), camForward, 0.0007f, 22, new Vector2(260, 80));
+            }
+            // link color: green up to the break, red from the break onward
+            lr.startColor = ShadowDesignTokens.Verified;
+            lr.endColor = ShadowAuditChainData.BrokenAtSeq < 0 ? ShadowDesignTokens.Verified : ShadowDesignTokens.Tampered;
         }
 
         // The semantic center = the banking case identity, legible as a "case core": a restrained core
@@ -164,7 +236,16 @@ namespace ShadowLens.Narrative
                 if (_voiceNodes[i]) _voiceNodes[i].SetActive(showVoices);
                 var rr = _voiceNodes[i] ? _voiceNodes[i].GetComponent<Renderer>() : null;
                 if (rr) rr.material.color = (i == _dominant && _sm.State == ShadowNarrativeState.COUNCIL) ? ShadowDesignTokens.Information : ShadowDesignTokens.Neutral;
+                // flat perspective labels follow their node; dominant is emphasized in COUNCIL
+                if (i < _voiceLabels.Count && _voiceLabels[i])
+                {
+                    _voiceLabels[i].transform.parent.gameObject.SetActive(showVoices);
+                    _voiceLabels[i].color = (i == _dominant && _sm.State == ShadowNarrativeState.COUNCIL) ? ShadowDesignTokens.TextPrimary : ShadowDesignTokens.TextSecondary;
+                }
             }
+            // the 3D provenance arc lives only in FLOW_OR_AUDIT (built once, then shown/hidden)
+            if (_sm.State == ShadowNarrativeState.FLOW_OR_AUDIT) BuildAuditChain(_camForward);
+            if (_auditRoot) _auditRoot.gameObject.SetActive(_sm.State == ShadowNarrativeState.FLOW_OR_AUDIT);
 
             switch (_sm.State)
             {
@@ -180,7 +261,8 @@ namespace ShadowLens.Narrative
                     _decision.text = "Council deliberating…"; _flowCard.text = ""; break;
                 case ShadowNarrativeState.DECISION:
                     _council.text = CouncilStanceChips();
-                    _decision.text = $"Recommendation: {ShadowBankingNarrativeData.Recommendation}\nRisk: {ShadowBankingNarrativeData.RiskLevel}\nCompliance: {ShadowBankingNarrativeData.ComplianceStatus}\nConfidence: {ShadowBankingNarrativeData.Confidence:0.00}\nDissent: {ShadowBankingNarrativeData.Dissent}/5\nEvidence: {ShadowBankingNarrativeData.EvidenceCount}\nSigned: SEALED · VERIFIED\nAudit: hash-chain";
+                    // "Council strength" not "Confidence" — persona-prior aggregate, not a model probability
+                    _decision.text = $"Recommendation: {ShadowBankingNarrativeData.Recommendation}\nRisk: {ShadowBankingNarrativeData.RiskLevel}\nCompliance: {ShadowBankingNarrativeData.ComplianceStatus}\nCouncil strength: {ShadowBankingNarrativeData.Confidence:0.00}\nDissent: {ShadowBankingNarrativeData.Dissent}/5\nEvidence: {ShadowBankingNarrativeData.EvidenceCount}\nSigned: SEALED · VERIFIED\nAudit: hash-chain";
                     _flowCard.text = ""; break;
                 case ShadowNarrativeState.FLOW_OR_AUDIT:
                     _handoff = _flow.Prepare(ShadowBankingNarrativeData.CaseId, "Shadow council — " + ShadowBankingNarrativeData.CaseId);
