@@ -8,7 +8,7 @@
     {
       "path": "verify.html",
       "status": "MATCH",
-      "actual": "48417f370d4caf3b75c372512aa5234c8df721ee43bcca8a181e48084424812a"
+      "actual": "e4ac962a0868634169b79961868d94093e1fb35647419f1a331e178f7fdf66f4"
     },
     {
       "path": "verify/locales/en.json",
