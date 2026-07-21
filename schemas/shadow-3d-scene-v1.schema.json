@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shadow-mentor/schemas/shadow-3d-scene-v1.schema.json",
+  "title": "shadow-3d-scene-v1",
+  "description": "Engine-neutral spatial audit scene. Unity and Three.js each ADAPT this into their own objects; positions may differ per device but semantic identity + verification/tamper states are authoritative. No engine names, materials, or coordinates-as-truth.",
+  "type": "object",
+  "required": ["scene_version", "profile_id", "bundle_id", "bundle_hash", "status_mode", "view_mode", "layout_mode", "layout_seed", "nodes", "edges", "verification"],
+  "additionalProperties": false,
+  "properties": {
+    "scene_version": { "const": "shadow-3d-scene-v1" },
+    "profile_id": { "type": "string" },
+    "profile_version": { "type": "string" },
+    "bundle_id": { "type": "string" },
+    "bundle_hash": { "type": "string" },
+    "status_mode": { "enum": ["FIXTURE", "LIVE", "DEVICE"] },
+    "view_mode": { "enum": ["ready", "case", "council", "decision", "audit"] },
+    "layout_mode": { "enum": ["arc", "dag", "timeline", "hybrid"] },
+    "layout_seed": { "type": "integer" },
+    "nodes": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "sequence", "status", "label_short", "label_full", "accessibility", "label_priority", "focus_state", "selected_state", "expanded_state"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "type": "string", "description": "profile-specific node type (e.g. source|snapshot|evidence|claim|recommendation|signature|audit_record for banking; dataset|feature|model|metric|experiment for data-science; issue|tool_call|diff|test|commit for coding-agent)" },
+          "sequence": { "type": "integer", "minimum": 0 },
+          "timestamp": { "type": ["string", "null"] },
+          "status": { "enum": ["VERIFIED", "TAMPERED", "NOT_VERIFIED", "NOT_CHECKED", "NOT_PRESENT", "UNSUPPORTED"] },
+          "claim_ids": { "type": "array", "items": { "type": "string" } },
+          "evidence_ids": { "type": "array", "items": { "type": "string" } },
+          "source_ids": { "type": "array", "items": { "type": "string" } },
+          "agent": { "type": ["string", "null"] },
+          "tool": { "type": ["string", "null"] },
+          "model": { "type": ["string", "null"] },
+          "label_short": { "type": "string" },
+          "label_full": { "type": "string" },
+          "accessibility": { "type": "string" },
+          "label_priority": { "enum": ["P0", "P1", "P2", "P3"] },
+          "focus_state": { "type": "boolean" },
+          "selected_state": { "type": "boolean" },
+          "expanded_state": { "type": "boolean" },
+          "layout_hint": {
+            "type": "object", "additionalProperties": false,
+            "description": "advisory only — NOT authoritative truth",
+            "properties": { "ring": { "type": "number" }, "angle_deg": { "type": "number" }, "height": { "type": "number" }, "column": { "type": "integer" } }
+          },
+          "evidence_ref": { "type": ["string", "null"], "description": "opaque reference to the original evidence (quote/source), resolved by the adapter, never inlined PII" }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "from", "to", "direction"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "enum": ["SUPPORTS", "CONTRADICTS", "DERIVED_FROM", "APPLIES_POLICY", "CHALLENGED_BY", "SUPERSEDES", "SEALED_BY"] },
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "direction": { "enum": ["forward", "backward", "none"] }
+        }
+      }
+    },
+    "tamper": {
+      "type": ["object", "null"],
+      "required": ["failed_sequence", "reason", "downstream_sequences"],
+      "additionalProperties": false,
+      "properties": {
+        "failed_sequence": { "type": "integer", "minimum": 0 },
+        "reason": { "type": "string" },
+        "downstream_sequences": { "type": "array", "items": { "type": "integer" } }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "required": ["record_integrity", "signature", "hash_chain", "profile", "source_resolution", "external_anchor", "analytical_correctness"],
+      "additionalProperties": false,
+      "description": "the six independent checks + the explicit 'analytical correctness not evaluated' — never collapsed to one green.",
+      "properties": {
+        "record_integrity": { "enum": ["VERIFIED", "FAILED", "NOT_PRESENT", "NOT_CHECKED", "UNSUPPORTED", "MALFORMED"] },
+        "signature": { "enum": ["VERIFIED", "FAILED", "NOT_PRESENT", "NOT_CHECKED", "UNSUPPORTED", "MALFORMED"] },
+        "hash_chain": { "enum": ["VERIFIED", "FAILED", "NOT_PRESENT", "NOT_CHECKED", "UNSUPPORTED", "MALFORMED"] },
+        "profile": { "enum": ["VERIFIED", "FAILED", "NOT_PRESENT", "NOT_CHECKED", "UNSUPPORTED", "MALFORMED"] },
+        "source_resolution": { "enum": ["VERIFIED", "FAILED", "NOT_PRESENT", "NOT_CHECKED", "UNSUPPORTED", "MALFORMED"] },
+        "external_anchor": { "enum": ["VERIFIED", "FAILED", "NOT_PRESENT", "NOT_CHECKED", "UNSUPPORTED", "MALFORMED"] },
+        "analytical_correctness": { "const": "NOT_EVALUATED" }
+      }
+    }
+  }
+}
