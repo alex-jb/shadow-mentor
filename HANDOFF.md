@@ -1,5 +1,36 @@
 # HANDOFF — Step 4: shared story contract → HTML/Three.js/Unity adapters
 
+**STATUS: commit-plan steps 1–10 COMPLETE.** All non-device-blocked work is implemented, tested,
+browser-rendered, and Unity-compiled/tested. Only Android build + on-device validation remain (no
+headset in this slice; the stable APK is untouched). Details in "Completion" below; the original
+resume notes are kept underneath for provenance.
+
+## Completion (2026-07-21)
+Commits on `feat/shadow-shared-story-adapters` after the merge (`ec5406f`):
+- `9e6d651` step 2–3 — semantic vocabulary + guided-story contract + 3 canonical fixtures
+- `22cccfc` step 4 — deterministic compiler (cross-target semantic hash, fail-closed) · 16 tests
+- `5f655e8` step 5 — HTML adapter + semantic-convergence parity (no redesign) · 4 tests
+- `087b211` step 6 — Three.js adapter + player + browser acceptance (Chromium 149) · 6 tests
+- `7df192f` steps 7–9 — Unity native adapter + Unity tests + cross-engine parity · 5 Node tests + Unity
+- `dd72dbf` / `d95e538` step 10 — architecture + parity + adapter docs
+
+Node suite: **1900 tests · 1897 pass · 3 skip · 0 fail** (+31 from the 1866 baseline).
+forbidden-phrases: clean (1299 files). Frozen APK unchanged: `93f2a81a…`.
+
+### Honest status ladder (verified)
+SHARED-STORY-CONTRACT-AUTHORED ✅ · STORY-COMPILER-HOST-TESTED ✅ (16) · HTML-ADAPTER-INTEGRATED ✅ (4) ·
+THREEJS-ADAPTER-INTEGRATED ✅ (6) · THREEJS-BROWSER-RENDERED ✅ (Chromium 149; 0 external/CSP/error/overflow) ·
+UNITY-ADAPTER-AUTHORED ✅ · UNITY-COMPILED ✅ (ShadowLens.dll, 0 CS errors, Unity 6000.0.23f1) ·
+UNITY-EDITMODE-TESTED ✅ (11/11) · UNITY-PLAYMODE-TESTED ✅ (3/3) · CROSS-ENGINE-PARITY ✅ (one semantic hash) ·
+ANDROID-BUILT ❌ (not attempted; APK untouched) · DEVICE-VALIDATED ❌ (no headset).
+Unity result XMLs: `media/story-adapters/unity-tests/`. Three.js media: `media/story-adapters/threejs/`.
+
+### Remaining (device-blocked only)
+Android build of the guided-story demo scene + on-device legibility/position validation on hardware.
+Positions ship as `DEVICE VALIDATION PENDING`. Do NOT rebuild/overwrite the stable APK to do this.
+
+---
+
 Context was cleared mid-Step-4. This file is the resume point.
 
 ## Current position
