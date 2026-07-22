@@ -31,7 +31,9 @@
       "enum": [
         "source", "snapshot", "evidence", "claim", "recommendation", "signature", "audit_record",
         "dictionary", "reason_code", "evidence_ref", "attestation",
-        "persona", "shared_evidence", "synthesis"
+        "persona", "shared_evidence", "synthesis",
+        "dataset", "feature", "model", "metric", "experiment",
+        "issue", "tool_call", "diff", "test", "commit"
       ]
     }
   }

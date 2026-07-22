@@ -1,0 +1,335 @@
+{
+  "story_version": "shadow-guided-story-v1",
+  "story_id": "coding-agent-deep",
+  "provenance_mode": "FIXTURE",
+  "fixture_note": "PRODUCT-QUALITY FIXTURE — sanitized, deterministic, no private data.",
+  "title": {
+    "en": "Coding-agent replay — deep audit",
+    "zh": "编码 agent 回放——深度审计"
+  },
+  "teaches": {
+    "proves": {
+      "en": "The commit traces to an issue, tool calls, a diff, and a test run, sealed and logged.",
+      "zh": "提交可追溯到问题、工具调用、差异与一次测试运行,已封签并记录。"
+    },
+    "does_not_prove": {
+      "en": "A sealed replay does not prove the code is correct or safe — an unverified/failing test is surfaced, not hidden.",
+      "zh": "封签的回放不证明代码正确或安全——未验证/失败的测试被呈现而非隐藏。"
+    }
+  },
+  "trust_dimensions": [
+    "RECORD_INTEGRITY",
+    "DIGITAL_SIGNATURE",
+    "HASH_CHAIN",
+    "SOURCE_RESOLUTION",
+    "CLAIM_EVIDENCE_BINDING",
+    "ANALYTICAL_CORRECTNESS",
+    "HUMAN_APPROVAL"
+  ],
+  "entities": [
+    {
+      "id": "coding-agent-deep:n0:issue",
+      "kind": "issue",
+      "sequence": 0,
+      "label": {
+        "en": "Issue #412",
+        "zh": "问题 #412"
+      },
+      "a11y": {
+        "en": "issue seq 0: Issue #412",
+        "zh": "序号 0 的issue:问题 #412"
+      }
+    },
+    {
+      "id": "coding-agent-deep:n1:tool_call",
+      "kind": "tool_call",
+      "sequence": 1,
+      "label": {
+        "en": "tool: Edit EventSystem",
+        "zh": "工具:编辑 EventSystem"
+      },
+      "a11y": {
+        "en": "tool_call seq 1: tool: Edit EventSystem",
+        "zh": "序号 1 的tool_call:工具:编辑 EventSystem"
+      }
+    },
+    {
+      "id": "coding-agent-deep:n2:diff",
+      "kind": "diff",
+      "sequence": 2,
+      "label": {
+        "en": "diff: 3 files",
+        "zh": "差异:3 文件"
+      },
+      "a11y": {
+        "en": "diff seq 2: diff: 3 files",
+        "zh": "序号 2 的diff:差异:3 文件"
+      }
+    },
+    {
+      "id": "coding-agent-deep:n3:test",
+      "kind": "test",
+      "sequence": 3,
+      "label": {
+        "en": "test: PlayMode",
+        "zh": "测试:PlayMode"
+      },
+      "a11y": {
+        "en": "test seq 3: test: PlayMode",
+        "zh": "序号 3 的test:测试:PlayMode"
+      }
+    },
+    {
+      "id": "coding-agent-deep:n4:commit",
+      "kind": "commit",
+      "sequence": 4,
+      "label": {
+        "en": "commit 6f6d9de",
+        "zh": "提交 6f6d9de"
+      },
+      "a11y": {
+        "en": "commit seq 4: commit 6f6d9de",
+        "zh": "序号 4 的commit:提交 6f6d9de"
+      }
+    },
+    {
+      "id": "coding-agent-deep:n5:signature",
+      "kind": "signature",
+      "sequence": 5,
+      "label": {
+        "en": "Ed25519 seal",
+        "zh": "Ed25519 封签"
+      },
+      "a11y": {
+        "en": "signature seq 5: Ed25519 seal",
+        "zh": "序号 5 的signature:Ed25519 封签"
+      }
+    },
+    {
+      "id": "coding-agent-deep:n6:audit_record",
+      "kind": "audit_record",
+      "sequence": 6,
+      "label": {
+        "en": "Audit record",
+        "zh": "审计记录"
+      },
+      "a11y": {
+        "en": "audit_record seq 6: Audit record",
+        "zh": "序号 6 的audit_record:审计记录"
+      }
+    }
+  ],
+  "relations": [
+    {
+      "id": "e1",
+      "type": "DERIVED_FROM",
+      "from": "coding-agent-deep:n1:tool_call",
+      "to": "coding-agent-deep:n0:issue"
+    },
+    {
+      "id": "e2",
+      "type": "DERIVED_FROM",
+      "from": "coding-agent-deep:n2:diff",
+      "to": "coding-agent-deep:n1:tool_call"
+    },
+    {
+      "id": "e3",
+      "type": "DERIVED_FROM",
+      "from": "coding-agent-deep:n3:test",
+      "to": "coding-agent-deep:n2:diff"
+    },
+    {
+      "id": "e4",
+      "type": "DERIVED_FROM",
+      "from": "coding-agent-deep:n4:commit",
+      "to": "coding-agent-deep:n3:test"
+    },
+    {
+      "id": "e5",
+      "type": "SEALED_BY",
+      "from": "coding-agent-deep:n5:signature",
+      "to": "coding-agent-deep:n4:commit"
+    },
+    {
+      "id": "e6",
+      "type": "DERIVED_FROM",
+      "from": "coding-agent-deep:n6:audit_record",
+      "to": "coding-agent-deep:n5:signature"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "pristine",
+      "label": {
+        "en": "Pristine",
+        "zh": "原始"
+      },
+      "entity_status": {
+        "coding-agent-deep:n0:issue": "VERIFIED",
+        "coding-agent-deep:n1:tool_call": "VERIFIED",
+        "coding-agent-deep:n2:diff": "VERIFIED",
+        "coding-agent-deep:n3:test": "VERIFIED",
+        "coding-agent-deep:n4:commit": "VERIFIED",
+        "coding-agent-deep:n5:signature": "VERIFIED",
+        "coding-agent-deep:n6:audit_record": "VERIFIED"
+      },
+      "dimension_status": {
+        "RECORD_INTEGRITY": "VERIFIED",
+        "DIGITAL_SIGNATURE": "VERIFIED",
+        "HASH_CHAIN": "VERIFIED",
+        "SOURCE_RESOLUTION": "VERIFIED",
+        "CLAIM_EVIDENCE_BINDING": "VERIFIED",
+        "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+        "HUMAN_APPROVAL": "NOT_PRESENT"
+      },
+      "first_failure": null,
+      "affected_downstream": [],
+      "note": {
+        "en": "All checks pass; analytical correctness NOT evaluated; human review still required.",
+        "zh": "全部检查通过;分析正确性不评估;仍需人工复核。"
+      }
+    },
+    {
+      "id": "tampered",
+      "label": {
+        "en": "Tampered",
+        "zh": "被篡改"
+      },
+      "entity_status": {
+        "coding-agent-deep:n0:issue": "VERIFIED",
+        "coding-agent-deep:n1:tool_call": "VERIFIED",
+        "coding-agent-deep:n2:diff": "VERIFIED",
+        "coding-agent-deep:n3:test": "FIRST_FAILURE",
+        "coding-agent-deep:n4:commit": "AFFECTED_DOWNSTREAM",
+        "coding-agent-deep:n5:signature": "AFFECTED_DOWNSTREAM",
+        "coding-agent-deep:n6:audit_record": "AFFECTED_DOWNSTREAM"
+      },
+      "dimension_status": {
+        "RECORD_INTEGRITY": "FAILED",
+        "DIGITAL_SIGNATURE": "FAILED",
+        "HASH_CHAIN": "FAILED",
+        "SOURCE_RESOLUTION": "VERIFIED",
+        "CLAIM_EVIDENCE_BINDING": "FAILED",
+        "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+        "HUMAN_APPROVAL": "NOT_PRESENT"
+      },
+      "first_failure": "coding-agent-deep:n3:test",
+      "affected_downstream": [
+        "coding-agent-deep:n4:commit",
+        "coding-agent-deep:n5:signature",
+        "coding-agent-deep:n6:audit_record"
+      ],
+      "note": {
+        "en": "First failure at sequence 3; downstream frozen.",
+        "zh": "序号 3 首个失败;下游冻结。"
+      }
+    },
+    {
+      "id": "failing_test",
+      "label": {
+        "en": "Failing test / retry",
+        "zh": "测试失败 / 重试"
+      },
+      "entity_status": {
+        "coding-agent-deep:n0:issue": "VERIFIED",
+        "coding-agent-deep:n1:tool_call": "VERIFIED",
+        "coding-agent-deep:n2:diff": "VERIFIED",
+        "coding-agent-deep:n3:test": "FAILED",
+        "coding-agent-deep:n4:commit": "UNSUPPORTED",
+        "coding-agent-deep:n5:signature": "VERIFIED",
+        "coding-agent-deep:n6:audit_record": "VERIFIED"
+      },
+      "dimension_status": {
+        "RECORD_INTEGRITY": "VERIFIED",
+        "DIGITAL_SIGNATURE": "VERIFIED",
+        "HASH_CHAIN": "VERIFIED",
+        "SOURCE_RESOLUTION": "VERIFIED",
+        "CLAIM_EVIDENCE_BINDING": "WARNING",
+        "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+        "HUMAN_APPROVAL": "NOT_PRESENT"
+      },
+      "first_failure": "coding-agent-deep:n3:test",
+      "affected_downstream": [
+        "coding-agent-deep:n4:commit"
+      ],
+      "note": {
+        "en": "The test FAILED, so the commit's safety is UNSUPPORTED and flagged for human review.",
+        "zh": "测试失败,故提交的安全性无支撑,标记待人工复核。"
+      }
+    }
+  ],
+  "steps": [
+    {
+      "id": "intro",
+      "index": 0,
+      "kind": "intro",
+      "scenario_ref": "pristine",
+      "narration": {
+        "en": "A coding-agent action seals into a signed replay chain.",
+        "zh": "一次编码 agent 动作封存进签名回放链。"
+      },
+      "focus_entities": [],
+      "reveal_upto_sequence": 0,
+      "layout_intent": "timeline"
+    },
+    {
+      "id": "reveal",
+      "index": 1,
+      "kind": "reveal",
+      "scenario_ref": "pristine",
+      "narration": {
+        "en": "Issue → tool call → diff → test → commit → seal → audit.",
+        "zh": "问题 → 工具调用 → 差异 → 测试 → 提交 → 封签 → 审计。"
+      },
+      "focus_entities": [
+        "coding-agent-deep:n0:issue",
+        "coding-agent-deep:n1:tool_call",
+        "coding-agent-deep:n2:diff",
+        "coding-agent-deep:n3:test",
+        "coding-agent-deep:n4:commit",
+        "coding-agent-deep:n5:signature",
+        "coding-agent-deep:n6:audit_record"
+      ],
+      "reveal_upto_sequence": 6,
+      "layout_intent": "timeline"
+    },
+    {
+      "id": "tamper",
+      "index": 2,
+      "kind": "tamper",
+      "scenario_ref": "tampered",
+      "narration": {
+        "en": "Alter the test result and replay verification fails first; commit/seal/audit freeze.",
+        "zh": "篡改测试结果,回放验证最先失败;提交/封签/审计冻结。"
+      },
+      "focus_entities": [
+        "coding-agent-deep:n3:test"
+      ],
+      "layout_intent": "timeline"
+    },
+    {
+      "id": "limit",
+      "index": 3,
+      "kind": "abstain",
+      "scenario_ref": "failing_test",
+      "narration": {
+        "en": "A failing test leaves the commit's safety UNSUPPORTED — surfaced for human review.",
+        "zh": "失败的测试使提交的安全性无支撑——呈现待人工复核。"
+      },
+      "focus_entities": [],
+      "layout_intent": "dag"
+    },
+    {
+      "id": "human",
+      "index": 4,
+      "kind": "human_gate",
+      "scenario_ref": null,
+      "narration": {
+        "en": "Analytical correctness NOT evaluated; code review + human approval required before merge.",
+        "zh": "分析正确性不评估;合并前需代码复核 + 人工批准。"
+      },
+      "focus_entities": [],
+      "layout_intent": "timeline"
+    }
+  ]
+}
