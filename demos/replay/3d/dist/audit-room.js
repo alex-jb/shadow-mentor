@@ -1,5 +1,5 @@
 (() => {
-  // ../../../node_modules/three/build/three.module.js
+  // ../../../../shadow-mentor/node_modules/three/build/three.module.js
   var REVISION = "160";
   var MOUSE = { LEFT: 0, MIDDLE: 1, RIGHT: 2, ROTATE: 0, DOLLY: 1, PAN: 2 };
   var TOUCH = { ROTATE: 0, PAN: 1, DOLLY_PAN: 2, DOLLY_ROTATE: 3 };
@@ -22283,7 +22283,7 @@
     }
   }
 
-  // ../../../node_modules/three/examples/jsm/controls/OrbitControls.js
+  // ../../../../shadow-mentor/node_modules/three/examples/jsm/controls/OrbitControls.js
   var _changeEvent = { type: "change" };
   var _startEvent = { type: "start" };
   var _endEvent = { type: "end" };
@@ -23792,6 +23792,8 @@ ${b64}
     let filterType = null;
     let showTrust = false;
     const _tmp = new Vector3();
+    const _camPos = new Vector3();
+    const _cardPos = new Vector3();
     function tween(delayMs, durMs, fn, done) {
       anims.push({ t: -delayMs / 1e3, dur: durMs / 1e3, fn, done, started: false });
     }
@@ -23835,6 +23837,7 @@ ${summary}`, {
         new PlaneGeometry(C3.CARD_W, C3.CARD_H),
         new MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
       );
+      hit.visible = false;
       cg.add(hit);
       const t = total > 1 ? i / (total - 1) : 0.5;
       const ang = (t - 0.5) * C3.ARC_SPREAD_DEG * DEG * C3.ARC_CURVATURE;
@@ -24171,10 +24174,10 @@ IMPACT  ${obj.impact}`;
         }
         placeCaption(camera2);
       }
-      const camPos = camera2.getWorldPosition(_tmp).clone();
+      const camPos = camera2.getWorldPosition(_camPos);
       const t = performance.now() * 1e-3;
       for (const card of cards) {
-        const d = card.group.getWorldPosition(new Vector3()).distanceTo(camPos);
+        const d = card.group.getWorldPosition(_cardPos).distanceTo(camPos);
         card.targetDetail = d <= C3.PROXIMITY_THRESHOLD && card.status !== "broken" ? 1 : 0;
         const rate = dt / (C3.FADE_MS / 1e3);
         card.curDetail += Math.sign(card.targetDetail - card.curDetail) * rate;
@@ -24569,7 +24572,7 @@ IMPACT  ${obj.impact}`;
     } };
   }
 
-  // ../../../node_modules/three/examples/jsm/webxr/XRButton.js
+  // ../../../../shadow-mentor/node_modules/three/examples/jsm/webxr/XRButton.js
   var XRButton = class {
     static createButton(renderer2, sessionInit = {}) {
       const button = document.createElement("button");
@@ -24689,7 +24692,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../../../node_modules/three/examples/jsm/utils/BufferGeometryUtils.js
+  // ../../../../shadow-mentor/node_modules/three/examples/jsm/utils/BufferGeometryUtils.js
   function toTrianglesDrawMode(geometry, drawMode) {
     if (drawMode === TrianglesDrawMode) {
       console.warn("THREE.BufferGeometryUtils.toTrianglesDrawMode(): Geometry already defined as triangles.");
@@ -24745,7 +24748,7 @@ IMPACT  ${obj.impact}`;
     }
   }
 
-  // ../../../node_modules/three/examples/jsm/loaders/GLTFLoader.js
+  // ../../../../shadow-mentor/node_modules/three/examples/jsm/loaders/GLTFLoader.js
   var GLTFLoader = class extends Loader {
     constructor(manager) {
       super(manager);
@@ -27196,7 +27199,7 @@ IMPACT  ${obj.impact}`;
     });
   }
 
-  // ../../../node_modules/three/examples/jsm/libs/motion-controllers.module.js
+  // ../../../../shadow-mentor/node_modules/three/examples/jsm/libs/motion-controllers.module.js
   var Constants = {
     Handedness: Object.freeze({
       NONE: "none",
@@ -27487,7 +27490,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../../../node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js
+  // ../../../../shadow-mentor/node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js
   var DEFAULT_PROFILES_PATH = "https://cdn.jsdelivr.net/npm/@webxr-input-profiles/assets@1.0/dist/profiles";
   var DEFAULT_PROFILE = "generic-trigger";
   var XRControllerModel = class extends Object3D {
@@ -27642,7 +27645,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../../../node_modules/three/examples/jsm/webxr/XRHandPrimitiveModel.js
+  // ../../../../shadow-mentor/node_modules/three/examples/jsm/webxr/XRHandPrimitiveModel.js
   var _matrix = new Matrix4();
   var _vector = new Vector3();
   var XRHandPrimitiveModel = class {
@@ -27709,7 +27712,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../../../node_modules/three/examples/jsm/webxr/XRHandMeshModel.js
+  // ../../../../shadow-mentor/node_modules/three/examples/jsm/webxr/XRHandMeshModel.js
   var DEFAULT_HAND_PROFILE_PATH = "https://cdn.jsdelivr.net/npm/@webxr-input-profiles/assets@1.0/dist/profiles/generic-hand/";
   var XRHandMeshModel = class {
     constructor(handModel, controller, path, handedness, loader = null) {
@@ -27781,7 +27784,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../../../node_modules/three/examples/jsm/webxr/XRHandModelFactory.js
+  // ../../../../shadow-mentor/node_modules/three/examples/jsm/webxr/XRHandModelFactory.js
   var XRHandModel = class extends Object3D {
     constructor(controller) {
       super();
@@ -28324,7 +28327,7 @@ IMPACT  ${obj.impact}`;
           } });
           renderer.setAnimationLoop(xrLoop);
         }
-        if (!preflight) preflight = initPreflight({ renderer, appCommit: "3670ef2" });
+        if (!preflight) preflight = initPreflight({ renderer, appCommit: "34fe8aa" });
       } catch (e) {
         fatal("WebXR unavailable: " + e.message);
       }

@@ -65,6 +65,10 @@ export function createAuditRoom({ C, bundle = DEMO_BUNDLE } = {}) {
   let filterType = null;
   let showTrust = false;
   const _tmp = new THREE.Vector3();
+  // Reusable scratch vectors for the per-frame proximity loop — avoids ~48 Vector3 allocations/frame
+  // (P0 fix from the 2026-07 deep-audit: was camPos.clone() + a new Vector3 per card, every frame).
+  const _camPos = new THREE.Vector3();
+  const _cardPos = new THREE.Vector3();
 
   // ── tween scheduler (frame-driven, pausable — no setTimeout) ──
   function tween(delayMs, durMs, fn, done) {
@@ -106,6 +110,10 @@ export function createAuditRoom({ C, bundle = DEMO_BUNDLE } = {}) {
       new THREE.PlaneGeometry(C.CARD_W, C.CARD_H),
       new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }),
     );
+    // P0 (2026-07 deep-audit): non-rendered — the renderer skips visible=false, saving one draw call per
+    // card (two under SBS), while Raycaster ignores .visible so pointer/controller selection is unchanged.
+    // Proven in test/audit-room-hit-proxy-raycast.test.js against the shipped three revision.
+    hit.visible = false;
     cg.add(hit);
 
     // arc placement (principle 2: depth via arc + scale, never Z-stacking).
@@ -420,12 +428,12 @@ export function createAuditRoom({ C, bundle = DEMO_BUNDLE } = {}) {
       placeCaption(camera);
     }
 
-    const camPos = camera.getWorldPosition(_tmp).clone();
+    const camPos = camera.getWorldPosition(_camPos);       // reused scratch — no per-frame alloc
     const t = performance.now() * 0.001;
     for (const card of cards) {
       // billboard detail + face toward camera is not needed (cards face arc
       // centre); but proximity disclosure IS per-camera-distance.
-      const d = card.group.getWorldPosition(new THREE.Vector3()).distanceTo(camPos);
+      const d = card.group.getWorldPosition(_cardPos).distanceTo(camPos);  // reused scratch — no per-card alloc
       card.targetDetail = d <= C.PROXIMITY_THRESHOLD && card.status !== "broken" ? 1 : 0;
       const rate = dt / (C.FADE_MS / 1000);
       card.curDetail += Math.sign(card.targetDetail - card.curDetail) * rate;

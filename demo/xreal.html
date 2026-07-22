@@ -273,11 +273,24 @@ function renderDescriptor(d) {
     el.style.borderLeftColor = p.accent_color;
     el.style.transform =
       `translate3d(${p.position.x * SCALE_X}px, ${p.position.y * SCALE_Y}px, ${p.position.z * SCALE_Z}px)`;
-    el.innerHTML = `
-      <div class="name" style="color: ${p.accent_color}">${p.display_name}</div>
-      ${p.verdict ? `<div class="verdict ${p.verdict}">${p.verdict.toUpperCase().replace(/_/g, " ")}</div>` : ""}
-      <div class="rationale">${p.rationale || ""}</div>
-    `;
+    // Build persona card with explicit nodes + textContent — /api/ambient-turn is LLM output and MUST NOT
+    // be parsed as HTML (P1 security fix from the 2026-07 deep-audit; was innerHTML with interpolated
+    // display_name/rationale/verdict → prompt-injection → script execution). All dynamic values are text.
+    const name = document.createElement("div");
+    name.className = "name";
+    if (typeof p.accent_color === "string") name.style.color = p.accent_color;   // CSS, cannot execute
+    name.textContent = p.display_name == null ? "" : String(p.display_name);
+    el.appendChild(name);
+    if (p.verdict) {
+      const v = document.createElement("div");
+      v.className = "verdict " + String(p.verdict).replace(/[^a-zA-Z0-9_-]/g, "");   // safe class token
+      v.textContent = String(p.verdict).toUpperCase().replace(/_/g, " ");
+      el.appendChild(v);
+    }
+    const rat = document.createElement("div");
+    rat.className = "rationale";
+    rat.textContent = p.rationale == null ? "" : String(p.rationale);
+    el.appendChild(rat);
     arc.appendChild(el);
     // Stagger the mount so cards fade in one by one
     setTimeout(() => el.classList.add("mounted"), 300 + i * 220);
@@ -299,8 +312,12 @@ function renderDescriptor(d) {
   ctx.innerHTML = "";
   for (const n of d.context_nodes) {
     const el = document.createElement("div");
-    el.className = `node anchor-${n.anchor}`;
-    el.innerHTML = `<span class="label">${n.label}</span><span class="value">${n.value}</span>`;
+    el.className = "node anchor-" + String(n.anchor == null ? "" : n.anchor).replace(/[^a-zA-Z0-9_-]/g, "");
+    // text-safe: label/value come from /api/ambient-turn (LLM) — never parse as HTML (P1 security fix).
+    const label = document.createElement("span");
+    label.className = "label"; label.textContent = n.label == null ? "" : String(n.label); el.appendChild(label);
+    const value = document.createElement("span");
+    value.className = "value"; value.textContent = n.value == null ? "" : String(n.value); el.appendChild(value);
     ctx.appendChild(el);
   }
 }

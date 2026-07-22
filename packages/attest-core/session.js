@@ -31,6 +31,7 @@ import {
   sign as cryptoSign,
   verify as cryptoVerify,
 } from "node:crypto";
+import { readFileSync } from "node:fs";
 import { canonicalize } from "./attestation.js";
 import { TRUST_LEVELS, trustLevelRank, verifyRfc3161Anchor, verifyRekorAnchor, requestTimestamp, submitRekorEntry } from "./anchors.js";
 
@@ -65,7 +66,11 @@ const ACTOR_TYPES = Object.freeze(["agent", "user", "model", "tool", "system"]);
 const BUNDLE_VERSION = 1;
 const SPEC_VERSION = "shadow-evidence/v1";
 
-const ATTEST_CORE_VERSION = "2.0.0";
+// Single source of truth: the version recorded in every new bundle's header.schema_versions.attest_core
+// IS the package version, so the "software that produced this evidence" field can never drift from
+// package.json again (P0 — was hardcoded "2.0.0" while the package moved to 2.3.0). Released fixtures are
+// static and unaffected; attest_core is a bundle-metadata field (String, no fixed enum in the schema).
+const ATTEST_CORE_VERSION = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf8")).version;
 
 function sha256Hex(bytes) {
   return createHash("sha256").update(bytes).digest("hex");
