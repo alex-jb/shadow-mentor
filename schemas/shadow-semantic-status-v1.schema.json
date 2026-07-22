@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shadow-mentor/schemas/shadow-semantic-status-v1.schema.json",
+  "title": "shadow-semantic-status-v1",
+  "description": "The closed set of semantic statuses and trust dimensions shared by every Shadow story adapter. Source of truth is lib/shadow-semantic-vocabulary.mjs; this schema lets JSON fixtures validate against the same closed sets. No status may be conveyed by colour alone — each carries text + accessible description in the module.",
+  "type": "object",
+  "$defs": {
+    "semantic_status": {
+      "enum": [
+        "VERIFIED", "FAILED", "PRESENT", "NOT_PRESENT", "NOT_CHECKED",
+        "NOT_EVALUATED", "WARNING", "UNSUPPORTED", "MALFORMED", "ABSTAINED",
+        "REQUIRES_HUMAN_REVIEW", "AFFECTED_DOWNSTREAM", "FIRST_FAILURE"
+      ]
+    },
+    "trust_dimension": {
+      "enum": [
+        "RECORD_INTEGRITY", "DIGITAL_SIGNATURE", "HASH_CHAIN", "PROFILE",
+        "SOURCE_RESOLUTION", "EXTERNAL_ANCHOR", "CLAIM_EVIDENCE_BINDING",
+        "DICTIONARY_HASH", "DICTIONARY_VERSION", "PERSONA_OUTPUT_INTEGRITY",
+        "SYNTHESIS_PROVENANCE", "ANALYTICAL_CORRECTNESS", "POLICY_ADEQUACY",
+        "LEGAL_FAIRNESS_REVIEW", "HUMAN_APPROVAL"
+      ]
+    },
+    "relation_type": {
+      "enum": [
+        "DERIVED_FROM", "SUPPORTS", "CONTRADICTS", "APPLIES_POLICY", "CHALLENGED_BY",
+        "SUPERSEDES", "SEALED_BY", "BINDS", "ATTESTS", "SYNTHESIZES_INTO"
+      ]
+    },
+    "entity_kind": {
+      "enum": [
+        "source", "snapshot", "evidence", "claim", "recommendation", "signature", "audit_record",
+        "dictionary", "reason_code", "evidence_ref", "attestation",
+        "persona", "shared_evidence", "synthesis"
+      ]
+    }
+  }
+}

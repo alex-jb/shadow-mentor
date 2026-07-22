@@ -1,0 +1,452 @@
+{
+  "story_version": "shadow-guided-story-v1",
+  "story_id": "reason-code-attestation",
+  "provenance_mode": "FIXTURE",
+  "fixture_note": "DEMONSTRATION FIXTURE — not production bank policy or regulatory language.",
+  "title": {
+    "en": "Reason-code attestation binding",
+    "zh": "理由代码存证绑定"
+  },
+  "teaches": {
+    "proves": {
+      "en": "The dictionary hash + version bind the selected reason codes and their evidence to the signature.",
+      "zh": "字典哈希 + 版本将所选理由代码及其证据绑定到签名上。"
+    },
+    "does_not_prove": {
+      "en": "A valid attestation does not prove the reason codes were the policy-adequate choice or legally reviewed.",
+      "zh": "有效的存证不证明这些理由代码是政策上充分的选择,也不代表已经过法律复核。"
+    }
+  },
+  "references": {
+    "evidence_bundle": "animations:reason-code-attestation",
+    "dictionary": "shadow-reason-codes@v3"
+  },
+  "trust_dimensions": [
+    "DICTIONARY_HASH",
+    "DICTIONARY_VERSION",
+    "CLAIM_EVIDENCE_BINDING",
+    "DIGITAL_SIGNATURE",
+    "RECORD_INTEGRITY",
+    "POLICY_ADEQUACY",
+    "ANALYTICAL_CORRECTNESS",
+    "LEGAL_FAIRNESS_REVIEW"
+  ],
+  "entities": [
+    {
+      "id": "rc:dictionary",
+      "kind": "dictionary",
+      "sequence": 0,
+      "label": {
+        "en": "Reason-code dictionary v3",
+        "zh": "理由代码字典 v3"
+      },
+      "a11y": {
+        "en": "dictionary shadow-reason-codes, version v3",
+        "zh": "字典 shadow-reason-codes,版本 v3"
+      },
+      "trust_dimension": "DICTIONARY_HASH"
+    },
+    {
+      "id": "rc:RC-017",
+      "kind": "reason_code",
+      "sequence": 1,
+      "label": {
+        "en": "RC-017 High revolving utilization",
+        "zh": "RC-017 循环额度使用率过高"
+      },
+      "a11y": {
+        "en": "selected reason code RC-017",
+        "zh": "已选理由代码 RC-017"
+      }
+    },
+    {
+      "id": "rc:RC-021",
+      "kind": "reason_code",
+      "sequence": 2,
+      "label": {
+        "en": "RC-021 Insufficient verified income",
+        "zh": "RC-021 已核验收入证据不足"
+      },
+      "a11y": {
+        "en": "selected reason code RC-021",
+        "zh": "已选理由代码 RC-021"
+      }
+    },
+    {
+      "id": "rc:RC-031",
+      "kind": "reason_code",
+      "sequence": 3,
+      "label": {
+        "en": "RC-031 Recent severe delinquency",
+        "zh": "RC-031 近期严重逾期"
+      },
+      "a11y": {
+        "en": "dictionary reason code RC-031 (not selected)",
+        "zh": "字典理由代码 RC-031(未选)"
+      }
+    },
+    {
+      "id": "rc:RC-017:B0L1",
+      "kind": "evidence_ref",
+      "sequence": 4,
+      "label": {
+        "en": "Evidence B0L1",
+        "zh": "证据 B0L1"
+      },
+      "a11y": {
+        "en": "evidence reference B0L1 for RC-017",
+        "zh": "RC-017 的证据引用 B0L1"
+      },
+      "evidence_ref": "B0L1"
+    },
+    {
+      "id": "rc:RC-017:B0L2",
+      "kind": "evidence_ref",
+      "sequence": 5,
+      "label": {
+        "en": "Evidence B0L2",
+        "zh": "证据 B0L2"
+      },
+      "a11y": {
+        "en": "evidence reference B0L2 for RC-017",
+        "zh": "RC-017 的证据引用 B0L2"
+      },
+      "evidence_ref": "B0L2"
+    },
+    {
+      "id": "rc:RC-021:B0L0",
+      "kind": "evidence_ref",
+      "sequence": 6,
+      "label": {
+        "en": "Evidence B0L0",
+        "zh": "证据 B0L0"
+      },
+      "a11y": {
+        "en": "evidence reference B0L0 for RC-021",
+        "zh": "RC-021 的证据引用 B0L0"
+      },
+      "evidence_ref": "B0L0"
+    },
+    {
+      "id": "rc:attestation",
+      "kind": "attestation",
+      "sequence": 7,
+      "label": {
+        "en": "Signed attestation",
+        "zh": "已签名存证"
+      },
+      "a11y": {
+        "en": "attestation signed by fingerprint 727d29d3204231f7",
+        "zh": "由指纹 727d29d3204231f7 签名的存证"
+      },
+      "trust_dimension": "DIGITAL_SIGNATURE"
+    }
+  ],
+  "relations": [
+    {
+      "id": "r1",
+      "type": "DERIVED_FROM",
+      "from": "rc:RC-017",
+      "to": "rc:dictionary"
+    },
+    {
+      "id": "r2",
+      "type": "DERIVED_FROM",
+      "from": "rc:RC-021",
+      "to": "rc:dictionary"
+    },
+    {
+      "id": "r3",
+      "type": "DERIVED_FROM",
+      "from": "rc:RC-031",
+      "to": "rc:dictionary"
+    },
+    {
+      "id": "r4",
+      "type": "BINDS",
+      "from": "rc:RC-017",
+      "to": "rc:RC-017:B0L1"
+    },
+    {
+      "id": "r5",
+      "type": "BINDS",
+      "from": "rc:RC-017",
+      "to": "rc:RC-017:B0L2"
+    },
+    {
+      "id": "r6",
+      "type": "BINDS",
+      "from": "rc:RC-021",
+      "to": "rc:RC-021:B0L0"
+    },
+    {
+      "id": "r7",
+      "type": "ATTESTS",
+      "from": "rc:attestation",
+      "to": "rc:RC-017"
+    },
+    {
+      "id": "r8",
+      "type": "ATTESTS",
+      "from": "rc:attestation",
+      "to": "rc:RC-021"
+    },
+    {
+      "id": "r9",
+      "type": "SEALED_BY",
+      "from": "rc:attestation",
+      "to": "rc:dictionary"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "pristine",
+      "label": {
+        "en": "Pristine",
+        "zh": "原始"
+      },
+      "entity_status": {
+        "rc:dictionary": "VERIFIED",
+        "rc:RC-017": "VERIFIED",
+        "rc:RC-021": "VERIFIED",
+        "rc:RC-031": "PRESENT",
+        "rc:RC-017:B0L1": "VERIFIED",
+        "rc:RC-017:B0L2": "VERIFIED",
+        "rc:RC-021:B0L0": "VERIFIED",
+        "rc:attestation": "VERIFIED"
+      },
+      "dimension_status": {
+        "DICTIONARY_HASH": "VERIFIED",
+        "DICTIONARY_VERSION": "VERIFIED",
+        "CLAIM_EVIDENCE_BINDING": "VERIFIED",
+        "DIGITAL_SIGNATURE": "VERIFIED",
+        "RECORD_INTEGRITY": "VERIFIED",
+        "POLICY_ADEQUACY": "NOT_EVALUATED",
+        "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+        "LEGAL_FAIRNESS_REVIEW": "REQUIRES_HUMAN_REVIEW"
+      },
+      "first_failure": null,
+      "affected_downstream": [],
+      "note": {
+        "en": "All binding checks pass; policy adequacy + analytical correctness are NOT evaluated; legal review still required.",
+        "zh": "所有绑定检查通过;政策充分性和分析正确性不评估;仍需法律复核。"
+      }
+    },
+    {
+      "id": "dictionary_modified",
+      "label": {
+        "en": "Dictionary text modified",
+        "zh": "字典文本被修改"
+      },
+      "entity_status": {
+        "rc:dictionary": "FIRST_FAILURE",
+        "rc:RC-017": "AFFECTED_DOWNSTREAM",
+        "rc:RC-021": "AFFECTED_DOWNSTREAM",
+        "rc:RC-031": "AFFECTED_DOWNSTREAM",
+        "rc:RC-017:B0L1": "VERIFIED",
+        "rc:RC-017:B0L2": "VERIFIED",
+        "rc:RC-021:B0L0": "VERIFIED",
+        "rc:attestation": "AFFECTED_DOWNSTREAM"
+      },
+      "dimension_status": {
+        "DICTIONARY_HASH": "FAILED",
+        "DICTIONARY_VERSION": "VERIFIED",
+        "CLAIM_EVIDENCE_BINDING": "FAILED",
+        "DIGITAL_SIGNATURE": "FAILED",
+        "RECORD_INTEGRITY": "FAILED",
+        "POLICY_ADEQUACY": "NOT_EVALUATED",
+        "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+        "LEGAL_FAIRNESS_REVIEW": "REQUIRES_HUMAN_REVIEW"
+      },
+      "first_failure": "rc:dictionary",
+      "affected_downstream": [
+        "rc:RC-017",
+        "rc:RC-021",
+        "rc:RC-031",
+        "rc:attestation"
+      ],
+      "note": {
+        "en": "Source check DICTIONARY_HASH fails first.",
+        "zh": "源检查 DICTIONARY_HASH 最先失败。"
+      }
+    },
+    {
+      "id": "reason_replaced",
+      "label": {
+        "en": "Reason code replaced",
+        "zh": "理由代码被替换"
+      },
+      "entity_status": {
+        "rc:dictionary": "VERIFIED",
+        "rc:RC-017": "FIRST_FAILURE",
+        "rc:RC-021": "VERIFIED",
+        "rc:RC-031": "PRESENT",
+        "rc:RC-017:B0L1": "VERIFIED",
+        "rc:RC-017:B0L2": "VERIFIED",
+        "rc:RC-021:B0L0": "VERIFIED",
+        "rc:attestation": "AFFECTED_DOWNSTREAM"
+      },
+      "dimension_status": {
+        "DICTIONARY_HASH": "VERIFIED",
+        "DICTIONARY_VERSION": "VERIFIED",
+        "CLAIM_EVIDENCE_BINDING": "FAILED",
+        "DIGITAL_SIGNATURE": "FAILED",
+        "RECORD_INTEGRITY": "FAILED",
+        "POLICY_ADEQUACY": "NOT_EVALUATED",
+        "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+        "LEGAL_FAIRNESS_REVIEW": "REQUIRES_HUMAN_REVIEW"
+      },
+      "first_failure": "rc:RC-017",
+      "affected_downstream": [
+        "rc:attestation"
+      ],
+      "note": {
+        "en": "Source check REASON_CODE_EXISTS fails first (RC-017 → RC-009 not in dictionary).",
+        "zh": "源检查 REASON_CODE_EXISTS 最先失败(RC-017 → RC-009 不在字典中)。"
+      }
+    },
+    {
+      "id": "evidence_removed",
+      "label": {
+        "en": "Evidence reference removed",
+        "zh": "证据引用被移除"
+      },
+      "entity_status": {
+        "rc:dictionary": "VERIFIED",
+        "rc:RC-017": "FIRST_FAILURE",
+        "rc:RC-021": "VERIFIED",
+        "rc:RC-031": "PRESENT",
+        "rc:RC-017:B0L1": "NOT_PRESENT",
+        "rc:RC-017:B0L2": "VERIFIED",
+        "rc:RC-021:B0L0": "VERIFIED",
+        "rc:attestation": "AFFECTED_DOWNSTREAM"
+      },
+      "dimension_status": {
+        "DICTIONARY_HASH": "VERIFIED",
+        "DICTIONARY_VERSION": "VERIFIED",
+        "CLAIM_EVIDENCE_BINDING": "FAILED",
+        "DIGITAL_SIGNATURE": "FAILED",
+        "RECORD_INTEGRITY": "FAILED",
+        "POLICY_ADEQUACY": "NOT_EVALUATED",
+        "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+        "LEGAL_FAIRNESS_REVIEW": "REQUIRES_HUMAN_REVIEW"
+      },
+      "first_failure": "rc:RC-017:B0L1",
+      "affected_downstream": [
+        "rc:RC-017",
+        "rc:attestation"
+      ],
+      "note": {
+        "en": "Source check EVIDENCE_REFERENCES fails first (RC-017 loses B0L1).",
+        "zh": "源检查 EVIDENCE_REFERENCES 最先失败(RC-017 丢失 B0L1)。"
+      }
+    },
+    {
+      "id": "version_changed",
+      "label": {
+        "en": "Dictionary version changed",
+        "zh": "字典版本被更换"
+      },
+      "entity_status": {
+        "rc:dictionary": "FIRST_FAILURE",
+        "rc:RC-017": "VERIFIED",
+        "rc:RC-021": "VERIFIED",
+        "rc:RC-031": "PRESENT",
+        "rc:RC-017:B0L1": "VERIFIED",
+        "rc:RC-017:B0L2": "VERIFIED",
+        "rc:RC-021:B0L0": "VERIFIED",
+        "rc:attestation": "AFFECTED_DOWNSTREAM"
+      },
+      "dimension_status": {
+        "DICTIONARY_HASH": "VERIFIED",
+        "DICTIONARY_VERSION": "FAILED",
+        "CLAIM_EVIDENCE_BINDING": "VERIFIED",
+        "DIGITAL_SIGNATURE": "FAILED",
+        "RECORD_INTEGRITY": "FAILED",
+        "POLICY_ADEQUACY": "NOT_EVALUATED",
+        "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+        "LEGAL_FAIRNESS_REVIEW": "REQUIRES_HUMAN_REVIEW"
+      },
+      "first_failure": "rc:dictionary",
+      "affected_downstream": [
+        "rc:attestation"
+      ],
+      "note": {
+        "en": "Source check DICTIONARY_VERSION fails first (v3 → v4).",
+        "zh": "源检查 DICTIONARY_VERSION 最先失败(v3 → v4)。"
+      }
+    }
+  ],
+  "steps": [
+    {
+      "id": "intro",
+      "index": 0,
+      "kind": "intro",
+      "scenario_ref": "pristine",
+      "narration": {
+        "en": "Two reason codes are selected, each bound to verified evidence.",
+        "zh": "选定两个理由代码,每个都绑定到已核验的证据。"
+      },
+      "focus_entities": [
+        "rc:RC-017",
+        "rc:RC-021"
+      ],
+      "layout_intent": "hybrid"
+    },
+    {
+      "id": "bind",
+      "index": 1,
+      "kind": "reveal",
+      "scenario_ref": "pristine",
+      "narration": {
+        "en": "The dictionary hash + version and the evidence references are folded into the attestation.",
+        "zh": "字典哈希 + 版本与证据引用被纳入存证。"
+      },
+      "focus_entities": [
+        "rc:dictionary",
+        "rc:attestation"
+      ],
+      "layout_intent": "hybrid"
+    },
+    {
+      "id": "seal",
+      "index": 2,
+      "kind": "seal",
+      "scenario_ref": "pristine",
+      "narration": {
+        "en": "The attestation is signed; any later edit to a bound field breaks it.",
+        "zh": "存证被签名;之后对任一绑定字段的修改都会使其失效。"
+      },
+      "focus_entities": [
+        "rc:attestation"
+      ],
+      "layout_intent": "hybrid"
+    },
+    {
+      "id": "tamper",
+      "index": 3,
+      "kind": "tamper",
+      "scenario_ref": "dictionary_modified",
+      "narration": {
+        "en": "Modify a dictionary definition and the dictionary hash fails first.",
+        "zh": "修改一条字典定义,字典哈希最先失败。"
+      },
+      "focus_entities": [
+        "rc:dictionary"
+      ],
+      "layout_intent": "hybrid"
+    },
+    {
+      "id": "summary",
+      "index": 4,
+      "kind": "summary",
+      "scenario_ref": null,
+      "narration": {
+        "en": "Binding is cryptographic; policy adequacy and legal fairness review remain human work.",
+        "zh": "绑定是密码学的;政策充分性与法律公平性复核仍是人的工作。"
+      },
+      "focus_entities": [],
+      "layout_intent": "hybrid"
+    }
+  ]
+}

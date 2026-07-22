@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shadow-mentor/schemas/shadow-guided-story-v1.schema.json",
+  "title": "shadow-guided-story-v1",
+  "description": "Engine-neutral guided narrative over a Shadow decision. It REFERENCES a shadow-3d-scene-v1 scene and/or evidence bundles by opaque id (it does not duplicate them), declares the entities and trust dimensions the story exercises, and gives an ordered set of scenarios (each a full status assignment with an explicit first_failure + affected_downstream) plus a narration script of steps. Statuses/dimensions/relations come from shadow-semantic-status-v1. The contract carries NO executable HTML/JS and NO engine object names; adapters map meaning to shapes/positions. Treat instances as untrusted input (caps + closed enums + text-safe).",
+  "type": "object",
+  "required": ["story_version", "story_id", "provenance_mode", "title", "trust_dimensions", "entities", "scenarios", "steps"],
+  "additionalProperties": false,
+  "properties": {
+    "story_version": { "const": "shadow-guided-story-v1" },
+    "story_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,63}$" },
+    "provenance_mode": { "enum": ["FIXTURE", "LIVE", "DEVICE"] },
+    "fixture_note": { "type": "string", "maxLength": 400 },
+    "title": { "$ref": "#/$defs/bilingual" },
+    "teaches": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "proves": { "$ref": "#/$defs/bilingual" },
+        "does_not_prove": { "$ref": "#/$defs/bilingual" }
+      }
+    },
+    "references": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Opaque references resolved by the adapter — never inlined here.",
+      "properties": {
+        "scene_clean": { "type": "string", "maxLength": 200 },
+        "scene_tampered": { "type": "string", "maxLength": 200 },
+        "evidence_bundle": { "type": "string", "maxLength": 200 },
+        "dictionary": { "type": "string", "maxLength": 200 }
+      }
+    },
+    "trust_dimensions": {
+      "type": "array", "minItems": 1, "maxItems": 20,
+      "items": { "$ref": "shadow-semantic-status-v1.schema.json#/$defs/trust_dimension" }
+    },
+    "entities": {
+      "type": "array", "minItems": 1, "maxItems": 64,
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "sequence", "label", "a11y"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9:_-]{0,63}$" },
+          "kind": { "$ref": "shadow-semantic-status-v1.schema.json#/$defs/entity_kind" },
+          "sequence": { "type": "integer", "minimum": 0, "maximum": 4095 },
+          "label": { "$ref": "#/$defs/bilingual" },
+          "a11y": { "$ref": "#/$defs/bilingual" },
+          "trust_dimension": { "$ref": "shadow-semantic-status-v1.schema.json#/$defs/trust_dimension" },
+          "evidence_ref": { "type": ["string", "null"], "maxLength": 128 }
+        }
+      }
+    },
+    "relations": {
+      "type": "array", "maxItems": 256,
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "from", "to"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9:_-]{0,63}$" },
+          "type": { "$ref": "shadow-semantic-status-v1.schema.json#/$defs/relation_type" },
+          "from": { "type": "string", "maxLength": 64 },
+          "to": { "type": "string", "maxLength": 64 }
+        }
+      }
+    },
+    "scenarios": {
+      "type": "array", "minItems": 1, "maxItems": 16,
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "entity_status", "dimension_status", "first_failure", "affected_downstream"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$" },
+          "label": { "$ref": "#/$defs/bilingual" },
+          "entity_status": {
+            "type": "object",
+            "description": "entity id → semantic status. Every key must be a declared entity id.",
+            "additionalProperties": { "$ref": "shadow-semantic-status-v1.schema.json#/$defs/semantic_status" }
+          },
+          "dimension_status": {
+            "type": "object",
+            "description": "trust dimension → semantic status. Every key must be a declared trust dimension.",
+            "additionalProperties": { "$ref": "shadow-semantic-status-v1.schema.json#/$defs/semantic_status" }
+          },
+          "first_failure": {
+            "type": ["string", "null"],
+            "maxLength": 64,
+            "description": "the entity id OR trust dimension where verification first breaks; null when the scenario is clean"
+          },
+          "affected_downstream": {
+            "type": "array", "maxItems": 64,
+            "items": { "type": "string", "maxLength": 64 },
+            "description": "entity ids frozen as a consequence of first_failure"
+          },
+          "note": { "$ref": "#/$defs/bilingual" }
+        }
+      }
+    },
+    "steps": {
+      "type": "array", "minItems": 1, "maxItems": 32,
+      "items": {
+        "type": "object",
+        "required": ["id", "index", "kind", "narration", "focus_entities"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$" },
+          "index": { "type": "integer", "minimum": 0, "maximum": 31 },
+          "kind": { "enum": ["intro", "reveal", "seal", "tamper", "cascade", "resolve", "synthesis", "abstain", "human_gate", "summary"] },
+          "scenario_ref": { "type": ["string", "null"], "maxLength": 64 },
+          "narration": { "$ref": "#/$defs/bilingual" },
+          "focus_entities": { "type": "array", "maxItems": 64, "items": { "type": "string", "maxLength": 64 } },
+          "reveal_upto_sequence": { "type": ["integer", "null"], "minimum": 0, "maximum": 4095 },
+          "layout_intent": { "enum": ["timeline", "arc", "dag", "radial", "hybrid"] }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "bilingual": {
+      "type": "object",
+      "required": ["en", "zh"],
+      "additionalProperties": false,
+      "properties": {
+        "en": { "type": "string", "maxLength": 600 },
+        "zh": { "type": "string", "maxLength": 600 }
+      }
+    }
+  }
+}
