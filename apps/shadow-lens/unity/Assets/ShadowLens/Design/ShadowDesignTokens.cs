@@ -3,6 +3,12 @@
 // precise; not cyberpunk, not game-like. Colors are SEMANTIC only (no decorative per-reviewer
 // colors). Readable in XREAL/Quest and desktop Game view.
 // STATUS: authored for the Unity 6 project; re-compile in Unity to apply. No device validation.
+//
+// V11: the color accessors below now read the ACTIVE visual profile (default DesktopDark, byte-identical
+// to the historical palette). Set ShadowDesignTokens.ActiveProfile = XrealOstBright to switch the WHOLE
+// UI to the bright optical-see-through theme (every existing call site follows automatically). The status
+// system is NOT changed — StatusColor keeps the identical semantic switch; only the rendered colour is
+// profile-tuned. Status VALUES + shapes live in ShadowGuidedStoryStatus.
 #if UNITY_2020_1_OR_NEWER
 using UnityEngine;
 
@@ -19,26 +25,40 @@ namespace ShadowLens.Design
             return new Color32(r, g, b, (byte)Mathf.RoundToInt(a * 255));
         }
 
-        // surfaces
-        public static readonly Color Background     = Hex("090D12");
-        public static readonly Color PanelPrimary   = Hex("111820");
-        public static readonly Color PanelSecondary = Hex("18212B");
-        public static readonly Color Border         = new Color(1f, 1f, 1f, 0.10f); // white @ 10%
+        // ── active profile (default DesktopDark = the legacy palette; cached) ──────────────────────
+        static ShadowVisualProfile _active = ShadowVisualProfile.DesktopDark;
+        static ShadowThemeTokens _cache;
+        static bool _cached;
+        public static ShadowVisualProfile ActiveProfile
+        {
+            get => _active;
+            set { _active = value; _cache = Resolve(value); _cached = true; }
+        }
+        static ShadowThemeTokens Active
+        {
+            get { if (!_cached) { _cache = Resolve(_active); _cached = true; } return _cache; }
+        }
+
+        // surfaces — profile-resolved (DesktopDark returns the exact historical values)
+        public static Color Background     => Active.Background;
+        public static Color PanelPrimary   => Active.PanelPrimary;
+        public static Color PanelSecondary => Active.PanelSecondary;
+        public static Color Border         => Active.Border;
 
         // text
-        public static readonly Color TextPrimary    = Hex("F2F5F7");
-        public static readonly Color TextSecondary  = Hex("9DA9B5");
+        public static Color TextPrimary    => Active.TextPrimary;
+        public static Color TextSecondary  => Active.TextSecondary;
 
         // semantic states
-        public static readonly Color Verified   = Hex("2FD19A");
-        public static readonly Color Warning    = Hex("F2C14E");
-        public static readonly Color Tampered   = Hex("FF5F6D");
-        public static readonly Color Information = Hex("5CA8FF");
-        public static readonly Color Neutral    = Hex("9DA9B5"); // unavailable / not tested
+        public static Color Verified    => Active.Verified;
+        public static Color Warning     => Active.Warning;
+        public static Color Tampered    => Active.Tampered;
+        public static Color Information => Active.Information;
+        public static Color Neutral     => Active.Neutral;
 
         // Panel materials must stay readable over changing passthrough backgrounds → controlled opacity.
-        public static Color PanelFill(bool passthrough) => passthrough ? new Color(PanelPrimary.r, PanelPrimary.g, PanelPrimary.b, 0.86f) : PanelPrimary;
-        public static Color PanelFillSecondary(bool passthrough) => passthrough ? new Color(PanelSecondary.r, PanelSecondary.g, PanelSecondary.b, 0.82f) : PanelSecondary;
+        public static Color PanelFill(bool passthrough) => passthrough ? new Color(Active.PanelPrimary.r, Active.PanelPrimary.g, Active.PanelPrimary.b, Active.PanelAlpha) : Active.PanelPrimary;
+        public static Color PanelFillSecondary(bool passthrough) => passthrough ? new Color(Active.PanelSecondary.r, Active.PanelSecondary.g, Active.PanelSecondary.b, Active.PanelAlpha) : Active.PanelSecondary;
 
         // Map a trust/status value to its semantic color. Record integrity is the ONLY use of
         // Verified green; incomplete coverage/review is Warning; real tamper is Tampered red.
@@ -55,10 +75,8 @@ namespace ShadowLens.Design
         }
 
         // ── V11: visual profiles ─────────────────────────────────────────────────────────────────
-        // The static fields above ARE the DesktopDark palette (unchanged — existing call sites keep
-        // their exact behavior). Resolve(profile) returns a per-surface token set WITHOUT rewriting the
-        // status system: status VALUES + shapes live in ShadowGuidedStoryStatus; here only the *rendered
-        // colour* is contrast-tuned per surface, and StatusColorFor() keeps the identical semantic switch.
+        // Resolve(profile) returns a per-surface token set. The DesktopDark case is the single source of
+        // the historical palette (literals — NOT the properties above, which read back through Active).
         public enum ShadowVisualProfile
         {
             DesktopDark,               // Unity Game view / desktop dark (default)
@@ -68,9 +86,6 @@ namespace ShadowLens.Design
             AccessibilityHighContrast, // pure black/white + max-chroma status
         }
 
-        // A resolved, surface-specific token set. `BrightForeground` true means "light panels + dark text —
-        // do NOT rely on black backgrounds or shadows" (the OST requirement). `PanelAlpha` is panel
-        // occlusion strength; `BorderWidthScale` drives outline thickness (bold outlines on OST).
         public struct ShadowThemeTokens
         {
             public ShadowVisualProfile Profile;
@@ -83,7 +98,6 @@ namespace ShadowLens.Design
 
             public Color PanelFill() => new Color(PanelPrimary.r, PanelPrimary.g, PanelPrimary.b, PanelAlpha);
 
-            // Identical semantic mapping to StatusColor(string) — same buckets, profile-tuned colour only.
             public Color StatusColorFor(string status)
             {
                 switch ((status ?? "").ToLowerInvariant())
@@ -103,7 +117,7 @@ namespace ShadowLens.Design
             {
                 case ShadowVisualProfile.XrealOstBright:
                     // See-through additive display: black = invisible, so panels are BRIGHT + near-opaque
-                    // and text is DARK for contrast against unpredictable real-world backgrounds. Bold
+                    // and text is DARK for contrast against unpredictable real backgrounds. Bold dark
                     // outlines, high panel alpha, minimal translucency. Status hues preserved but darkened
                     // to stay legible on a bright panel.
                     return new ShadowThemeTokens {
@@ -111,7 +125,7 @@ namespace ShadowLens.Design
                         Background     = Hex("F4F6F8"),
                         PanelPrimary   = Hex("FBFCFD"),
                         PanelSecondary = Hex("E7ECEF"),
-                        Border         = new Color(0.05f, 0.08f, 0.11f, 0.88f), // bold dark outline
+                        Border         = new Color(0.05f, 0.08f, 0.11f, 0.88f),
                         TextPrimary    = Hex("0E141A"),
                         TextSecondary  = Hex("3A4650"),
                         Verified   = Hex("0B7A52"),
@@ -121,7 +135,6 @@ namespace ShadowLens.Design
                         Neutral    = Hex("5A6570"),
                     };
                 case ShadowVisualProfile.ProjectorPresentation:
-                    // Bright room, opaque plates, max contrast — dark palette but fully opaque, bold border.
                     return new ShadowThemeTokens {
                         Profile = profile, BrightForeground = false, PanelAlpha = 1f, BorderWidthScale = 1.5f,
                         Background = Hex("05080B"), PanelPrimary = Hex("0E141B"), PanelSecondary = Hex("161F29"),
@@ -139,13 +152,14 @@ namespace ShadowLens.Design
                         Verified = Hex("00E676"), Warning = Hex("FFD600"), Tampered = Hex("FF1744"),
                         Information = Hex("40C4FF"), Neutral = Hex("BDBDBD"),
                     };
-                default: // DesktopDark + BrowserDark — the legacy static palette, unchanged
+                default: // DesktopDark + BrowserDark — the historical palette (literal source of truth)
                     return new ShadowThemeTokens {
                         Profile = profile, BrightForeground = false, PanelAlpha = 0.86f, BorderWidthScale = 1f,
-                        Background = Background, PanelPrimary = PanelPrimary, PanelSecondary = PanelSecondary,
-                        Border = Border, TextPrimary = TextPrimary, TextSecondary = TextSecondary,
-                        Verified = Verified, Warning = Warning, Tampered = Tampered,
-                        Information = Information, Neutral = Neutral,
+                        Background = Hex("090D12"), PanelPrimary = Hex("111820"), PanelSecondary = Hex("18212B"),
+                        Border = new Color(1f, 1f, 1f, 0.10f),
+                        TextPrimary = Hex("F2F5F7"), TextSecondary = Hex("9DA9B5"),
+                        Verified = Hex("2FD19A"), Warning = Hex("F2C14E"), Tampered = Hex("FF5F6D"),
+                        Information = Hex("5CA8FF"), Neutral = Hex("9DA9B5"),
                     };
             }
         }

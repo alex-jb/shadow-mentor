@@ -26,8 +26,11 @@ namespace ShadowLens.Tests
             Assert.AreEqual(5, System.Enum.GetValues(typeof(P)).Length, "five profiles: desktop/browser dark, OST bright, projector, a11y");
         }
 
+        [TearDown] public void ResetProfile() { ShadowDesignTokens.ActiveProfile = P.DesktopDark; }
+
         [Test] public void DesktopDark_IsByteIdenticalToLegacyStaticPalette()
         {
+            ShadowDesignTokens.ActiveProfile = P.DesktopDark;
             var t = ShadowDesignTokens.Resolve(P.DesktopDark);
             Assert.AreEqual(ShadowDesignTokens.Background, t.Background);
             Assert.AreEqual(ShadowDesignTokens.PanelPrimary, t.PanelPrimary);
@@ -74,6 +77,24 @@ namespace ShadowLens.Tests
                 Assert.AreNotEqual(t.Warning, t.Information);
                 Assert.AreNotEqual(t.Verified, t.Warning);
             }
+        }
+
+        [Test] public void ActiveProfile_Switch_RecolorsTheWholeAccessorSurface()
+        {
+            // this is the OST WIRING: setting the active profile must change what every call site reads.
+            ShadowDesignTokens.ActiveProfile = P.DesktopDark;
+            var darkBg = ShadowDesignTokens.Background;
+            var darkText = ShadowDesignTokens.TextPrimary;
+            Assert.Less(Lum(darkBg), 0.15f, "desktop dark background is dark");
+
+            ShadowDesignTokens.ActiveProfile = P.XrealOstBright;
+            Assert.AreNotEqual(darkBg, ShadowDesignTokens.PanelPrimary, "switching profile must change the panel colour");
+            Assert.Greater(Lum(ShadowDesignTokens.PanelPrimary), 0.85f, "OST panel bright after switch");
+            Assert.Less(Lum(ShadowDesignTokens.TextPrimary), 0.25f, "OST text dark after switch");
+            Assert.AreNotEqual(darkText, ShadowDesignTokens.TextPrimary, "text colour must follow the profile");
+
+            ShadowDesignTokens.ActiveProfile = P.DesktopDark;   // restored (also enforced by TearDown)
+            Assert.AreEqual(darkBg, ShadowDesignTokens.Background, "reverting the profile restores the dark palette exactly");
         }
 
         [Test] public void PanelFill_AppliesProfileAlpha()
