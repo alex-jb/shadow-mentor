@@ -1,0 +1,6 @@
+Unity 6000.0.23f1 batch-mode -nographics — V6
+EditMode (loader + evidence + device-ready + labels): total=27 passed=27 failed=0
+  ShadowXrealEvidenceEditTests 8/8 (loader state machine + fixture evidence loop)
+  ShadowDeviceReadyEditTests 16/16 + ShadowLabelPresetsEditTests 3/3
+ShadowLens.dll compiles with 0 CS errors.
+No SDK, no device: the evidence loop runs against synthetic fixture frames.
