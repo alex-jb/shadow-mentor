@@ -52,7 +52,7 @@ namespace ShadowLens.Tests
         [Test] public void XrealOstBright_HasHighOcclusionAndBoldOutlines()
         {
             var t = ShadowDesignTokens.Resolve(P.XrealOstBright);
-            Assert.GreaterOrEqual(t.PanelAlpha, 0.9f, "OST panels must be near-opaque (minimal translucency)");
+            Assert.GreaterOrEqual(t.PanelAlpha, 0.8f, "OST panels must be near-opaque (minimal translucency); 0.85 simulation-selected");
             Assert.GreaterOrEqual(t.BorderWidthScale, 2f, "OST needs bold/clear outlines");
             Assert.Greater(t.Border.a, 0.7f, "OST border must be strong, not a faint 10% white line");
             // dark bold border, not the dark-theme faint-white border

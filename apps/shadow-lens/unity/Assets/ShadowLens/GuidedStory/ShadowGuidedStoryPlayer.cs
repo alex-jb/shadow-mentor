@@ -17,6 +17,10 @@ namespace ShadowLens.GuidedStory
         [Tooltip("Pre-compiled semantic snapshots (fixtures/guided-stories/snapshots/<id>/semantic.json).")]
         public List<TextAsset> Snapshots = new List<TextAsset>();
 
+        [Tooltip("Optional label font. Built-in fonts have NO CJK glyphs; assign a CJK-capable font so " +
+                 "Simplified Chinese labels render instead of tofu boxes. Null = built-in dynamic font.")]
+        public Font LabelFont;
+
         readonly ShadowGuidedStoryLocalization _loc = new ShadowGuidedStoryLocalization();
         DesktopMockStoryInput _input;
         GuidedStorySemantic _model;
@@ -126,6 +130,12 @@ namespace ShadowLens.GuidedStory
             t.anchor = TextAnchor.LowerCenter;
             t.fontSize = 64;
             t.characterSize = 0.5f;
+            if (LabelFont != null)   // set the font (+ its material) BEFORE text so dynamic glyphs populate
+            {
+                t.font = LabelFont;
+                var mr = t.GetComponent<MeshRenderer>();
+                if (mr != null && LabelFont.material != null) mr.sharedMaterial = LabelFont.material;
+            }
             t.text = text;
         }
 
@@ -152,6 +162,9 @@ namespace ShadowLens.GuidedStory
         }
 
         // Test / UI hooks (no device dependency)
+        // Mirrors the existing KeyCode.L toggle so language can be driven deterministically (harness/tests).
+        public void SetLanguage(bool zh) { _loc.Zh = zh; Rebuild(); }
+        public bool IsChinese => _loc.Zh;
         public void ApiNext() { _state?.Next(); Rebuild(); }
         public void ApiBack() { _state?.Back(); Rebuild(); }
         public void ApiRestart() { _state?.Restart(); Rebuild(); }

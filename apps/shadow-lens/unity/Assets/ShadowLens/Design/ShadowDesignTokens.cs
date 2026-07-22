@@ -121,7 +121,10 @@ namespace ShadowLens.Design
                     // outlines, high panel alpha, minimal translucency. Status hues preserved but darkened
                     // to stay legible on a bright panel.
                     return new ShadowThemeTokens {
-                        Profile = profile, BrightForeground = true, PanelAlpha = 0.94f, BorderWidthScale = 2f,
+                        // PanelAlpha 0.85: SIMULATION-SELECTED (media/spatial-ux-v11/ost-simulations/panel-alpha-comparison.png)
+                        // — dark-on-bright text stays fully legible over a bright-office background at 0.75–0.94, so 0.85
+                        // balances legibility with occluding slightly less of the real world. DEVICE-VALIDATION-PENDING.
+                        Profile = profile, BrightForeground = true, PanelAlpha = 0.85f, BorderWidthScale = 2f,
                         Background     = Hex("F4F6F8"),
                         PanelPrimary   = Hex("FBFCFD"),
                         PanelSecondary = Hex("E7ECEF"),
