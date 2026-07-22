@@ -1,0 +1,94 @@
+{
+  "bundle_version": 1,
+  "spec_version": "shadow-evidence/v1",
+  "header": {
+    "session_id": "reference-banking-decision-2026-001",
+    "session_started_at_utc": "2026-07-17T20:45:05.052Z",
+    "session_ended_at_utc": "2026-07-17T20:45:05.053Z",
+    "agent": {
+      "name": "shadow-loan-council",
+      "version": "1.5",
+      "identity_ref": null
+    },
+    "models": [
+      {
+        "model_id": "council-v1",
+        "provider": "deterministic-rules",
+        "sampling_params_hash": null
+      }
+    ],
+    "environment_fingerprint": {
+      "os": "darwin",
+      "node_version": "v24.14.1",
+      "hostname_hash": null
+    },
+    "schema_versions": {
+      "bundle": 1,
+      "attest_core": "2.0.0"
+    }
+  },
+  "events": [
+    {
+      "seq": 0,
+      "ts_utc": "2026-07-17T20:45:05.052Z",
+      "event_type": "prompt",
+      "actor": "user",
+      "payload_hash": "66169d2cffac5abd85a8ac71bd6ef3e9dd97d7c7a3bcc3e3a11c330b04c05fb7",
+      "payload_ref": "sha256:66169d2cffac5abd85a8ac71bd6ef3e9dd97d7c7a3bcc3e3a11c330b04c05fb7",
+      "prev_hash": "e36cd7fa810fa87a5bf79c1aabe27f584c6fbe919cd3626208d1bcef36df72b3",
+      "extensions": {}
+    },
+    {
+      "seq": 1,
+      "ts_utc": "2026-07-17T20:45:05.052Z",
+      "event_type": "tool_call",
+      "actor": "tool",
+      "payload_hash": "94772df6a2e7639578ea4427baedf25435f30edfc099e54fc42991da794294b7",
+      "payload_ref": "sha256:94772df6a2e7639578ea4427baedf25435f30edfc099e54fc42991da794294b3",
+      "prev_hash": "9c840220b449acbb953b9122d8dfab7c1ba59c92d38d179497c27243684f73de",
+      "extensions": {}
+    },
+    {
+      "seq": 2,
+      "ts_utc": "2026-07-17T20:45:05.052Z",
+      "event_type": "model_output",
+      "actor": "model",
+      "payload_hash": "10f75cbd9f54b4cf62115dca6c4230405daa1772c7b579d540b47766d29f42f7",
+      "payload_ref": "sha256:10f75cbd9f54b4cf62115dca6c4230405daa1772c7b579d540b47766d29f42f7",
+      "prev_hash": "64072e4818a42b335dd185dcdd718abd241fcca9bdcac539b7ce354e69f4b2c9",
+      "extensions": {
+        "dictionary_hash": "6eb106db289769932d133aa668349183c159afa772afc3546557d15e0d9d5355",
+        "citation_registry_sha256": "sha256:reference-registry"
+      }
+    },
+    {
+      "seq": 3,
+      "ts_utc": "2026-07-17T20:45:05.052Z",
+      "event_type": "human_approval",
+      "actor": "user",
+      "payload_hash": "764d349c9dab52d2a50bb1e01c5c399be5cff6d474b6336d1501fb3e390b8362",
+      "payload_ref": "sha256:764d349c9dab52d2a50bb1e01c5c399be5cff6d474b6336d1501fb3e390b8362",
+      "prev_hash": "c8fd8690fc03bf1b9b593878f10478feef283a4920c92f4076415a0082b24343",
+      "extensions": {}
+    },
+    {
+      "seq": 4,
+      "ts_utc": "2026-07-17T20:45:05.053Z",
+      "event_type": "session_end",
+      "actor": "system",
+      "payload_hash": "5c7659c00515f4fc4bc04482c438ccc4fd52bb017b490b2e8ebe3a0e9ac62bc2",
+      "payload_ref": "sha256:5c7659c00515f4fc4bc04482c438ccc4fd52bb017b490b2e8ebe3a0e9ac62bc2",
+      "prev_hash": "f41ff579ad1b35e237b3f33fa5318c88c1c8ab296ac7385948b30483c9dfb95d",
+      "extensions": {}
+    }
+  ],
+  "batch_root": "3aed1980cad6d4700a12fc66857ada1f928194fe593e74fda0d7d52d5facfca4",
+  "signatures": [
+    {
+      "algorithm": "ed25519",
+      "key_id": "reference-2026",
+      "signature": "j0hPXv5-NOipVIzYHCipcHYli_QOB7FElEGcPBPahDFteEy7x7PstVJGry1QBxbHEESEEbqyxDSrYDL82Y3-Dw",
+      "signed_at_utc": "2026-07-17T20:45:05.053Z"
+    }
+  ]
+}
