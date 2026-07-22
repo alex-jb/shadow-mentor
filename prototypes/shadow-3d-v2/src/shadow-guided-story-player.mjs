@@ -104,6 +104,7 @@ function render() {
   if (!MODE2D) buildScene(sceneModel); else clearScene();
   renderPanels(step, scenarioId);
   renderLabels();
+  markDirty();   // a state change must trigger a redraw even under render-on-demand
 }
 
 function renderPanels(step, scenarioId) {
@@ -203,7 +204,13 @@ function wire() {
   $("recenter").addEventListener("click", recenter);
   $("lang-en").addEventListener("click", () => { LANG = "en"; syncBtns(); render(); });
   $("lang-zh").addEventListener("click", () => { LANG = "zh"; syncBtns(); render(); });
-  $("rmotion").addEventListener("change", (e) => { RMOTION = e.target.checked; controls.enableDamping = !RMOTION; });
+  $("rmotion").addEventListener("change", (e) => {
+    RMOTION = e.target.checked; controls.enableDamping = !RMOTION;
+    // adaptive DPR: official guidance is to cap (not use raw devicePixelRatio) and render lighter
+    // under load — drop to 1.5 under reduced motion, otherwise cap at 2.
+    const dpr = RMOTION ? Math.min(devicePixelRatio, 1.5) : Math.min(devicePixelRatio, 2);
+    renderer.setPixelRatio(dpr); perf.dpr = dpr; resize(); markDirty();
+  });
   $("mode2d").addEventListener("change", (e) => { MODE2D = e.target.checked; stage.dataset.hidden = MODE2D ? "1" : ""; render(); });
   document.addEventListener("keydown", (e) => { if (e.key === "ArrowRight") next(); else if (e.key === "ArrowLeft") prev(); });
   syncBtns();
@@ -218,10 +225,24 @@ function resize() {
   const w = stage.clientWidth || window.innerWidth, h = stage.clientHeight || Math.round(window.innerHeight * 0.62);
   renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
 }
-window.addEventListener("resize", () => { resize(); renderLabels(); });
+window.addEventListener("resize", () => { resize(); renderLabels(); markDirty(); });
 
-function loop() { controls.update(); renderer.render(scene, camera); renderLabels(); requestAnimationFrame(loop); }
+// Render-on-demand (official three.js pattern). When reduced motion is on we do NOT run a continuous
+// loop — we render only when something changes (step / select / camera / resize). When it is off we
+// render every frame so OrbitControls damping stays smooth. Perf counters are exposed for acceptance.
+let _dirty = true;
+const perf = { revision: THREE.REVISION, frames: 0, draws: 0, dpr: renderer.getPixelRatio() };
+function markDirty() { _dirty = true; }
+controls.addEventListener("change", markDirty);
+window.__perf = perf;
 
-wire(); resize();
-loadStory(STORY).then(() => { resize(); loop(); window.__ready = true; })
+function drawOnce() { controls.update(); renderer.render(scene, camera); renderLabels(); perf.draws++; _dirty = false; }
+function loop() {
+  perf.frames++;
+  if (!RMOTION || _dirty) drawOnce();   // continuous when animating; on-demand under reduced motion
+  requestAnimationFrame(loop);
+}
+
+wire(); resize(); markDirty();
+loadStory(STORY).then(() => { resize(); markDirty(); loop(); window.__ready = true; })
   .catch((err) => { setText($("narration"), "load error: " + err.message); window.__ready = true; });
