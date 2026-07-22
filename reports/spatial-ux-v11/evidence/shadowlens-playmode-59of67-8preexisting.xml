@@ -1,0 +1,976 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="67" result="Failed(Child)" total="67" passed="59" failed="8" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.1865547">
+  <test-suite type="TestSuite" id="1081" name="unity" fullname="unity" runstate="Runnable" testcasecount="67" result="Failed" site="Child" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.186555" total="67" passed="59" failed="8" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1075" name="ShadowLens.Tests.PlayMode.dll" fullname="/Users/alexji/Desktop/AI-Projects/shadow-mentor-story-adapters/apps/shadow-lens/unity/Library/ScriptAssemblies/ShadowLens.Tests.PlayMode.dll" runstate="Runnable" testcasecount="67" result="Failed" site="Child" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.184716" total="67" passed="59" failed="8" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="69345" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1076" name="ShadowLens" fullname="ShadowLens" runstate="Runnable" testcasecount="67" result="Failed" site="Child" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.184552" total="67" passed="59" failed="8" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1077" name="Tests" fullname="ShadowLens.Tests" runstate="Runnable" testcasecount="67" result="Failed" site="Child" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.184458" total="67" passed="59" failed="8" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1078" name="PlayMode" fullname="ShadowLens.Tests.PlayMode" runstate="Runnable" testcasecount="67" result="Failed" site="Child" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.184313" total="67" passed="59" failed="8" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestFixture" id="1001" name="ShadowAuditArcPlayModeTests" fullname="ShadowLens.Tests.PlayMode.ShadowAuditArcPlayModeTests" classname="ShadowLens.Tests.PlayMode.ShadowAuditArcPlayModeTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.020455" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1004" name="AuditArc_BuildsInFlowOrAudit_WithFullProvenanceSpine" fullname="ShadowLens.Tests.PlayMode.ShadowAuditArcPlayModeTests.AuditArc_BuildsInFlowOrAudit_WithFullProvenanceSpine" methodname="AuditArc_BuildsInFlowOrAudit_WithFullProvenanceSpine" classname="ShadowLens.Tests.PlayMode.ShadowAuditArcPlayModeTests" runstate="Runnable" seed="1329975160" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.008039" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[stage] RESET_DEMO → banking READY
+]]></output>
+              </test-case>
+              <test-case id="1005" name="AuditArc_HappyPath_AllLinksVerified" fullname="ShadowLens.Tests.PlayMode.ShadowAuditArcPlayModeTests.AuditArc_HappyPath_AllLinksVerified" methodname="AuditArc_HappyPath_AllLinksVerified" classname="ShadowLens.Tests.PlayMode.ShadowAuditArcPlayModeTests" runstate="Runnable" seed="1970372069" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.002555" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[stage] RESET_DEMO → banking READY
+]]></output>
+              </test-case>
+              <test-case id="1006" name="AuditArc_IsOnlyOne_AndIdempotentAcrossReEntry" fullname="ShadowLens.Tests.PlayMode.ShadowAuditArcPlayModeTests.AuditArc_IsOnlyOne_AndIdempotentAcrossReEntry" methodname="AuditArc_IsOnlyOne_AndIdempotentAcrossReEntry" classname="ShadowLens.Tests.PlayMode.ShadowAuditArcPlayModeTests" runstate="Runnable" seed="1879292255" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.001711" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[stage] RESET_DEMO → banking READY
+]]></output>
+              </test-case>
+              <test-case id="1003" name="CouncilState_HasExactlyOneDominantVoice" fullname="ShadowLens.Tests.PlayMode.ShadowAuditArcPlayModeTests.CouncilState_HasExactlyOneDominantVoice" methodname="CouncilState_HasExactlyOneDominantVoice" classname="ShadowLens.Tests.PlayMode.ShadowAuditArcPlayModeTests" runstate="Runnable" seed="895447660" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.001471" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[stage] RESET_DEMO → banking READY
+]]></output>
+              </test-case>
+              <test-case id="1002" name="CouncilVoices_EachGetAUniqueFlatLabel" fullname="ShadowLens.Tests.PlayMode.ShadowAuditArcPlayModeTests.CouncilVoices_EachGetAUniqueFlatLabel" methodname="CouncilVoices_EachGetAUniqueFlatLabel" classname="ShadowLens.Tests.PlayMode.ShadowAuditArcPlayModeTests" runstate="Runnable" seed="470477890" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.001722" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[stage] RESET_DEMO → banking READY
+]]></output>
+              </test-case>
+              <test-case id="1007" name="HeadDirectedFocus_ExistsAndNeverApproves" fullname="ShadowLens.Tests.PlayMode.ShadowAuditArcPlayModeTests.HeadDirectedFocus_ExistsAndNeverApproves" methodname="HeadDirectedFocus_ExistsAndNeverApproves" classname="ShadowLens.Tests.PlayMode.ShadowAuditArcPlayModeTests" runstate="Runnable" seed="1694663028" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.001006" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[stage] RESET_DEMO → banking READY
+]]></output>
+              </test-case>
+              <test-case id="1008" name="Reset_HidesAuditArc_AndReturnsToBankingReady" fullname="ShadowLens.Tests.PlayMode.ShadowAuditArcPlayModeTests.Reset_HidesAuditArc_AndReturnsToBankingReady" methodname="Reset_HidesAuditArc_AndReturnsToBankingReady" classname="ShadowLens.Tests.PlayMode.ShadowAuditArcPlayModeTests" runstate="Runnable" seed="1485662162" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000787" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[stage] RESET_DEMO → banking READY
+[stage] RESET_DEMO → banking READY
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1009" name="ShadowGuidedStoryPlayModeTests" fullname="ShadowLens.Tests.PlayMode.ShadowGuidedStoryPlayModeTests" classname="ShadowLens.Tests.PlayMode.ShadowGuidedStoryPlayModeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.036360" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1010" name="LoadsEachStoryAndSpawnsNodes" fullname="ShadowLens.Tests.PlayMode.ShadowGuidedStoryPlayModeTests.LoadsEachStoryAndSpawnsNodes" methodname="LoadsEachStoryAndSpawnsNodes" classname="ShadowLens.Tests.PlayMode.ShadowGuidedStoryPlayModeTests" runstate="Runnable" seed="645782821" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.015244" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[ShadowGuidedStoryPlayer: no snapshots assigned
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Reason-code attestation binding — Two reason codes are selected, each bound to verified evidence.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  CLAIM_EVIDENCE_BINDING: VERIFIED  DICTIONARY_HASH: VERIFIED  DICTIONARY_VERSION: VERIFIED  DIGITAL_SIGNATURE: VERIFIED  LEGAL_FAIRNESS_REVIEW: REQUIRES_HUMAN_REVIEW  POLICY_ADEQUACY: NOT_EVALUATED  RECORD_INTEGRITY: VERIFIED  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Persona deliberation → evidence-grounded synthesis — Five analytical perspectives read the same shared evidence.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  CLAIM_EVIDENCE_BINDING: VERIFIED  HUMAN_APPROVAL: NOT_PRESENT  LEGAL_FAIRNESS_REVIEW: REQUIRES_HUMAN_REVIEW  PERSONA_OUTPUT_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: VERIFIED  SYNTHESIS_PROVENANCE: VERIFIED  
+]]></output>
+              </test-case>
+              <test-case id="1011" name="StepNextBackRestart_StayInBounds" fullname="ShadowLens.Tests.PlayMode.ShadowGuidedStoryPlayModeTests.StepNextBackRestart_StayInBounds" methodname="StepNextBackRestart_StayInBounds" classname="ShadowLens.Tests.PlayMode.ShadowGuidedStoryPlayModeTests" runstate="Runnable" seed="1747179137" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.017767" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[ShadowGuidedStoryPlayer: no snapshots assigned
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Each link derives from the previous one, source through audit record.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — The recommendation is sealed by an Ed25519 signature into the audit record.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Alter the council claim at sequence 3 and its verification fails first.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: FAILED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: FAILED  PROFILE: VERIFIED  RECORD_INTEGRITY: FAILED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Every downstream link is frozen as affected — a green chain would have proved only that the record was unaltered.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: FAILED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: FAILED  PROFILE: VERIFIED  RECORD_INTEGRITY: FAILED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Every downstream link is frozen as affected — a green chain would have proved only that the record was unaltered.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: FAILED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: FAILED  PROFILE: VERIFIED  RECORD_INTEGRITY: FAILED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Alter the council claim at sequence 3 and its verification fails first.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: FAILED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: FAILED  PROFILE: VERIFIED  RECORD_INTEGRITY: FAILED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — The recommendation is sealed by an Ed25519 signature into the audit record.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Each link derives from the previous one, source through audit record.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Each link derives from the previous one, source through audit record.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+]]></output>
+              </test-case>
+              <test-case id="1012" name="SwitchingStories_RebuildsCleanly" fullname="ShadowLens.Tests.PlayMode.ShadowGuidedStoryPlayModeTests.SwitchingStories_RebuildsCleanly" methodname="SwitchingStories_RebuildsCleanly" classname="ShadowLens.Tests.PlayMode.ShadowGuidedStoryPlayModeTests" runstate="Runnable" seed="1241064409" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.002680" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[ShadowGuidedStoryPlayer: no snapshots assigned
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Reason-code attestation binding — Two reason codes are selected, each bound to verified evidence.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  CLAIM_EVIDENCE_BINDING: VERIFIED  DICTIONARY_HASH: VERIFIED  DICTIONARY_VERSION: VERIFIED  DIGITAL_SIGNATURE: VERIFIED  LEGAL_FAIRNESS_REVIEW: REQUIRES_HUMAN_REVIEW  POLICY_ADEQUACY: NOT_EVALUATED  RECORD_INTEGRITY: VERIFIED  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Persona deliberation → evidence-grounded synthesis — Five analytical perspectives read the same shared evidence.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  CLAIM_EVIDENCE_BINDING: VERIFIED  HUMAN_APPROVAL: NOT_PRESENT  LEGAL_FAIRNESS_REVIEW: REQUIRES_HUMAN_REVIEW  PERSONA_OUTPUT_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: VERIFIED  SYNTHESIS_PROVENANCE: VERIFIED  
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1013" name="ShadowLensPlayModeTests" fullname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests" classname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests" runstate="Runnable" testcasecount="16" result="Failed" site="Child" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.038440" total="16" passed="12" failed="4" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1022" name="AnalyzeCausesVisibleStateChange" fullname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.AnalyzeCausesVisibleStateChange" methodname="AnalyzeCausesVisibleStateChange" classname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests" runstate="Runnable" seed="730477981" result="Failed" label="Error" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.018639" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[System.NullReferenceException : Object reference not set to an instance of an object]]></message>
+                  <stack-trace><![CDATA[  at ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.AnalyzeCausesVisibleStateChange () [0x0000b] in /Users/alexji/Desktop/AI-Projects/shadow-mentor-story-adapters/apps/shadow-lens/unity/Assets/ShadowLens/Tests/PlayMode/ShadowLensPlayModeTests.cs:90 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <a6d715f5ce8c4754a140b50ff638878a>:0 ]]></stack-trace>
+                </failure>
+              </test-case>
+              <test-case id="1018" name="AtLeastOneVisibleCanvasOrRenderer" fullname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.AtLeastOneVisibleCanvasOrRenderer" methodname="AtLeastOneVisibleCanvasOrRenderer" classname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests" runstate="Runnable" seed="1218931579" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000625" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1020" name="DecisionPanelPopulatesInView" fullname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.DecisionPanelPopulatesInView" methodname="DecisionPanelPopulatesInView" classname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests" runstate="Runnable" seed="2015251612" result="Failed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.001399" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: not null
+  But was:  null
+]]></message>
+                  <stack-trace><![CDATA[at ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.DecisionPanelPopulatesInView () [0x0001a] in /Users/alexji/Desktop/AI-Projects/shadow-mentor-story-adapters/apps/shadow-lens/unity/Assets/ShadowLens/Tests/PlayMode/ShadowLensPlayModeTests.cs:81
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[[ShadowLens] button → ANALYZE (state was Ready)
+]]></output>
+              </test-case>
+              <test-case id="1019" name="DocumentPlaneIsInFrontOfCamera" fullname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.DocumentPlaneIsInFrontOfCamera" methodname="DocumentPlaneIsInFrontOfCamera" classname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests" runstate="Runnable" seed="403469392" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000861" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1016" name="ExactlyOneActiveMainCamera" fullname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.ExactlyOneActiveMainCamera" methodname="ExactlyOneActiveMainCamera" classname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests" runstate="Runnable" seed="1461282274" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000444" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1015" name="ExactlyOneBootstrap" fullname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.ExactlyOneBootstrap" methodname="ExactlyOneBootstrap" classname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests" runstate="Runnable" seed="723092558" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000391" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1014" name="ExactlyOneEventSystem" fullname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.ExactlyOneEventSystem" methodname="ExactlyOneEventSystem" classname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests" runstate="Runnable" seed="204182223" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000343" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1021" name="MockReachesReady" fullname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.MockReachesReady" methodname="MockReachesReady" classname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests" runstate="Runnable" seed="849857943" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000638" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1017" name="NoDuplicateGeneratedRoots" fullname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.NoDuplicateGeneratedRoots" methodname="NoDuplicateGeneratedRoots" classname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests" runstate="Runnable" seed="1697261544" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000461" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1029" name="Reset_ReturnsToReadyAndUnsigned" fullname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.Reset_ReturnsToReadyAndUnsigned" methodname="Reset_ReturnsToReadyAndUnsigned" classname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests" runstate="Runnable" seed="1386195322" result="Failed" label="Error" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000968" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[System.NullReferenceException : Object reference not set to an instance of an object]]></message>
+                  <stack-trace><![CDATA[  at ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.Reset_ReturnsToReadyAndUnsigned () [0x00069] in /Users/alexji/Desktop/AI-Projects/shadow-mentor-story-adapters/apps/shadow-lens/unity/Assets/ShadowLens/Tests/PlayMode/ShadowLensPlayModeTests.cs:148 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <a6d715f5ce8c4754a140b50ff638878a>:0 ]]></stack-trace>
+                </failure>
+                <output><![CDATA[[ShadowLens] button → ANALYZE (state was Ready)
+[ShadowLens] button → VERIFY (state was Analyzed)
+[ShadowLens] button → RESET (state was Verified)
+]]></output>
+              </test-case>
+              <test-case id="1023" name="ResetReturnsToReady" fullname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.ResetReturnsToReady" methodname="ResetReturnsToReady" classname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests" runstate="Runnable" seed="637320524" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000828" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[ShadowLens] button → ANALYZE (state was Ready)
+[ShadowLens] button → RESET (state was Analyzed)
+]]></output>
+              </test-case>
+              <test-case id="1027" name="ShowAudit_ArcInFrustum" fullname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.ShowAudit_ArcInFrustum" methodname="ShowAudit_ArcInFrustum" classname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests" runstate="Runnable" seed="259575051" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.002671" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[ShadowLens] button → SHOW_AUDIT (state was Ready)
+[ShadowLens] button → ANALYZE (state was Ready)
+[ShadowLens] SHOW_AUDIT → nodes=7 rootActive=True inFrustum=True
+]]></output>
+              </test-case>
+              <test-case id="1026" name="ShowAudit_CreatesVisibleNodes" fullname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.ShowAudit_CreatesVisibleNodes" methodname="ShowAudit_CreatesVisibleNodes" classname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests" runstate="Runnable" seed="1576683321" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.004045" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[ShadowLens] button → SHOW_AUDIT (state was Ready)
+[ShadowLens] button → ANALYZE (state was Ready)
+[ShadowLens] SHOW_AUDIT → nodes=7 rootActive=True inFrustum=True
+]]></output>
+              </test-case>
+              <test-case id="1024" name="ShowSource_CreatesVisibleOverlay" fullname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.ShowSource_CreatesVisibleOverlay" methodname="ShowSource_CreatesVisibleOverlay" classname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests" runstate="Runnable" seed="895649575" result="Failed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.002125" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected string length 11 but was 7. Strings differ at index 0.
+  Expected: "SHOW_SOURCE"
+  But was:  "ANALYZE"
+  -----------^
+]]></message>
+                  <stack-trace><![CDATA[at ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.ShowSource_CreatesVisibleOverlay () [0x00069] in /Users/alexji/Desktop/AI-Projects/shadow-mentor-story-adapters/apps/shadow-lens/unity/Assets/ShadowLens/Tests/PlayMode/ShadowLensPlayModeTests.cs:111
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[[ShadowLens] button → SHOW_SOURCE (state was Ready)
+[ShadowLens] button → ANALYZE (state was Ready)
+[ShadowLens] SHOW_SOURCE → overlay active=True inFrustum=True
+]]></output>
+              </test-case>
+              <test-case id="1025" name="ShowSource_OverlayInFrustum" fullname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.ShowSource_OverlayInFrustum" methodname="ShowSource_OverlayInFrustum" classname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests" runstate="Runnable" seed="1554717417" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.001938" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[ShadowLens] button → SHOW_SOURCE (state was Ready)
+[ShadowLens] button → ANALYZE (state was Ready)
+[ShadowLens] SHOW_SOURCE → overlay active=True inFrustum=True
+]]></output>
+              </test-case>
+              <test-case id="1028" name="Tamper_ChangesVerifiedToTampered" fullname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests.Tamper_ChangesVerifiedToTampered" methodname="Tamper_ChangesVerifiedToTampered" classname="ShadowLens.Tests.PlayMode.ShadowLensPlayModeTests" runstate="Runnable" seed="1492023281" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.001239" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[ShadowLens] button → ANALYZE (state was Ready)
+[ShadowLens] button → VERIFY (state was Analyzed)
+[ShadowLens] button → TAMPER (state was Verified)
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1030" name="ShadowPresenterPlayModeTests" fullname="ShadowLens.Tests.PlayMode.ShadowPresenterPlayModeTests" classname="ShadowLens.Tests.PlayMode.ShadowPresenterPlayModeTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.012829" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1034" name="DiagnosticsExport_IsNonEmptyAndEvidenceFree" fullname="ShadowLens.Tests.PlayMode.ShadowPresenterPlayModeTests.DiagnosticsExport_IsNonEmptyAndEvidenceFree" methodname="DiagnosticsExport_IsNonEmptyAndEvidenceFree" classname="ShadowLens.Tests.PlayMode.ShadowPresenterPlayModeTests" runstate="Runnable" seed="290564064" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.005735" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[ShadowGuidedStoryPlayer: no snapshots assigned
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+]]></output>
+              </test-case>
+              <test-case id="1032" name="HandleAction_StepsAndResets" fullname="ShadowLens.Tests.PlayMode.ShadowPresenterPlayModeTests.HandleAction_StepsAndResets" methodname="HandleAction_StepsAndResets" classname="ShadowLens.Tests.PlayMode.ShadowPresenterPlayModeTests" runstate="Runnable" seed="168013425" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.002823" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[ShadowGuidedStoryPlayer: no snapshots assigned
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Each link derives from the previous one, source through audit record.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — The recommendation is sealed by an Ed25519 signature into the audit record.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+]]></output>
+              </test-case>
+              <test-case id="1033" name="OneClickButtonsAreDeterministic" fullname="ShadowLens.Tests.PlayMode.ShadowPresenterPlayModeTests.OneClickButtonsAreDeterministic" methodname="OneClickButtonsAreDeterministic" classname="ShadowLens.Tests.PlayMode.ShadowPresenterPlayModeTests" runstate="Runnable" seed="1339698195" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.002276" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[ShadowGuidedStoryPlayer: no snapshots assigned
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Each link derives from the previous one, source through audit record.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+]]></output>
+              </test-case>
+              <test-case id="1031" name="StartsDeterministicallyAtBankingReady" fullname="ShadowLens.Tests.PlayMode.ShadowPresenterPlayModeTests.StartsDeterministicallyAtBankingReady" methodname="StartsDeterministicallyAtBankingReady" classname="ShadowLens.Tests.PlayMode.ShadowPresenterPlayModeTests" runstate="Runnable" seed="627344621" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.001393" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[ShadowGuidedStoryPlayer: no snapshots assigned
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1035" name="ShadowSpatialAgentPanelPlayModeTests" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" testcasecount="23" result="Failed" site="Child" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.059673" total="23" passed="19" failed="4" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-case id="1037" name="Banking_GroundedAnswerCard_CitationsAndVisibleSource" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.Banking_GroundedAnswerCard_CitationsAndVisibleSource" methodname="Banking_GroundedAnswerCard_CitationsAndVisibleSource" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="1374436783" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.005448" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+[spatial-agent] QUERY_START banking-v1-demo:q1
+[ShadowLens] button → SHOW_SOURCE (state was Ready)
+[ShadowLens] button → ANALYZE (state was Ready)
+[ShadowLens] SHOW_SOURCE → overlay active=True inFrustum=True
+[ShadowLens] button → SHOW_SOURCE (state was SourceShown)
+[ShadowLens] SHOW_SOURCE → overlay active=True inFrustum=True
+[spatial-agent] QUERY_COMPLETE banking-v1-demo:q1 DONE
+]]></output>
+              </test-case>
+              <test-case id="1052" name="Banking_ShowsOnlyBankingArtifact" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.Banking_ShowsOnlyBankingArtifact" methodname="Banking_ShowsOnlyBankingArtifact" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="889431381" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.001996" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+]]></output>
+              </test-case>
+              <test-case id="1046" name="BankingThenDataScience_NoStaleCrossProfileState" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.BankingThenDataScience_NoStaleCrossProfileState" methodname="BankingThenDataScience_NoStaleCrossProfileState" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="1350491850" result="Failed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.003998" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: 0
+  But was:  1
+]]></message>
+                  <stack-trace><![CDATA[at ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.BankingThenDataScience_NoStaleCrossProfileState () [0x00046] in /Users/alexji/Desktop/AI-Projects/shadow-mentor-story-adapters/apps/shadow-lens/unity/Assets/ShadowLens/Tests/PlayMode/ShadowSpatialAgentPanelPlayModeTests.cs:117
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+[spatial-agent] QUERY_START banking-v1-demo:q2
+[ShadowLens] button → SHOW_SOURCE (state was Ready)
+[ShadowLens] button → ANALYZE (state was Ready)
+[ShadowLens] SHOW_SOURCE → overlay active=True inFrustum=True
+[ShadowLens] button → SHOW_SOURCE (state was SourceShown)
+[ShadowLens] SHOW_SOURCE → overlay active=True inFrustum=True
+[spatial-agent] QUERY_COMPLETE banking-v1-demo:q2 DONE
+[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET data-science-v1
+]]></output>
+              </test-case>
+              <test-case id="1039" name="Coding_DiffFocusVisible" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.Coding_DiffFocusVisible" methodname="Coding_DiffFocusVisible" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="546728179" result="Failed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.006061" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: String containing "diff1"
+  But was:  "HIGHLIGHT: cmd_test"
+]]></message>
+                  <stack-trace><![CDATA[at NUnit.Framework.StringAssert.Contains (System.String expected, System.String actual, System.String message, System.Object[] args) [0x00007] in <f577cd9686154d6ab10efd7e65e64366>:0
+at NUnit.Framework.StringAssert.Contains (System.String expected, System.String actual) [0x00000] in <f577cd9686154d6ab10efd7e65e64366>:0
+at ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.Coding_DiffFocusVisible () [0x00035] in /Users/alexji/Desktop/AI-Projects/shadow-mentor-story-adapters/apps/shadow-lens/unity/Assets/ShadowLens/Tests/PlayMode/ShadowSpatialAgentPanelPlayModeTests.cs:63
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET coding-agent-v1
+[spatial-agent] QUERY_START coding-agent-v1-demo:q1
+[spatial-agent] QUERY_COMPLETE coding-agent-v1-demo:q1 DONE
+]]></output>
+              </test-case>
+              <test-case id="1054" name="Coding_ShowsNoBankingOrModelSelection" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.Coding_ShowsNoBankingOrModelSelection" methodname="Coding_ShowsNoBankingOrModelSelection" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="784451630" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.002520" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET coding-agent-v1
+]]></output>
+              </test-case>
+              <test-case id="1038" name="DataScience_ModelFocusVisible" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.DataScience_ModelFocusVisible" methodname="DataScience_ModelFocusVisible" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="1770968461" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.002536" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET data-science-v1
+[spatial-agent] QUERY_START data-science-v1-demo:q1
+[spatial-agent] QUERY_COMPLETE data-science-v1-demo:q1 DONE
+]]></output>
+              </test-case>
+              <test-case id="1053" name="DataScience_ShowsNoLoanOrDti" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.DataScience_ShowsNoLoanOrDti" methodname="DataScience_ShowsNoLoanOrDti" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="1254137312" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.002423" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET data-science-v1
+]]></output>
+              </test-case>
+              <test-case id="1056" name="DataScienceFocus_HighlightsModelAndMetric" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.DataScienceFocus_HighlightsModelAndMetric" methodname="DataScienceFocus_HighlightsModelAndMetric" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="242092489" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.003194" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET data-science-v1
+[spatial-agent] QUERY_START data-science-v1-demo:q2
+[spatial-agent] QUERY_COMPLETE data-science-v1-demo:q2 DONE
+]]></output>
+              </test-case>
+              <test-case id="1047" name="DataScienceThenCoding_SwitchesCleanly" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.DataScienceThenCoding_SwitchesCleanly" methodname="DataScienceThenCoding_SwitchesCleanly" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="1237997616" result="Failed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.002715" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: 0
+  But was:  1
+]]></message>
+                  <stack-trace><![CDATA[at ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.DataScienceThenCoding_SwitchesCleanly () [0x00030] in /Users/alexji/Desktop/AI-Projects/shadow-mentor-story-adapters/apps/shadow-lens/unity/Assets/ShadowLens/Tests/PlayMode/ShadowSpatialAgentPanelPlayModeTests.cs:126
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET data-science-v1
+[spatial-agent] QUERY_START data-science-v1-demo:q3
+[spatial-agent] QUERY_COMPLETE data-science-v1-demo:q3 DONE
+[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET coding-agent-v1
+]]></output>
+              </test-case>
+              <test-case id="1050" name="ExactlyOneLastActionLabel" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.ExactlyOneLastActionLabel" methodname="ExactlyOneLastActionLabel" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="75843571" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.001520" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+]]></output>
+              </test-case>
+              <test-case id="1036" name="ExactlyOnePanel" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.ExactlyOnePanel" methodname="ExactlyOnePanel" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="388348972" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000866" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+]]></output>
+              </test-case>
+              <test-case id="1042" name="Existing_AnalyzeAndVerifyStillWork" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.Existing_AnalyzeAndVerifyStillWork" methodname="Existing_AnalyzeAndVerifyStillWork" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="882727633" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.001098" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+[ShadowLens] button → ANALYZE (state was Ready)
+[ShadowLens] button → VERIFY (state was Analyzed)
+]]></output>
+              </test-case>
+              <test-case id="1044" name="Existing_ResetRestoresDefault" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.Existing_ResetRestoresDefault" methodname="Existing_ResetRestoresDefault" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="1860652908" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.002655" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+[spatial-agent] QUERY_START banking-v1-demo:q3
+[ShadowLens] button → SHOW_SOURCE (state was Ready)
+[ShadowLens] button → ANALYZE (state was Ready)
+[ShadowLens] SHOW_SOURCE → overlay active=True inFrustum=True
+[ShadowLens] button → SHOW_SOURCE (state was SourceShown)
+[ShadowLens] SHOW_SOURCE → overlay active=True inFrustum=True
+[spatial-agent] QUERY_COMPLETE banking-v1-demo:q3 DONE
+[ShadowLens] button → RESET (state was SourceShown)
+]]></output>
+              </test-case>
+              <test-case id="1043" name="Existing_ShowSourceAndAuditStillWork" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.Existing_ShowSourceAndAuditStillWork" methodname="Existing_ShowSourceAndAuditStillWork" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="255692370" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.002609" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+[ShadowLens] button → SHOW_SOURCE (state was Ready)
+[ShadowLens] button → ANALYZE (state was Ready)
+[ShadowLens] SHOW_SOURCE → overlay active=True inFrustum=True
+[ShadowLens] button → SHOW_AUDIT (state was SourceShown)
+[ShadowLens] SHOW_AUDIT → nodes=7 rootActive=True inFrustum=True
+]]></output>
+              </test-case>
+              <test-case id="1057" name="PresenterReset_FromAnyProfile_ReturnsToBankingReady" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.PresenterReset_FromAnyProfile_ReturnsToBankingReady" methodname="PresenterReset_FromAnyProfile_ReturnsToBankingReady" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="1660460213" result="Failed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.003631" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <failure>
+                  <message><![CDATA[  Expected: 0
+  But was:  1
+]]></message>
+                  <stack-trace><![CDATA[at ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.PresenterReset_FromAnyProfile_ReturnsToBankingReady () [0x0005a] in /Users/alexji/Desktop/AI-Projects/shadow-mentor-story-adapters/apps/shadow-lens/unity/Assets/ShadowLens/Tests/PlayMode/ShadowSpatialAgentPanelPlayModeTests.cs:220
+]]></stack-trace>
+                </failure>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET coding-agent-v1
+[spatial-agent] QUERY_START coding-agent-v1-demo:q2
+[spatial-agent] QUERY_COMPLETE coding-agent-v1-demo:q2 DONE
+[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+[spatial-agent] PRESENTER_RESET → banking READY
+]]></output>
+              </test-case>
+              <test-case id="1049" name="PrimaryRegions_DoNotOverlap" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.PrimaryRegions_DoNotOverlap" methodname="PrimaryRegions_DoNotOverlap" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="110167652" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.001442" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+]]></output>
+              </test-case>
+              <test-case id="1051" name="ProfileLabelsAreUserFacing_NotRawIds" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.ProfileLabelsAreUserFacing_NotRawIds" methodname="ProfileLabelsAreUserFacing_NotRawIds" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="484369533" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000898" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+]]></output>
+              </test-case>
+              <test-case id="1048" name="ProfileSelector_DoesNotOverlapTitleOrTrust" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.ProfileSelector_DoesNotOverlapTitleOrTrust" methodname="ProfileSelector_DoesNotOverlapTitleOrTrust" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="1500697862" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000850" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+]]></output>
+              </test-case>
+              <test-case id="1045" name="SecondQueryAfterDone_NoException" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.SecondQueryAfterDone_NoException" methodname="SecondQueryAfterDone_NoException" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="1117217275" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.004286" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+[spatial-agent] QUERY_START banking-v1-demo:q4
+[ShadowLens] button → SHOW_SOURCE (state was Ready)
+[ShadowLens] button → ANALYZE (state was Ready)
+[ShadowLens] SHOW_SOURCE → overlay active=True inFrustum=True
+[ShadowLens] button → SHOW_SOURCE (state was SourceShown)
+[ShadowLens] SHOW_SOURCE → overlay active=True inFrustum=True
+[spatial-agent] QUERY_COMPLETE banking-v1-demo:q4 DONE
+[spatial-agent] QUERY_START banking-v1-demo:q5
+[ShadowLens] button → SHOW_SOURCE (state was SourceShown)
+[ShadowLens] SHOW_SOURCE → overlay active=True inFrustum=True
+[ShadowLens] button → SHOW_SOURCE (state was SourceShown)
+[ShadowLens] SHOW_SOURCE → overlay active=True inFrustum=True
+[spatial-agent] QUERY_COMPLETE banking-v1-demo:q5 DONE
+]]></output>
+              </test-case>
+              <test-case id="1058" name="StatusRow_ShowsFixtureAndRealSignedLabels" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.StatusRow_ShowsFixtureAndRealSignedLabels" methodname="StatusRow_ShowsFixtureAndRealSignedLabels" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="1024560622" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.001100" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+]]></output>
+              </test-case>
+              <test-case id="1055" name="SwitchingRebuildsArtifactAndReturnsToBanking" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.SwitchingRebuildsArtifactAndReturnsToBanking" methodname="SwitchingRebuildsArtifactAndReturnsToBanking" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="1137173010" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.003228" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET data-science-v1
+[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET coding-agent-v1
+[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+]]></output>
+              </test-case>
+              <test-case id="1040" name="Ungrounded_NoAction" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.Ungrounded_NoAction" methodname="Ungrounded_NoAction" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="1990313436" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.001683" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+[spatial-agent] QUERY_START banking-v1-demo:q6
+[spatial-agent] QUERY_COMPLETE banking-v1-demo:q6 UNGROUNDED
+]]></output>
+              </test-case>
+              <test-case id="1041" name="Verify_ShowsRealVerificationState" fullname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests.Verify_ShowsRealVerificationState" methodname="Verify_ShowsRealVerificationState" classname="ShadowLens.Tests.PlayMode.ShadowSpatialAgentPanelPlayModeTests" runstate="Runnable" seed="1939017377" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.001767" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[spatial-agent] QUERY_CANCELLED
+[spatial-agent] PROFILE_CONTEXT_RESET banking-v1
+[spatial-agent] QUERY_START banking-v1-demo:q7
+[spatial-agent] QUERY_COMPLETE banking-v1-demo:q7 DONE
+]]></output>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1059" name="ShadowStageBootstrapPlayModeTests" fullname="ShadowLens.Tests.PlayMode.ShadowStageBootstrapPlayModeTests" classname="ShadowLens.Tests.PlayMode.ShadowStageBootstrapPlayModeTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.005919" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1061" name="ExactlyOne_StageWorld_Hud_EventSystem" fullname="ShadowLens.Tests.PlayMode.ShadowStageBootstrapPlayModeTests.ExactlyOne_StageWorld_Hud_EventSystem" methodname="ExactlyOne_StageWorld_Hud_EventSystem" classname="ShadowLens.Tests.PlayMode.ShadowStageBootstrapPlayModeTests" runstate="Runnable" seed="2144798262" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000627" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1060" name="GuidedStageActive_ExactlyOneController_ReadyState" fullname="ShadowLens.Tests.PlayMode.ShadowStageBootstrapPlayModeTests.GuidedStageActive_ExactlyOneController_ReadyState" methodname="GuidedStageActive_ExactlyOneController_ReadyState" classname="ShadowLens.Tests.PlayMode.ShadowStageBootstrapPlayModeTests" runstate="Runnable" seed="1422146644" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000520" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1062" name="HonestyLabelsVisible_AfterBootstrapAndReset" fullname="ShadowLens.Tests.PlayMode.ShadowStageBootstrapPlayModeTests.HonestyLabelsVisible_AfterBootstrapAndReset" methodname="HonestyLabelsVisible_AfterBootstrapAndReset" classname="ShadowLens.Tests.PlayMode.ShadowStageBootstrapPlayModeTests" runstate="Runnable" seed="1602511479" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000596" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[stage] RESET_DEMO → banking READY
+]]></output>
+              </test-case>
+              <test-case id="1065" name="OfflineFlow_PreparedWithZeroNetwork" fullname="ShadowLens.Tests.PlayMode.ShadowStageBootstrapPlayModeTests.OfflineFlow_PreparedWithZeroNetwork" methodname="OfflineFlow_PreparedWithZeroNetwork" classname="ShadowLens.Tests.PlayMode.ShadowStageBootstrapPlayModeTests" runstate="Runnable" seed="1457389485" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.002170" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1064" name="Reset_DoesNotInstantiateNewRoots" fullname="ShadowLens.Tests.PlayMode.ShadowStageBootstrapPlayModeTests.Reset_DoesNotInstantiateNewRoots" methodname="Reset_DoesNotInstantiateNewRoots" classname="ShadowLens.Tests.PlayMode.ShadowStageBootstrapPlayModeTests" runstate="Runnable" seed="962829578" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000733" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[stage] RESET_DEMO → banking READY
+]]></output>
+              </test-case>
+              <test-case id="1063" name="SecondBuildHierarchy_CreatesNoDuplicates" fullname="ShadowLens.Tests.PlayMode.ShadowStageBootstrapPlayModeTests.SecondBuildHierarchy_CreatesNoDuplicates" methodname="SecondBuildHierarchy_CreatesNoDuplicates" classname="ShadowLens.Tests.PlayMode.ShadowStageBootstrapPlayModeTests" runstate="Runnable" seed="2013196835" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000642" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1066" name="ShadowStagePlayModeTests" fullname="ShadowLens.Tests.PlayMode.ShadowStagePlayModeTests" classname="ShadowLens.Tests.PlayMode.ShadowStagePlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.009988" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1073" name="CaseCore_ShowsBankingIdentity_InReady_VoicesHidden" fullname="ShadowLens.Tests.PlayMode.ShadowStagePlayModeTests.CaseCore_ShowsBankingIdentity_InReady_VoicesHidden" methodname="CaseCore_ShowsBankingIdentity_InReady_VoicesHidden" classname="ShadowLens.Tests.PlayMode.ShadowStagePlayModeTests" runstate="Runnable" seed="1099580343" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000670" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[stage] RESET_DEMO → banking READY
+]]></output>
+              </test-case>
+              <test-case id="1070" name="CouncilState_RevealsFiveVoices_OneDominant" fullname="ShadowLens.Tests.PlayMode.ShadowStagePlayModeTests.CouncilState_RevealsFiveVoices_OneDominant" methodname="CouncilState_RevealsFiveVoices_OneDominant" classname="ShadowLens.Tests.PlayMode.ShadowStagePlayModeTests" runstate="Runnable" seed="1906534399" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000609" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[stage] RESET_DEMO → banking READY
+]]></output>
+              </test-case>
+              <test-case id="1071" name="DecisionState_ShowsRecommendationAndSignedStatus" fullname="ShadowLens.Tests.PlayMode.ShadowStagePlayModeTests.DecisionState_ShowsRecommendationAndSignedStatus" methodname="DecisionState_ShowsRecommendationAndSignedStatus" classname="ShadowLens.Tests.PlayMode.ShadowStagePlayModeTests" runstate="Runnable" seed="1179311294" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.001024" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[stage] RESET_DEMO → banking READY
+]]></output>
+              </test-case>
+              <test-case id="1074" name="ExactlyOneStageControllerAndCanvas" fullname="ShadowLens.Tests.PlayMode.ShadowStagePlayModeTests.ExactlyOneStageControllerAndCanvas" methodname="ExactlyOneStageControllerAndCanvas" classname="ShadowLens.Tests.PlayMode.ShadowStagePlayModeTests" runstate="Runnable" seed="1940529858" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.001016" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[stage] RESET_DEMO → banking READY
+]]></output>
+              </test-case>
+              <test-case id="1072" name="FlowOrAudit_PreparesOffline_NoNetwork" fullname="ShadowLens.Tests.PlayMode.ShadowStagePlayModeTests.FlowOrAudit_PreparesOffline_NoNetwork" methodname="FlowOrAudit_PreparesOffline_NoNetwork" classname="ShadowLens.Tests.PlayMode.ShadowStagePlayModeTests" runstate="Runnable" seed="1419836164" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.001699" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[stage] RESET_DEMO → banking READY
+]]></output>
+              </test-case>
+              <test-case id="1069" name="HonestyLabelsAlwaysVisible" fullname="ShadowLens.Tests.PlayMode.ShadowStagePlayModeTests.HonestyLabelsAlwaysVisible" methodname="HonestyLabelsAlwaysVisible" classname="ShadowLens.Tests.PlayMode.ShadowStagePlayModeTests" runstate="Runnable" seed="34421130" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000765" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[stage] RESET_DEMO → banking READY
+]]></output>
+              </test-case>
+              <test-case id="1067" name="Next_WalksAllFiveStates" fullname="ShadowLens.Tests.PlayMode.ShadowStagePlayModeTests.Next_WalksAllFiveStates" methodname="Next_WalksAllFiveStates" classname="ShadowLens.Tests.PlayMode.ShadowStagePlayModeTests" runstate="Runnable" seed="1222199817" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.000853" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[stage] RESET_DEMO → banking READY
+]]></output>
+              </test-case>
+              <test-case id="1068" name="ResetDemo_FromEveryState_ReturnsToBankingReady" fullname="ShadowLens.Tests.PlayMode.ShadowStagePlayModeTests.ResetDemo_FromEveryState_ReturnsToBankingReady" methodname="ResetDemo_FromEveryState_ReturnsToBankingReady" classname="ShadowLens.Tests.PlayMode.ShadowStagePlayModeTests" runstate="Runnable" seed="774512781" result="Passed" start-time="2026-07-22 17:35:31Z" end-time="2026-07-22 17:35:31Z" duration="0.002875" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[[stage] RESET_DEMO → banking READY
+[stage] RESET_DEMO → banking READY
+[stage] RESET_DEMO → banking READY
+[stage] RESET_DEMO → banking READY
+[stage] RESET_DEMO → banking READY
+[stage] RESET_DEMO → banking READY
+[stage] RESET_DEMO → banking READY
+[stage] RESET_DEMO → banking READY
+[stage] RESET_DEMO → banking READY
+[stage] RESET_DEMO → banking READY
+[stage] RESET_DEMO → banking READY
+Saving results to: /private/tmp/claude-501/-Users-alexji-Desktop-vibex/cfb502a3-1a5c-4f60-a390-d756b56a18f1/scratchpad/shadowlens-playmode.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
