@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="3" result="Passed" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-07-22 00:42:46Z" end-time="2026-07-22 00:42:47Z" duration="0.0434294">
+  <test-suite type="TestSuite" id="1076" name="unity" fullname="unity" runstate="Runnable" testcasecount="63" result="Passed" start-time="2026-07-22 00:42:46Z" end-time="2026-07-22 00:42:47Z" duration="0.043429" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1070" name="ShadowLens.Tests.PlayMode.dll" fullname="/Users/alexji/Desktop/AI-Projects/shadow-mentor-story-adapters/apps/shadow-lens/unity/Library/ScriptAssemblies/ShadowLens.Tests.PlayMode.dll" runstate="Runnable" testcasecount="63" result="Passed" start-time="2026-07-22 00:42:46Z" end-time="2026-07-22 00:42:47Z" duration="0.041575" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="4738" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1071" name="ShadowLens" fullname="ShadowLens" runstate="Runnable" testcasecount="63" result="Passed" start-time="2026-07-22 00:42:46Z" end-time="2026-07-22 00:42:47Z" duration="0.041371" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1072" name="Tests" fullname="ShadowLens.Tests" runstate="Runnable" testcasecount="63" result="Passed" start-time="2026-07-22 00:42:46Z" end-time="2026-07-22 00:42:47Z" duration="0.041250" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1073" name="PlayMode" fullname="ShadowLens.Tests.PlayMode" runstate="Runnable" testcasecount="63" result="Passed" start-time="2026-07-22 00:42:46Z" end-time="2026-07-22 00:42:47Z" duration="0.041116" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1009" name="ShadowGuidedStoryPlayModeTests" fullname="ShadowLens.Tests.PlayMode.ShadowGuidedStoryPlayModeTests" classname="ShadowLens.Tests.PlayMode.ShadowGuidedStoryPlayModeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-07-22 00:42:46Z" end-time="2026-07-22 00:42:47Z" duration="0.040357" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1010" name="LoadsEachStoryAndSpawnsNodes" fullname="ShadowLens.Tests.PlayMode.ShadowGuidedStoryPlayModeTests.LoadsEachStoryAndSpawnsNodes" methodname="LoadsEachStoryAndSpawnsNodes" classname="ShadowLens.Tests.PlayMode.ShadowGuidedStoryPlayModeTests" runstate="Runnable" seed="108408612" result="Passed" start-time="2026-07-22 00:42:46Z" end-time="2026-07-22 00:42:46Z" duration="0.019728" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[ShadowGuidedStoryPlayer: no snapshots assigned
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Reason-code attestation binding — Two reason codes are selected, each bound to verified evidence.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  CLAIM_EVIDENCE_BINDING: VERIFIED  DICTIONARY_HASH: VERIFIED  DICTIONARY_VERSION: VERIFIED  DIGITAL_SIGNATURE: VERIFIED  LEGAL_FAIRNESS_REVIEW: REQUIRES_HUMAN_REVIEW  POLICY_ADEQUACY: NOT_EVALUATED  RECORD_INTEGRITY: VERIFIED  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Persona deliberation → evidence-grounded synthesis — Five analytical perspectives read the same shared evidence.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  CLAIM_EVIDENCE_BINDING: VERIFIED  HUMAN_APPROVAL: NOT_PRESENT  LEGAL_FAIRNESS_REVIEW: REQUIRES_HUMAN_REVIEW  PERSONA_OUTPUT_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: VERIFIED  SYNTHESIS_PROVENANCE: VERIFIED  
+]]></output>
+              </test-case>
+              <test-case id="1011" name="StepNextBackRestart_StayInBounds" fullname="ShadowLens.Tests.PlayMode.ShadowGuidedStoryPlayModeTests.StepNextBackRestart_StayInBounds" methodname="StepNextBackRestart_StayInBounds" classname="ShadowLens.Tests.PlayMode.ShadowGuidedStoryPlayModeTests" runstate="Runnable" seed="801174139" result="Passed" start-time="2026-07-22 00:42:46Z" end-time="2026-07-22 00:42:47Z" duration="0.014078" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[ShadowGuidedStoryPlayer: no snapshots assigned
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Each link derives from the previous one, source through audit record.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — The recommendation is sealed by an Ed25519 signature into the audit record.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Alter the council claim at sequence 3 and its verification fails first.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: FAILED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: FAILED  PROFILE: VERIFIED  RECORD_INTEGRITY: FAILED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Every downstream link is frozen as affected — a green chain would have proved only that the record was unaltered.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: FAILED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: FAILED  PROFILE: VERIFIED  RECORD_INTEGRITY: FAILED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Integrity is judged; analytical correctness is NOT evaluated by the chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Every downstream link is frozen as affected — a green chain would have proved only that the record was unaltered.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: FAILED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: FAILED  PROFILE: VERIFIED  RECORD_INTEGRITY: FAILED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Alter the council claim at sequence 3 and its verification fails first.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: FAILED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: FAILED  PROFILE: VERIFIED  RECORD_INTEGRITY: FAILED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — The recommendation is sealed by an Ed25519 signature into the audit record.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Each link derives from the previous one, source through audit record.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — Each link derives from the previous one, source through audit record.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+]]></output>
+              </test-case>
+              <test-case id="1012" name="SwitchingStories_RebuildsCleanly" fullname="ShadowLens.Tests.PlayMode.ShadowGuidedStoryPlayModeTests.SwitchingStories_RebuildsCleanly" methodname="SwitchingStories_RebuildsCleanly" classname="ShadowLens.Tests.PlayMode.ShadowGuidedStoryPlayModeTests" runstate="Runnable" seed="123721371" result="Passed" start-time="2026-07-22 00:42:47Z" end-time="2026-07-22 00:42:47Z" duration="0.003224" asserts="0">
+                <properties>
+                  <property name="_JOINTYPE" value="UnityCombinatorial" />
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[ShadowGuidedStoryPlayer: no snapshots assigned
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Audit chain: integrity, not correctness — A decision seals into a hash-chained, signed provenance chain.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  DIGITAL_SIGNATURE: VERIFIED  EXTERNAL_ANCHOR: NOT_PRESENT  HASH_CHAIN: VERIFIED  PROFILE: VERIFIED  RECORD_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: NOT_PRESENT  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Reason-code attestation binding — Two reason codes are selected, each bound to verified evidence.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  CLAIM_EVIDENCE_BINDING: VERIFIED  DICTIONARY_HASH: VERIFIED  DICTIONARY_VERSION: VERIFIED  DIGITAL_SIGNATURE: VERIFIED  LEGAL_FAIRNESS_REVIEW: REQUIRES_HUMAN_REVIEW  POLICY_ADEQUACY: NOT_EVALUATED  RECORD_INTEGRITY: VERIFIED  
+FIXTURE · DESKTOP MOCK · DEVICE VALIDATION PENDING
+Persona deliberation → evidence-grounded synthesis — Five analytical perspectives read the same shared evidence.
+ANALYTICAL_CORRECTNESS: NOT_EVALUATED  CLAIM_EVIDENCE_BINDING: VERIFIED  HUMAN_APPROVAL: NOT_PRESENT  LEGAL_FAIRNESS_REVIEW: REQUIRES_HUMAN_REVIEW  PERSONA_OUTPUT_INTEGRITY: VERIFIED  SOURCE_RESOLUTION: VERIFIED  SYNTHESIS_PROVENANCE: VERIFIED  
+Saving results to: /private/tmp/claude-501/-Users-alexji-Desktop-vibex/cfb502a3-1a5c-4f60-a390-d756b56a18f1/scratchpad/playmode-results.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
