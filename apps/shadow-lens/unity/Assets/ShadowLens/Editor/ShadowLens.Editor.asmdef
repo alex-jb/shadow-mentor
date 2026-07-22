@@ -1,7 +1,7 @@
 {
   "name": "ShadowLens.Editor",
   "rootNamespace": "ShadowLens.EditorTools",
-  "references": ["ShadowLens"],
+  "references": ["ShadowLens", "ShadowLens.InputV5.Runtime"],
   "includePlatforms": ["Editor"],
   "autoReferenced": true
 }
