@@ -1,0 +1,24 @@
+gap_id,area,gap,priority,status,evidence,blocked_by
+G01,capability,no single runtime capability model; device claims scattered,P0,IMPLEMENTED,Device/ShadowDeviceCapabilities.cs + Detector + EditMode tests,none
+G02,capability,capabilities could be inferred unsafely (Beam Pro from Android; 6DoF from glasses),P0,IMPLEMENTED,Detector fail-closed inferences + guard test,none
+G03,degradation,no deterministic LEVEL 0-3 degradation ladder,P0,IMPLEMENTED,ShadowDegradationLevel + ResolveLevel + tests,none
+G04,ux_states,no honest per-state user-facing description,P0,IMPLEMENTED,ShadowSessionStateInfo.cs (8 states bilingual),none
+G05,android,no guided-story Android candidate APK,P0,BUILT,reports/device-ready-v5/APK_SHA256.txt,none
+G06,android,no static APK/manifest/permission audit,P0,IMPLEMENTED,reports/device-ready-v5/*.md,none
+G07,input,IShadowStoryInput too thin; no canonical actions/safety,P0,IMPLEMENTED,Input/ShadowInputAction.cs + Router + Safety + tests,none
+G08,input,destructive actions could fire without confirmation,P0,IMPLEMENTED,ShadowInputRouter confirmation gating + tests,none
+G09,presenter,no Presenter Mode / deterministic Banking READY,P0,IMPLEMENTED,Presenter/ShadowPresenterController.cs + tests,none
+G10,recovery,no failure recovery / last-known-safe-state,P0,IMPLEMENTED,ShadowPresenterController.ResetToSafeState + pause/resume,none
+G11,simulator,no XR Interaction Simulator acceptance path,P1,IMPLEMENTED,Editor/GuidedStory/ShadowDeviceReadinessSimulator.cs + report,none
+G12,labels,label manager lacks measurable readability presets,P1,IMPLEMENTED,Device/label presets + Node/EditMode readability tests,none
+G13,profiles,fixtures too shallow; profiles are recolored not differentiated,P1,IMPLEMENTED,fixtures/product-quality-v5/*,none
+G14,perf_unity,no Unity performance instrumentation,P1,IMPLEMENTED,Diagnostics/Shadow*Recorder.cs + budget,editor-only numbers (device pending)
+G15,perf_unity,no measured Unity optimization,P1,PARTIAL,object reuse in player; measure-on-device required,device profiling
+G16,perf_threejs,no Three.js profiling/optimization,P1,IMPLEMENTED,adaptive DPR + render-on-demand + disposal + browser perf report,none
+G17,xreal_sdk,XREAL SDK integration spike not compiled against real SDK,P2,AUTHORED_GATED,Providers/XrealProviders.cs behind SHADOW_XREAL_SDK,xreal sdk import
+G18,device_pkg,no one-command device test package,P2,IMPLEMENTED,device-test/v5/*.sh + checklists,cannot run without device
+G19,eye_ocr,Eye/OCR readiness pipeline unproven,P2,AUTHORED,interfaces + fixture tests; no real frames,hardware Eye
+G20,security,no device privacy/security threat model,P2,IMPLEMENTED,docs/security/*.md,none
+G21,beam_pro,Beam Pro execution,P3,BLOCKED,none,hardware Beam Pro
+G22,user_study,user study,P3,PROTOCOL_ONLY,docs/research/SHADOW_SPATIAL_USER_STUDY_PROTOCOL.md,participants + hardware
+G23,signing,production signing/storage path,P3,NOT_STARTED,none,operator decision (do not production-sign)
