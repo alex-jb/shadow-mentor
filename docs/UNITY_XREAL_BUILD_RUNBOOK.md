@@ -41,3 +41,25 @@ SHADOW_XREAL_SDK build → Shadow Lens → Build XREAL Candidate (runtime-gated 
 ```
 Record everything in `reports/xreal-v6/`. Status after a successful build is **XREAL-CANDIDATE-BUILT**,
 never **XREAL-DEVICE-VALIDATED** (that needs real hardware + `device-test/v6/FIRST_DEVICE_DAY_RUNBOOK.md`).
+
+## Phase 9 verified findings (2026-07-22)
+
+The official `com.xreal.xr` 3.1.0 tarball (sha256 fd7d0fce…, 248 MB) imports + compiles in this
+project (Unity 6000.0.23f1) — CONFIRMED, `Unity.XR.XREAL.dll` builds, `ShadowLens.dll` still builds.
+
+**Required project change (committable — built-in module, not the SDK):** add
+`com.unity.modules.imageconversion` to `Packages/manifest.json`. Without it the SDK's Camera Features
+code fails with 18 CS errors (`Texture2D.EncodeToPNG/EncodeToJPG`, `ImageConversion`).
+
+**Operator-local (NOT committed):**
+1. `scripts/setup-local-xreal-sdk.sh ~/Downloads/com.xreal.xr.tar.gz` — validates the tarball + prints
+   the `"com.xreal.xr": "file:<abs path>"` manifest line to add locally. Do NOT commit that absolute path.
+2. Set the `SHADOW_XREAL_SDK` scripting define for Android + Standalone
+   (`-executeMethod ShadowLens.EditorTools.ShadowXrealDefineSetup.Set`). Do NOT commit the define — the
+   base candidate must build without the SDK.
+3. Build: `-executeMethod ShadowLens.EditorTools.ShadowV8AndroidBuild.BuildXrealVoiceCI`.
+
+The gated `ShadowLens.Xreal` assembly (defineConstraints `SHADOW_XREAL_SDK`) holds the typed adapters
+(loader/tracking/camera/capability/input/lifecycle/diagnostics/logcapture) against the real API
+(`Unity.XR.XREAL.XREALPlugin` / `XREALXRLoader` / `XREALRGBCamera`). Without the define + SDK the whole
+assembly is excluded → a clean clone builds the base candidate unchanged.

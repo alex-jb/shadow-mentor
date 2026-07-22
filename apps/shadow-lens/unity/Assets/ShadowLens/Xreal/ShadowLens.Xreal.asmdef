@@ -1,0 +1,9 @@
+{
+  "name": "ShadowLens.Xreal",
+  "rootNamespace": "ShadowLens.Xreal",
+  "references": ["ShadowLens", "Unity.XR.XREAL", "Unity.XR.Management"],
+  "includePlatforms": [],
+  "allowUnsafeCode": false,
+  "autoReferenced": true,
+  "defineConstraints": ["SHADOW_XREAL_SDK"]
+}

@@ -1,0 +1,5 @@
+XREAL SDK 3.1.0 (com.xreal.xr) imported + compiled: Unity.XR.XREAL.dll 0 CS errors; ShadowLens.dll still builds.
+8 typed adapters compile against real API: ShadowLens.Xreal.dll built, 0 CS errors.
+EditMode ShadowXrealMappingEditTests 4/4 + ShadowVoiceIntegrationEditTests 9/9 = 13/13.
+Clean state (SDK removed, define cleared): 0 CS errors, ShadowLens.Xreal excluded, base builds.
+XREAL+Voice candidate BUILT: com.shadowlens.xrealvoice, 135 MB, minSdk 29, ARM64/IL2CPP, sha256 78f2d62e...
