@@ -1,5 +1,5 @@
 Unity 6000.0.23f1 batch-mode -nographics — V5
-EditMode ShadowDeviceReadyEditTests: total=16 passed=16 failed=0
+EditMode ShadowDeviceReadyEditTests 16/16 + ShadowLabelPresetsEditTests 3/3 = 19/19
 PlayMode ShadowPresenterPlayModeTests: total=4 passed=4 failed=0
 Guided Story (Phase 4, still green): EditMode 11/11 + PlayMode 3/3
 ShadowLens.dll + ShadowLens.InputV5.Runtime.dll compile with 0 CS errors
