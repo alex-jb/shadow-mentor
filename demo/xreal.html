@@ -83,15 +83,16 @@
     font-size: 12px; font-weight: 800; letter-spacing: 1px;
     margin-bottom: 10px;
   }
-  .persona .verdict.approve { background: rgba(43, 165, 96, 0.16); color: #2BA560; }
+  .persona .verdict.approve { background: rgba(59, 130, 246, 0.16); color: #3B82F6; }  /* decision blue, not verification green (§4) */
   .persona .verdict.escalate { background: rgba(229, 167, 63, 0.16); color: #E5A73F; }
   .persona .verdict.block { background: rgba(229, 42, 90, 0.16); color: #E52A5A; }
   .persona .verdict.refuse_to_serve { background: rgba(139, 92, 246, 0.16); color: #8B5CF6; }
   .persona .rationale {
     font-size: 13px; line-height: 1.55;
     color: #A3A5AA;
-    max-height: 5.5em; overflow: hidden;
-    text-overflow: ellipsis;
+    /* proper multiline truncation — text-overflow:ellipsis is single-line only (deep-audit §14 fix) */
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .persona.no-council .rationale::after {
     content: "Awaiting deliberation…";
@@ -99,23 +100,24 @@
   }
   .persona.no-council .rationale { min-height: 2em; }
 
-  /* Center verdict pill */
+  /* Conclusion verdict pill — a HEADER banner, not over the persona arc (deep-audit §14: was top:42%
+     centre, overlapping 3 of the 5 persona cards). */
   .verdict-pill {
-    position: absolute;
-    left: 50%; top: 42%;
-    transform: translate(-50%, -50%);
-    z-index: 10;
-    padding: 20px 40px;
+    align-self: center; z-index: 10;
+    padding: 14px 40px; margin: 4px auto 0;
     border-radius: 999px;
-    font-size: 36px; font-weight: 900; letter-spacing: 3px;
+    font-size: 32px; font-weight: 900; letter-spacing: 3px;
     background: rgba(0, 0, 0, 0.6);
     border: 2px solid;
     backdrop-filter: blur(20px);
-    opacity: 0;
+    opacity: 0; transform: scale(0.92);
     transition: opacity 0.6s ease, transform 0.6s ease;
   }
-  .verdict-pill.mounted { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-  .verdict-pill.approve { border-color: #2BA560; color: #2BA560; }
+  .verdict-pill.mounted { opacity: 1; transform: scale(1); }
+  /* Business APPROVAL uses a brand/decision treatment + an explicit ✓ stamp — NOT the cryptographic
+     verification green, which stays reserved for integrity verification (deep-audit §4/§14). */
+  .verdict-pill.approve { border-color: #3B82F6; color: #3B82F6; }
+  .verdict-pill.approve::before, .persona .verdict.approve::before { content: "✓ "; }
   .verdict-pill.escalate { border-color: #E5A73F; color: #E5A73F; }
   .verdict-pill.block { border-color: #E52A5A; color: #E52A5A; }
   .verdict-pill.refuse_to_serve { border-color: #8B5CF6; color: #8B5CF6; }
@@ -179,9 +181,11 @@
 
   <div class="question" id="question">Loading…</div>
 
-  <div class="arc" id="arc">
-    <div class="verdict-pill pending mounted" id="verdict-pill">DELIBERATING</div>
-  </div>
+  <!-- Conclusion verdict is a flow header BETWEEN the question and the persona arc — never overlapping the
+       cards (deep-audit §14; was absolutely positioned at top:42% inside #arc, covering 3 of 5 cards). -->
+  <div class="verdict-pill pending mounted" id="verdict-pill">DELIBERATING</div>
+
+  <div class="arc" id="arc"></div>
 
   <div class="context" id="context"></div>
 
@@ -262,7 +266,9 @@ function renderDescriptor(d) {
   // as the 171-inch floating screen.
   const arc = document.getElementById("arc");
   arc.querySelectorAll(".persona").forEach((el) => el.remove());
-  const SCALE_X = 260;  // px per meter
+  // Responsive horizontal spread (deep-audit §14: fixed 260px/m clumped the 5 personas into the centre
+  // ~700px of wide screens). Scale with viewport so cards spread on wide displays, clamped for small ones.
+  const SCALE_X = Math.max(230, Math.min(420, window.innerWidth * 0.16));  // px per meter (personas span ±1.2m)
   const SCALE_Y = 200;
   const SCALE_Z = 100;
   for (let i = 0; i < d.personas.length; i++) {
