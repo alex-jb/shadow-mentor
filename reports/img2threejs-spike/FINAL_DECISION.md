@@ -76,3 +76,16 @@ Therefore: keep img2threejs as a **research-only** reference; keep the three pro
 device. Do NOT adopt it as a build-time tool yet — revisit only if a future readability study shows the
 props decisively beat the current icons, and only with a second explicit authorization. Adoption is not
 granted on visual appeal alone.
+
+## Final note (accepted)
+The experiment demonstrated that lightweight, semantically non-authoritative props can be produced
+within mobile budgets, but did not demonstrate a meaningful readability advantage over Shadow's
+existing geometric symbols. The same simple hard-surface props can be implemented directly without
+introducing a new toolchain.
+
+The spike's value was proving it is **not worth introducing the tool**, not producing three models.
+Preserved as research reference: MIT license + network-behavior audit, the three props' socket design,
+the mobile budget, the canonical semantic-hash ON/OFF parity test, the "Human Review four states must
+not share one shape" design conclusion, the feature toggle defaulted OFF, and the browser dispose /
+no-external-request acceptance. Future use is A/B only (A: current icons, B: experimental props),
+gated on a readability study. Not adopted; not merged into any product/Unity/XREAL/device branch.
