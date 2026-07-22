@@ -23,3 +23,12 @@
 - flat-mode framing + tiny sequence labels — §13F.
 - SBS squeeze vs frame-packed — device-day (Beam Pro).
 - CJK wrapping + guided-story bright-bg OST failure — open OST design item.
+
+## Update — additional confirmed defects resolved after the first reconciliation
+- **CORS wildcard (P1-3)** — invariant pinned (no wildcard+credentials; no credentialed CORS) + production
+  origin-allowlist requirement documented (`docs/security/API_CORS_POSTURE.md`). Commit `9d054dd`.
+- **Ambient Council layout (§14)** — badge no longer overlaps cards (0 overlap measured), multiline clamp,
+  business-approval no longer reuses the cryptographic-VERIFIED green (blue + ✓ stamp), responsive spread.
+  Commit `37ea94f`.
+- **Guided-story OST consumption** — now renders dark-on-bright backplates under XREAL_OST_BRIGHT
+  (EditMode 120/120). Commit `adb27c3`. (Additive sim under-represents opaque plates — documented.)
