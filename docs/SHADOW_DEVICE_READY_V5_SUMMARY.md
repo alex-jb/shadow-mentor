@@ -22,7 +22,7 @@ merged to main. Stable fallback APK `93f2a81a…` untouched. No production signi
   domain kinds, pristine + tampered + limitation + human-review boundary. Node **8/8**.
 - **Label readability presets**, **device test package** (`device-test/v5/`, adb-autodetecting),
   **security/privacy docs** (`docs/security/`), **user study protocol** (`docs/research/`).
-- Node suite **1908 / 1905 pass / 3 skip / 0 fail**. forbidden-phrases clean.
+- Node suite: **1,908 total · 1,905 passed · 3 skipped · 0 failed**. forbidden-phrases clean.
 
 ## Honest status ladder
 
@@ -34,8 +34,10 @@ merged to main. Stable fallback APK `93f2a81a…` untouched. No production signi
 | ANDROID-STATIC-AUDITED | ✅ | reports/device-ready-v5/ (manifest/permission/AAR) |
 | PRESENTER-MODE-IMPLEMENTED | ✅ | Presenter/ + PlayMode 4/4 |
 | FAILURE-RECOVERY-TESTED | ✅ | PlayMode reset/pause-resume |
-| XR-SIMULATOR-TESTED | ⚠️ partial | official XR Device Simulator is a PM sample (import documented); router/state tested via EditMode, not the sample GUI |
-| UNITY-DESKTOP-PROFILED | ⚠️ authored | instrumentation authored; Editor numbers are non-representative per Unity docs — real numbers need on-device |
+| XR-INPUT-ROUTING-SIMULATED | ✅ | router + state machine verified via EditMode |
+| OFFICIAL-XR-SIMULATOR-GUI-EXECUTION | ⏳ PENDING | official XR Device Simulator is a PM sample; GUI interaction not run headless |
+| UNITY-PROFILING-INSTRUMENTED | ✅ | instrumentation authored (markers/recorders/budget) |
+| DESKTOP-PLAYER-MEASUREMENT | ⏳ PENDING | Editor numbers are non-representative per Unity docs; needs a Player/device measurement |
 | THREEJS-PROFILED | ✅ | media/device-ready-v5/threejs/ (measured before/after) |
 | XREAL-SDK-COMPILED | ❌ | SDK not imported; adapters gated behind SHADOW_XREAL_SDK |
 | XREAL-CANDIDATE-BUILT | ❌ | requires the SDK import |

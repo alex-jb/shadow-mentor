@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Custom main (launcher) manifest for the Shadow Lens guided-story BASE candidate.
+     Purpose: strip the INTERNET permission that Unity's engine library (unityLibrary) declares by
+     default. The base candidate is fully offline and needs no network. This uses the official
+     Android manifest-merger directive tools:node="remove" (declarative, not a post-build string
+     edit). A regression test (test/shadow-android-manifest-guard.test.js) fails if INTERNET
+     reappears in a fresh build. Do NOT add INTERNET here; the XREAL candidate manages its own
+     permissions in a separate manifest. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          android:installLocation="preferExternal">
+  <application android:icon="@mipmap/app_icon" android:label="@string/app_name" />
+  <supports-screens android:smallScreens="true" android:normalScreens="true"
+                    android:largeScreens="true" android:xlargeScreens="true" android:anyDensity="true" />
+  <!-- Remove the engine-default INTERNET permission from the merged manifest (offline base candidate). -->
+  <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
+</manifest>

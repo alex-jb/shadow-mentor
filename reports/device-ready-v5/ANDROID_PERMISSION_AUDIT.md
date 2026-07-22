@@ -2,9 +2,16 @@
 
 RELEASE build. `aapt dump permissions`. Accessed 2026-07-21.
 
+**Update (Phase 6):** INTERNET has been **removed**. Root cause: Unity's engine library
+(`unityLibrary`) declares it by default (confirmed via the manifest-merger blame report — it is
+`[:unityLibrary]`, not a plugin or app code). Fix: a custom main manifest
+(`Assets/Plugins/Android/AndroidManifest.xml`) with `tools:node="remove"` — the official Android
+merger directive, not a post-build string edit. Rebuilt APK sha256 `3994e461…` declares no INTERNET.
+Regression guarded by `test/shadow-android-manifest-guard.test.js` + `scripts/audit-android-permissions.mjs`.
+
 | Permission | Present | Needed by base candidate? | Verdict |
 |---|---|---|---|
-| `android.permission.INTERNET` | yes | **no** | ⚠️ Unity Android default (Auto). Base candidate makes no requests; strip with a custom manifest `tools:node="remove"` for production. |
+| `android.permission.INTERNET` | **no (removed)** | no | ✅ stripped via custom manifest `tools:node="remove"` |
 | `…DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION` | yes | Unity internal | ✅ self-scoped Android 13+ receiver requirement; benign |
 | `android.permission.CAMERA` | **no** | no | ✅ correct — no camera in base candidate |
 | `android.permission.RECORD_AUDIO` | **no** | no | ✅ correct — added only in the XREAL RGB-recording candidate |
