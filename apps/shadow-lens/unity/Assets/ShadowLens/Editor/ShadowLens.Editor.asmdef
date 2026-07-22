@@ -1,7 +1,7 @@
 {
   "name": "ShadowLens.Editor",
   "rootNamespace": "ShadowLens.EditorTools",
-  "references": ["ShadowLens", "ShadowLens.InputV5.Runtime"],
+  "references": ["ShadowLens", "ShadowLens.InputV5.Runtime", "Unity.XR.Management", "Unity.XR.Management.Editor"],
   "includePlatforms": ["Editor"],
   "autoReferenced": true
 }
