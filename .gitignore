@@ -40,3 +40,5 @@ apps/shadow-lens/demo/wednesday/backup/
 apps/shadow-lens/unity/Build/
 apps/shadow-lens/unity/.utmp/
 builds/
+experiments/img2threejs/tool/
+experiments/img2threejs/measure-*.mjs

@@ -1,0 +1,20 @@
+{
+  "tool": "playwright",
+  "chromium": "149.0.7827.55",
+  "viewports": {
+    "1440x900": 0,
+    "1280x720": 0,
+    "390x844": 0
+  },
+  "console_errors": [],
+  "external_requests": [],
+  "csp_violations": [],
+  "checks": {
+    "props_off_count": 0,
+    "props_on_count_auditchain": 2,
+    "props_on_count_persona": 1,
+    "human_review_state": "REQUIRES_HUMAN_REVIEW",
+    "disposed_on_switch": 2,
+    "off_again_count": 0
+  }
+}

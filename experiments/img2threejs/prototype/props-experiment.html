@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<title>Shadow experimental spatial props — img2threejs spike (isolated)</title>
+<style>
+  :root { --bg:#0b0d10; --panel:#14181e; --border:#232830; --ink:#e7ebf0; --mut:#9aa4b2; --mono:ui-monospace,Menlo,monospace; }
+  html,body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; overflow-x:hidden; }
+  header { display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:12px 16px; border-bottom:1px solid var(--border); }
+  h1 { font-size:15px; margin:0; } .prov { font:11px var(--mono); color:#fbbf24; border:1px solid #3a3320; background:#1c1a10; padding:2px 8px; border-radius:999px; }
+  .sp { flex:1; } button,label.chk { background:#172232; color:var(--ink); border:1px solid var(--border); border-radius:8px; padding:6px 10px; font-size:13px; cursor:pointer; }
+  label.chk { display:inline-flex; gap:6px; align-items:center; }
+  main { padding:12px 16px; max-width:100%; }
+  #stage { width:100%; height:64vh; min-height:340px; border:1px solid var(--border); border-radius:12px; position:relative; overflow:hidden; background:#0b0d10; }
+  #stage canvas { display:block; width:100% !important; height:100% !important; }
+  #hud { font:12px var(--mono); color:var(--mut); margin-top:8px; }
+  #a11y { font:12px var(--mono); color:var(--mut); margin-top:4px; }
+  footer { padding:6px 16px 16px; color:var(--mut); font:12px var(--mono); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Shadow experimental spatial props</h1>
+  <span class="prov">EXPERIMENTAL VISUAL PROP · NOT DEVICE VALIDATED</span>
+  <span class="sp"></span>
+  <select id="story"></select>
+  <label class="chk"><input type="checkbox" id="props" /> SHADOW_EXPERIMENTAL_SPATIAL_PROPS</label>
+</header>
+<main>
+  <div id="stage"></div>
+  <div id="hud"></div>
+  <div id="a11y" aria-live="polite"></div>
+</main>
+<footer>Isolated experiment · same-origin only · props are visual attachments to canonical entities · status colour from the Shadow vocabulary · geometry carries no meaning. Semantic hash is unchanged by props.</footer>
+<script type="importmap">{ "imports": { "three": "../../../prototypes/shadow-3d-v2/vendor/three.module.js" } }</script>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "../../../prototypes/shadow-3d-v2/vendor/OrbitControls.js";
+import { layoutScene } from "../../../prototypes/shadow-3d-v2/src/shadow-guided-story-three-adapter.mjs";
+import { ShadowPropLayer } from "./props-integration.mjs";
+
+const STORIES = ["audit-chain","reason-code-attestation","persona-deliberation"];
+const $ = (id)=>document.getElementById(id);
+const stage = $("stage");
+const renderer = new THREE.WebGLRenderer({ antialias:true }); renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x0b0d10);
+const camera = new THREE.PerspectiveCamera(45,1,0.1,100);
+const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true;
+scene.add(new THREE.AmbientLight(0xffffff,0.8)); const dir=new THREE.DirectionalLight(0xffffff,0.55); dir.position.set(2,3,4); scene.add(dir);
+const nodesRoot = new THREE.Group(); scene.add(nodesRoot);
+const propsRoot = new THREE.Group(); scene.add(propsRoot);
+stage.appendChild(renderer.domElement);
+camera.position.set(0,0.3,4.6); controls.target.set(0,-0.1,0); controls.update();
+
+const propLayer = new ShadowPropLayer(propsRoot, false);
+let STORY = STORIES[0], semantic=null, sceneModel=null;
+const nodeMeshes=[];
+
+function clearNodes(){ for(const m of nodeMeshes){ nodesRoot.remove(m); m.geometry.dispose(); m.material.dispose(); } nodeMeshes.length=0; }
+function buildNodes(model){
+  clearNodes();
+  for(const n of model.nodes){
+    const geo = n.shape==="disc"||n.shape==="ring" ? new THREE.CylinderGeometry(0.16,0.16,0.05,16) : new THREE.IcosahedronGeometry(0.16,0);
+    const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color:n.color, transparent:true, opacity:n.dimmed?0.3:1 }));
+    mesh.position.set(...n.pos); mesh.userData.canonicalRef=n.id;   // canonical id lives on the NODE
+    nodesRoot.add(mesh); nodeMeshes.push(mesh);
+  }
+}
+async function load(id){
+  const snap = await (await fetch(`../../../prototypes/shadow-3d-v2/story-snapshots/${id}.threejs.json`)).json();
+  semantic = snap.semantic;
+  const step = semantic.steps.find(s=>s.scenario_ref&&s.scenario_ref.includes("tamper")) || semantic.steps[1];
+  const scenarioId = step.scenario_ref ?? semantic.scenarios[semantic.scenarios.length-1].id;
+  sceneModel = layoutScene(semantic, { scenarioId, layout: step.layout_intent??"timeline" });
+  buildNodes(sceneModel);
+  propLayer.sync(sceneModel);
+  hud();
+}
+function hud(){
+  const on = propLayer.enabled;
+  $("hud").textContent = `story=${STORY} · nodes=${sceneModel.nodes.length} · props=${on?propLayer.props.size:0} (toggle ${on?"ON":"OFF"}) · canonical ids unchanged · status colour from vocabulary`;
+  // a11y: list prop labels (external to mesh)
+  if(on){ const labels=[...propLayer.props.values()].map(g=>g.userData.a11y?.en).filter(Boolean); $("a11y").textContent = "props: "+labels.join(" | "); }
+  else $("a11y").textContent = "props off — current visuals preserved";
+}
+$("props").addEventListener("change",(e)=>{ propLayer.setEnabled(e.target.checked); propLayer.sync(sceneModel); hud(); window.__propsOn=e.target.checked; });
+const sel=$("story"); STORIES.forEach(s=>{const o=document.createElement("option");o.value=s;o.textContent=s;sel.append(o);});
+sel.addEventListener("change",()=>{ STORY=sel.value; load(STORY); });
+
+function resize(){ const w=stage.clientWidth||innerWidth,h=stage.clientHeight||Math.round(innerHeight*0.64); renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+addEventListener("resize", resize);
+function loop(){ controls.update(); renderer.render(scene,camera); requestAnimationFrame(loop); }
+resize(); load(STORY).then(()=>{ resize(); loop(); window.__ready=true; window.__propLayer=propLayer; }).catch(e=>{ $("hud").textContent="load error: "+e.message; window.__ready=true; });
+</script>
+</body>
+</html>
