@@ -1,0 +1,2 @@
+asset_path,dimensions,format,compression,alpha,mipmaps,read_write,android_override,astc,est_runtime_mem,note
+(none),0,n/a,n/a,n/a,n/a,n/a,n/a,n/a,0,no imported textures; TMP atlas (if any) is the only runtime texture — see FONT inventory

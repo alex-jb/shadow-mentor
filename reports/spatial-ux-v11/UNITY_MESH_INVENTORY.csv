@@ -1,0 +1,5 @@
+asset_path,kind,vertices,triangles,submeshes,material_slots,read_write,mesh_compression,collider,lod,skinned_static,note
+apps/shadow-lens/unity/Assets/ShadowLens/Narrative/ShadowStageController.cs:117,runtime_primitive,primitive,primitive,1,1,n/a,n/a,auto,no,static,"var node = GameObject.CreatePrimitive(PrimitiveType.Sphere); node.name = ""Voice_"" + voice.voice; node.transform.SetParent(_nodesRoot, false);"
+apps/shadow-lens/unity/Assets/ShadowLens/Narrative/ShadowStageController.cs:172,runtime_primitive,primitive,primitive,1,1,n/a,n/a,auto,no,static,var pill = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+apps/shadow-lens/unity/Assets/ShadowLens/Narrative/ShadowStageController.cs:189,runtime_primitive,primitive,primitive,1,1,n/a,n/a,auto,no,static,var caseGo = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+apps/shadow-lens/unity/Assets/ShadowLens/GuidedStory/ShadowGuidedStoryPlayer.cs:95,runtime_primitive,primitive,primitive,1,1,n/a,n/a,auto,no,static,var go = GameObject.CreatePrimitive(PrimitiveForShape(n.Shape));

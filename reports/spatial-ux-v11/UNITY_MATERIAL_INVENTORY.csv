@@ -1,0 +1,4 @@
+(no imported .mat files — 0),,,,,,,,,all materials are runtime new Material(); see runtime rows below
+source,kind,shader,render_queue,transparent_opaque,instancing,referenced_textures,duplicate_signature,batching_compatible,note
+apps/shadow-lens/unity/Assets/ShadowLens/Narrative/ShadowStageController.cs:162,runtime_new_Material,Sprites/Default,transparent,?,no(MaterialPropertyBlock absent),?,check per-node loop,?,"lr.material = new Material(Shader.Find(""Sprites/Default""));"
+apps/shadow-lens/unity/Assets/ShadowLens/Narrative/ShadowStageController.cs:199,runtime_new_Material,Sprites/Default,transparent,?,no(MaterialPropertyBlock absent),?,check per-node loop,?,"lr.material = new Material(Shader.Find(""Sprites/Default""));"

@@ -1,0 +1,4 @@
+scene,renderers,unique_materials,transparent_renderers,world_canvases,tmp_objects,lights,shadow_casters,cameras,raycasters,colliders,monobehaviours,Camera,Light,Canvas,GraphicRaycaster,MeshRenderer,MeshFilter,SkinnedMeshRenderer,LineRenderer,TextMeshPro,TextMeshProUGUI,CanvasRenderer,BoxCollider,SphereCollider,MeshCollider,MonoBehaviour,Transform,RectTransform
+apps/shadow-lens/unity/Assets/ShadowLens/Scenes/ShadowV8Demo.unity,1,runtime,?,0,0,1,1,1,0,0,3,1,1,0,0,1,0,0,0,0,0,0,0,0,0,3,6,0
+apps/shadow-lens/unity/Assets/ShadowLens/Scenes/ShadowVoiceDemo.unity,1,runtime,?,0,0,1,1,1,0,0,3,1,1,0,0,1,0,0,0,0,0,0,0,0,0,3,6,0
+apps/shadow-lens/unity/Assets/ShadowLens/Scenes/ShadowGuidedStoryDemo.unity,1,runtime,?,0,0,1,1,1,0,0,5,1,1,0,0,1,0,0,0,0,0,0,0,0,0,5,7,0
