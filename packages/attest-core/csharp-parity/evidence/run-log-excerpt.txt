@@ -1,0 +1,6 @@
+Unity Editor version:    6000.0.23f1 (1c4764c07fb4)
+[Licensing::Module] Error: LicensingClient has failed validation; ignoring
+[Licensing::Module] Error: Access token is unavailable; failed to update
+-batchmode
+EditMode
+   testMode = EditMode

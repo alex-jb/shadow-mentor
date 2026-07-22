@@ -1,51 +1,46 @@
 # C# canonical-byte parity harness (aex-attestation/v2)
 
-Standalone proof that a **C# runtime reproduces the exact `aex-attestation/v2` canonical signing bytes,
-SHA-256, and HMAC** produced by Node (`packages/attest-core/attestation-v2.js`) and the browser verifier.
+Proof that a **C# runtime reproduces the shared `canonicalize()` signing bytes, SHA-256, and HMAC**
+produced by Node and the browser verifier — byte-for-byte, across the full Unicode/escaping/ordering
+matrix. This is the cross-runtime contract for attestation signing.
 
-It reads the shared golden vector at `packages/attest-core/golden/v2-golden-vectors.json` and recomputes
-`canonical_text`, `utf8_hex`, `sha256_hex`, and the HMAC signature, asserting byte-for-byte equality.
+## Run status — EXECUTED in Unity (not just authored)
 
-## Why it is here and not in Unity
+Ran as an isolated **EditMode** test assembly (`ShadowAttest.Parity.Tests`) against the installed **Unity
+6000.0.23f1** editor in batch mode. The assembly references only the Unity test framework — **no XREAL SDK,
+no XR runtime init** — so it compiles and runs without the licensed SDK.
 
-This directory is **outside** `apps/shadow-lens/unity/Assets/` deliberately. It is a parity *harness*, not
-part of the Unity app — keeping it out of the Assets tree means the frozen APK and the Unity build are
-untouched by this security work.
+- **Result: 4/4 tests passed, 0 failed** over **19 edge vectors** each.
+- Evidence: [`evidence/editmode-results.xml`](evidence/editmode-results.xml) (NUnit result XML) +
+  [`evidence/run-log-excerpt.txt`](evidence/run-log-excerpt.txt).
 
-## Run status
+Test methods (each iterates all 19 vectors): `CSharpCanonicalTextParity`, `CSharpUtf8ByteParity`,
+`CSharpDigestParity`, `CSharpV2HmacParity`. Edge vectors cover ASCII, Simplified Chinese, emoji/surrogate
+pairs, `null`, absent optional binding, nested key ordering, escaped quote, backslash, newline, tab,
+U+2028, U+2029, control chars, arrays, booleans, integers, top-level primitives, and a full v2 envelope.
+Each asserts exact equality of **canonical text · UTF-8 byte length · UTF-8 byte hex · SHA-256**.
 
-- **Authored + byte-pinned against the golden vector.** The C# canonicalizer mirrors `canonicalize()`'s
-  sorted-key rule and RFC 8259 string escaping; the v2 envelope is deliberately a flat sorted object plus
-  one sorted `bindings` object with only string / `null` values, so the hand-written serializer is exact
-  without a JSON dependency.
-- **Not executed in the CI environment that produced this branch** (no .NET SDK present there). Run it
-  wherever a .NET SDK is available:
-
+Reproduce:
 ```bash
-cd packages/attest-core/csharp-parity
-dotnet run    # exit 0 = parity, prints "C# PARITY OK — reproduces Node golden vector byte-for-byte"
+UNITY=/Applications/Unity/Hub/Editor/6000.0.23f1/Unity.app/Contents/MacOS/Unity
+# minimal project: Assets/ = CanonicalJson.cs + AttestationV2Canonical.cs + CanonicalGoldenVectorTests.cs
+#   + ShadowAttest.Parity.Tests.asmdef + canonicalize-golden-vectors.json + v2-golden-vectors.json
+#   Packages/manifest.json = { "com.unity.test-framework": "1.4.5", "testables": ["ShadowAttest.Parity.Tests"] }
+"$UNITY" -batchmode -projectPath <proj> -runTests -testPlatform EditMode -testResults results.xml -logFile unity.log
 ```
 
-Minimal `csproj` (net8.0, no external packages — `System.Text.Json` + `System.Security.Cryptography` are
-in the BCL):
+## Files
 
-```xml
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>disable</Nullable>
-  </PropertyGroup>
-</Project>
-```
+| File | Role |
+|---|---|
+| `CanonicalJson.cs` | **dependency-free** canonicalize mirror + minimal JSON reader (Unity harness) |
+| `AttestationV2Canonical.cs` | v2-envelope + HMAC/SHA helpers (Unity harness) |
+| `CanonicalGoldenVectorTests.cs` | NUnit EditMode tests (Unity harness) |
+| `ShadowAttest.Parity.Tests.asmdef` | isolated Editor test assembly, no XREAL refs |
+| `Program.cs` | OPTIONAL `dotnet run` harness (uses `System.Text.Json`; **not** part of the Unity harness — do not compile it inside Unity) |
 
-## Expected output (pinned)
+## Why hand-rolled escaping
 
-For the committed golden vector the C# harness must print:
-
-```
-sha256_hex = 65963b695099b75607e35c555335c70a66adad3d1a5cb3d3a117644e0e113707
-```
-
-If the golden vector is regenerated (an intentional v2 format change → wire-version bump), rerun
-`node scripts/gen-v2-golden.mjs` and update this pinned value.
+`CanonicalJson.cs` reproduces JavaScript `JSON.stringify` string escaping exactly: U+2028/U+2029 pass
+through literally and non-ASCII is not escaped. `System.Text.Json` / Newtonsoft escape those and would
+**drift** — which is precisely why parity had to be executed, not argued.

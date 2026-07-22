@@ -70,6 +70,7 @@ import {
   createPrivateKey, createPublicKey,
   sign as cryptoSign, verify as cryptoVerify,
 } from "node:crypto";
+import { isInsecureDefaultSecret, INSECURE_SECRET_MESSAGE, INSECURE_SECRET_CODE } from "./secret-guard.js";
 
 
 // Deploy-time secret. In production this comes from an env var or
@@ -352,6 +353,14 @@ export function buildAttestation(params) {
 
   let signature;
   if (mode === SIGNATURE_MODES.HMAC) {
+    // §9 guard: fail loud in production rather than silently signing with the insecure dev default.
+    // Only throws for the insecure-default case in prod — a valid explicit secret signs byte-identically,
+    // so released v1 fixtures + dev/test are unaffected.
+    if (isInsecureDefaultSecret(secret, mode)) {
+      const err = new Error(INSECURE_SECRET_MESSAGE);
+      err.code = INSECURE_SECRET_CODE;
+      throw err;
+    }
     signature = createHmac("sha256", secret)
       .update(signingPayload)
       .digest("hex");

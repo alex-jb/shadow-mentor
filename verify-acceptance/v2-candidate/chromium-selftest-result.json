@@ -1,0 +1,73 @@
+{
+  "passed": 14,
+  "total": 14,
+  "allPass": true,
+  "supported": [
+    "aex-attestation/v1 (legacy)",
+    "aex-attestation/v2"
+  ],
+  "results": [
+    {
+      "name": "valid v2 HMAC accepted",
+      "pass": true
+    },
+    {
+      "name": "valid v2 multi-binding accepted",
+      "pass": true
+    },
+    {
+      "name": "valid v2 Ed25519 accepted",
+      "pass": true
+    },
+    {
+      "name": "valid v1 accepted + labeled legacy",
+      "pass": true,
+      "detail": "LEGACY_AMBIGUOUS_ENVELOPE"
+    },
+    {
+      "name": "binding relabel rejected",
+      "pass": true
+    },
+    {
+      "name": "delimiter-boundary mutation rejected",
+      "pass": true
+    },
+    {
+      "name": "removed binding rejected",
+      "pass": true
+    },
+    {
+      "name": "added unknown binding fails closed",
+      "pass": true,
+      "detail": "schema: ERR_V2_UNKNOWN_BINDING"
+    },
+    {
+      "name": "altered wire version rejected (not routed to v1)",
+      "pass": true,
+      "detail": "unknown wire version"
+    },
+    {
+      "name": "altered domain rejected",
+      "pass": true
+    },
+    {
+      "name": "altered algorithm rejected",
+      "pass": true
+    },
+    {
+      "name": "empty-string binding fails closed (schema)",
+      "pass": true,
+      "detail": "schema: ERR_V2_EMPTY_BINDING"
+    },
+    {
+      "name": "malformed v2 (bad hash) fails closed, never routed to v1",
+      "pass": true,
+      "detail": "schema: ERR_V2_BAD_HASH"
+    },
+    {
+      "name": "previous_hash empty-string fails closed",
+      "pass": true,
+      "detail": "schema: ERR_V2_BAD_PREVIOUS_HASH"
+    }
+  ]
+}

@@ -128,16 +128,15 @@ function envelopeFromAttestation(att) {
 }
 
 // ── production default-secret guard (§9) ─────────────────────────────────────
-export const DEV_DEFAULT_SECRET = "dev-shadow-attestation-secret-DO-NOT-USE-IN-PROD";
-export function isProductionEnv(env = process.env) {
-  return env.NODE_ENV === "production" || env.SHADOW_ENV === "production";
-}
-// Fail loud in production when signing with the insecure dev default (or no explicit secret).
+// The predicate lives in the shared secret-guard.js so v1 and v2 enforce the SAME rule on every signing
+// path. v2 throws it as an AttestationV2Error (back-compat with existing tests). Constants are re-exported
+// so `import { DEV_DEFAULT_SECRET, isProductionEnv } from attestation-v2.js` keeps working.
+import { DEV_DEFAULT_SECRET as _DEV_SECRET, isProductionEnv as _isProdEnv, isInsecureDefaultSecret, INSECURE_SECRET_MESSAGE, INSECURE_SECRET_CODE } from "./secret-guard.js";
+export const DEV_DEFAULT_SECRET = _DEV_SECRET;
+export const isProductionEnv = _isProdEnv;
+// Fail loud in production when signing HMAC with the insecure dev default (or no explicit secret).
 export function assertSecureSecret(secret, mode, env = process.env) {
-  if (mode !== SIGNATURE_MODES.HMAC) return;   // ed25519 uses a key, not the shared secret
-  if (isProductionEnv(env) && (secret === undefined || secret === null || secret === DEV_DEFAULT_SECRET)) {
-    fail("insecure default HMAC secret in production — configure SHADOW_ATTESTATION_SECRET or an ed25519/KMS signer", "ERR_INSECURE_DEFAULT_SECRET");
-  }
+  if (isInsecureDefaultSecret(secret, mode, env)) fail(INSECURE_SECRET_MESSAGE, INSECURE_SECRET_CODE);
 }
 
 // ── sign / build ─────────────────────────────────────────────────────────────
