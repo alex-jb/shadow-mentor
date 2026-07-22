@@ -1,0 +1,3 @@
+# XREAL package hashes — PENDING IMPORT
+# Fill: tarball filename + SHA-256 of the official com.xreal.xr 3.1.0 package after download.
+# <sha256>  XREAL_Unity_SDK_3.1.0.tgz
