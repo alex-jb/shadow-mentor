@@ -1,0 +1,61 @@
+{
+  "_comment": "Shared truth for Capstone V2 report + deck. Audited 2026-07-21 across worktrees. The consistency test (test/capstone-v2-consistency.test.mjs) fails if report/deck source diverge from these values. Status labels are the V2 vocabulary; authored/tested/built/device-validated are NOT collapsed.",
+  "project_title": "Shadow: A Cryptographically Verifiable Evidence and Spatial Audit System for AI-Assisted Decisions",
+  "thesis": "From AI answers to independently verifiable decision evidence.",
+  "author": "Alex Ji",
+  "program": "M.S. Computer Science",
+  "institution": "Yeshiva University",
+  "course": "Capstone in Computer Science I",
+  "date": "2026-07-21",
+  "audit": {
+    "main_tree_commit": "5106799",
+    "explainer_branch": { "name": "feat/shadow-lens-explainers", "commit": "19f52f0" },
+    "spatial_branch": { "name": "research/unity-threejs-spatial-ux-v2", "commit": "bb33196" },
+    "note": "New work (explainers, 3D scene contract, Three.js layouts) lives on sibling branches not yet merged to the V1 base 5106799; V1 was built from that base and is therefore stale."
+  },
+  "tests": {
+    "passed": 1858, "total": 1861, "skipped": 3, "failed": 0,
+    "run_on": "feat/shadow-lens-explainers @ 19f52f0", "run_date": "2026-07-21",
+    "skips_reason": "environment-gated (Mistral OCR key / live-network / OpenSSL feature) — not disabled coverage",
+    "v1_value_was": "1824 / 1827 (stale)"
+  },
+  "version": "2.2.0", "attest_core_version": "2.2.0", "npm_core_published": "2.1.0",
+  "mcp_tools": 11,
+  "council": { "voices": 5, "kind": "deterministic fixture council", "value_semantics": "persona prior — STANCE STRENGTH (not confidence, not probability of correctness)" },
+  "profiles": ["banking-v1", "data-science-v1", "coding-agent-v1"],
+  "unity_version": "6000.0.23f1",
+  "frozen_apk": { "name": "mock-stable-5168b07.apk", "size_bytes": 24442084, "sha256": "93f2a81aa5f965aec540526abe621b152c7507c03c0fea51d381094bd548d0b8", "status": "ANDROID-BUILT", "note": "built, NOT device-validated" },
+  "capabilities": [
+    { "id": "canonical-evidence-schema-v1", "status": "HOST-TESTED", "path": "spec/evidence-bundle.schema.json" },
+    { "id": "ed25519-signature", "status": "HOST-TESTED", "path": "spec/attestation.schema.json" },
+    { "id": "sha256-hash-chain", "status": "HOST-TESTED" },
+    { "id": "tamper-localization-first-failed-seq", "status": "HOST-TESTED" },
+    { "id": "offline-browser-verifier", "status": "BROWSER-RENDERED / BROWSER-RECORDED", "path": "verify.html", "signing": "FIXTURE-SIGNED" },
+    { "id": "verify-the-verifier-manifest", "status": "BROWSER-RENDERED", "signing": "FIXTURE-SIGNED" },
+    { "id": "bilingual-en-zh", "status": "BROWSER-RENDERED" },
+    { "id": "mcp-11-tools", "status": "HOST-TESTED" },
+    { "id": "claim-evidence-graph", "status": "HOST-TESTED", "path": "lib/claim-evidence-graph.mjs" },
+    { "id": "shadow-3d-scene-v1-contract", "status": "HOST-TESTED", "path": "schemas/shadow-3d-scene-v1.schema.json + test/shadow-3d-scene-contract.test.js", "branch": "research/unity-threejs-spatial-ux-v2 @ bb33196", "note": "shared Unity/Three.js scene contract — AUTHORED + HOST-TESTED (Unity production integration still pending)" },
+    { "id": "threejs-four-layout-prototype", "status": "BROWSER-RENDERED / BROWSER-RECORDED", "note": "arc, layered DAG, timeline, hybrid 2D/3D + 2D fallback — RESEARCH-PROTOTYPE", "branch": "research/unity-threejs-spatial-ux-v2 @ bb33196" },
+    { "id": "explainer-audit-chain", "status": "HOST-TESTED / BROWSER-RENDERED", "path": "demos/animations (audit-chain)", "branch": "feat/shadow-lens-explainers @ 19f52f0" },
+    { "id": "explainer-reason-code-attestation", "status": "HOST-TESTED / BROWSER-RENDERED", "branch": "feat/shadow-lens-explainers @ 19f52f0" },
+    { "id": "explainer-persona-deliberation", "status": "HOST-TESTED / BROWSER-RENDERED", "branch": "feat/shadow-lens-explainers @ 19f52f0" },
+    { "id": "browser-explainer-integration", "status": "BROWSER-RENDERED", "path": "media/explainer-integration", "branch": "feat/shadow-lens-explainers @ 19f52f0" },
+    { "id": "unity-shadow-lens", "status": "UNITY-AUTHORED", "note": "3 workspaces + audit arc; Unity test evidence reported separately; DEVICE-VALIDATION-PENDING (Beam Pro)" },
+    { "id": "ingest-audit-structural", "status": "HOST-TESTED", "note": "structural seal of a third-party trace" },
+    { "id": "ingest-audit-semantic", "status": "SOURCE-AUTHORED", "note": "semantic PRODUCTION evaluation pending — NOT device-pending" },
+    { "id": "brier-calibration", "status": "HOST-TESTED", "note": "post-hoc, n<100, NOT a coverage certificate" },
+    { "id": "spatial-comprehension-benefit", "status": "NOT IMPLEMENTED", "note": "RQ4 — no user study yet" }
+  ],
+  "honesty_guardrails": [
+    "Cryptographic verification establishes integrity, not correctness.",
+    "A valid signature does not prove the source was truthful.",
+    "Fixture signing is not production signing.",
+    "Android-built is not device-validated.",
+    "Head-directed hover is not eye tracking.",
+    "No user study means no demonstrated 3D comprehension benefit.",
+    "Persona majority does not prove correctness.",
+    "Compliance persona does not constitute legal review.",
+    "No Beam Pro / XREAL device claim without device evidence."
+  ]
+}
