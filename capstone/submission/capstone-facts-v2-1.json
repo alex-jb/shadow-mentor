@@ -1,0 +1,63 @@
+{
+  "_comment": "V2.1 single source of truth for the practice deck. Re-audited 2026-07-21 by running the ACTUAL test suite on the final branch feat/shadow-shared-story-adapters @ 5f655e8 (node scripts/run-tests.mjs). Statuses use the V2 vocabulary and never collapse authored/host-tested/built/device-validated. The stale 1,824/1,827 and 1,858/1,861 figures and the '(V1 said ...)' note are RETIRED and must not appear on any slide.",
+  "project_title": "Shadow: A Cryptographically Verifiable Evidence and Spatial Audit System for AI-Assisted Decisions",
+  "thesis": "From AI answers to independently verifiable decision evidence.",
+  "author": "Alex Ji",
+  "program": "M.S. Computer Science",
+  "institution": "Yeshiva University",
+  "course": "Capstone in Computer Science I",
+  "date": "2026-07-21",
+  "audit": {
+    "final_branch": "feat/shadow-shared-story-adapters",
+    "final_commit": "5f655e8",
+    "run_command": "node scripts/run-tests.mjs",
+    "note": "Newest worktree; merges shadow-3d-scene-v1 + Three.js prototype AND adds the guided-story compiler (cross-target semantic hash), HTML adapter, and Three.js story adapter. Supersedes the 1,858/1,861 (V2) and the 1,866 handoff figures."
+  },
+  "tests": {
+    "passed": 1892, "total": 1895, "skipped": 3, "failed": 0,
+    "suites": 36,
+    "run_on": "feat/shadow-shared-story-adapters @ 5f655e8", "run_date": "2026-07-21",
+    "skips_reason": "environment-gated (Mistral OCR key / live-network / OpenSSL feature) — not disabled coverage",
+    "retired_figures": ["1824/1827", "1,824 / 1,827", "1858/1861", "1,858 / 1,861", "1866", "1,866"]
+  },
+  "version": "2.2.0",
+  "mcp_tools": 11,
+  "council": { "voices": 5, "kind": "deterministic fixture council", "value_semantics": "persona prior — STANCE STRENGTH (not confidence, not probability of correctness)" },
+  "profiles": ["banking-v1", "data-science-v1", "coding-agent-v1"],
+  "unity_version": "6000.0.23f1",
+  "explainers": { "count": 3, "names": ["audit-chain", "reason-code-attestation", "persona-deliberation"], "status": "HOST-TESTED / BROWSER-RENDERED" },
+  "canonical_tamper_fixture": { "first_failed_seq": 3, "downstream": [4, 5, 6], "note": "matches host test shadow-guided-story-three-adapter: 'seq-3 first failure ring + downstream degraded edges'. Live demo, Slide 7 and speaker notes all use seq 3." },
+  "frozen_apk": { "name": "mock-stable-5168b07.apk", "size_bytes": 24442084, "sha256": "93f2a81aa5f965aec540526abe621b152c7507c03c0fea51d381094bd548d0b8", "status": "ANDROID-BUILT", "note": "built, NOT device-validated" },
+  "unity_game_view_screenshot_available": false,
+  "unity_game_view_note": "No real Unity Game View capture exists in the repo (only an explainer preview). Slide 9 shows Three.js renders labelled Three.js and describes Unity in text; it does NOT display a Three.js image labelled Unity.",
+  "capabilities": [
+    { "id": "shared-guided-story-contract", "status": "AUTHORED · HOST-TESTED", "path": "schemas/shadow-guided-story-v1.schema.json + test/shadow-guided-story-compiler.test.js", "note": "deterministic guided-story compiler with cross-target semantic hash" },
+    { "id": "shadow-3d-scene-v1-contract", "status": "AUTHORED · HOST-TESTED", "path": "schemas/shadow-3d-scene-v1.schema.json + test/shadow-3d-scene-contract.test.js" },
+    { "id": "threejs-story-adapter", "status": "HOST-TESTED · BROWSER-RENDERED", "path": "test/shadow-guided-story-three-adapter.test.js", "note": "adapter contract: status visual never colour-alone, layout projection finite, focus+context, seq-3 tamper scene" },
+    { "id": "html-story-adapter", "status": "HOST-TESTED", "path": "test/shadow-guided-story-html-parity.test.js", "note": "semantic-convergence parity with the Three.js adapter (same semantic hash)" },
+    { "id": "unity-adapter-contract", "status": "UNITY-AUTHORED · CONTRACT-DRIFT HOST-TESTED", "path": "test/shadow-unity-contract-drift.test.js + test/shadow-unity-android-check.test.js", "note": "generated ShadowSpatialContract.g.cs matches the shared registry (actions/states/statuses); Android build toolchain checked. Unity editmode/playmode NOT run here. DEVICE-VALIDATION-PENDING (Beam Pro)." },
+    { "id": "offline-browser-verifier", "status": "BROWSER-RENDERED / BROWSER-RECORDED", "signing": "FIXTURE-SIGNED", "path": "verify.html" },
+    { "id": "verify-the-verifier-manifest", "status": "BROWSER-RENDERED · FIXTURE-SIGNED" },
+    { "id": "bilingual-en-zh", "status": "BROWSER-RENDERED" },
+    { "id": "mcp-11-tools", "status": "HOST-TESTED" },
+    { "id": "claim-evidence-graph", "status": "HOST-TESTED", "path": "lib/claim-evidence-graph.mjs" },
+    { "id": "explainers-3", "status": "HOST-TESTED / BROWSER-RENDERED", "note": "audit-chain, reason-code-attestation, persona-deliberation" },
+    { "id": "unity-shadow-lens", "status": "UNITY-AUTHORED · DEVICE-VALIDATION-PENDING", "note": "no Beam Pro / XREAL device claim; no real Game View capture to display" },
+    { "id": "android-mock-apk", "status": "ANDROID-BUILT", "note": "mock-stable-5168b07.apk, not device-validated" },
+    { "id": "ingest-audit-structural", "status": "HOST-TESTED", "note": "schema fail-closed, injection quarantine, citation resolution, stale-citation detection" },
+    { "id": "ingest-audit-semantic", "status": "PRODUCTION-EVALUATION-PENDING", "note": "NOT device-pending" },
+    { "id": "spatial-comprehension-benefit", "status": "NOT IMPLEMENTED", "note": "RQ4 — no user study yet" }
+  ],
+  "demo_fallback_video_label": "Open bookmarked fallback video (Shadow verify full demo)",
+  "honesty_guardrails": [
+    "Cryptographic verification establishes integrity, not correctness.",
+    "A valid signature does not prove the source was truthful.",
+    "Fixture signing is not production signing.",
+    "Android-built is not device-validated.",
+    "Head-directed hover is not eye tracking.",
+    "No user study means no demonstrated 3D comprehension benefit.",
+    "Persona value is stance strength, not probability of correctness.",
+    "Unity is authored + contract-drift-tested, not editmode/playmode-tested here and not device-validated.",
+    "No Beam Pro / XREAL device claim without device evidence."
+  ]
+}
