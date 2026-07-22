@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<title>Shadow guided-story player (Three.js) — isolated prototype</title>
+<style>
+  :root { --bg:#0b0d10; --panel:#14181e; --border:#232830; --ink:#e7ebf0; --mut:#9aa4b2; --mono:ui-monospace,SFMono-Regular,Menlo,monospace; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; overflow-x:hidden; }
+  main { max-width:100%; }
+  a.skip { position:absolute; left:-999px; } a.skip:focus { left:8px; top:8px; background:#172232; padding:6px 10px; border-radius:6px; z-index:20; }
+  header { display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:12px 16px; border-bottom:1px solid var(--border); }
+  header h1 { font-size:16px; margin:0; font-weight:650; }
+  .prov { font:12px/1.4 var(--mono); color:#fbbf24; border:1px solid #3a3320; background:#1c1a10; padding:2px 8px; border-radius:999px; }
+  .sp { flex:1; }
+  button, select, label.chk { background:#172232; color:var(--ink); border:1px solid var(--border); border-radius:8px; padding:7px 11px; font-size:13px; cursor:pointer; }
+  button[aria-pressed="true"] { outline:2px solid #60a5fa; }
+  label.chk { display:inline-flex; gap:6px; align-items:center; }
+  main { display:grid; grid-template-columns: 1.55fr 1fr; gap:14px; padding:14px 16px; align-items:start; }
+  #stage { width:100%; height:62vh; min-height:360px; border:1px solid var(--border); border-radius:12px; position:relative; overflow:hidden; background:#0b0d10; }
+  #stage[data-hidden="1"] { display:none; }
+  #stage canvas { display:block; width:100% !important; height:100% !important; }
+  #labels { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+  .tag { position:absolute; transform:translate(-50%,-140%); font:11px/1.3 var(--mono); background:rgba(10,13,18,.86); border:1px solid var(--border); color:var(--ink); padding:2px 6px; border-radius:6px; white-space:nowrap; }
+  .tag[data-k="fail"] { border-color:#ef4444; color:#fca5a5; } .tag[data-k="down"] { border-color:#8a92a0; color:#c8cdd6; }
+  .side { display:flex; flex-direction:column; gap:12px; }
+  .card { background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:12px 14px; }
+  .card h2 { font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--mut); margin:0 0 8px; }
+  #narration { font-size:15px; min-height:3em; }
+  ul { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:5px; }
+  li { display:flex; justify-content:space-between; gap:10px; font:13px/1.4 var(--mono); padding:3px 4px; border-radius:6px; }
+  #audit-list li { cursor:pointer; } #audit-list li:focus-visible { outline:2px solid #60a5fa; } #audit-list li.sel { background:#172232; }
+  .st { font-weight:700; padding:0 6px; border-radius:5px; }
+  .st[data-sev="pass"] { color:#4ade80; } .st[data-sev="fail"] { color:#ef4444; } .st[data-sev="warn"] { color:#fbbf24; }
+  .st[data-sev="neutral"] { color:#9aa4b2; } .st[data-sev="abstain"] { color:#60a5fa; } .st[data-sev="info"] { color:#9aa4b2; }
+  .st[data-sev="VERIFIED"],.st[data-sev="PASS"] { color:#4ade80; } .st[data-sev="FAILED"],.st[data-sev="FAIL"] { color:#ef4444; }
+  footer { padding:6px 16px 18px; color:var(--mut); font-size:12px; }
+  .nav { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  #hover { font:12px var(--mono); color:var(--mut); min-height:1.2em; }
+  #detail { border-top:1px dashed var(--border); margin-top:8px; padding-top:8px; color:var(--mut); font-size:13px; }
+  @media (max-width:820px){ main { grid-template-columns:1fr; } #stage { height:48vh; } }
+  @media (prefers-reduced-motion: reduce){ * { scroll-behavior:auto; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#narration">Skip to narration</a>
+<header>
+  <h1 id="story-title">Shadow guided-story player</h1>
+  <span class="prov">FIXTURE · ISOLATED PROTOTYPE</span>
+  <span class="sp"></span>
+  <select id="story-select" aria-label="Story"></select>
+  <button id="lang-en" aria-pressed="true">EN</button>
+  <button id="lang-zh" aria-pressed="false">中文</button>
+</header>
+
+<main>
+  <div>
+    <div id="stage"><div id="labels"></div></div>
+    <div class="nav" style="margin-top:10px">
+      <button id="prev">◀ Step</button>
+      <button id="next">Step ▶</button>
+      <button id="restart">↻ Restart</button>
+      <button id="recenter">Recenter</button>
+      <label class="chk"><input type="checkbox" id="mode2d" /> <span id="t-mode2d">2D fallback</span></label>
+      <label class="chk"><input type="checkbox" id="rmotion" /> <span id="t-rmotion">Reduced motion</span></label>
+    </div>
+    <div id="hover" aria-live="polite"></div>
+  </div>
+
+  <div class="side">
+    <div class="card">
+      <h2 id="scenario-label">Scenario</h2>
+      <div id="step-label" style="font:12px var(--mono); color:var(--mut); margin-bottom:6px"></div>
+      <p id="narration" aria-live="polite"></p>
+      <p id="t-hoverhint" style="font-size:12px; color:var(--mut)"></p>
+    </div>
+    <div class="card">
+      <h2 id="t-dims">Trust dimensions</h2>
+      <ul id="dims"></ul>
+    </div>
+    <div class="card">
+      <h2 id="t-audit">Nodes</h2>
+      <ul id="audit-list"></ul>
+      <div id="detail" hidden><span id="detail-body"></span></div>
+    </div>
+  </div>
+</main>
+
+<footer><span id="t-note"></span></footer>
+
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.js" } }</script>
+<script type="module" src="./src/shadow-guided-story-player.mjs"></script>
+</body>
+</html>

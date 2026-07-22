@@ -1,0 +1,22 @@
+{
+  "tool": "playwright",
+  "chromium": "149.0.7827.55",
+  "viewports": {
+    "1280x800": 0,
+    "1440x900": 0,
+    "390x844": 0
+  },
+  "console_errors": [],
+  "external_requests": [],
+  "csp_violations": [],
+  "steps": [
+    "audit-chain loaded EN",
+    "audit-chain dims after tamper: ANALYTICAL CORRECTNESSNOT EVALUATEDDIGITAL SIGNATUREFAILEDEXTERNAL ANCHORNOT PRESENTHASH C",
+    "selected first-failure node; detail shown: true",
+    "reason-code tamper step",
+    "reason-code zh",
+    "persona unsupported-claim flag",
+    "persona 2D fallback",
+    "reduced motion toggled"
+  ]
+}
