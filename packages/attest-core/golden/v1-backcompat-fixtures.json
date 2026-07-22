@@ -1,0 +1,66 @@
+{
+  "_comment": "aex-attestation/v1 BACKWARD-COMPAT FIXTURES. These pinned v1 proofs MUST keep verifying unchanged forever. If a signature here changes, v1 signing bytes drifted (forbidden). v1 is frozen; the fix is the separate v2 wire version.",
+  "secret": "v1-backcompat-fixture-secret",
+  "request": {
+    "loan": {
+      "id": "L-1",
+      "amount": 250000,
+      "fico": 742
+    }
+  },
+  "response": {
+    "verdict": "APPROVE",
+    "rationale": "within policy"
+  },
+  "hmac_head": {
+    "version": "aex-attestation/v1",
+    "mode": "hmac-sha256",
+    "request_commitment": "78c446103f98487d95cbacd4c0112af7c09dea9b61a08ce1ccaff11c2483f1d4",
+    "output_commitment": "b24e07ac44ec875d3bd17c063cbdcc7a9986a363292b84b7ba52495fec35398e",
+    "model_id": "claude-opus-4-8",
+    "completed_at_utc": "2026-01-02T03:04:05Z",
+    "previous_hash": null,
+    "key_id": "shadow-2026-q1",
+    "signature": "9493bf2010df7a403b3ff999d175d010d1a364477b96d88bd11a794c2bafb7f5"
+  },
+  "hmac_bound": {
+    "version": "aex-attestation/v1",
+    "mode": "hmac-sha256",
+    "request_commitment": "78c446103f98487d95cbacd4c0112af7c09dea9b61a08ce1ccaff11c2483f1d4",
+    "output_commitment": "b24e07ac44ec875d3bd17c063cbdcc7a9986a363292b84b7ba52495fec35398e",
+    "model_id": "claude-opus-4-8",
+    "completed_at_utc": "2026-01-02T03:04:05Z",
+    "previous_hash": null,
+    "key_id": "shadow-2026-q1",
+    "dictionary_hash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "signature": "a0cd206bdd5a16a5e42b4397b25b9847ef0ef4e297acd3c9d51cce9aa8e81db0"
+  },
+  "hmac_chained": {
+    "previous_hash_input": "f26e8470cd53cbb132bb6b72a82686e15b37d8efea034fdad49a4f27496c5946",
+    "attestation": {
+      "version": "aex-attestation/v1",
+      "mode": "hmac-sha256",
+      "request_commitment": "78c446103f98487d95cbacd4c0112af7c09dea9b61a08ce1ccaff11c2483f1d4",
+      "output_commitment": "b24e07ac44ec875d3bd17c063cbdcc7a9986a363292b84b7ba52495fec35398e",
+      "model_id": "claude-opus-4-8",
+      "completed_at_utc": "2026-01-02T03:04:05Z",
+      "previous_hash": "f26e8470cd53cbb132bb6b72a82686e15b37d8efea034fdad49a4f27496c5946",
+      "key_id": "shadow-2026-q1",
+      "signature": "91046b081729b2671d4886262f0b98ea766e92b2a988dd4719c367adaf5a3796"
+    }
+  },
+  "ed25519": {
+    "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAKmUgiYIh9Q8W4kVAAXqmlBhuEqRNN6T9BeWeX/RcQbc=\n-----END PUBLIC KEY-----\n",
+    "attestation": {
+      "version": "aex-attestation/v1",
+      "mode": "ed25519",
+      "request_commitment": "78c446103f98487d95cbacd4c0112af7c09dea9b61a08ce1ccaff11c2483f1d4",
+      "output_commitment": "b24e07ac44ec875d3bd17c063cbdcc7a9986a363292b84b7ba52495fec35398e",
+      "model_id": "claude-opus-4-8",
+      "completed_at_utc": "2026-01-02T03:04:05Z",
+      "previous_hash": null,
+      "key_id": "shadow-2026-q1",
+      "signature": "RyrZp8e4+LGNDopw1TlAcU9ruGjY/FMUMMQXCXsZQwT1AvlI0+inw5+wuWZll3SsIwBwDLHi/P4ti4eFBp3ICA=="
+    }
+  }
+}

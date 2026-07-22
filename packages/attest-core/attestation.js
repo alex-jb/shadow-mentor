@@ -442,7 +442,7 @@ export function buildAttestation(params) {
 }
 
 
-function _asPrivateKey(input) {
+export function _asPrivateKey(input) {
   if (typeof input === "object" && input.asymmetricKeyType) return input;
   // PEM string or raw base64 → coerce to KeyObject.
   const str = String(input);
@@ -467,7 +467,7 @@ function _asPrivateKey(input) {
 }
 
 
-function _asPublicKey(input) {
+export function _asPublicKey(input) {
   if (typeof input === "object" && input.asymmetricKeyType) return input;
   const str = String(input);
   if (str.includes("BEGIN")) {
