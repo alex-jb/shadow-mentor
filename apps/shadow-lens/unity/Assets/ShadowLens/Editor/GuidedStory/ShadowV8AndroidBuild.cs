@@ -51,6 +51,11 @@ namespace ShadowLens.EditorTools
                 "0.8-xreal-voice", "reports/voice-v8", requireXreal: true, banner: "FIXTURE · V8 XREAL+VOICE · DEVICE VALIDATION PENDING");
         }
 
+        // Public entry for a distinctly-named XREAL candidate (e.g. the V10 core), so a new candidate
+        // never overwrites an earlier one. Requires the SDK + define (callers check first).
+        public static BuildResult BuildXrealNamed(string pkg, string outApk, string ver, string reportDir, string banner)
+            => BuildOne(pkg, outApk, ver, reportDir, requireXreal: true, banner: banner);
+
         static BuildResult BuildOne(string pkg, string outApk, string ver, string reportDir, bool requireXreal, string banner)
         {
             // The offline INTERNET-removal manifest (base candidate) conflicts with the XREAL AARs, which
