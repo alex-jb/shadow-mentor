@@ -1,0 +1,26 @@
+{
+  "locale": "en-US",
+  "note": "Plain-text say-as substitutions + optional SSML hints (adapters use SSML when supported). Full hashes are NOT spoken by default.",
+  "terms": {
+    "Shadow": { "say": "Shadow" },
+    "XREAL": { "say": "X-real" },
+    "Beam Pro": { "say": "Beam Pro" },
+    "Ed25519": { "say": "E-D twenty-five five-nineteen", "sayas": "characters" },
+    "SHA-256": { "say": "S-H-A two fifty-six" },
+    "GDPR": { "say": "G-D-P-R", "sayas": "characters" },
+    "SR 26-2": { "say": "S-R twenty-six dash two" },
+    "FICO": { "say": "Fye-co" },
+    "DTI": { "say": "D-T-I", "sayas": "characters" },
+    "LTV": { "say": "L-T-V", "sayas": "characters" },
+    "AUC": { "say": "A-U-C", "sayas": "characters" },
+    "GBM": { "say": "G-B-M", "sayas": "characters" },
+    "JSON": { "say": "Jason" },
+    "API": { "say": "A-P-I", "sayas": "characters" },
+    "OCR": { "say": "O-C-R", "sayas": "characters" },
+    "3DoF": { "say": "three dof" },
+    "6DoF": { "say": "six dof" },
+    "B0L1": { "say": "B zero L one" }
+  },
+  "id_reading": { "rule": "read evidence/claim IDs character by character (E-101 -> E one oh one); read sequence numbers as words (sequence three)" },
+  "hash_rule": { "default": "speak a 4-char prefix + 'shown in full on screen'", "explicit_action": "read full identifier" }
+}

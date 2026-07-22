@@ -1,0 +1,26 @@
+{
+  "locale": "zh-CN",
+  "note": "中文发音替换。完整哈希默认不朗读;数字/百分比/货币按中文自然读法。",
+  "terms": {
+    "Shadow": { "say": "Shadow" },
+    "XREAL": { "say": "X real" },
+    "Beam Pro": { "say": "Beam Pro" },
+    "Ed25519": { "say": "E D 二五五一九", "sayas": "characters" },
+    "SHA-256": { "say": "S H A 二五六" },
+    "GDPR": { "say": "G D P R" },
+    "SR 26-2": { "say": "S R 二十六 杠 二" },
+    "FICO": { "say": "FICO 评分" },
+    "DTI": { "say": "D T I" },
+    "LTV": { "say": "L T V" },
+    "AUC": { "say": "A U C" },
+    "GBM": { "say": "G B M" },
+    "JSON": { "say": "JSON" },
+    "API": { "say": "A P I" },
+    "OCR": { "say": "O C R" },
+    "3DoF": { "say": "三自由度" },
+    "6DoF": { "say": "六自由度" },
+    "B0L1": { "say": "B 零 L 一" }
+  },
+  "id_reading": { "rule": "证据/主张 ID 逐字读(E-101 读作 E 一〇一);序号读自然中文(序号三)" },
+  "hash_rule": { "default": "读前 4 位 + '完整值见屏幕'", "explicit_action": "朗读完整标识符" }
+}
