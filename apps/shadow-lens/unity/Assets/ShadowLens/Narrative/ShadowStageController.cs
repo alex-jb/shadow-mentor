@@ -159,7 +159,7 @@ namespace ShadowLens.Narrative
             var lr = new GameObject("ChainLink", typeof(LineRenderer)).GetComponent<LineRenderer>();
             lr.transform.SetParent(_auditRoot, false);
             lr.useWorldSpace = false; lr.widthMultiplier = 0.015f; lr.numCapVertices = 2;
-            lr.material = new Material(Shader.Find("Sprites/Default"));
+            lr.material = SharedLineMaterial();
             lr.positionCount = chain.Length;
 
             _auditVerified = 0;
@@ -181,6 +181,12 @@ namespace ShadowLens.Narrative
             lr.endColor = ShadowAuditChainData.BrokenAtSeq < 0 ? ShadowDesignTokens.Verified : ShadowDesignTokens.Tampered;
         }
 
+        // V11: both LineRenderers (audit chain + case ring) use the same plain Sprites/Default shader and
+        // get their colour from LineRenderer.startColor/endColor (never material.color), so one shared
+        // material instance is safe — avoids a redundant Material + a second Shader.Find string lookup.
+        Material _sharedLineMat;
+        Material SharedLineMaterial() => _sharedLineMat != null ? _sharedLineMat : (_sharedLineMat = new Material(Shader.Find("Sprites/Default")));
+
         // The semantic center = the banking case identity, legible as a "case core": a restrained core
         // sphere + ONE static containment ring + a 3-line world-space label (title / number / amount).
         // Everything is placed once — no Update loop, no coroutine, no continuous decorative animation.
@@ -196,7 +202,7 @@ namespace ShadowLens.Narrative
             var ringGo = new GameObject("CaseRing", typeof(LineRenderer)); ringGo.transform.SetParent(caseGo.transform, false);
             var lr = ringGo.GetComponent<LineRenderer>();
             lr.useWorldSpace = false; lr.loop = true; lr.widthMultiplier = 0.05f; lr.numCapVertices = 2;
-            lr.material = new Material(Shader.Find("Sprites/Default"));
+            lr.material = SharedLineMaterial();
             lr.startColor = lr.endColor = ShadowDesignTokens.Border;
             var right = Vector3.Cross(camForward, Vector3.up).normalized; if (right.sqrMagnitude < 1e-4f) right = Vector3.right;
             var up = Vector3.Cross(right, camForward).normalized;
