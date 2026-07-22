@@ -46,4 +46,7 @@ node --test test/shadow-explainers.test.js test/reason-code-attestation.test.js
    count ≠ confidence; majority ≠ correct; conclusion still needs evidence + verification; see
    `PERSONA_DELIBERATION_EXPLAINER.md`).
 3. Embed all three into docs/demo — planned in `EXPLAINER_INTEGRATION_PLAN.md`.
-4. Later: Unity/Three.js reuse the same story contract (`shadow-3d-scene-v1`) — planned, not implemented.
+4. Unity/Three.js reuse the same story — IMPLEMENTED via `shadow-guided-story-v1`. The three
+   explainers, the Three.js player, and the Unity native adapter now render one compiled semantic
+   block with a shared SHA-256 hash. See `SHADOW_SHARED_STORY_ARCHITECTURE.md` +
+   `SHADOW_CROSS_ENGINE_PARITY.md`.

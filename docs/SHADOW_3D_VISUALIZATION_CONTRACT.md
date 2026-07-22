@@ -46,5 +46,7 @@ verification { record_integrity, signature, hash_chain, profile, source_resoluti
   source IDs / claim IDs / report hash are identical; only positions may differ.
 
 ## Status
-CONTRACT-AUTHORED ✅ · CONTRACT-HOST-TESTED ✅ (8 Node tests). UNITY-INTEGRATED / cross-engine parity =
-Phase 2 (not this phase). The 4 fixtures are the reference the Three.js prototype (Phase 1C) renders.
+CONTRACT-AUTHORED ✅ · CONTRACT-HOST-TESTED ✅ (8 Node tests). Cross-engine parity is now built on top
+of this contract via `shadow-guided-story-v1` (which references these scenes): see
+`SHADOW_SHARED_STORY_ARCHITECTURE.md` and `SHADOW_CROSS_ENGINE_PARITY.md`. HTML + Three.js + Unity now
+render one semantic hash; Unity EditMode 11/11 + PlayMode 3/3 (Unity 6000.0.23f1).

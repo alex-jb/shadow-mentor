@@ -34,18 +34,19 @@ modified — the surfaces reference `verify.html` read-only via a sandboxed ifra
 Do **not** modify the frozen `verify-acceptance/wednesday-package/` or the production Unity scene when
 integrating — embed by reference / iframe, keep the originals immutable.
 
-## Unified story contract (proposed; not implemented here)
-Extend `shadow-3d-scene-v1` (already authored in the spatial-UX-v2 work) so the explainers and the 3D
-renderers share **the same step IDs and the same semantic statuses**:
+## Unified story contract — IMPLEMENTED (`shadow-guided-story-v1`)
+The unified contract is now built. See `SHADOW_SHARED_STORY_ARCHITECTURE.md`. A decision is authored
+once as a guided story, compiled to a target-independent semantic block, and rendered by all three
+engines:
 ```
-Shadow explainer story (fixtures/animations/*.json + shadow-3d-scene-v1)
-   ├─ HTML explainer (self-contained, offline)   ← done
-   ├─ Three.js adapter  (demos/replay/3d)         ← reuse, not rebuild
-   └─ Unity adapter     (ShadowSceneAdapter)      ← later phase, NOT this slice
-        → same node/step IDs · same VERIFIED/WARNING/NOT_EVALUATED vocabulary · positions may differ
+fixtures/guided-stories/*.guided-story.json  (references shadow-3d-scene-v1 + evidence bundles)
+   ├─ HTML/SVG adapter   demos/animations/src/shadow-guided-story-html-adapter.mjs  → the 3 explainers
+   ├─ Three.js adapter   prototypes/shadow-3d-v2/src/*.mjs                           → story-player.html
+   └─ Unity adapter      apps/shadow-lens/unity/Assets/ShadowLens/GuidedStory/*.cs   → Guided Story Demo
+        → same entity/step IDs · same 13-status / 15-dimension vocabulary · positions may differ
 ```
-Parity rule (a later cross-engine test): step IDs, statuses, first-warning/first-failure, evidence IDs,
-and provenance are identical across HTML / Three.js / Unity; only positions differ.
-
-**Do not implement the Unity adapter in this slice.** This document is the plan; execution is a later
-bounded phase, gated on the spatial-UX-v2 prototype review.
+Parity is enforced by a SHA-256 semantic hash: `test/shadow-guided-story-parity.test.js` proves
+html/threejs/unity/snapshot share one hash, and the Unity C# vocabulary + status→shape mapping match
+the Node vocabulary. Verified: Three.js browser-rendered (Chromium 149); Unity EditMode 11/11 +
+PlayMode 3/3 (Unity 6000.0.23f1). See `SHADOW_CROSS_ENGINE_PARITY.md`,
+`SHADOW_THREEJS_GUIDED_STORY_ADAPTER.md`, `SHADOW_UNITY_GUIDED_STORY_ADAPTER.md`.
