@@ -9,6 +9,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using ShadowLens.Spatial; // V3
+using ShadowLens.Design;  // V11: consume XREAL_OST_BRIGHT so labels stay readable on bright OST backgrounds
 
 namespace ShadowLens.GuidedStory
 {
@@ -121,6 +122,24 @@ namespace ShadowLens.GuidedStory
             return label + " · " + n.Status.Replace('_', ' ');
         }
 
+        // V11 (deep-audit + OST review): on an additive optical-see-through display, white labels on a
+        // transparent backdrop VANISH over bright real-world backgrounds. When XREAL_OST_BRIGHT is the active
+        // profile we render DARK text on a BRIGHT near-opaque backplate instead — the treatment the
+        // panel-alpha simulation showed stays legible over a bright office. Desktop/dark profiles are
+        // unchanged (white text, no plate). Testable without instantiating the MonoBehaviour.
+        public static bool BrightBackplateActive() =>
+            ShadowDesignTokens.ActiveProfile == ShadowDesignTokens.ShadowVisualProfile.XrealOstBright;
+
+        Material _ostPlateMat;
+        Material OstPlateMaterial()
+        {
+            if (_ostPlateMat != null) return _ostPlateMat;
+            var tok = ShadowDesignTokens.Resolve(ShadowDesignTokens.ShadowVisualProfile.XrealOstBright);
+            _ostPlateMat = new Material(Shader.Find("Unlit/Color"));   // uniform bright plate, shared by all labels
+            _ostPlateMat.color = tok.PanelPrimary;                     // near-white, opaque (occludes → readable)
+            return _ostPlateMat;
+        }
+
         void AddLabel(Transform parent, string text, float y = 0.34f)
         {
             var t = new GameObject("label").AddComponent<TextMesh>();
@@ -136,7 +155,29 @@ namespace ShadowLens.GuidedStory
                 var mr = t.GetComponent<MeshRenderer>();
                 if (mr != null && LabelFont.material != null) mr.sharedMaterial = LabelFont.material;
             }
+            bool ost = BrightBackplateActive();
+            if (ost)
+                t.color = ShadowDesignTokens.Resolve(ShadowDesignTokens.ShadowVisualProfile.XrealOstBright).TextPrimary; // dark text
             t.text = text;
+            if (ost) AddLabelBackplate(t, text);
+        }
+
+        // A bright backplate behind the (now dark) label text, sized from the text, shared material.
+        void AddLabelBackplate(TextMesh t, string text)
+        {
+            var lines = text.Split('\n');
+            int maxLen = 1;
+            foreach (var ln in lines) if (ln.Length > maxLen) maxLen = ln.Length;
+            float w = maxLen * 0.55f + 1.4f;      // TextMesh local units (char ~0.55 wide) + padding
+            float h = lines.Length * 1.25f + 0.9f;
+            var plate = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            plate.name = "label-plate";
+            var col = plate.GetComponent<Collider>(); if (col != null) Destroy(col);
+            plate.transform.SetParent(t.transform, false);            // inherits the label's 0.02 scale
+            plate.transform.localPosition = new Vector3(0f, h * 0.5f - 0.35f, 0.02f);  // centred behind the text
+            plate.transform.localScale = new Vector3(w, h, 1f);
+            var pr = plate.GetComponent<Renderer>();
+            if (pr != null) pr.sharedMaterial = OstPlateMaterial();
         }
 
         void LogState(StorySceneView view, StoryStep step)
