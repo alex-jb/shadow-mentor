@@ -53,10 +53,24 @@ namespace ShadowLens.EditorTools
 
         static BuildResult BuildOne(string pkg, string outApk, string ver, string reportDir, bool requireXreal, string banner)
         {
+            // The offline INTERNET-removal manifest (base candidate) conflicts with the XREAL AARs, which
+            // legitimately require INTERNET. Move it aside for the XREAL candidate only (documented: the
+            // XREAL candidate is NOT the offline build), and restore it afterward.
+            string offlineManifest = Path.GetFullPath(Path.Combine(Application.dataPath, "Plugins/Android/AndroidManifest.xml"));
+            string stashed = offlineManifest + ".xrealbuild-disabled";
+            bool moved = false;
+            if (requireXreal && File.Exists(offlineManifest)) { File.Move(offlineManifest, stashed); moved = true; }
+            try { return BuildInner(pkg, outApk, ver, reportDir, requireXreal, banner); }
+            finally { if (moved && File.Exists(stashed)) File.Move(stashed, offlineManifest); }
+        }
+
+        static BuildResult BuildInner(string pkg, string outApk, string ver, string reportDir, bool requireXreal, string banner)
+        {
             var scene = BuildScene(banner);
             EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android, BuildTarget.Android);
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Android, pkg);
-            PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel24;
+            // XREAL AARs require minSdk 29 (nr_loader=26, xreal-auto-log=29); the offline base stays 24.
+            PlayerSettings.Android.minSdkVersion = requireXreal ? AndroidSdkVersions.AndroidApiLevel29 : AndroidSdkVersions.AndroidApiLevel24;
             PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevel34;
             PlayerSettings.SetScriptingBackend(NamedBuildTarget.Android, ScriptingImplementation.IL2CPP);
             PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
