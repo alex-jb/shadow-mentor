@@ -22,6 +22,25 @@ Flow's own strength — dense visualization, spatial composition, story steps, c
 maps onto the snapshot's `scene_elements` + `story.acts[].steps` + `camera_hint`. Shadow contributes
 the one thing Flow cannot: a per-claim evidence link and an independent verifier.
 
+## Canonical story ownership (correction — do not overstate Flow's role)
+Shadow owns the canonical story semantics, not Flow. The correct architecture is:
+
+```
+Shadow canonical story plan
+        ├── Unity renderer
+        ├── Three.js renderer
+        └── optional Flow authoring/presentation adapter
+```
+
+**Flow may author and refine derived presentation steps, while Shadow retains the canonical story
+semantics, evidence bindings, and deterministic fallback renderers.**
+
+Flow MAY edit: camera, layout, labels, animation timing, Steps. Flow MUST NOT become the sole source
+of: story semantic order · claim binding · source binding · first-failure · downstream impact ·
+human approval · trust posture. If Flow is unavailable, Shadow must still replay and verify its own
+story through the Unity/Three.js/2D renderers. (Supersedes any earlier phrasing implying stories
+would be "authored in Flow" with beats kept only for the Audit Room.)
+
 ## Rules (non-negotiable for any future implementation)
 - **Flow is not the source of truth.** The evidence bundle + offline verifier are.
 - **Flow edits cannot silently modify evidence.** A layout edit in Flow is VISUAL_ONLY; an

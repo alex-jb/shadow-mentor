@@ -38,6 +38,21 @@ These are **evidence** concerns. They are produced and verified by Shadow, carri
 bundle, and are independently checkable with the frozen verifier — with or without any presentation
 layer.
 
+## Canonical story ownership
+Shadow owns the canonical story plan; every renderer (Unity, Three.js, 2D) derives from it, and a
+Flow adapter is one optional derived-presentation surface among them — never the trunk:
+
+```
+Shadow canonical story plan
+        ├── Unity renderer
+        ├── Three.js renderer
+        └── optional Flow authoring/presentation adapter
+```
+
+**Flow may author and refine derived presentation steps, while Shadow retains the canonical story
+semantics, evidence bindings, and deterministic fallback renderers.** The Shadow presenter beats are
+the canonical narrative for *every* renderer, not an Audit-Room-only fallback.
+
 ## The five invariants
 1. **Presentation is not evidence.** A rendered scene, however convincing, asserts nothing until its
    visual claims resolve to Shadow `claim_id`s backed by evidence.
