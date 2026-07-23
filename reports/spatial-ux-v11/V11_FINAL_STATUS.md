@@ -46,8 +46,19 @@ INDEPENDENT-CRYPTO-AUDIT-COMPLETED · FORMAL-USER-STUDY-COMPLETED — **all fals
    `AuditRoomProvenance` profile; offline token-review page. **This is the "TOKEN CODEGEN AND REVIEW INCREMENT",
    NOT the completion of V11.** (TOKEN_CODEGEN_IMPLEMENTATION.md, TOKEN_PROFILE_OVERRIDE_POLICY.md, TOKEN_VISUAL_REVIEW.md, TOKEN_CODEGEN_REMAINING_GAPS.md)
 
+1.6. ✅ **Flow-inspired presentation-contract increment** — borrowed two validated Flow spatial-design
+   patterns (anchored annotation + leader line; explicit sequence/time axes) into the Audit Room, and
+   added a Shadow-owned presentation contract so any surface (Flow/Unity/Three.js/2D) renders the same
+   evidence WITHOUT becoming the source of truth: presentation snapshot v1 + claim bindings + manifest
+   v1 + edit-classification policy + honest Trust Capsule prototype + a DESIGN-ONLY Flow adapter doc.
+   +25 tests. **Presentation is a derived view, never canonical evidence.** No Flow integration/
+   partnership/API claimed. (FLOW_INSPIRED_INCREMENT_STATUS.md, FLOW_SHADOW_RESPONSIBILITY_BOUNDARY.md,
+   PRESENTATION_EDIT_POLICY.md, TRUST_CAPSULE_PROTOTYPE.md, SHADOW_FLOW_PRESENTATION_ADAPTER.md)
+
 ## Next increment (ordered)
 2. Audit Workspace as the primary Unity product UI (card/rail/focus); primitives → diagnostic mode.
+   **Requires a Unity toolchain to compile + run EditMode — not available in the current environment;
+   author-only work there would be unverifiable, so it is deferred to a Unity-capable session.**
 3. Tracking-health → presentation auto-fallback wiring + state-preservation tests.
 4. Graphical PlayMode lane for the 8 headless-incompatible tests (RequiresGraphicsContext).
 5. CJK wrapping (Intl.Segmenter); OST positive/negative split; spatial-finance API-boundary escaping.
