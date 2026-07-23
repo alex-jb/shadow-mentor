@@ -1,0 +1,15 @@
+{
+  "result": "Failed",
+  "blocker": "SHADOW_XREAL_SDK not defined — official XREAL SDK is not imported into the project (scriptingDefineSymbols {} ; SDK archives are not committed to git).",
+  "candidate_apk_created": false,
+  "candidate_apk": "Build/Android/shadow-lens-v11-beampro-candidate-01.apk (planned)",
+  "versionName": "0.11-beampro-candidate.1",
+  "versionCode": 111,
+  "package_id": "com.shadowlens.xrealvoice",
+  "camera_flag": "OFF",
+  "eye_flag": "OFF",
+  "production_signed": false,
+  "build_script": "ShadowLens.EditorTools.ShadowV11BeamProCandidate (compiles; EditMode 136/136)",
+  "default_view_when_built": "ShadowAuditWorkspace via ShadowAuditWorkspaceDeviceBootstrap",
+  "unblock": "Import XREAL SDK per docs/UNITY_XREAL_BUILD_RUNBOOK.md, then run: Unity -batchmode -nographics -projectPath apps/shadow-lens/unity -executeMethod ShadowLens.EditorTools.ShadowV11BeamProCandidate.BuildCI"
+}

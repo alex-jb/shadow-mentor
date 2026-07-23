@@ -1,0 +1,13 @@
+step,workflow_item,expected,result,notes
+1,launch application,workspace appears,NOT_TESTED,
+2,rotate head 3DoF,layout stays session-relative,NOT_TESTED,
+3,Previous,focus moves back,NOT_TESTED,
+4,Next,focus moves forward,NOT_TESTED,
+5,Select,record → current focus,NOT_TESTED,
+6,Recenter,view re-centers,NOT_TESTED,
+7,Reset,story resets,NOT_TESTED,
+8,First Failure dominant,red impact outranks selection,NOT_TESTED,
+9,Downstream distinct,dashed/weakened not 2nd failure,NOT_TESTED,
+10,review != approval,distinct,NOT_TESTED,
+11,no approve via head focus,focus never approves,NOT_TESTED,
+12,Open 2D Audit,reachable,NOT_TESTED,

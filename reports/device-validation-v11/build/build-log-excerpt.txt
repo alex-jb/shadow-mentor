@@ -1,0 +1,6 @@
+[Licensing::Module] Error: LicensingClient has failed validation; ignoring
+[Licensing::Module] Error: Access token is unavailable; failed to update
+ShadowLens.EditorTools.ShadowV11BeamProCandidate.BuildCI
+[V11BeamPro] requires the official XREAL SDK import + SHADOW_XREAL_SDK. Current define symbols do not contain it — import the SDK per docs/UNITY_XREAL_BUILD_RUNBOOK.md. NOT building a placeholder.
+ShadowLens.EditorTools.ShadowV11BeamProCandidate:Build () (at Assets/ShadowLens/Editor/ShadowV11BeamProCandidate.cs:37)
+ShadowLens.EditorTools.ShadowV11BeamProCandidate:BuildCI () (at Assets/ShadowLens/Editor/ShadowV11BeamProCandidate.cs:30)

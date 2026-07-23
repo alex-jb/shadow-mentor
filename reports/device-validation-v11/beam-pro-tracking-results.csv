@@ -1,0 +1,9 @@
+test,expected_preserved,result,notes
+Recenter forward,view re-centers,NOT_TESTED,
+Recenter looking left,view re-centers,NOT_TESTED,
+Recenter after resume,view re-centers,NOT_TESTED,
+tracking Scanning,copy shown + 3DoF available,NOT_TESTED,
+tracking Limited,distinct from scanning,NOT_TESTED,
+tracking Lost,workspace kept + Recenter available,NOT_TESTED,
+tracking Recovering,story/selection preserved,NOT_TESTED,
+pause/resume,state preserved,NOT_TESTED,

@@ -1,0 +1,10 @@
+input,android_unity_identity,expected_action,observed_action,result,notes
+directional,TBD,move focus,,NOT_TESTED,
+select,TBD,select record,,NOT_TESTED,
+back,TBD,back,,NOT_TESTED,
+prev,TBD,previous,,NOT_TESTED,
+next,TBD,next,,NOT_TESTED,
+recenter,TBD,recenter,,NOT_TESTED,
+confirm,TBD,only regulated/destructive,,NOT_TESTED,
+safety: focus!=select,,focus never selects,,NOT_TESTED,
+safety: select!=approve,,select never approves,,NOT_TESTED,
