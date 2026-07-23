@@ -46,3 +46,39 @@ Photos: label optical shots "THROUGH-THE-LENS DEVICE CAPTURE", setup shots "DEVI
 Attach Eye, verify SDK detects it + real pose translation (distinguish from head-rotation). Report EYE-DETECTED / POSITIONAL-TRACKING-OBSERVED / 6DOF-VALIDATED / 3DOF-FALLBACK-PASSED separately. Do NOT infer 6DoF from SDK presence.
 
 ## 8. Then set the true flags in BEAM_PRO_DEVICE_VALIDATION_SUMMARY.md based on the actual results.
+
+## §5 — MR launch-routing tests (run on candidate-04, NO rebuild) — decisive next step
+The candidate-04 glasses log showed Shadow launched DIRECTLY → isEntryApp=false, mrPkgName empty →
+Nebula reclaimed the glasses (see CANDIDATE_04_PROCESS_AWARE_DIAGNOSIS.md). These tests find whether
+launching via the MyGlasses MR path fixes it WITHOUT any code change:
+
+```
+ADB=/Applications/Unity/Hub/Editor/6000.0.23f1/PlaybackEngines/AndroidPlayer/SDK/platform-tools/adb
+# 1. what does the launcher resolve to?
+$ADB shell cmd package resolve-activity --brief \
+  -a android.intent.action.MAIN -c android.intent.category.LAUNCHER com.shadowlens.xrealvoice
+
+# 2. standard launcher-intent start (baseline)
+$ADB shell am force-stop com.shadowlens.xrealvoice
+$ADB logcat -c
+$ADB shell am start -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -p com.shadowlens.xrealvoice
+#    then read: does myGlasses set mrPkgName = com.shadowlens.xrealvoice, or stay empty?
+$ADB logcat -d | grep -iE 'mrPkgName|isEntryApp|component not found|NRXRApp|goLauncher'
+
+# 3. THE decisive one — put on the glasses, open MyGlasses, and launch "Shadow Lens" FROM the MyGlasses
+#    app grid (not adb, not the phone icon). Capture the log during that launch:
+$ADB logcat -c ; # launch Shadow Lens from MyGlasses, then:
+$ADB logcat -d | grep -iE 'mrPkgName|isEntryApp|multiResumeMode|component not found|NRXRApp|XREALXRLoader|Failed to get|3840|displayId'
+```
+Report back:
+- Does Shadow Lens APPEAR in the MyGlasses app grid?
+- When launched from there, does myGlasses log `mrPkgName = com.shadowlens.xrealvoice` (not empty)?
+- Does Shadow's own NRXRActivity log `isEntryApp=true` on the glasses displayId (19, not 0)?
+- Does Shadow's own `[XREALXRLoader] Init/Start End` appear (from the Shadow PID), with NO "Failed to
+  get XREAL Settings"?
+
+## candidate-05 GATE (do NOT build yet)
+candidate-05 is NOT built until §5 proves the exact handoff difference. If launching from MyGlasses
+already works → candidate-04 is correct + the fix was the launch method (no new APK). If §5 shows a
+registration/routing gap → candidate-05 with the proven fix + the already-authored SHADOW_DEVICE_DIAG
+(which will make the Shadow-vs-Nebula PID/XR state unambiguous in the next log).

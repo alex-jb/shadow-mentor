@@ -45,6 +45,7 @@ namespace ShadowLens.Workspace
 
         void Awake()
         {
+            gameObject.AddComponent<ShadowDeviceDiag>(); // process-specific device diagnostics (SHADOW_DEVICE_DIAG)
             _model = Model(); _scenario = Scenario();
             _order = new[] { "income", "dti", "decision", "pricing" };
             var go = new GameObject("AuditWorkspace");
