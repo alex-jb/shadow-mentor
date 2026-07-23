@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shadow-mentor/schemas/shadow-presentation-manifest-v1.schema.json",
+  "title": "shadow-presentation-manifest/v1",
+  "description": "A derived-view manifest binding a presentation snapshot to an evidence bundle for a specific adapter (Unity Audit Workspace / Three.js Audit Room / 2D Replay / a future Flow adapter). It carries NO canonical evidence and adds NO Flow-specific field to canonical evidence — adapter- or external-presentation identifiers are non-authoritative metadata only.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "evidence_bundle_id", "evidence_bundle_hash", "presentation_snapshot_hash", "adapter_name", "adapter_version", "derived_view"],
+  "properties": {
+    "schema_version": { "const": "shadow-presentation-manifest/v1" },
+    "derived_view": { "const": true },
+    "evidence_bundle_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "evidence_bundle_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "presentation_snapshot_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "adapter_name": { "type": "string", "enum": ["unity-audit-workspace", "threejs-audit-room", "2d-replay", "flow-adapter-design-only"] },
+    "adapter_version": { "type": "string", "minLength": 1, "maxLength": 40 },
+    "story_id": { "type": ["string", "null"], "maxLength": 128 },
+    "step_ids": { "type": "array", "maxItems": 512, "items": { "type": "string", "maxLength": 128 } },
+    "scene_element_ids": { "type": "array", "maxItems": 4096, "items": { "type": "string", "maxLength": 128 } },
+    "trust_posture": { "type": "string", "enum": ["SELF_SIGNED", "TIME_ANCHORED_STRUCTURAL", "TIME_ANCHORED"] },
+    "created_at": { "type": "string", "maxLength": 40, "description": "NON-AUTHORITATIVE metadata" },
+    "external_presentation_ref": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "description": "Optional NON-AUTHORITATIVE pointer to an external presentation (e.g. a Flow scene id). Never a source of truth; never written back into canonical evidence.",
+      "properties": {
+        "adapter_extension": { "type": "string", "maxLength": 40 },
+        "external_id": { "type": "string", "maxLength": 256 }
+      }
+    }
+  }
+}

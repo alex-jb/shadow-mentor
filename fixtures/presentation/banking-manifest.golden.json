@@ -1,0 +1,23 @@
+{
+  "schema_version": "shadow-presentation-manifest/v1",
+  "derived_view": true,
+  "evidence_bundle_id": "bundle-banking-0001",
+  "evidence_bundle_hash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "presentation_snapshot_hash": "db4dd4c0585278cd48318595512c5225b5aae3f99721d8e206f0e3b4b89bb12c",
+  "adapter_name": "threejs-audit-room",
+  "adapter_version": "audit-room/1.0.0",
+  "story_id": "banking-guided-v1",
+  "step_ids": [
+    "s1",
+    "s2",
+    "s3"
+  ],
+  "scene_element_ids": [
+    "el.income",
+    "el.dti",
+    "el.decision",
+    "el.downstream",
+    "el.axis.seq"
+  ],
+  "trust_posture": "SELF_SIGNED"
+}
