@@ -1,0 +1,1 @@
+8ea859df77dfeb87a06d065f11028105b52beae18fac76d6202eb1294c92e048  Build/Android/shadow-lens-v11-beampro-candidate-01.apk

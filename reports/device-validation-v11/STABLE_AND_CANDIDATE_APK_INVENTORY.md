@@ -34,3 +34,11 @@ Current project define symbols are EMPTY (`scriptingDefineSymbols: {}`) — the 
 (SDK archives are not committed to git). So the candidate CANNOT be built in this automated
 environment until the SDK is re-imported. See docs/UNITY_XREAL_BUILD_RUNBOOK.md. Also: no Android
 device is attached to this machine (`adb devices` empty), so install/logcat/soak cannot run here.
+
+## UPDATE — BUILD DONE (autonomously, this session; supersedes the BLOCKER note above)
+XREAL SDK 3.1.0 found locally (`~/Downloads/package`, `~/Downloads/com.xreal.xr.tar.gz`), imported via
+`Packages/manifest.json` file: ref (operator-local, NOT committed) + `SHADOW_XREAL_SDK` set. Candidate
+**built OK**: `shadow-lens-v11-beampro-candidate-01.apk` — 128,213,719 bytes — SHA-256
+`8ea859df77dfeb87a06d065f11028105b52beae18fac76d6202eb1294c92e048` — vc111 / 0.11-beampro-candidate.1 /
+arm64 / IL2CPP / minSdk29 / camera OFF / not production-signed / default view = ShadowAuditWorkspace.
+Stable `9efadf0a…` UNCHANGED. Physical install/tests still need Alex (no USB in this sandbox).

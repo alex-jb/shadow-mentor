@@ -1,9 +1,29 @@
 # Beam Pro device validation — summary
 
-**Status: PREPARED, NOT YET PHYSICALLY VALIDATED.** This automated environment has **no Beam Pro
-attached** (`adb devices` empty) and **the XREAL SDK is not imported** (`scriptingDefineSymbols {}`),
-so the candidate cannot be built or run here. All physical/device flags stay FALSE and must be set
-only by Alex after running the on-device checklist. Nothing device-side is fabricated.
+**Status: CANDIDATE APK BUILT (autonomously); PHYSICAL DEVICE TESTS PENDING ALEX.** The XREAL SDK was
+found locally (`~/Downloads/package`, com.xreal.xr 3.1.0), imported into the project (operator-local,
+NOT committed), and the V11 candidate **built successfully**. But this automated environment has **no
+USB access** (`system_profiler` shows 0 USB devices — sandboxed), so install / logcat / on-glasses
+3DoF / controller / OST / soak still require Alex on real hardware. All *device* flags stay FALSE;
+only the *build* is now true. Nothing device-side is fabricated.
+
+## Candidate APK (BUILT)
+| Field | Value |
+|---|---|
+| File | `apps/shadow-lens/unity/Build/Android/shadow-lens-v11-beampro-candidate-01.apk` (local; gitignored) |
+| SHA-256 | `8ea859df77dfeb87a06d065f11028105b52beae18fac76d6202eb1294c92e048` |
+| Size | 128,213,719 bytes |
+| Package | com.shadowlens.xrealvoice · versionName 0.11-beampro-candidate.1 · versionCode 111 |
+| ABI / scripting | arm64-v8a · IL2CPP · minSdk 29 / target 34 |
+| Camera / Eye | OFF / OFF · production-signed: false |
+| Default view | ShadowAuditWorkspace (device bootstrap, Banking fixture) |
+| XREAL SDK | com.xreal.xr 3.1.0 imported from tarball (operator-local, NOT committed) |
+| Stable APK | `shadow-lens-xreal-voice-v10-core.apk` = `9efadf0a…` — UNCHANGED, not overwritten |
+
+**Operator-local (intentionally NOT committed):** `Packages/manifest.json` (file: SDK ref),
+`Packages/packages-lock.json` (xreal pin), `ProjectSettings/ProjectSettings.asset` (SHADOW_XREAL_SDK
+define). These are left modified-but-unstaged so the project stays rebuild-ready; do not commit them
+(the base candidate must build without the SDK).
 
 ## What was done here (autonomous, verifiable)
 - **Stable APK preserved** — `shadow-lens-xreal-voice-v10-core.apk` (SHA-256 `9efadf0a…`, 128 MB) is
@@ -26,9 +46,12 @@ True: none device-side. Verifiable-here truths: STABLE-APK-UNCHANGED ✅, FROZEN
 (c478b46f), SEMANTIC-HASHES-UNCHANGED ✅, candidate build script + bootstrap authored & compile (EditMode
 136/136).
 
-**FALSE (blocked — not fabricated):**
-BEAM-PRO-CONNECTED (no adb device) · BEAM-PRO-INVENTORIED · V11-CANDIDATE-APK-BUILT (blocked on XREAL
-SDK import) · V11-CANDIDATE-APK-INSTALLED · V11-CANDIDATE-FIRST-LAUNCH-PASSED ·
+**TRUE (build side):** V11-CANDIDATE-APK-BUILT ✅ (8ea859df…, XREAL SDK 3.1.0 integrated, AuditWorkspace
+default, camera OFF) · STABLE-APK-UNCHANGED ✅ (9efadf0a).
+
+**FALSE (blocked on physical hardware — not fabricated):**
+BEAM-PRO-CONNECTED (no USB in this sandbox) · BEAM-PRO-INVENTORIED · V11-CANDIDATE-APK-INSTALLED ·
+V11-CANDIDATE-FIRST-LAUNCH-PASSED ·
 AUDIT-WORKSPACE-RENDERED-ON-BEAM-PRO · XREAL-3DOF-DEVICE-VALIDATED · BEAM-PRO-CONTROLLER-DETECTED ·
 BEAM-PRO-CONTROLLER-VALIDATED · RECENTER-DEVICE-VALIDATED · TRACKING-FALLBACK-DEVICE-VALIDATED ·
 CURRENT-FOCUS/FIRST-FAILURE-DEVICE-READABLE · DOWNSTREAM-DEVICE-DISTINCT · REVIEW-APPROVAL-DEVICE-DISTINCT

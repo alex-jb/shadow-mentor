@@ -1,6 +1,6 @@
-[Licensing::Module] Error: LicensingClient has failed validation; ignoring
-[Licensing::Module] Error: Access token is unavailable; failed to update
-ShadowLens.EditorTools.ShadowV11BeamProCandidate.BuildCI
-[V11BeamPro] requires the official XREAL SDK import + SHADOW_XREAL_SDK. Current define symbols do not contain it — import the SDK per docs/UNITY_XREAL_BUILD_RUNBOOK.md. NOT building a placeholder.
-ShadowLens.EditorTools.ShadowV11BeamProCandidate:Build () (at Assets/ShadowLens/Editor/ShadowV11BeamProCandidate.cs:37)
+ShadowLens.EditorTools.ShadowV11BeamProCandidate:BuildCI() (at Assets/ShadowLens/Editor/ShadowV11BeamProCandidate.cs:30)
+Starting: /Applications/Unity/Hub/Editor/6000.0.23f1/PlaybackEngines/AndroidPlayer/OpenJDK/bin/java -classpath "/Applications/Unity/Hub/Editor/6000.0.23f1/PlaybackEngines/AndroidPlayer/Tools/gradle/lib/gradle-launcher-8.4.jar" org.gradle.launcher.GradleMain "-Dorg.gradle.jvmargs=-Xmx4096m" "assembleRelease" 
+[V11BeamPro] Succeeded → Build/Android/shadow-lens-v11-beampro-candidate-01.apk (722307210 bytes)
+ShadowLens.EditorTools.ShadowV11BeamProCandidate:Build () (at Assets/ShadowLens/Editor/ShadowV11BeamProCandidate.cs:65)
 ShadowLens.EditorTools.ShadowV11BeamProCandidate:BuildCI () (at Assets/ShadowLens/Editor/ShadowV11BeamProCandidate.cs:30)
+(Filename: Assets/ShadowLens/Editor/ShadowV11BeamProCandidate.cs Line: 65)
