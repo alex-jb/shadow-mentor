@@ -55,10 +55,16 @@ INDEPENDENT-CRYPTO-AUDIT-COMPLETED · FORMAL-USER-STUDY-COMPLETED — **all fals
    partnership/API claimed. (FLOW_INSPIRED_INCREMENT_STATUS.md, FLOW_SHADOW_RESPONSIBILITY_BOUNDARY.md,
    PRESENTATION_EDIT_POLICY.md, TRUST_CAPSULE_PROTOTYPE.md, SHADOW_FLOW_PRESENTATION_ADAPTER.md)
 
+2. ✅ **Audit Workspace core V1** — the primary Unity product UI. **Correction: Unity IS available**
+   (6000.0.23f1 at the exact Hub path; the prior "no Unity" claim was a PATH-only check — see
+   UNITY_TOOLCHAIN_DISCOVERY.md). Implemented as real runtime components (`ShadowAuditWorkspace`
+   MonoBehaviour + pure model/glyph/metrics/mode/tracking), consuming generated Unity semantic tokens,
+   default view, PrimitiveDiagnostic preserved. **Unity batchmode EditMode: 133/133 pass, 0 fail**
+   (10 new ShadowAuditWorkspaceTests). Visual PlayMode captures + browser acceptance are the remaining
+   in-increment verifiable steps. (AUDIT_WORKSPACE_ARCHITECTURE.md, AUDIT_WORKSPACE_INCREMENT_STATUS.md,
+   AUDIT_WORKSPACE_TOKEN_CONSUMPTION.md, AUDIT_WORKSPACE_TRACKING_FALLBACK.md, AUDIT_WORKSPACE_REMAINING_GAPS.md)
+
 ## Next increment (ordered)
-2. Audit Workspace as the primary Unity product UI (card/rail/focus); primitives → diagnostic mode.
-   **Requires a Unity toolchain to compile + run EditMode — not available in the current environment;
-   author-only work there would be unverifiable, so it is deferred to a Unity-capable session.**
 3. Tracking-health → presentation auto-fallback wiring + state-preservation tests.
 4. Graphical PlayMode lane for the 8 headless-incompatible tests (RequiresGraphicsContext).
 5. CJK wrapping (Intl.Segmenter); OST positive/negative split; spatial-finance API-boundary escaping.
