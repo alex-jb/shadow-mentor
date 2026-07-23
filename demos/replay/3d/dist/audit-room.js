@@ -19829,6 +19829,53 @@
       return this;
     }
   };
+  var CircleGeometry = class _CircleGeometry extends BufferGeometry {
+    constructor(radius = 1, segments = 32, thetaStart = 0, thetaLength = Math.PI * 2) {
+      super();
+      this.type = "CircleGeometry";
+      this.parameters = {
+        radius,
+        segments,
+        thetaStart,
+        thetaLength
+      };
+      segments = Math.max(3, segments);
+      const indices = [];
+      const vertices = [];
+      const normals = [];
+      const uvs = [];
+      const vertex2 = new Vector3();
+      const uv = new Vector2();
+      vertices.push(0, 0, 0);
+      normals.push(0, 0, 1);
+      uvs.push(0.5, 0.5);
+      for (let s = 0, i = 3; s <= segments; s++, i += 3) {
+        const segment = thetaStart + s / segments * thetaLength;
+        vertex2.x = radius * Math.cos(segment);
+        vertex2.y = radius * Math.sin(segment);
+        vertices.push(vertex2.x, vertex2.y, vertex2.z);
+        normals.push(0, 0, 1);
+        uv.x = (vertices[i] / radius + 1) / 2;
+        uv.y = (vertices[i + 1] / radius + 1) / 2;
+        uvs.push(uv.x, uv.y);
+      }
+      for (let i = 1; i <= segments; i++) {
+        indices.push(i, i + 1, 0);
+      }
+      this.setIndex(indices);
+      this.setAttribute("position", new Float32BufferAttribute(vertices, 3));
+      this.setAttribute("normal", new Float32BufferAttribute(normals, 3));
+      this.setAttribute("uv", new Float32BufferAttribute(uvs, 2));
+    }
+    copy(source) {
+      super.copy(source);
+      this.parameters = Object.assign({}, source.parameters);
+      return this;
+    }
+    static fromJSON(data) {
+      return new _CircleGeometry(data.radius, data.segments, data.thetaStart, data.thetaLength);
+    }
+  };
   var Shape = class extends Path {
     constructor(points) {
       super(points);
@@ -23128,6 +23175,40 @@
   }
   var C = buildConstants("laptop");
 
+  // demos/replay/3d/flat-fit.js
+  var DEG = Math.PI / 180;
+  function visibleHalfWidth(distance, fovVDeg, aspect2) {
+    const halfH = distance * Math.tan(fovVDeg * DEG / 2);
+    return halfH * aspect2;
+  }
+  function visibleHalfHeight(distance, fovVDeg) {
+    return distance * Math.tan(fovVDeg * DEG / 2);
+  }
+  function fitDistance({ width, height }, { aspect: aspect2, fovVDeg, fill = 0.78, fillV = 0.4 }) {
+    const tanV = Math.tan(fovVDeg * DEG / 2);
+    const dW = width / (fill * 2 * tanV * aspect2);
+    const dH = height / (fillV * 2 * tanV);
+    return Math.max(dW, dH);
+  }
+  function flatCameraFrame(rail, view) {
+    const width = rail.maxX - rail.minX;
+    const height = rail.maxY - rail.minY;
+    let d = fitDistance({ width, height }, view);
+    const minD = view.minDistance ?? 2.2, maxD = view.maxDistance ?? 40;
+    d = Math.min(maxD, Math.max(minD, d));
+    const cameraZ = rail.frontZ + d;
+    const occWidth = width / (2 * visibleHalfWidth(d, view.fovVDeg, view.aspect));
+    const occHeight = height / (2 * visibleHalfHeight(d, view.fovVDeg));
+    return {
+      distance: d,
+      cameraZ,
+      occupiesWidthFraction: occWidth,
+      occupiesHeightFraction: occHeight,
+      centerX: (rail.minX + rail.maxX) / 2,
+      centerY: (rail.minY + rail.maxY) / 2
+    };
+  }
+
   // demos/replay/3d/labels.js
   var PX_PER_UNIT = 900;
   var SANS = '-apple-system, "SF Pro Display", "Segoe UI", "PingFang SC", system-ui, sans-serif';
@@ -23775,7 +23856,7 @@ ${b64}
   }
 
   // demos/replay/3d/scene.js
-  var DEG = Math.PI / 180;
+  var DEG2 = Math.PI / 180;
   var smooth = (k) => k * k * (3 - 2 * k);
   var clamp01 = (x) => x < 0 ? 0 : x > 1 ? 1 : x;
   var LENS = {
@@ -23868,7 +23949,7 @@ ${summary}`, {
       hit.visible = false;
       cg.add(hit);
       const t = total > 1 ? i / (total - 1) : 0.5;
-      const ang = (t - 0.5) * C3.ARC_SPREAD_DEG * DEG * C3.ARC_CURVATURE;
+      const ang = (t - 0.5) * C3.ARC_SPREAD_DEG * DEG2 * C3.ARC_CURVATURE;
       const R = C3.ARC_RADIUS;
       cg.position.set(Math.sin(ang) * R, C3.ARC_Y, -Math.cos(ang) * R);
       cg.lookAt(0, C3.ARC_Y, C3.CAMERA_POS[2]);
@@ -24102,23 +24183,35 @@ IMPACT  ${obj.impact}`;
     function buildInspector(card) {
       clearInspector();
       inspector = new Group();
-      const w = 1.7, rows = inspectorRows(card.evt);
-      const body = makeText(rows, {
-        size: C3.FONT_SIZE_INSPECTOR,
-        worldWidth: w - 0.14,
+      const w = 2.5;
+      const ev = card.evt;
+      const title = makeText(`${ev.event_type}  \xB7  #${ev.seq}`, {
+        size: 0.085,
+        worldWidth: w - 0.18,
         align: "left",
         color: C3.INK.text,
         mono: true,
+        weight: 700
+      });
+      const body = makeText(inspectorRows(ev), {
+        size: 0.052,
+        worldWidth: w - 0.18,
+        align: "left",
+        color: C3.INK.textDim,
+        mono: true,
         weight: 500
       });
-      const h = Math.max(0.7, body.userData.worldH + 0.16);
-      const frame2 = edgeLoop(w, h, 0.05, new Color(C3.INK.text).getHex(), 0.5);
-      body.position.set(0, 0, 2e-3);
+      const pad = 0.12, gap = 0.07, tH = title.userData.worldH, bH = body.userData.worldH;
+      const h = Math.max(0.8, tH + bH + pad * 2 + gap);
+      const frame2 = edgeLoop(w, h, 0.06, new Color(C3.INK.text).getHex(), 0.8);
+      title.position.set(0, h / 2 - pad - tH / 2, 2e-3);
+      body.position.set(0, h / 2 - pad - tH - gap - bH / 2, 2e-3);
       inspector.add(frame2);
+      inspector.add(title);
       inspector.add(body);
       const cardPos = card.group.getWorldPosition(_cardPos);
       const panel = { halfW: w / 2, halfH: h / 2 };
-      const view = { minX: -3, maxX: 3, minY: C3.ARC_Y - 1.5, maxY: C3.ARC_Y + 1.5 };
+      const view = { minX: -3.2, maxX: 3.2, minY: C3.ARC_Y - 1.7, maxY: C3.ARC_Y + 2.2 };
       const spec = trackingLost ? viewRelativeFallback({ panel, view }) : anchorPanel({
         card: { x: cardPos.x, y: cardPos.y, z: cardPos.z, halfW: C3.CARD_W / 2, halfH: C3.CARD_H / 2 },
         panel,
@@ -24127,21 +24220,21 @@ IMPACT  ${obj.impact}`;
       });
       inspector.position.set(spec.position.x, spec.position.y, spec.position.z);
       if (spec.leaderStart && spec.leaderEnd) {
-        const geo = new BufferGeometry().setFromPoints([
-          new Vector3(spec.leaderStart.x - spec.position.x, spec.leaderStart.y - spec.position.y, spec.leaderStart.z - spec.position.z),
-          new Vector3(spec.leaderEnd.x - spec.position.x, spec.leaderEnd.y - spec.position.y, spec.leaderEnd.z - spec.position.z)
-        ]);
-        const mat = new LineBasicMaterial({ color: new Color(C3.INK.textDim).getHex(), transparent: true, opacity: 0.6, toneMapped: false });
-        inspector.add(new Line(geo, mat));
+        const L = (p) => new Vector3(p.x - spec.position.x, p.y - spec.position.y, p.z - spec.position.z);
+        const a = L(spec.leaderStart), b = L(spec.leaderEnd);
+        const elbow = new Vector3(a.x, b.y, (a.z + b.z) / 2);
+        const mat = new LineBasicMaterial({ color: new Color(C3.INK.lensPulse).getHex(), transparent: true, opacity: 0.9, toneMapped: false });
+        inspector.add(new Line(new BufferGeometry().setFromPoints([a, elbow, b]), mat));
+        const dot = new Mesh(new CircleGeometry(0.03, 12), new MeshBasicMaterial({ color: new Color(C3.INK.lensPulse).getHex(), transparent: true, opacity: 0.95, toneMapped: false }));
+        dot.position.copy(a);
+        inspector.add(dot);
       }
       group.add(inspector);
     }
     function inspectorRows(ev) {
       const short = (h) => h ? h.slice(0, 12) : "\u2014";
       const lines = [
-        `type       ${ev.event_type}`,
         `actor      ${ev.actor}`,
-        `seq        ${ev.seq}`,
         `ts         ${ev.ts_utc}`,
         `payload    ${short(ev.payload_hash)}\u2026`,
         `prev_hash  ${short(ev.prev_hash)}\u2026`
@@ -24149,7 +24242,7 @@ IMPACT  ${obj.impact}`;
       const t = ev.extensions?.tool;
       if (ev.event_type === "tool_call" && t) lines.push(`tool       ${t}`);
       if (ev.event_type === "review_annotation") lines.push(`note       ${ev.extensions?.review?.note ?? ""}`);
-      lines.push("", "\u203A open full payload in 2D inspector");
+      lines.push("", "\u203A OPEN 2D AUDIT for exact payload + signature");
       return lines.join("\n");
     }
     function select(seq) {
@@ -24251,6 +24344,15 @@ IMPACT  ${obj.impact}`;
             card.edgeMat.color.lerp(new Color(C3.INK.text), 0.1);
           }
           card.edgeMat.opacity = op;
+        }
+        const isSel = selectedSeq != null && card.seq === selectedSeq;
+        const eScale = card.baseScale * (isSel ? 1.15 : 1);
+        card.group.scale.setScalar(card.group.scale.x + (eScale - card.group.scale.x) * Math.min(1, dt * 12));
+        if (selectedSeq != null && card.status === "intact" && !(activeLens || filterType)) {
+          if (isSel) {
+            card.edgeMat.color.lerp(new Color(C3.INK.lensPulse), 0.2);
+            card.edgeMat.opacity = 1;
+          } else card.edgeMat.opacity = Math.min(card.edgeMat.opacity, 0.28);
         }
       }
       if (trustGroup) {
@@ -28241,6 +28343,44 @@ IMPACT  ${obj.impact}`;
     hudRef.status = next;
   }
   var hudRef = { status: statusText };
+  var trustHeader = new Group();
+  scene.add(trustHeader);
+  var trustLines = { integrity: null, posture: null, correctness: null };
+  var HEADER_Y = C2.ARC_Y - C2.CARD_H * 1.9;
+  var HEADER_Z = -C2.ARC_RADIUS + 1;
+  function trustLine(text, color, row) {
+    const m = makeText(text, { size: 0.1, worldWidth: 2.4, align: "left", color, mono: true, weight: 600 });
+    m.position.set(-1.7, HEADER_Y - row * 0.19, HEADER_Z);
+    return m;
+  }
+  function setTrustHeader(ok, posture) {
+    for (const k of Object.keys(trustLines)) if (trustLines[k]) {
+      trustLines[k].geometry.dispose();
+      trustLines[k].material.map?.dispose?.();
+      trustHeader.remove(trustLines[k]);
+    }
+    trustLines.integrity = trustLine(`INTEGRITY     ${ok ? "VERIFIED" : "FAILED"}`, ok ? C2.STATUS.healed : C2.STATUS.tampered, 0);
+    trustLines.posture = trustLine(`TRUST         ${(posture || "SELF_SIGNED").split(" ")[0]}`, C2.STATUS.error, 1);
+    trustLines.correctness = trustLine("CORRECTNESS   NOT EVALUATED", C2.INK.textDim, 2);
+    for (const k of Object.keys(trustLines)) trustHeader.add(trustLines[k]);
+  }
+  setTrustHeader(true, "SELF_SIGNED");
+  var _zh = params.get("lang") === "zh";
+  var firstHint = makeText(
+    _zh ? "\u9009\u62E9\u4E00\u6761\u8BB0\u5F55\u4EE5\u67E5\u770B\u8BE6\u60C5\u3002   \u6309 ? \u67E5\u770B\u63A7\u5236\u8BF4\u660E\u3002" : "Select a record to inspect it.    Press ? for controls.",
+    { size: 0.1, worldWidth: 5.5, align: "center", color: C2.INK.text, mono: true, weight: 500 }
+  );
+  firstHint.position.set(0, C2.ARC_Y + C2.CARD_H * 2.4, HEADER_Z);
+  scene.add(firstHint);
+  function dismissHint() {
+    if (firstHint) {
+      firstHint.geometry.dispose();
+      firstHint.material.map?.dispose?.();
+      scene.remove(firstHint);
+      firstHint = null;
+    }
+  }
+  setTimeout(dismissHint, 12e3);
   var micDot = new Mesh(
     new RingGeometry(0.03, 0.05, 24),
     new MeshBasicMaterial({ color: 16730698, transparent: true, opacity: 0, toneMapped: false })
@@ -28268,8 +28408,7 @@ IMPACT  ${obj.impact}`;
   var webxr = null;
   var preflight = null;
   stereo.onChange(({ mode, eyeSep }) => {
-    const es = `eye ${(eyeSep * 1e3).toFixed(0)}mm`;
-    setStatus(`${lastVerdict}   \xB7   ${mode.toUpperCase()}   \xB7   ${es}`, lastVerdictColor);
+    setStatus(`${mode.toUpperCase()} \xB7 eye ${(eyeSep * 1e3).toFixed(0)}mm \xB7 open ../verify.html for exact detail`, C2.INK.textDim);
   });
   var lastVerdict = "verifying\u2026";
   var lastVerdictColor = C2.INK.textDim;
@@ -28282,8 +28421,9 @@ IMPACT  ${obj.impact}`;
       lastVerdict = `verify FAILED \xB7 ${v.error.reason}${v.error.seq != null ? " @ seq " + v.error.seq : ""}`;
       lastVerdictColor = C2.STATUS.tampered;
     }
+    setTrustHeader(v.ok, v.trustLevel);
     const st = stereo.getState();
-    setStatus(`${lastVerdict}   \xB7   ${st.mode.toUpperCase()}   \xB7   eye ${(st.eyeSep * 1e3).toFixed(0)}mm`, lastVerdictColor);
+    setStatus(`${st.mode.toUpperCase()} \xB7 eye ${(st.eyeSep * 1e3).toFixed(0)}mm \xB7 open ../verify.html for exact detail`, C2.INK.textDim);
   }
   async function dispatch(intent) {
     switch (intent.intent) {
@@ -28376,7 +28516,7 @@ IMPACT  ${obj.impact}`;
           } });
           renderer.setAnimationLoop(xrLoop);
         }
-        if (!preflight) preflight = initPreflight({ renderer, appCommit: "ad2a39a" });
+        if (!preflight) preflight = initPreflight({ renderer, appCommit: "1503760" });
       } catch (e) {
         fatal("WebXR unavailable: " + e.message);
       }
@@ -28513,7 +28653,10 @@ IMPACT  ${obj.impact}`;
   }
   renderer.domElement.addEventListener("click", (ev) => {
     const seq = pick(ev);
-    if (seq != null) dispatch({ intent: "FOCUS_EVENT", seq });
+    if (seq != null) {
+      dismissHint();
+      dispatch({ intent: "FOCUS_EVENT", seq });
+    }
   });
   function armWatchdog() {
     const handler = (msg) => {
@@ -28532,11 +28675,39 @@ IMPACT  ${obj.impact}`;
     addEventListener("unhandledrejection", (e) => handler(e.reason?.message || e.reason));
   }
   if (presenter) armWatchdog();
+  var _fitV = new Vector3();
+  var flatFrame = null;
+  function fitFlat() {
+    if (preset === "xreal" || renderer.xr.isPresenting || !room.cards || !room.cards.length) return;
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity, frontZ = -Infinity, sumZ = 0;
+    const hw = C2.CARD_W / 2, hh = C2.CARD_H / 2;
+    for (const c of room.cards) {
+      const p = c.group.getWorldPosition(_fitV);
+      minX = Math.min(minX, p.x - hw);
+      maxX = Math.max(maxX, p.x + hw);
+      minY = Math.min(minY, p.y - hh);
+      maxY = Math.max(maxY, p.y + hh);
+      frontZ = Math.max(frontZ, p.z);
+      sumZ += p.z;
+    }
+    const centerZ = sumZ / room.cards.length;
+    const f = flatCameraFrame(
+      { minX, maxX, minY: minY - 0.5, maxY: maxY + 0.7, frontZ, centerZ },
+      { aspect: innerWidth / innerHeight, fovVDeg: C2.CAMERA_FOV, fill: 0.8, fillV: 0.5, minDistance: 2.4, maxDistance: 16 }
+    );
+    flatFrame = f;
+    camera.position.set(f.centerX, f.centerY, f.cameraZ);
+    controls.target.set(f.centerX, f.centerY, centerZ);
+    controls.update();
+    if (typeof window !== "undefined") window.__flatFrame = f;
+  }
   addEventListener("resize", () => {
     camera.aspect = innerWidth / innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(innerWidth, innerHeight);
+    fitFlat();
   });
+  setTimeout(fitFlat, 60);
   var fpsLast = performance.now();
   var fpsFrames = 0;
   var fpsEl = { text: "" };

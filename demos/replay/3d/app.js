@@ -14,6 +14,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { buildConstants } from "./constants.js";
+import { flatCameraFrame } from "./flat-fit.js";
 import { createAuditRoom } from "./scene.js";
 import { createStereo } from "./stereo.js";
 import { createVoice, parseIntent } from "./voice.js";
@@ -89,6 +90,40 @@ function setStatus(text, color) {
 }
 const hudRef = { status: statusText };
 
+// ── V11 in-scene Trust header — three SEPARATE dimensions near the rail (world-anchored scene
+// objects, SBS-safe). Integrity ≠ trust posture ≠ analytical correctness; never one generic green
+// "valid". Sits just below the rail so it reads as part of the composition, not a detached footer. ──
+const trustHeader = new THREE.Group();
+scene.add(trustHeader);
+const trustLines = { integrity: null, posture: null, correctness: null };
+// Anchor the header in the SAME depth plane as the rail cards so it projects at the same scale and
+// reads as part of the composition (not a big near-plane footer).
+const HEADER_Y = C.ARC_Y - C.CARD_H * 1.9, HEADER_Z = -C.ARC_RADIUS + 1.0;
+function trustLine(text, color, row) {
+  const m = makeText(text, { size: 0.1, worldWidth: 2.4, align: "left", color, mono: true, weight: 600 });
+  m.position.set(-1.7, HEADER_Y - row * 0.19, HEADER_Z);
+  return m;
+}
+function setTrustHeader(ok, posture) {
+  for (const k of Object.keys(trustLines)) if (trustLines[k]) { trustLines[k].geometry.dispose(); trustLines[k].material.map?.dispose?.(); trustHeader.remove(trustLines[k]); }
+  trustLines.integrity = trustLine(`INTEGRITY     ${ok ? "VERIFIED" : "FAILED"}`, ok ? C.STATUS.healed : C.STATUS.tampered, 0);
+  trustLines.posture = trustLine(`TRUST         ${(posture || "SELF_SIGNED").split(" ")[0]}`, C.STATUS.error, 1);
+  trustLines.correctness = trustLine("CORRECTNESS   NOT EVALUATED", C.INK.textDim, 2);
+  for (const k of Object.keys(trustLines)) trustHeader.add(trustLines[k]);
+}
+setTrustHeader(true, "SELF_SIGNED");
+
+// ── V11 first-entry hint — one bounded line, dismissed on first selection or after a delay ──
+const _zh = params.get("lang") === "zh";
+let firstHint = makeText(
+  _zh ? "选择一条记录以查看详情。   按 ? 查看控制说明。" : "Select a record to inspect it.    Press ? for controls.",
+  { size: 0.1, worldWidth: 5.5, align: "center", color: C.INK.text, mono: true, weight: 500 },
+);
+firstHint.position.set(0, C.ARC_Y + C.CARD_H * 2.4, HEADER_Z);
+scene.add(firstHint);
+function dismissHint() { if (firstHint) { firstHint.geometry.dispose(); firstHint.material.map?.dispose?.(); scene.remove(firstHint); firstHint = null; } }
+setTimeout(dismissHint, 12000); // bounded fallback
+
 // mic indicator — a small ring, shown only while the mic is hot (Phase 4.1.1)
 const micDot = new THREE.Mesh(
   new THREE.RingGeometry(0.03, 0.05, 24),
@@ -120,8 +155,8 @@ let webxr = null; // lazy
 let preflight = null; // WebXR diagnostics panel (created on entering webxr mode)
 
 stereo.onChange(({ mode, eyeSep }) => {
-  const es = `eye ${(eyeSep * 1000).toFixed(0)}mm`;
-  setStatus(`${lastVerdict}   ·   ${mode.toUpperCase()}   ·   ${es}`, lastVerdictColor);
+  // bottom line is a minimal diagnostic — the Trust header is the primary trust communication.
+  setStatus(`${mode.toUpperCase()} · eye ${(eyeSep * 1000).toFixed(0)}mm · open ../verify.html for exact detail`, C.INK.textDim);
 });
 
 // ── verdict (initial + after actions), sourced from the real verifier ──
@@ -136,8 +171,9 @@ async function refreshVerdict() {
     lastVerdict = `verify FAILED · ${v.error.reason}${v.error.seq != null ? " @ seq " + v.error.seq : ""}`;
     lastVerdictColor = C.STATUS.tampered;
   }
+  setTrustHeader(v.ok, v.trustLevel); // primary trust communication is the in-scene header
   const st = stereo.getState();
-  setStatus(`${lastVerdict}   ·   ${st.mode.toUpperCase()}   ·   eye ${(st.eyeSep * 1000).toFixed(0)}mm`, lastVerdictColor);
+  setStatus(`${st.mode.toUpperCase()} · eye ${(st.eyeSep * 1000).toFixed(0)}mm · open ../verify.html for exact detail`, C.INK.textDim);
 }
 
 // ── central dispatch: keyboard AND voice both come through here ──
@@ -276,7 +312,7 @@ function pick(ev) {
 }
 renderer.domElement.addEventListener("click", (ev) => {
   const seq = pick(ev);
-  if (seq != null) dispatch({ intent: "FOCUS_EVENT", seq });
+  if (seq != null) { dismissHint(); dispatch({ intent: "FOCUS_EVENT", seq }); }
 });
 
 // ── watchdog (Phase 7.2): log + soft-reload into last beat within ~2s ──
@@ -297,12 +333,42 @@ function armWatchdog() {
 }
 if (presenter) armWatchdog();
 
+// ── Flat fit-to-content (V11): frame the card rail so it fills a useful part of the viewport
+// instead of a small distant band in a black field. Flat mode only — SBS/XR camera policy untouched.
+const _fitV = new THREE.Vector3();
+let flatFrame = null;
+function fitFlat() {
+  if (preset === "xreal" || renderer.xr.isPresenting || !room.cards || !room.cards.length) return;
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity, frontZ = -Infinity, sumZ = 0;
+  const hw = C.CARD_W / 2, hh = C.CARD_H / 2;
+  for (const c of room.cards) {
+    const p = c.group.getWorldPosition(_fitV);
+    minX = Math.min(minX, p.x - hw); maxX = Math.max(maxX, p.x + hw);
+    minY = Math.min(minY, p.y - hh); maxY = Math.max(maxY, p.y + hh);
+    frontZ = Math.max(frontZ, p.z); sumZ += p.z;
+  }
+  const centerZ = sumZ / room.cards.length;
+  // leave headroom for the inspector (above) + trust header (below) → bias fill a touch smaller
+  const f = flatCameraFrame(
+    { minX, maxX, minY: minY - 0.5, maxY: maxY + 0.7, frontZ, centerZ },
+    { aspect: innerWidth / innerHeight, fovVDeg: C.CAMERA_FOV, fill: 0.80, fillV: 0.5, minDistance: 2.4, maxDistance: 16 },
+  );
+  flatFrame = f;
+  camera.position.set(f.centerX, f.centerY, f.cameraZ);
+  controls.target.set(f.centerX, f.centerY, centerZ);
+  controls.update();
+  if (typeof window !== "undefined") window.__flatFrame = f; // browser-acceptance metrics hook
+}
+
 // ── resize ──
 addEventListener("resize", () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
+  fitFlat();
 });
+// initial fit after first layout settles
+setTimeout(fitFlat, 60);
 
 // ── fps ──
 let fpsLast = performance.now(), fpsFrames = 0;

@@ -1,0 +1,45 @@
+{
+ "_comment": "Flat fit-to-content occupancy per target viewport (deterministic). fill target 0.80 width / 0.50 height. NOT device evidence.",
+ "viewports": {
+  "1920x1080": {
+   "camZ": 0.426,
+   "distance": 4.376,
+   "width_fraction": 0.8,
+   "height_fraction": 0.417
+  },
+  "1680x1050": {
+   "camZ": 0.912,
+   "distance": 4.862,
+   "width_fraction": 0.8,
+   "height_fraction": 0.375
+  },
+  "1440x900": {
+   "camZ": 0.912,
+   "distance": 4.862,
+   "width_fraction": 0.8,
+   "height_fraction": 0.375
+  },
+  "1366x768": {
+   "camZ": 0.424,
+   "distance": 4.374,
+   "width_fraction": 0.8,
+   "height_fraction": 0.417
+  },
+  "2560x1080": {
+   "camZ": -0.3,
+   "distance": 3.65,
+   "width_fraction": 0.719,
+   "height_fraction": 0.5
+  }
+ },
+ "browser_confirmed": {
+  "1920x748": {
+   "width_fraction": 0.8,
+   "height_fraction": 0.485
+  },
+  "1366x748": {
+   "width_fraction": 0.8,
+   "height_fraction": 0.345
+  }
+ }
+}

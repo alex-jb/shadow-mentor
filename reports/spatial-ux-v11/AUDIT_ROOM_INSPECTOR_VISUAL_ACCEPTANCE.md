@@ -1,8 +1,15 @@
 # Audit Room inspector — browser visual acceptance
 
-**Status: NOT VISUALLY ACCEPTED. Placement math + runtime creation PASS; Flat-mode composition +
-readability FAIL.** The prior version of this doc wrongly implied full visual validation — that was an
-over-claim and is corrected here.
+**Status: NOW VISUALLY ACCEPTED (Flat composition + inspector readability increment).** The earlier
+FAIL below is preserved as the honest record; the fixes and AFTER acceptance are in
+`AUDIT_ROOM_FLAT_ACCEPTANCE_STATUS.md`. Updated flags: AUDIT-ROOM-INSPECTOR-READABILITY-PASSED ✅,
+AUDIT-ROOM-LEADER-LINE-VISIBLE ✅, AUDIT-ROOM-SELECTED-ASSOCIATION-PASSED ✅,
+AUDIT-ROOM-FLAT-COMPOSITION-PASSED ✅, AUDIT-ROOM-TRUST-STATUS-HIERARCHY-PASSED ✅.
+
+---
+## (earlier) history — the FAIL that this increment fixed
+**Status was: NOT VISUALLY ACCEPTED. Placement math + runtime creation PASS; Flat-mode composition +
+readability FAIL.**
 
 ## Honest classification (from the actual 3200×1496 Chromium captures)
 | Aspect | Verdict |

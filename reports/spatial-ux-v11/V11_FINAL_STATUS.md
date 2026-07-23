@@ -74,8 +74,16 @@ INDEPENDENT-CRYPTO-AUDIT-COMPLETED · FORMAL-USER-STUDY-COMPLETED — **all fals
    simulated only). (AUDIT_WORKSPACE_GRAPHICAL_ACCEPTANCE.md + RUNTIME_INVENTORY.md + LOCALIZATION.md +
    BEFORE_AFTER.md + PROFILE_REVIEW.md)
 
+3.0. ✅ **AUDIT ROOM FLAT COMPOSITION + INSPECTOR READABILITY** — brought the Three.js Flat mode from
+   correct-placement to visually accepted (real Chromium): deterministic fit-to-content camera (rail
+   ~80% width across 1920/1680/1440/1366/2560, `flat-fit.js` 4/4 tests), selected-record hierarchy
+   (scale + bright edge + dim others), readable inspector (title + layered body, OPEN 2D AUDIT), a
+   distinct white elbow leader + endpoint dot, an in-scene Trust header (INTEGRITY/TRUST/CORRECTNESS,
+   not one green "valid"), and a first-entry hint. Runtime cleanup: 1 leader after 32 selects, 0
+   orphans; console 0; external requests 0. Node 2039/0/3. (AUDIT_ROOM_FLAT_ACCEPTANCE_STATUS.md)
+
 ## Next increment (ordered)
-- Audit Room Flat composition fix (inspector readability — same camera-fit + selected-hierarchy method), then Three.js Time Mode integration.
+- Three.js Time Mode runtime integration (wire the tested `axis-layout.js` into the now-stable Flat scene) + Time Mode browser acceptance.
 3. Tracking-health → presentation auto-fallback wiring + state-preservation tests.
 4. Graphical PlayMode lane for the 8 headless-incompatible tests (RequiresGraphicsContext).
 5. CJK wrapping (Intl.Segmenter); OST positive/negative split; spatial-finance API-boundary escaping.

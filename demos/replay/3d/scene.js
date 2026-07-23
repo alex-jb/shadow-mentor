@@ -339,18 +339,27 @@ export function createAuditRoom({ C, bundle = DEMO_BUNDLE } = {}) {
   function buildInspector(card) {
     clearInspector();
     inspector = new THREE.Group();
-    const w = 1.7, rows = inspectorRows(card.evt);
-    const body = makeText(rows, {
-      size: C.FONT_SIZE_INSPECTOR, worldWidth: w - 0.14, align: "left", color: C.INK.text, mono: true, weight: 500,
+    // V11 readability: bigger title + body so the panel reads as the second visual layer after the
+    // selected card (no tiny terminal aesthetic for primary content). Bounded rows only — the full
+    // payload/signature stays in the 2D verifier.
+    const w = 2.5;
+    const ev = card.evt;
+    const title = makeText(`${ev.event_type}  ·  #${ev.seq}`, {
+      size: 0.085, worldWidth: w - 0.18, align: "left", color: C.INK.text, mono: true, weight: 700,
     });
-    const h = Math.max(0.7, body.userData.worldH + 0.16);
-    const frame = edgeLoop(w, h, 0.05, new THREE.Color(C.INK.text).getHex(), 0.5);
-    body.position.set(0, 0, 0.002);
-    inspector.add(frame); inspector.add(body);
+    const body = makeText(inspectorRows(ev), {
+      size: 0.052, worldWidth: w - 0.18, align: "left", color: C.INK.textDim, mono: true, weight: 500,
+    });
+    const pad = 0.12, gap = 0.07, tH = title.userData.worldH, bH = body.userData.worldH;
+    const h = Math.max(0.8, tH + bH + pad * 2 + gap);
+    const frame = edgeLoop(w, h, 0.06, new THREE.Color(C.INK.text).getHex(), 0.8);
+    title.position.set(0, h / 2 - pad - tH / 2, 0.002);
+    body.position.set(0, h / 2 - pad - tH - gap - bH / 2, 0.002);
+    inspector.add(frame); inspector.add(title); inspector.add(body);
 
     const cardPos = card.group.getWorldPosition(_cardPos);
     const panel = { halfW: w / 2, halfH: h / 2 };
-    const view = { minX: -3, maxX: 3, minY: C.ARC_Y - 1.5, maxY: C.ARC_Y + 1.5 };
+    const view = { minX: -3.2, maxX: 3.2, minY: C.ARC_Y - 1.7, maxY: C.ARC_Y + 2.2 };
     const spec = trackingLost
       ? viewRelativeFallback({ panel, view }) // Tracking Lost → stable view-relative, no leader line
       : anchorPanel({
@@ -358,23 +367,24 @@ export function createAuditRoom({ C, bundle = DEMO_BUNDLE } = {}) {
           panel, view, arcCenterX: 0,
         });
     inspector.position.set(spec.position.x, spec.position.y, spec.position.z);
-    // leader line: card boundary → panel edge (omitted in the tracking-lost fallback)
+    // leader line: card boundary → panel edge. Distinct from the cold-grey evidence CONNECTORS —
+    // brighter white, an ELBOW (not a straight diagonal that could read as a chain link), and a small
+    // endpoint dot at the card. Omitted in the tracking-lost fallback (no world anchor to point at).
     if (spec.leaderStart && spec.leaderEnd) {
-      const geo = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(spec.leaderStart.x - spec.position.x, spec.leaderStart.y - spec.position.y, spec.leaderStart.z - spec.position.z),
-        new THREE.Vector3(spec.leaderEnd.x - spec.position.x, spec.leaderEnd.y - spec.position.y, spec.leaderEnd.z - spec.position.z),
-      ]);
-      const mat = new THREE.LineBasicMaterial({ color: new THREE.Color(C.INK.textDim).getHex(), transparent: true, opacity: 0.6, toneMapped: false });
-      inspector.add(new THREE.Line(geo, mat));
+      const L = (p) => new THREE.Vector3(p.x - spec.position.x, p.y - spec.position.y, p.z - spec.position.z);
+      const a = L(spec.leaderStart), b = L(spec.leaderEnd);
+      const elbow = new THREE.Vector3(a.x, b.y, (a.z + b.z) / 2); // vertical from card, then horizontal to panel
+      const mat = new THREE.LineBasicMaterial({ color: new THREE.Color(C.INK.lensPulse).getHex(), transparent: true, opacity: 0.9, toneMapped: false });
+      inspector.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([a, elbow, b]), mat));
+      const dot = new THREE.Mesh(new THREE.CircleGeometry(0.03, 12), new THREE.MeshBasicMaterial({ color: new THREE.Color(C.INK.lensPulse).getHex(), transparent: true, opacity: 0.95, toneMapped: false }));
+      dot.position.copy(a); inspector.add(dot);
     }
     group.add(inspector);
   }
   function inspectorRows(ev) {
     const short = (h) => (h ? h.slice(0, 12) : "—");
     const lines = [
-      `type       ${ev.event_type}`,
       `actor      ${ev.actor}`,
-      `seq        ${ev.seq}`,
       `ts         ${ev.ts_utc}`,
       `payload    ${short(ev.payload_hash)}…`,
       `prev_hash  ${short(ev.prev_hash)}…`,
@@ -382,7 +392,7 @@ export function createAuditRoom({ C, bundle = DEMO_BUNDLE } = {}) {
     const t = ev.extensions?.tool;
     if (ev.event_type === "tool_call" && t) lines.push(`tool       ${t}`);
     if (ev.event_type === "review_annotation") lines.push(`note       ${ev.extensions?.review?.note ?? ""}`);
-    lines.push("", "› open full payload in 2D inspector"); // Phase 5.3: never render full payload in-scene
+    lines.push("", "› OPEN 2D AUDIT for exact payload + signature");
     return lines.join("\n");
   }
   function select(seq) {
@@ -486,6 +496,17 @@ export function createAuditRoom({ C, bundle = DEMO_BUNDLE } = {}) {
           card.edgeMat.color.lerp(new THREE.Color(C.INK.text), 0.1);
         }
         card.edgeMat.opacity = op;
+      }
+
+      // V11 selected-record emphasis — multi-channel (scale + edge brightness + de-emphasis of the
+      // rest). Never turns a neutral intact card into verification green; first-failure/broken cards
+      // keep their own colour. Hover (pulse) stays distinct from selection.
+      const isSel = selectedSeq != null && card.seq === selectedSeq;
+      const eScale = card.baseScale * (isSel ? 1.15 : 1.0);
+      card.group.scale.setScalar(card.group.scale.x + (eScale - card.group.scale.x) * Math.min(1, dt * 12));
+      if (selectedSeq != null && card.status === "intact" && !(activeLens || filterType)) {
+        if (isSel) { card.edgeMat.color.lerp(new THREE.Color(C.INK.lensPulse), 0.2); card.edgeMat.opacity = 1.0; }
+        else card.edgeMat.opacity = Math.min(card.edgeMat.opacity, 0.28);
       }
     }
 
