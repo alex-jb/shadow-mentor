@@ -1,0 +1,12 @@
+{
+  "_comment": "Audit Workspace graphical captures. NOT device evidence. device_validated=false. profile=DesktopDark. fixture=in-code Banking (decision=FIRST_FAILURE, pricing=AFFECTED_DOWNSTREAM). resolution=1600x1000. Unity 6000.0.23f1 graphics-mode PlayMode.",
+  "captures": [
+    {"file": "01-overview-en.png", "sha256": "71ad31dd924a2ba01cf2ebbf76c08b836d306cff7191aad6998fbcf118b2b311", "device_validated": false},
+    {"file": "02-first-failure-en.png", "sha256": "8cb3f6dcf5980198328b4569414efbf35988426b3fa13bd9dc99a901bc19cd20", "device_validated": false},
+    {"file": "03-downstream-affected-en.png", "sha256": "5e1623f4cc74fd224dc5f3ff6e00a197abd302fc3e2f0b14a2dfb63a8343be7a", "device_validated": false},
+    {"file": "04-tracking-scanning-en.png", "sha256": "caf2005c5168384627188dffadb7a9b57618477ac6e090828b28ccfaaa2bfb73", "device_validated": false},
+    {"file": "05-tracking-lost-en.png", "sha256": "373b3d86f1f26bf5e54a65fbcf1f372cb1e92ab97735d1d543a307dbd8dadeb4", "device_validated": false},
+    {"file": "06-overview-zh.png", "sha256": "57f7d6e1dafb28beaa8c90b3c918d4db0a2c720afec9bc0cb79c57b0d84616a9", "device_validated": false},
+    {"file": "07-first-failure-zh.png", "sha256": "412695f74a0c84a8b6dbd034035c036348a64ae82a5f15257d6d5f1a80f741c7", "device_validated": false}
+  ]
+}

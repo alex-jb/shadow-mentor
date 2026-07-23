@@ -22,9 +22,11 @@ namespace ShadowLens.Workspace
         public P Profile = P.DesktopDark;
         public bool Zh = false;
         public string Tracking = "TRACKED_3DOF";
+        public Font LabelFont;   // assign a CJK-capable font so Simplified Chinese renders
 
         GuidedStorySemantic _model;
         ShadowGuidedStoryState _state;
+        StoryScenario _scenario;
         string _focusEntityId;
 
         // shared material cache keyed by colour hex — never one material per card (§15)
@@ -33,11 +35,22 @@ namespace ShadowLens.Workspace
 
         public void Bind(GuidedStorySemantic model, ShadowGuidedStoryState state)
         {
-            _model = model; _state = state;
+            _model = model; _state = state; _scenario = state?.CurrentScenario;
             var step = state?.CurrentStep;
             _focusEntityId = (step != null && step.FocusEntities.Count > 0) ? step.FocusEntities[0] : model?.Entities.Count > 0 ? model.Entities[0].Id : null;
             RebuildAll();
         }
+
+        // Direct bind for capture/tests — set the model + scenario + focus explicitly (no player/state).
+        public void BindDirect(GuidedStorySemantic model, StoryScenario scenario, string focusEntityId)
+        {
+            _model = model; _state = null; _scenario = scenario; _focusEntityId = focusEntityId;
+            RebuildAll();
+        }
+
+        public void FocusOn(string entityId) { _focusEntityId = entityId; RebuildAll(); }
+        public void SetZh(bool zh) { Zh = zh; RebuildAll(); }
+        public void SetTracking(string t) { Tracking = t; RebuildAll(); }
 
         static Material SharedMat(string hex)
         {
@@ -66,7 +79,7 @@ namespace ShadowLens.Workspace
         void RebuildAll()
         {
             if (Mode != ShadowPresentationMode.AuditWorkspace) return; // PrimitiveDiagnostic handled elsewhere
-            var sc = _state?.CurrentScenario;
+            var sc = _scenario;
             var focus = ShadowAuditWorkspaceModel.BuildFocus(_model, sc, _focusEntityId, Zh);
             RebuildHeader(focus);
             RebuildSource();
@@ -75,75 +88,78 @@ namespace ShadowLens.Workspace
             RebuildRail(sc);
         }
 
+        // Small world-space type scale so regions do not collide. Latin+CJK both readable at capture res.
+        const float T_TITLE = 0.052f, T_HEAD = 0.03f, T_LABEL = 0.03f, T_BODY = 0.026f, T_SMALL = 0.022f;
+        static string Cut(string s, float em) => ShadowLabelMetrics.TruncateWithAffordance(s ?? "", em);
+
         void RebuildHeader(CurrentFocusVM focus)
         {
-            var r = Region("top", new Vector3(0, 1.1f, 0));
-            Label(r, _model?.Title?.Pick(Zh) ?? "Shadow Audit", 0.09f, ThemeText(), new Vector3(-1.6f, 0, 0));
-            Label(r, "tracking: " + Tracking, 0.05f, ThemeText(), new Vector3(0.9f, 0, 0));
-            Label(r, "SIMULATED — NOT DEVICE VALIDATED", 0.04f, Hex("#961418"), new Vector3(0.9f, -0.12f, 0));
+            var r = Region("top", new Vector3(-3.3f, 2.0f, 0));
+            Label(r, Cut(_model?.Title?.Pick(Zh) ?? "Shadow Audit", 22f), T_TITLE, ThemeText(), Vector3.zero);
+            Label(r, "tracking: " + Tracking, T_HEAD, ThemeText(), new Vector3(0, -0.24f, 0));
+            Label(r, "SIMULATED — NOT DEVICE VALIDATED", T_SMALL, Hex("#961418"), new Vector3(0, -0.38f, 0));
             if (ShadowTrackingBanner.IsDegraded(Tracking) || Tracking == "SCANNING")
-                Label(r, ShadowTrackingBanner.Copy(Tracking, Zh), 0.045f, Hex("#fbbf24"), new Vector3(-1.6f, -0.18f, 0));
+                Label(r, ShadowTrackingBanner.Copy(Tracking, Zh), T_BODY, Hex("#fbbf24"), new Vector3(2.7f, 0, 0));
         }
 
         void RebuildSource()
         {
-            var r = Region("left", new Vector3(-1.7f, 0.2f, 0));
+            var r = Region("left", new Vector3(-3.3f, 0.9f, 0));
             var src = ShadowAuditWorkspaceModel.BuildSource(_model?.EntityById(_focusEntityId));
-            Label(r, "SOURCE", 0.05f, ThemeSecondary(), Vector3.zero);
-            Label(r, src.SourceName, 0.055f, ThemeText(), new Vector3(0, -0.14f, 0));
-            Label(r, "loc: " + src.Location, 0.042f, ThemeSecondary(), new Vector3(0, -0.26f, 0));
-            Label(r, "resolution: " + src.Resolution, 0.042f, GlyphColor(src.Resolution == "PRESENT" ? "VERIFIED" : "NOT_PRESENT"), new Vector3(0, -0.36f, 0));
-            Label(r, "OCR: " + src.Ocr, 0.042f, GlyphColor("NOT_EVALUATED"), new Vector3(0, -0.46f, 0));
+            Label(r, "SOURCE", T_HEAD, ThemeSecondary(), Vector3.zero);
+            Label(r, Cut(src.SourceName, 16f), T_LABEL, ThemeText(), new Vector3(0, -0.14f, 0));
+            Label(r, "loc: " + Cut(src.Location, 14f), T_BODY, ThemeSecondary(), new Vector3(0, -0.26f, 0));
+            Label(r, "resolution: " + src.Resolution, T_BODY, GlyphColor(src.Resolution == "PRESENT" ? "VERIFIED" : "NOT_PRESENT"), new Vector3(0, -0.37f, 0));
+            Label(r, "OCR: " + src.Ocr, T_BODY, GlyphColor("NOT_EVALUATED"), new Vector3(0, -0.48f, 0));
         }
 
         void RebuildFocus(CurrentFocusVM focus)
         {
-            var r = Region("center", new Vector3(0, 0.2f, 0.05f));
-            // dominant title
-            Label(r, ShadowLabelMetrics.TruncateWithAffordance(focus.Title, 18f), 0.085f, ThemeText(), Vector3.zero);
-            Label(r, "role: " + focus.Role, 0.045f, ThemeSecondary(), new Vector3(0, -0.14f, 0));
-            float y = -0.26f;
+            var r = Region("center", new Vector3(-0.9f, 0.9f, 0.05f));
+            Label(r, Cut(focus.Title, 20f), T_TITLE, ThemeText(), Vector3.zero); // dominant
+            Label(r, "role: " + focus.Role, T_SMALL, ThemeSecondary(), new Vector3(0, -0.16f, 0));
+            float y = -0.30f;
             foreach (var f in focus.Fields)
             {
                 var g = ShadowStatusGlyph.Resolve(f.Status);
-                Label(r, f.Label + ": " + f.Value, 0.05f, Hex(g.ColorHex), new Vector3(0, y, 0));
-                y -= 0.11f;
+                Label(r, Cut(f.Label + ": " + f.Value, 15f), T_BODY, Hex(g.ColorHex), new Vector3(0, y, 0));
+                y -= 0.115f;
             }
             if (focus.IsFirstFailure)
-                Label(r, "◆ FIRST FAILURE", 0.06f, GlyphColor("FIRST_FAILURE"), new Vector3(0, y - 0.02f, 0));
-            Label(r, "▶ " + focus.NextAction, 0.05f, GlyphColor("APPROVAL_PRESENT"), new Vector3(0, y - 0.16f, 0));
-            Label(r, "[ OPEN 2D AUDIT ]", 0.05f, ThemeText(), new Vector3(0, y - 0.28f, 0));
+                Label(r, "◆ FIRST FAILURE", T_LABEL, GlyphColor("FIRST_FAILURE"), new Vector3(0, y - 0.02f, 0));
+            y -= 0.16f;
+            Label(r, "▶ " + Cut(focus.NextAction, 30f), T_BODY, GlyphColor("APPROVAL_PRESENT"), new Vector3(0, y, 0));
+            Label(r, "[ OPEN 2D AUDIT ]", T_BODY, ThemeText(), new Vector3(0, y - 0.13f, 0));
         }
 
         void RebuildTrustStrip(CurrentFocusVM focus)
         {
-            var r = Region("right", new Vector3(1.7f, 0.2f, 0));
-            Label(r, "TRUST", 0.05f, ThemeSecondary(), Vector3.zero);
-            float y = -0.14f;
+            var r = Region("right", new Vector3(2.55f, 0.9f, 0));
+            Label(r, "TRUST", T_HEAD, ThemeSecondary(), Vector3.zero);
+            float y = -0.16f;
             foreach (var grp in ShadowAuditWorkspaceModel.BuildTrustStrip(focus))
             {
-                Label(r, grp.Label, 0.045f, ThemeText(), new Vector3(0, y, 0));
-                Label(r, grp.Glyph.Text, 0.045f, Hex(grp.Glyph.ColorHex), new Vector3(0, y - 0.08f, 0));
-                y -= 0.22f;
+                Label(r, Cut(grp.Label, 15f), T_BODY, ThemeText(), new Vector3(0, y, 0));
+                Label(r, Cut(grp.Glyph.Text, 15f), T_BODY, Hex(grp.Glyph.ColorHex), new Vector3(0, y - 0.09f, 0));
+                y -= 0.24f;
             }
         }
 
         void RebuildRail(StoryScenario sc)
         {
-            var r = Region("bottom", new Vector3(0, -1.0f, 0));
+            var r = Region("bottom", new Vector3(-2.4f, -1.5f, 0));
             var items = ShadowAuditWorkspaceModel.BuildRail(_model, sc, _focusEntityId);
-            float x = -1.8f;
+            float x = 0f;
             foreach (var it in items)
             {
-                float size = it.IsCurrent ? 0.06f : 0.04f;
                 var col = Hex(it.Glyph.ColorHex);
-                Quad(r, new Vector3(x, 0, 0), it.IsFirstFailure ? "#ef4444" : it.IsDownstream ? "#8a92a0" : it.Glyph.ColorHex, it.IsCurrent ? 0.16f : 0.10f);
-                Label(r, "#" + it.Sequence, size, col, new Vector3(x, -0.14f, 0));
-                if (it.IsFirstFailure) Label(r, "FIRST", 0.035f, GlyphColor("FIRST_FAILURE"), new Vector3(x, 0.12f, 0));
-                if (it.IsDownstream) Label(r, "↓dep", 0.032f, GlyphColor("AFFECTED_DOWNSTREAM"), new Vector3(x, 0.12f, 0));
-                x += 0.5f;
+                Quad(r, new Vector3(x, 0, 0), it.IsFirstFailure ? "#ef4444" : it.IsDownstream ? "#8a92a0" : it.Glyph.ColorHex, it.IsCurrent ? 0.15f : 0.09f);
+                Label(r, "#" + it.Sequence, it.IsCurrent ? 0.04f : 0.028f, col, new Vector3(x - 0.05f, -0.16f, 0));
+                if (it.IsFirstFailure) Label(r, "FIRST", T_SMALL, GlyphColor("FIRST_FAILURE"), new Vector3(x - 0.05f, 0.16f, 0));
+                if (it.IsDownstream) Label(r, "↓dep", T_SMALL, GlyphColor("AFFECTED_DOWNSTREAM"), new Vector3(x - 0.05f, 0.16f, 0));
+                x += 0.62f;
             }
-            Label(r, "◀ Prev   ▶ Next   ⟳ Reset   ⌖ Recenter   [ OPEN 2D AUDIT ]", 0.04f, ThemeSecondary(), new Vector3(-1.8f, -0.3f, 0));
+            Label(r, "◀ Prev   ▶ Next   ⟳ Reset   ⌖ Recenter   [ OPEN 2D AUDIT ]", T_SMALL, ThemeSecondary(), new Vector3(0, -0.34f, 0));
         }
 
         // ── primitives (shared materials) ──
@@ -152,6 +168,7 @@ namespace ShadowLens.Workspace
             var go = new GameObject("t"); go.transform.SetParent(parent.transform, false); go.transform.localPosition = local;
             var tm = go.AddComponent<TextMesh>();
             tm.text = text; tm.characterSize = size; tm.fontSize = 64; tm.color = color; tm.anchor = TextAnchor.UpperLeft;
+            if (LabelFont != null) { tm.font = LabelFont; var mr = go.GetComponent<MeshRenderer>(); if (mr) mr.sharedMaterial = LabelFont.material; }
             return tm;
         }
 

@@ -22,7 +22,17 @@ visual PlayMode capture + full browser acceptance are in progress in the same in
 | OPEN-2D-AUDIT-REACHABLE | ✅ (logic) | action rendered; next-action routes to 2D audit; verify.html untouched |
 | MATERIAL-SHARING-PASSED | ✅ (code) | static shared-material cache; no per-card material |
 
-### VISUAL_ACCEPTANCE_PENDING — logic bound + tested, but NOT visually accepted (no graphical capture inspected yet)
+### GRAPHICAL ACCEPTANCE (done for DesktopDark, 7 states — see AUDIT_WORKSPACE_GRAPHICAL_ACCEPTANCE.md)
+Unity graphics-mode PlayMode captured the REAL ShadowAuditWorkspace (1/1 pass); after a bounded
+layout fix (BEFORE overlap-chaos → AFTER readable) the following are now VISUALLY verified:
+- UNITY-WORKSPACE-GRAPHICALLY-RENDERED ✅ · CURRENT-FOCUS-VISUALLY-READABLE ✅
+- FIRST-FAILURE-VISUALLY-READABLE ✅ · DOWNSTREAM-VISUALLY-DISTINCT ✅
+- REVIEW-APPROVAL-VISUALLY-DISTINCT ✅ · SOURCE-CARD-VISUALLY-READABLE ✅ · TRUST-STRIP-VISUALLY-READABLE ✅
+- EVIDENCE-RAIL-VISUALLY-READABLE ✅ · ENGLISH/CHINESE-RUNTIME-RENDERING ✅ (glyphs; zh label localization partial)
+- FLAT-COMPOSITION: SUBSTANTIALLY-IMPROVED / PARTIAL (4 residual crowd points documented)
+- Still pending: XrealOstBright + AccessibilityHighContrast captures + contact sheets; full 14-state set.
+
+### (superseded) earlier PENDING note — logic bound + tested, before graphical capture
 Per the correction: "logic readable" ≠ "画面可读". These are **not** claimed visually passed until the
 14 graphical Workspace captures are produced + inspected:
 - CURRENT-FOCUS-READABLE → LOGIC_BINDING_PASSED · VISUAL_ACCEPTANCE_PENDING
