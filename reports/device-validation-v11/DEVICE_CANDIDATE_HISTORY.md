@@ -44,3 +44,31 @@ Operator-local (NOT committed, restored to clean after build): Packages/manifest
 packages-lock.json, ProjectSettings (SHADOW_XREAL_SDK define + productName), XREALSettings (3DoF). The
 gated ShadowXrealManifestInjector.cs (#if SHADOW_XREAL_SDK) IS committed but compiles only for local
 XREAL builds; the base build excludes it (EditMode 136/136 on the restored SDK-free tree).
+
+## candidate-04 (XREAL XR plugin can start + XREAL MR launcher)
+| shadow-lens-v11-beampro-candidate-04.apk | 832c875a | Shadow Lens | YES (NRXRActivity) | **BUILT** — fixes candidate-03's runtime "Failed to get XREAL Settings" + adds the XREAL MR launcher; on-device PENDING Alex |
+
+**candidate-03 → candidate-04 (from the real glasses log):** candidate-03 launched but the XREAL XR
+plugin ABORTED at runtime — `E Unity: Unable to start XREAL XR Plugin. Failed to get XREAL Settings.`
+The XREALSettings ScriptableObject was never embedded (its config object was not registered under
+`com.unity.xr.management.xrealsettings`), so `GetSettings()` returned null and no XRDisplaySubsystem
+started → glasses stayed in Nebula OS. candidate-03 also had only UnityPlayerActivity as launcher, not
+the XREAL MR entry.
+
+**candidate-04 fix:** `EditorBuildSettings.AddConfigObject("com.unity.xr.management.xrealsettings",
+Assets/XR/Settings/XREALSettings.asset, true)` before build (+ a build-time verify that it registered)
+→ XRBuildHelper<XREALSettings> embeds the settings → runtime GetSettings() succeeds. As a direct
+consequence the SDK now emits the correct XREAL MR structure: **ai.nreal.activitylife.NRXRActivity is
+the MAIN/LAUNCHER** (the MR entry that MyGlasses uses), with UnityPlayerActivity retained as the Unity
+player activity, plus NRShadowActivity / NRFakeActivity. supportDevices + nreal_sdk + XREAL native libs
+preserved. The launchability assertion was corrected to accept the XREAL MR launcher (NRXRActivity),
+not just UnityPlayerActivity. See CANDIDATE_03_RUNTIME_DIAGNOSIS.md.
+
+Flags: ANDROID_LAUNCHABLE=true, MYGLASSES_MR_REGISTRATION_PRESENT=true, XREAL-SETTINGS-EMBEDDED=true,
+XREAL-MR-LAUNCHER-PRESENT=true. Still FALSE pending physical test: AUDIT-WORKSPACE-RENDERED-IN-GLASSES,
+XREAL-XR-LOADER-DEVICE-PASSED, XREAL-3DOF-DEVICE-VALIDATED, BEAM-PRO-CONTROLLER-VALIDATED,
+OST-READABILITY-DEVICE-VALIDATED. HelloMR control build not needed — direct log + config-object
+evidence conclusively identified the root cause.
+
+Preserved: candidate-01 (8ea859df), candidate-02 (6ee4d4ff), candidate-03 (11454763), stable v10-core
+(9efadf0a), frozen verifier (c478b46f) — all unchanged.

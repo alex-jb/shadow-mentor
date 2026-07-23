@@ -1,0 +1,16 @@
+{
+  "file": "apps/shadow-lens/unity/Build/Android/shadow-lens-v11-beampro-candidate-04.apk",
+  "package_id": "com.shadowlens.xrealvoice", "versionName": "0.11-beampro-candidate.4", "versionCode": 114,
+  "application_label": "Shadow Lens",
+  "sha256": "832c875aed92e3872af749f4a6ba9a14b40a5d67ef86cbf759e9ad86a2e81109",
+  "size_bytes": 128758703,
+  "launchable_activity": "ai.nreal.activitylife.NRXRActivity (XREAL MR launcher, MAIN+LAUNCHER) — candidate-03 lacked this",
+  "xreal_settings_embedded": true,
+  "fix": "EditorBuildSettings.AddConfigObject(com.unity.xr.management.xrealsettings, XREALSettings.asset) so XRBuildHelper embeds the settings → runtime GetSettings() != null → XR plugin starts",
+  "nreal_sdk": "true", "com_nreal_supportDevices": "1|XrealLight|2|XrealAir",
+  "initial_tracking_type": "MODE_3DOF", "initial_input_source": "Controller",
+  "abi": "arm64-v8a", "scripting": "IL2CPP", "minSdk": 29, "targetSdk": 34,
+  "camera_flag": "OFF", "eye_flag": "OFF", "production_signed": false,
+  "device_validated": false,
+  "expectation": "should now start the XREAL XR plugin + appear in MyGlasses as an MR app (NRXRActivity) — pending Alex physical test"
+}

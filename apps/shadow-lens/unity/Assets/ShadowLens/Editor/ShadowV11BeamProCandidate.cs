@@ -21,9 +21,9 @@ namespace ShadowLens.EditorTools
     public static class ShadowV11BeamProCandidate
     {
         const string Pkg = "com.shadowlens.xrealvoice";               // kept — XREAL loader depends on it
-        const string OutApk = "Build/Android/shadow-lens-v11-beampro-candidate-03.apk";
-        const string Ver = "0.11-beampro-candidate.3";
-        const int VerCode = 113;                                       // > candidate-02 (112)
+        const string OutApk = "Build/Android/shadow-lens-v11-beampro-candidate-04.apk";
+        const string Ver = "0.11-beampro-candidate.4";
+        const int VerCode = 114;                                       // > candidate-03 (113)
         const string ProductName = "Shadow Lens";
 
         [MenuItem("Shadow Lens/Build V11 Beam Pro Candidate")]
@@ -56,6 +56,19 @@ namespace ShadowLens.EditorTools
             PlayerSettings.SetIl2CppCompilerConfiguration(NamedBuildTarget.Android, Il2CppCompilerConfiguration.Release);
             PlayerSettings.bundleVersion = Ver;
             PlayerSettings.Android.bundleVersionCode = VerCode;
+
+            // candidate-03 ROOT CAUSE (from the real glasses log): the XREAL XR plugin aborted at runtime
+            // with "Unable to start XREAL XR Plugin. Failed to get XREAL Settings." because the
+            // XREALSettings ScriptableObject was NOT embedded in the player — its config object was never
+            // registered under the SDK's build key, so XRBuildHelper<XREALSettings> embedded nothing.
+            // Register it here so the settings are embedded → runtime GetSettings() succeeds → the plugin
+            // can start (→ XRDisplaySubsystem → glasses rendering). Key + path are literals (no XREAL type
+            // reference needed). See CANDIDATE_03_RUNTIME_DIAGNOSIS.md.
+            var xrealSettings = AssetDatabase.LoadAssetAtPath<UnityEngine.ScriptableObject>("Assets/XR/Settings/XREALSettings.asset");
+            if (xrealSettings == null) { Debug.LogError("[V11BeamPro] XREALSettings asset missing at Assets/XR/Settings/XREALSettings.asset — XR plugin would fail to start. Aborting."); return BuildResult.Failed; }
+            EditorBuildSettings.AddConfigObject("com.unity.xr.management.xrealsettings", xrealSettings, true);
+            if (!EditorBuildSettings.TryGetConfigObject("com.unity.xr.management.xrealsettings", out UnityEngine.ScriptableObject _))
+            { Debug.LogError("[V11BeamPro] XREALSettings config object failed to register — runtime GetSettings() would return null (candidate-03 defect). Aborting."); return BuildResult.Failed; }
 
             var proj = Directory.GetParent(Application.dataPath).FullName;
             var apkAbs = Path.GetFullPath(Path.Combine(proj, OutApk));
@@ -111,11 +124,15 @@ namespace ShadowLens.EditorTools
             Req(outp.Contains($"versionName='{Ver}'"), $"versionName == {Ver}");
             Req(outp.Contains($"versionCode='{VerCode}'"), $"versionCode == {VerCode}");
             Req(outp.Contains($"application-label:'{ProductName}'"), $"application-label == {ProductName}");
-            Req(outp.Contains("launchable-activity: name='com.unity3d.player.UnityPlayerActivity'"),
-                "exactly one launchable-activity == com.unity3d.player.UnityPlayerActivity (MAIN+LAUNCHER+exported present)");
-            // exactly one launchable-activity line
-            int n = 0, idx = 0; while ((idx = outp.IndexOf("launchable-activity:", idx, System.StringComparison.Ordinal)) >= 0) { n++; idx += 20; }
-            Req(n == 1, $"exactly one launchable-activity (found {n})");
+            // A launchable activity must exist (MAIN+LAUNCHER). When XREALSettings are embedded, the SDK
+            // makes ai.nreal.activitylife.NRXRActivity the MR launcher (the correct XREAL 3.1 entry that
+            // initializes XR + routes to the glasses); candidate-03's UnityPlayerActivity-only launcher was
+            // the NON-XREAL fallback and did NOT appear in MyGlasses. Accept the XREAL MR launcher (preferred)
+            // or a Unity launcher (fallback).
+            bool xrealLauncher = outp.Contains("launchable-activity: name='ai.nreal.activitylife.NRXRActivity'");
+            bool unityLauncher = outp.Contains("launchable-activity: name='com.unity3d.player.UnityPlayerActivity'");
+            Req(xrealLauncher || unityLauncher, "a launchable-activity (XREAL NRXRActivity [MR] or UnityPlayerActivity) with MAIN+LAUNCHER");
+            Req(xrealLauncher, "XREAL MR launcher ai.nreal.activitylife.NRXRActivity present (required for MyGlasses MR; candidate-03 lacked it)");
 
             // MyGlasses MR-registration assertions — meta-data (aapt2 dump xmltree) + XREAL native lib (zip).
             string tree = Aapt2(aapt2, $"dump xmltree \"{apkAbs}\" --file AndroidManifest.xml");

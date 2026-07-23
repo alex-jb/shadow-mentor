@@ -1,9 +1,9 @@
 {
   "result": "Succeeded",
-  "apk": "Build/Android/shadow-lens-v11-beampro-candidate-03.apk",
+  "apk": "Build/Android/shadow-lens-v11-beampro-candidate-04.apk",
   "package_id": "com.shadowlens.xrealvoice",
-  "versionName": "0.11-beampro-candidate.3",
-  "versionCode": 113,
+  "versionName": "0.11-beampro-candidate.4",
+  "versionCode": 114,
   "minSdk": 29,
   "targetSdk": 34,
   "abi": "ARM64",
@@ -12,8 +12,8 @@
   "eye_flag": "OFF",
   "production_signed": false,
   "unity": "6000.0.23f1",
-  "size_bytes": 128214219,
-  "sha256": "114547630629c2b99cbf733153b808ef880fd9c5c44e60d13151b938bb1b6c6f",
-  "build_seconds": 43.3,
+  "size_bytes": 128758703,
+  "sha256": "832c875aed92e3872af749f4a6ba9a14b40a5d67ef86cbf759e9ad86a2e81109",
+  "build_seconds": 47.4,
   "default_view": "ShadowAuditWorkspace (device bootstrap)"
 }
