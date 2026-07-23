@@ -20,11 +20,19 @@
 // ─────────────────────────────────────────────────────────────────
 
 // Status palette — the ONLY meanings colour is allowed to carry.
+// PROFILE OVERRIDE: this is the named `AuditRoomProvenance` surface profile, NOT the flat
+// semantic table. In the Audit Room the RESTING/verified card surface is NEUTRAL paper
+// (#E8E8E8) — every card is intact by default, so painting them the semantic VERIFIED green
+// (#4ade80) would make green the room's background and destroy its signal. Verification is
+// carried by DEVIATION instead: `tampered` red marks a break, and `healed` green is the
+// transient verify/reset PULSE (the verification EVENT). So green still means verification —
+// as a confirmation cue, not a resting fill. See reports/spatial-ux-v11/TOKEN_PROFILE_OVERRIDE_POLICY.md;
+// test/threejs-profile-override.test.js pins this so the deviation can't drift into arbitrary.
 export const STATUS = Object.freeze({
-  intact:   "#E8E8E8", // trustworthy, verified
+  intact:   "#E8E8E8", // resting/verified SURFACE — neutral paper (profile override, not status green)
   error:    "#FFB020", // a lens/quality flag (amber) — not a chain break
   tampered: "#FF4A4A", // the mutated event / broken links (red)
-  healed:   "#3DDC97", // transient reset-replay colour (green)
+  healed:   "#3DDC97", // transient verify/reset PULSE (green = verification EVENT cue)
 });
 
 // Non-status greys/whites. These carry no state meaning.

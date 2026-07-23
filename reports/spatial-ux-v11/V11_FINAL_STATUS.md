@@ -39,8 +39,14 @@ INDEPENDENT-CRYPTO-AUDIT-COMPLETED · FORMAL-USER-STUDY-COMPLETED — **all fals
 - `37ea94f` Ambient Council layout (badge/clamp/approval/responsive)
 - `adb27c3` guided-story consumes XREAL_OST_BRIGHT (dark-on-bright backplate)
 
+## Increment log (this branch, ordered)
+1. ✅ **Cross-surface semantic token parity** (Unity/Three.js/CSS) + tests — approval never reuses verification green anywhere. (CROSS_SURFACE_TOKEN_PARITY.md)
+1.5. ✅ **Token codegen + visual review** — JSON is now the generated single source (Unity C# + JS + CSS via
+   `scripts/generate-tokens.mjs`, deterministic + stale-guarded); Three.js gray-verified resolved as the named
+   `AuditRoomProvenance` profile; offline token-review page. **This is the "TOKEN CODEGEN AND REVIEW INCREMENT",
+   NOT the completion of V11.** (TOKEN_CODEGEN_IMPLEMENTATION.md, TOKEN_PROFILE_OVERRIDE_POLICY.md, TOKEN_VISUAL_REVIEW.md, TOKEN_CODEGEN_REMAINING_GAPS.md)
+
 ## Next increment (ordered)
-1. Cross-surface semantic token parity (Unity/Three.js/CSS) + tests — approval never reuses verification green anywhere.
 2. Audit Workspace as the primary Unity product UI (card/rail/focus); primitives → diagnostic mode.
 3. Tracking-health → presentation auto-fallback wiring + state-preservation tests.
 4. Graphical PlayMode lane for the 8 headless-incompatible tests (RequiresGraphicsContext).

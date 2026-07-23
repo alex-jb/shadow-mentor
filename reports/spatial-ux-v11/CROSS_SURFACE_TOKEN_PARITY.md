@@ -37,8 +37,19 @@ Node `test/token-semantic-parity.test.js` (10) + Unity EditMode `ShadowTokenPari
 - cross-surface scan: Ambient Council approve is not verification-green; spatial-finance analysis confidence
   is not verification-green.
 
+## Token codegen increment (follow-on)
+The hand-mirrored surfaces are now **generated** from the canonical JSON — `scripts/generate-tokens.mjs` →
+Unity C# + Three.js JS + browser CSS, guarded by `test/token-codegen.test.js` (deterministic, stale-detection).
+The one deliberate colour deviation (Three.js Audit Room gray-verified) is resolved as the named
+`AuditRoomProvenance` profile and pinned by `test/threejs-profile-override.test.js`. Offline review page at
+`token-review/index.html`. See TOKEN_CODEGEN_IMPLEMENTATION.md, TOKEN_PROFILE_OVERRIDE_POLICY.md,
+TOKEN_VISUAL_REVIEW.md, TOKEN_CODEGEN_REMAINING_GAPS.md.
+
 ## §14 status flags
 CANONICAL-TOKEN-SOURCE-CONFIRMED ✅ · TOKEN-SOURCE-INVENTORY-COMPLETE ✅ · CROSS-SURFACE-STATUS-PARITY-PASSED ✅
+CANONICAL-TOKEN-CODEGEN-COMPLETE ✅ · UNITY/THREEJS/BROWSER-CSS-TOKENS-GENERATED ✅ · CODEGEN-DETERMINISTIC ✅
+STALE-GENERATED-FILES-DETECTED ✅ · PROFILE-OVERRIDES-EXPLICIT ✅ · THREEJS-VERIFIED-DIVERGENCE-RESOLVED ✅
+TOKEN-REVIEW-PAGE-COMPLETE ✅
 VERIFICATION-GREEN-UNIFIED ✅ · APPROVAL-SEPARATED-FROM-VERIFICATION ✅ · HEALED-TRANSIENT-SEMANTICS-CONFIRMED ✅
 FIRST-FAILURE-DOWNSTREAM-DISTINCT ✅ · REVIEW-APPROVAL-DISTINCT ✅ · TRUST-POSTURE-DISTINCT ✅
 TRACKING-STATE-DISTINCT ✅ · ENGLISH-CHINESE-TOKEN-PARITY-PASSED ✅ · UNITY-TOKEN-PARITY-PASSED ✅

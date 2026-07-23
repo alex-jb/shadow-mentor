@@ -1,0 +1,40 @@
+/* AUTO-GENERATED — DO NOT EDIT. | Source: design/shadow-spatial-tokens.json (shadow-spatial-tokens/2) | Generator: scripts/generate-tokens.mjs — run it to regenerate. Deterministic; no timestamp/path. */
+:root {
+  --shadow-status-downstream-affected-color: #8a92a0;
+  --shadow-status-failed-color: #ef4444;
+  --shadow-status-first-failure-color: #ef4444;
+  --shadow-status-not-checked-color: #fbbf24;
+  --shadow-status-not-evaluated-color: #8a92a0;
+  --shadow-status-not-present-color: #8a92a0;
+  --shadow-status-not-verified-color: #8a92a0;
+  --shadow-status-tampered-color: #ef4444;
+  --shadow-status-unsupported-color: #fbbf24;
+  --shadow-status-verified-color: #4ade80;
+  --shadow-status-warning-color: #fbbf24;
+  --shadow-governance-abstained-color: #8a92a0;
+  --shadow-governance-approval-not-present-color: #8a92a0;
+  --shadow-governance-approval-present-color: #3b82f6;
+  --shadow-governance-human-review-recorded-color: #6b7280;
+  --shadow-governance-requires-human-review-color: #3b82f6;
+  --shadow-trust-posture-self-signed-color: #fbbf24;
+  --shadow-trust-posture-time-anchored-color: #4ade80;
+  --shadow-trust-posture-time-anchored-structural-color: #3b82f6;
+  --shadow-tracking-initializing-color: #8a92a0;
+  --shadow-tracking-limited-color: #fbbf24;
+  --shadow-tracking-lost-color: #ef4444;
+  --shadow-tracking-recovering-color: #fbbf24;
+  --shadow-tracking-scanning-color: #fbbf24;
+  --shadow-tracking-tracked-3dof-color: #4ade80;
+  --shadow-tracking-tracked-6dof-color: #4ade80;
+  --shadow-interaction-confirm-required-color: #fbbf24;
+  --shadow-interaction-default-color: #8a92a0;
+  --shadow-interaction-disabled-color: #8a92a0;
+  --shadow-interaction-focused-color: #3b82f6;
+  --shadow-interaction-selected-color: #3b82f6;
+  --shadow-capability-authored-color: #8a92a0;
+  --shadow-capability-built-color: #3b82f6;
+  --shadow-capability-compiled-color: #8a92a0;
+  --shadow-capability-device-validated-color: #4ade80;
+  --shadow-capability-installed-color: #fbbf24;
+  --shadow-capability-production-ready-color: #4ade80;
+}
