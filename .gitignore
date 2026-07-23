@@ -40,3 +40,7 @@ apps/shadow-lens/demo/wednesday/backup/
 apps/shadow-lens/unity/Build/
 apps/shadow-lens/unity/.utmp/
 builds/
+
+# Beam Pro device harness: the raw 30s capture is operator-local; the distilled
+# important-lines.txt / summaries ARE committed as evidence.
+reports/device-validation-v11/latest-device-run/full-logcat.txt

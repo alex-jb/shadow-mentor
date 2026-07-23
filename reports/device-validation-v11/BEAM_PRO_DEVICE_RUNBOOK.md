@@ -47,37 +47,57 @@ Attach Eye, verify SDK detects it + real pose translation (distinguish from head
 
 ## 8. Then set the true flags in BEAM_PRO_DEVICE_VALIDATION_SUMMARY.md based on the actual results.
 
-## §5 — MR launch-routing tests (run on candidate-04, NO rebuild) — decisive next step
+## §5 — MR launch-routing test — ONE COMMAND (replaces the old manual ADB/logcat workflow)
 The candidate-04 glasses log showed Shadow launched DIRECTLY → isEntryApp=false, mrPkgName empty →
-Nebula reclaimed the glasses (see CANDIDATE_04_PROCESS_AWARE_DIAGNOSIS.md). These tests find whether
-launching via the MyGlasses MR path fixes it WITHOUT any code change:
+Nebula reclaimed the glasses (see CANDIDATE_04_PROCESS_AWARE_DIAGNOSIS.md). The decisive question is
+whether launching from the MyGlasses MR grid sets the handoff. Run:
 
 ```
-ADB=/Applications/Unity/Hub/Editor/6000.0.23f1/PlaybackEngines/AndroidPlayer/SDK/platform-tools/adb
-# 1. what does the launcher resolve to?
-$ADB shell cmd package resolve-activity --brief \
-  -a android.intent.action.MAIN -c android.intent.category.LAUNCHER com.shadowlens.xrealvoice
-
-# 2. standard launcher-intent start (baseline)
-$ADB shell am force-stop com.shadowlens.xrealvoice
-$ADB logcat -c
-$ADB shell am start -a android.intent.action.MAIN -c android.intent.category.LAUNCHER -p com.shadowlens.xrealvoice
-#    then read: does myGlasses set mrPkgName = com.shadowlens.xrealvoice, or stay empty?
-$ADB logcat -d | grep -iE 'mrPkgName|isEntryApp|component not found|NRXRApp|goLauncher'
-
-# 3. THE decisive one — put on the glasses, open MyGlasses, and launch "Shadow Lens" FROM the MyGlasses
-#    app grid (not adb, not the phone icon). Capture the log during that launch:
-$ADB logcat -c ; # launch Shadow Lens from MyGlasses, then:
-$ADB logcat -d | grep -iE 'mrPkgName|isEntryApp|multiResumeMode|component not found|NRXRApp|XREALXRLoader|Failed to get|3840|displayId'
+bash scripts/beampro-device-test.sh \
+  --package com.shadowlens.xrealvoice \
+  --expected-version 0.11-beampro-candidate.4 \
+  --mode myglasses-grid
 ```
-Report back:
-- Does Shadow Lens APPEAR in the MyGlasses app grid?
-- When launched from there, does myGlasses log `mrPkgName = com.shadowlens.xrealvoice` (not empty)?
-- Does Shadow's own NRXRActivity log `isEntryApp=true` on the glasses displayId (19, not 0)?
-- Does Shadow's own `[XREALXRLoader] Init/Start End` appear (from the Shadow PID), with NO "Failed to
-  get XREAL Settings"?
+Options: `--apk <path>` (install first) · `--device-hint X4200` (pick among several devices) ·
+`--seconds 30` · `--kill-server` (only when the adb server is wedged) · `--mode direct` (CONTROL run,
+launches via adb — that route can never produce PHYSICAL_PASS).
+
+What it does, so you never touch a second terminal again:
+1. finds the Unity-bundled adb, runs `adb mdns services`, resolves the CURRENT wireless-debugging
+   IP:port (it changes every session), connects with bounded retries, verifies shell.
+   Prints `BEAM_PRO_FOUND` / `ADB_WIRELESS_CONNECTED` / `DEVICE_MODEL` / `DEVICE_IP_PORT`.
+   If nothing resolves it tells you the exact action (same Wi-Fi + Wireless debugging ON).
+2. verifies the INSTALLED candidate: versionName/versionCode, resolved launcher activity,
+   `NRXRActivity` MR registration, and the `nreal_sdk` + `com.nreal.supportDevices` manifest
+   meta-data (read off the APK with aapt). Reinstalls only when `--apk` is given.
+3. pauses with ONE instruction block (connect glasses → MyGlasses → open "Shadow Lens" from the MR
+   grid → Enter), then captures 30 s of logcat + `ps -A` itself.
+4. resolves the PIDs of Shadow / nebula / nebula:space and attributes every XR line to a PID, so
+   Nebula's Unity process can never again be read as a Shadow success.
+5. prints the §5 signal set and ONE classification enum, asks the 7 observation questions, and writes
+   everything to `reports/device-validation-v11/latest-device-run/`:
+   `DEVICE_RUN_SUMMARY.md` · `device-run-summary.json` · `full-logcat.txt` · `important-lines.txt` ·
+   `process-map.json` · `activity-state.txt` · `display-state.txt` · `package-state.txt` ·
+   `physical-observation.json`. The device serial and LAN IP are redacted from every written file.
+
+Classifications: `MR_GRID_DISCOVERY_FAILED` · `MR_PACKAGE_HANDOFF_MISSING` · `NEBULA_FALLBACK_LAUNCHER`
+· `SHADOW_XR_LOADER_NOT_STARTED` · `SHADOW_XR_DISPLAY_NOT_RUNNING` · `SHADOW_PROCESS_CRASHED` ·
+`SHADOW_RUNNING_NO_VISIBLE_WORKSPACE` · `PHYSICAL_PASS` · `INSUFFICIENT_EVIDENCE`.
+
+`physical_device_validated` in the summary is `true` only when the run itself classifies PHYSICAL_PASS.
+
+### Harness self-test (no device required)
+```
+bash scripts/beampro-device-test.selftest.sh    # 34 assertions
+```
+Covers the mDNS parser, changing ports, missing device, multiple ADB devices, stale connection, PID
+attribution, empty logs, Nebula-vs-Shadow separation, every classification branch, and the signal
+extractor. Run it after any edit to the harness.
 
 ## candidate-05 GATE (do NOT build yet)
+candidate-05 is permitted only after a §5 harness run produces a concrete classification AND names the
+exact configuration or routing difference to change. A run that ends `INSUFFICIENT_EVIDENCE` does not
+open the gate. All physical success flags stay false until a run classifies `PHYSICAL_PASS`.
 candidate-05 is NOT built until §5 proves the exact handoff difference. If launching from MyGlasses
 already works → candidate-04 is correct + the fix was the launch method (no new APK). If §5 shows a
 registration/routing gap → candidate-05 with the proven fix + the already-authored SHADOW_DEVICE_DIAG
