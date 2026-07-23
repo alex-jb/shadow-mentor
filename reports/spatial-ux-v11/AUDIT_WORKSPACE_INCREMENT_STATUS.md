@@ -14,19 +14,25 @@ visual PlayMode capture + full browser acceptance are in progress in the same in
 | AUDIT-WORKSPACE-DEFAULT-VIEW | ✅ | `ShadowPresentationModes.Default == AuditWorkspace` |
 | PRIMITIVE-DIAGNOSTIC-PRESERVED | ✅ | enum retained; SwitchMode keeps it available |
 | GENERATED-UNITY-TOKENS-CONSUMED | ✅ | ShadowStatusGlyph → ShadowSemanticTokens.Get; no hardcoded table |
-| CURRENT-FOCUS-READABLE | ✅ (logic) | BuildFocus binding tests |
-| SOURCE-CARD-READABLE | ✅ (logic) | missing-state explicit tests |
-| TRUST-STRIP-READABLE | ✅ (logic) | 4 groups, not-all-green test |
-| EVIDENCE-RAIL-IMPLEMENTED | ✅ (logic) | sequence + first-failure-break + downstream-distinct test |
-| FIRST-FAILURE-READABLE | ✅ (logic) | test |
-| DOWNSTREAM-AFFECTED-DISTINCT | ✅ (logic) | distinct glyph/icon test |
-| INTEGRITY-CORRECTNESS-DISTINCT | ✅ | correctness NOT_EVALUATED default, separate field |
-| HUMAN-REVIEW-APPROVAL-DISTINCT | ✅ | separate fields + assertion |
-| TRACKING-SCANNING-EXPLICIT | ✅ | exact copy EN/ZH; distinct-from-LIMITED test |
-| TRACKING-FALLBACK-AUTOMATIC / STATE-PRESERVATION-PASSED | ✅ (logic) | ApplyDegraded preserves story/selection |
-| OPEN-2D-AUDIT-REACHABLE | ✅ | action rendered; next-action routes to 2D audit; verify.html untouched |
-| ENGLISH-LABELS-PASSED / CHINESE-LABELS-PASSED | ✅ | BuildFocus EN/ZH + label-metrics tests |
+| EVIDENCE-RAIL-IMPLEMENTED | ✅ | sequence + first-failure-break + downstream-distinct test |
+| INTEGRITY-CORRECTNESS-DISTINCT | ✅ (logic) | correctness NOT_EVALUATED default, separate field |
+| HUMAN-REVIEW-APPROVAL-DISTINCT | ✅ (logic) | separate fields + assertion |
+| TRACKING-SCANNING-EXPLICIT | ✅ (logic) | exact copy EN/ZH; distinct-from-LIMITED test |
+| TRACKING-STATE-PRESERVATION-PASSED | ✅ (logic) | ApplyDegraded preserves story/selection |
+| OPEN-2D-AUDIT-REACHABLE | ✅ (logic) | action rendered; next-action routes to 2D audit; verify.html untouched |
 | MATERIAL-SHARING-PASSED | ✅ (code) | static shared-material cache; no per-card material |
+
+### VISUAL_ACCEPTANCE_PENDING — logic bound + tested, but NOT visually accepted (no graphical capture inspected yet)
+Per the correction: "logic readable" ≠ "画面可读". These are **not** claimed visually passed until the
+14 graphical Workspace captures are produced + inspected:
+- CURRENT-FOCUS-READABLE → LOGIC_BINDING_PASSED · VISUAL_ACCEPTANCE_PENDING
+- SOURCE-CARD-READABLE → LOGIC_BINDING_PASSED · VISUAL_ACCEPTANCE_PENDING
+- TRUST-STRIP-READABLE → LOGIC_BINDING_PASSED · VISUAL_ACCEPTANCE_PENDING
+- FIRST-FAILURE-READABLE → LOGIC_BINDING_PASSED · VISUAL_ACCEPTANCE_PENDING
+- DOWNSTREAM-AFFECTED-VISUALLY-DISTINCT → LOGIC_BINDING_PASSED · VISUAL_ACCEPTANCE_PENDING
+- ENGLISH-LABELS-VISUALLY-PASSED / CHINESE-LABELS-VISUALLY-PASSED → TEXT_SIZING_TESTS_PASSED · VISUAL_ACCEPTANCE_PENDING
+- TRACKING-BANNER-VISUALLY-PASSED → VISUAL_ACCEPTANCE_PENDING
+- RENDER-HARNESS-CAPTURES-COMPLETE → false (no captures yet)
 | FULL-NODE-SUITE-PASSED | ✅ | 2035 pass / 0 fail / 3 skip |
 | SEMANTIC-HASHES-UNCHANGED / STABLE-APK-UNCHANGED / FROZEN-VERIFIER-UNCHANGED | ✅ | c478b46f; no APK write |
 

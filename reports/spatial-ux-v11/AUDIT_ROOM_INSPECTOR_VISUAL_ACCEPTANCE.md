@@ -1,35 +1,50 @@
 # Audit Room inspector — browser visual acceptance
 
-**Status: VISUALLY VALIDATED in Chromium (real Three.js runtime, served locally, offline).** Answers
-the correct critique that pure-math tests cannot prove occlusion / leader-line crossing.
+**Status: NOT VISUALLY ACCEPTED. Placement math + runtime creation PASS; Flat-mode composition +
+readability FAIL.** The prior version of this doc wrongly implied full visual validation — that was an
+over-claim and is corrected here.
 
-## Method
-- Served `demos/replay/3d/index.html` locally (http://127.0.0.1:8199), driven via chrome-devtools.
-- Selection driven through the live scene API `window.__auditRoom.room.select(seq)`.
-- 12 cards, world x from −3.24 (left) to +3.24 (right); anchor view region world x ∈ [−3, 3].
+## Honest classification (from the actual 3200×1496 Chromium captures)
+| Aspect | Verdict |
+|---|---|
+| INSPECTOR-PLACEMENT-MATH | **PASS** — left→upper-right, right→upper-left, edge clamped into view |
+| INSPECTOR-RUNTIME-CREATION | **PASS** — panel + leader line created; exactly 1 leader after repeated selection (no orphans); no console errors; offline |
+| INSPECTOR-READABILITY | **FAIL** — inspector text is microscopic in the full-res capture |
+| SELECTED-ASSOCIATION | **FAIL** — the selected card is not visually obvious; panel↔card don't read as one group |
+| LEADER-LINE-VISIBILITY | **FAIL / INCONCLUSIVE** — leader line is too faint to read against black |
+| FLAT-COMPOSITION | **FAIL** — ~80% of the viewport is empty black; the rail occupies ~half width, tiny height; card text (seq/hashes) unreadable |
+| FIRST-FRAME-COMPREHENSION | **FAIL** — a first-time viewer cannot tell where to look |
+| TIME-AXIS | **NOT TESTED** — axis not wired into the live scene |
+| SBS | **NOT TESTED** |
 
-## Captures (reports/spatial-ux-v11/browser-acceptance/)
-| File | Case | Result |
-|---|---|---|
-| 01-inspector-left-record.png | seq 2 (x=−2.15, left) | panel anchors upper-right (offset toward centre), leader line down to card boundary; panel above the row — does not cover the card |
-| 02-inspector-right-record.png | seq 9 (x=+2.15, right) | panel anchors upper-left; leader line to card boundary; no occlusion |
-| 03-inspector-edge-clamped.png | seq 11 (x=+3.24, far right) | panel clamped inside the view region (not off-screen); leader line to the session_end card; no occlusion |
+## BEFORE artifacts (preserved, do NOT overwrite)
+- `browser-acceptance/01-inspector-left-record.png` (seq 2) — BEFORE / FAIL
+- `browser-acceptance/02-inspector-right-record.png` (seq 9) — BEFORE / FAIL
+- `browser-acceptance/03-inspector-edge-clamped.png` (seq 11) — BEFORE / FAIL
 
-## Verified
-- **Selected record stays visible** — the panel sits above the card row in every case; it never covers
-  the selected card.
-- **Leader line terminates at the card boundary** and connects the correct card.
-- **Left/right placement is coherent** — left cards' panels offset right, right cards' offset left,
-  each clamped into the comfortable region.
-- **View clamping works** — the far-right (out-of-region) card's panel is clamped inside the view.
-- **No orphan leader lines** — after 5 repeated selections (0,5,11,2,11), the scene contains exactly
-  ONE leader line (12 THREE.Line objects = 11 chain connectors + 1 leader), confirmed by traversal.
-- **No console errors/warnings**; no external requests (served locally, offline bundle).
+These stay as failure evidence. AFTER captures will use `*-AFTER.png` names and a BEFORE/AFTER
+contact sheet.
 
-## Honest UX notes (not defects introduced by anchoring)
-- The inspector panel + its text are small relative to the viewport — legibility at a glance is weak
-  (this is the pre-existing inspector sizing, not the anchoring change). A larger panel / bigger
-  inspector font is a follow-up polish item.
-- Because the panel clamps toward centre, left/right offset is subtle at the arc's full width; the
-  leader line remains the primary cue tying the panel to its card.
-- This is a flat-mode desktop capture (`FLAT` HUD). SBS/ultrawide and XREAL hardware are NOT validated.
+## Root causes to fix (bounded Flat-mode correction — NOT a redesign)
+1. **Flat camera framing** is effectively fixed/too far → the rail is small and text unreadable.
+   Fix: deterministic fit-to-content so the rail fills ~70–82% width / ~25–40% height at 16:9,
+   recomputed on resize; SBS/XR/ultrawide presets unchanged.
+2. **Selected card has no visual weight** → add stroke + moderate scale (1.12–1.18) + a selection
+   glyph + de-emphasis of others (adjacent ~0.8, distant ~0.5). Never colour alone; hover ≠ selection.
+3. **Inspector too small** → 1.5–2× larger, layered (type/seq/actor/summary/status), bounded excerpt,
+   readable body; still view-clamped; never covers the selected card; EN+ZH.
+4. **Leader line invisible** → brighter/thicker + a distinct line style from evidence connectors;
+   never implies chain direction; safe in Tracking-Lost fallback.
+5. **Trust/status line detached at the bottom** → move into a compact Session/Trust header near the
+   content; distinguish INTEGRITY / TRUST posture / CORRECTNESS (not one generic green "valid").
+6. **First-entry hint** → one bounded "Select a record to inspect it. Press ? for controls." that
+   dismisses after selection.
+
+## Flags (corrected)
+- AUDIT-ROOM-INSPECTOR-PLACEMENT-PASSED ✅
+- AUDIT-ROOM-INSPECTOR-READABILITY-PASSED ❌
+- AUDIT-ROOM-LEADER-LINE-VISIBLE ❌
+- AUDIT-ROOM-SELECTED-ASSOCIATION-PASSED ❌
+- AUDIT-ROOM-FLAT-COMPOSITION-PASSED ❌
+- TRUST-STATUS-HIERARCHY-PASSED ❌
+- **AUDIT-ROOM-INSPECTOR-VISUALLY-VALIDATED: false** (was wrongly true)
