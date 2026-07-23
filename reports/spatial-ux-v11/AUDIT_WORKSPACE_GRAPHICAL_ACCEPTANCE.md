@@ -16,8 +16,16 @@ Completion flags: AUDIT-WORKSPACE-ALL-DESKTOP-STATES-CAPTURED ✅ · AUDIT-WORKS
 (representative) · AUDIT-WORKSPACE-CONTACT-SHEETS-COMPLETE ✅ · HEADER-TRACKING-SEPARATION-PASSED ✅ ·
 SOURCE-CARD-CROWDING-RESOLVED ✅ · TRUST-STRIP-CLIPPING-RESOLVED ✅ · CJK-GLYPH-RENDERING-PASSED ✅ ·
 CHINESE-LOCALIZATION-COMPLETE ✅ (label+status layer; role-value residual) · TRACKING-STATES-VISUALLY-DISTINCT ✅.
-Still honest-false: WORKSPACE-REPEATED-UPDATE-CLEANUP-PASSED (code paths present, not count-asserted —
-see AUDIT_WORKSPACE_RUNTIME_INVENTORY.md); OST-READABILITY-DEVICE-VALIDATED; all device flags.
+**WORKSPACE-REPEATED-UPDATE-CLEANUP-PASSED ✅** — now programmatically asserted by
+`ShadowAuditWorkspaceLifecycleTests` (PlayMode 1/1): 32 update cycles keep regions=5, texts 34↔35 and
+return to exactly 34, uniqueMats fixed at 4, destroy leaves 0 orphans, recreate == baseline. See
+AUDIT_WORKSPACE_RUNTIME_INVENTORY.md + `lifecycle-inventory.json`.
+
+**AUDIT-WORKSPACE-GRAPHICAL-ACCEPTANCE-COMPLETE ✅** — the final gating item (repeated-update cleanup)
+is closed. Remaining non-blocking limitations kept explicit: minor CENTER/RIGHT spacing; entity
+role-VALUE localization; OST captures are simulated only; no device-performance result.
+
+Still honest-false: OST-READABILITY-DEVICE-VALIDATED; all device flags.
 
 ---
 ## (earlier) first graphical pass — kept for history

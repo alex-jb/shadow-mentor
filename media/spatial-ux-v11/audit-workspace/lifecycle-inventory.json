@@ -1,0 +1,7 @@
+{
+  "baseline": {"regions":5,"texts":34,"renderers":38,"quads":4,"uniqueMats":4},
+  "max_during_updates": {"regions":5,"texts":35,"renderers":39,"quads":4,"uniqueMats":4},
+  "final_same_state": {"regions":5,"texts":34,"renderers":38,"quads":4,"uniqueMats":4},
+  "after_recreate": {"regions":5,"texts":34,"renderers":38,"quads":4,"uniqueMats":4},
+  "cycles": 32, "device_validated": false
+}

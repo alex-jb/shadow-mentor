@@ -64,7 +64,18 @@ INDEPENDENT-CRYPTO-AUDIT-COMPLETED · FORMAL-USER-STUDY-COMPLETED — **all fals
    in-increment verifiable steps. (AUDIT_WORKSPACE_ARCHITECTURE.md, AUDIT_WORKSPACE_INCREMENT_STATUS.md,
    AUDIT_WORKSPACE_TOKEN_CONSUMPTION.md, AUDIT_WORKSPACE_TRACKING_FALLBACK.md, AUDIT_WORKSPACE_REMAINING_GAPS.md)
 
+2.9. ✅ **AUDIT WORKSPACE GRAPHICAL ACCEPTANCE COMPLETE** — real Unity graphics-mode PlayMode captures
+   of the workspace (BEFORE overlap → AFTER readable), 4 crowding defects fixed, full 14-state matrix +
+   representative zh/OST/HighContrast (32 PNGs + 6 contact sheets), Chinese localized
+   (ShadowWorkspaceLabels + generated-token values), and the final gating item closed:
+   `ShadowAuditWorkspaceLifecycleTests` (PlayMode 1/1) programmatically proves repeated updates +
+   destroy/recreate do not leak or duplicate objects (regions=5, uniqueMats=4 fixed, recreate==baseline).
+   EditMode 136/136. Non-blocking limits kept explicit (minor center/right spacing, role-value l10n, OST
+   simulated only). (AUDIT_WORKSPACE_GRAPHICAL_ACCEPTANCE.md + RUNTIME_INVENTORY.md + LOCALIZATION.md +
+   BEFORE_AFTER.md + PROFILE_REVIEW.md)
+
 ## Next increment (ordered)
+- Audit Room Flat composition fix (inspector readability — same camera-fit + selected-hierarchy method), then Three.js Time Mode integration.
 3. Tracking-health → presentation auto-fallback wiring + state-preservation tests.
 4. Graphical PlayMode lane for the 8 headless-incompatible tests (RequiresGraphicsContext).
 5. CJK wrapping (Intl.Segmenter); OST positive/negative split; spatial-finance API-boundary escaping.
