@@ -69,3 +69,10 @@ PRODUCTION-FLOW-INTEGRATION · FLOW-PARTNERSHIP-CONFIRMED · PRODUCTION-READY.
 2. **Attach the Beam Pro** (USB debugging on) and run `BEAM_PRO_DEVICE_RUNBOOK.md`.
 
 Until both are done on Alex's hardware, this increment is PREPARED, not VALIDATED.
+
+## UPDATE — candidate-02 (LAUNCHABLE) supersedes candidate-01 for install
+candidate-01 installed but was **not launchable** (device: no MAIN/LAUNCHER, UnityPlayerActivity not
+exported). **candidate-02** fixes it (stash offline manifest → default launcher manifest;
+application-label "Shadow Lens"; post-build aapt launchability assertion PASSED). Install
+`shadow-lens-v11-beampro-candidate-02.apk` (SHA-256 `6ee4d4ff…`, vc112). candidate-01 preserved as
+failed evidence. See DEVICE_CANDIDATE_HISTORY.md. First-launch success NOT yet claimed — pending Alex.

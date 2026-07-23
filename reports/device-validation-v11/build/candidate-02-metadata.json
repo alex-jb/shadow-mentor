@@ -1,0 +1,16 @@
+{
+  "file": "apps/shadow-lens/unity/Build/Android/shadow-lens-v11-beampro-candidate-02.apk",
+  "package_id": "com.shadowlens.xrealvoice",
+  "versionName": "0.11-beampro-candidate.2", "versionCode": 112,
+  "application_label": "Shadow Lens",
+  "launchable_activity": "com.unity3d.player.UnityPlayerActivity (exported=true, MAIN+LAUNCHER)",
+  "minSdk": 29, "targetSdk": 34, "abi": "arm64-v8a", "scripting": "IL2CPP",
+  "size_bytes": 128214131,
+  "sha256": "6ee4d4ff37d6a8d1",
+  "sha256_note": "run: shasum -a256 <apk> for the full digest",
+  "camera_flag": "OFF", "eye_flag": "OFF", "production_signed": false,
+  "default_view": "ShadowAuditWorkspace (device bootstrap, Banking fixture)",
+  "aapt_launchability_assertion": "PASSED (build fails if not launchable)",
+  "fix": "stash Assets/Plugins/Android/AndroidManifest.xml (offline no-activity manifest) so Unity generates its default launcher manifest with MAIN/LAUNCHER + exported=true",
+  "device_validated": false
+}

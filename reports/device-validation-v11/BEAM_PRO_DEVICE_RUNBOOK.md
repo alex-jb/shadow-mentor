@@ -7,7 +7,7 @@ ADB=/Applications/Unity/Hub/Editor/6000.0.23f1/PlaybackEngines/AndroidPlayer/SDK
 ```
 Unity -batchmode -nographics -projectPath apps/shadow-lens/unity \
   -executeMethod ShadowLens.EditorTools.ShadowV11BeamProCandidate.BuildCI -logFile build.log
-# → Build/Android/shadow-lens-v11-beampro-candidate-01.apk  (+ reports/device-validation-v11/build/build-summary.json)
+# → Build/Android/shadow-lens-v11-beampro-candidate-02.apk  (+ reports/device-validation-v11/build/build-summary.json)
 ```
 
 ## 2. Inventory the device (redact serials)
@@ -19,7 +19,7 @@ $ADB shell getprop ro.build.version.security_patch ; $ADB shell pm list packages
 
 ## 3. Install (side-by-side is not used — same package replaces the stable app on the device only)
 ```
-$ADB install -r Build/Android/shadow-lens-v11-beampro-candidate-01.apk
+$ADB install -r Build/Android/shadow-lens-v11-beampro-candidate-02.apk
 $ADB shell dumpsys package com.shadowlens.xrealvoice | grep -E 'versionName|versionCode'
 ```
 
