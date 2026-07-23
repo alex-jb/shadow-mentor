@@ -1,7 +1,27 @@
 # Audit Workspace — graphical acceptance
 
-**Status: GRAPHICALLY RENDERED + core readability PASS after a bounded layout correction. Composition
-is SUBSTANTIALLY IMPROVED with minor residual crowding. NOT device validated.**
+**Status: COMPLETION PASS — the 4 confirmed crowding defects are fixed, all 14 DesktopDark states +
+representative zh/OST/HighContrast captured, Chinese localized. Minor residuals remain (documented).
+NOT device validated.**
+
+## Completion pass (this increment)
+Fixed the 4 confirmed defects (header/tracking separation + a `tracking: UNKNOWN STATUS` bug, Source
+Card spacing, Trust Strip clipping, Chinese field-label localization), captured the full matrix (32
+PNGs, `<state>__<lang>__<profile>.png`), and generated 6 contact sheets. See
+AUDIT_WORKSPACE_BEFORE_AFTER.md, AUDIT_WORKSPACE_LOCALIZATION.md, AUDIT_WORKSPACE_PROFILE_REVIEW.md,
+AUDIT_WORKSPACE_CAPTURE_MANIFEST.json. Unity graphics-mode PlayMode 1/1; EditMode 136/136 (+3
+localization tests). BEFORE-overlap/ + INTERMEDIATE-partial/ preserved as failure evidence.
+
+Completion flags: AUDIT-WORKSPACE-ALL-DESKTOP-STATES-CAPTURED ✅ · AUDIT-WORKSPACE-PROFILE-CAPTURES-COMPLETE ✅
+(representative) · AUDIT-WORKSPACE-CONTACT-SHEETS-COMPLETE ✅ · HEADER-TRACKING-SEPARATION-PASSED ✅ ·
+SOURCE-CARD-CROWDING-RESOLVED ✅ · TRUST-STRIP-CLIPPING-RESOLVED ✅ · CJK-GLYPH-RENDERING-PASSED ✅ ·
+CHINESE-LOCALIZATION-COMPLETE ✅ (label+status layer; role-value residual) · TRACKING-STATES-VISUALLY-DISTINCT ✅.
+Still honest-false: WORKSPACE-REPEATED-UPDATE-CLEANUP-PASSED (code paths present, not count-asserted —
+see AUDIT_WORKSPACE_RUNTIME_INVENTORY.md); OST-READABILITY-DEVICE-VALIDATED; all device flags.
+
+---
+## (earlier) first graphical pass — kept for history
+**Status was: GRAPHICALLY RENDERED + core readability PASS after a bounded layout correction.**
 
 ## Method (real runtime, not a mock)
 `Tests/PlayMode/ShadowAuditWorkspaceCaptureHarness.cs` (env-gated `SHADOW_CAPTURE=1`) instantiates the

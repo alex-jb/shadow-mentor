@@ -92,62 +92,78 @@ namespace ShadowLens.Workspace
         const float T_TITLE = 0.052f, T_HEAD = 0.03f, T_LABEL = 0.03f, T_BODY = 0.026f, T_SMALL = 0.022f;
         static string Cut(string s, float em) => ShadowLabelMetrics.TruncateWithAffordance(s ?? "", em);
 
+        string LL(string key) => ShadowWorkspaceLabels.Get(key, Zh);
+        static string SV(string status, bool zh) { var g = ShadowStatusGlyph.Resolve(status); return zh ? g.TextZh : g.Text; }
+
         void RebuildHeader(CurrentFocusVM focus)
         {
-            var r = Region("top", new Vector3(-3.3f, 2.0f, 0));
+            var r = Region("top", new Vector3(-3.3f, 2.05f, 0));
             Label(r, Cut(_model?.Title?.Pick(Zh) ?? "Shadow Audit", 22f), T_TITLE, ThemeText(), Vector3.zero);
-            Label(r, "tracking: " + Tracking, T_HEAD, ThemeText(), new Vector3(0, -0.24f, 0));
-            Label(r, "SIMULATED — NOT DEVICE VALIDATED", T_SMALL, Hex("#961418"), new Vector3(0, -0.38f, 0));
+            Label(r, LL("tracking") + ": " + (ShadowWorkspaceLabels.Has(Tracking) ? LL(Tracking) : Tracking), T_HEAD, ThemeText(), new Vector3(0, -0.30f, 0));
+            Label(r, LL("simulated"), T_SMALL, Hex("#961418"), new Vector3(0, -0.46f, 0));
             if (ShadowTrackingBanner.IsDegraded(Tracking) || Tracking == "SCANNING")
-                Label(r, ShadowTrackingBanner.Copy(Tracking, Zh), T_BODY, Hex("#fbbf24"), new Vector3(2.7f, 0, 0));
+                Label(r, ShadowTrackingBanner.Copy(Tracking, Zh), T_BODY, Hex("#fbbf24"), new Vector3(2.9f, 0, 0));
         }
 
         void RebuildSource()
         {
-            var r = Region("left", new Vector3(-3.3f, 0.9f, 0));
+            var r = Region("left", new Vector3(-3.3f, 1.1f, 0));
             var src = ShadowAuditWorkspaceModel.BuildSource(_model?.EntityById(_focusEntityId));
-            Label(r, "SOURCE", T_HEAD, ThemeSecondary(), Vector3.zero);
-            Label(r, Cut(src.SourceName, 16f), T_LABEL, ThemeText(), new Vector3(0, -0.14f, 0));
-            Label(r, "loc: " + Cut(src.Location, 14f), T_BODY, ThemeSecondary(), new Vector3(0, -0.26f, 0));
-            Label(r, "resolution: " + src.Resolution, T_BODY, GlyphColor(src.Resolution == "PRESENT" ? "VERIFIED" : "NOT_PRESENT"), new Vector3(0, -0.37f, 0));
-            Label(r, "OCR: " + src.Ocr, T_BODY, GlyphColor("NOT_EVALUATED"), new Vector3(0, -0.48f, 0));
+            var name = src.Resolution == "PRESENT" ? src.SourceName : LL("source_not_present");
+            var loc = src.LocationAvailable ? src.Location : LL("location_not_available");
+            Label(r, LL("source"), T_HEAD, ThemeSecondary(), Vector3.zero);
+            Label(r, Cut(name, 16f), T_LABEL, ThemeText(), new Vector3(0, -0.18f, 0));
+            Label(r, LL("loc") + ": " + Cut(loc, 14f), T_BODY, ThemeSecondary(), new Vector3(0, -0.34f, 0));
+            Label(r, LL("resolution") + ": " + SV(src.Resolution == "PRESENT" ? "VERIFIED" : "NOT_PRESENT", Zh), T_BODY, GlyphColor(src.Resolution == "PRESENT" ? "VERIFIED" : "NOT_PRESENT"), new Vector3(0, -0.48f, 0));
+            Label(r, LL("ocr") + ": " + SV("NOT_EVALUATED", Zh), T_BODY, GlyphColor("NOT_EVALUATED"), new Vector3(0, -0.62f, 0));
         }
 
         void RebuildFocus(CurrentFocusVM focus)
         {
-            var r = Region("center", new Vector3(-0.9f, 0.9f, 0.05f));
+            var r = Region("center", new Vector3(-0.9f, 1.1f, 0.05f));
             Label(r, Cut(focus.Title, 20f), T_TITLE, ThemeText(), Vector3.zero); // dominant
-            Label(r, "role: " + focus.Role, T_SMALL, ThemeSecondary(), new Vector3(0, -0.16f, 0));
-            float y = -0.30f;
+            Label(r, LL("role") + ": " + focus.Role, T_SMALL, ThemeSecondary(), new Vector3(0, -0.20f, 0));
+            float y = -0.36f;
             foreach (var f in focus.Fields)
             {
                 var g = ShadowStatusGlyph.Resolve(f.Status);
-                Label(r, Cut(f.Label + ": " + f.Value, 15f), T_BODY, Hex(g.ColorHex), new Vector3(0, y, 0));
-                y -= 0.115f;
+                string val = f.Key == "downstream" ? f.Value : SV(f.Status, Zh);
+                Label(r, Cut(LL(f.Key) + ": " + val, 14f), T_BODY, Hex(g.ColorHex), new Vector3(0, y, 0));
+                y -= 0.12f;
             }
             if (focus.IsFirstFailure)
-                Label(r, "◆ FIRST FAILURE", T_LABEL, GlyphColor("FIRST_FAILURE"), new Vector3(0, y - 0.02f, 0));
+                Label(r, "◆ " + LL("first_failure"), T_LABEL, GlyphColor("FIRST_FAILURE"), new Vector3(0, y - 0.02f, 0));
             y -= 0.16f;
-            Label(r, "▶ " + Cut(focus.NextAction, 30f), T_BODY, GlyphColor("APPROVAL_PRESENT"), new Vector3(0, y, 0));
-            Label(r, "[ OPEN 2D AUDIT ]", T_BODY, ThemeText(), new Vector3(0, y - 0.13f, 0));
+            Label(r, "▶ " + Cut(LocalNextAction(focus), 30f), T_BODY, GlyphColor("APPROVAL_PRESENT"), new Vector3(0, y, 0));
+            Label(r, "[ " + LL("open_2d_audit") + " ]", T_BODY, ThemeText(), new Vector3(0, y - 0.14f, 0));
+        }
+
+        string LocalNextAction(CurrentFocusVM f)
+        {
+            if (f.IsFirstFailure || f.Verification == "FAILED") return LL("open_2d_audit") + " — " + LL("inspect_first_failure");
+            if (f.HumanReview == "REQUIRES_HUMAN_REVIEW") return LL("route_for_review");
+            if (f.Approval == "APPROVAL_NOT_PRESENT") return LL("await_approval");
+            return LL("continue_review");
         }
 
         void RebuildTrustStrip(CurrentFocusVM focus)
         {
-            var r = Region("right", new Vector3(2.55f, 0.9f, 0));
-            Label(r, "TRUST", T_HEAD, ThemeSecondary(), Vector3.zero);
-            float y = -0.16f;
-            foreach (var grp in ShadowAuditWorkspaceModel.BuildTrustStrip(focus))
+            var r = Region("right", new Vector3(2.25f, 1.1f, 0));
+            Label(r, LL("trust"), T_HEAD, ThemeSecondary(), Vector3.zero);
+            float y = -0.18f;
+            string[] keys = { "integrity", "provenance", "decision_support", "human_policy" };
+            var groups = ShadowAuditWorkspaceModel.BuildTrustStrip(focus);
+            for (int i = 0; i < groups.Count; i++)
             {
-                Label(r, Cut(grp.Label, 15f), T_BODY, ThemeText(), new Vector3(0, y, 0));
-                Label(r, Cut(grp.Glyph.Text, 15f), T_BODY, Hex(grp.Glyph.ColorHex), new Vector3(0, y - 0.09f, 0));
-                y -= 0.24f;
+                Label(r, Cut(LL(keys[i]), 12f), T_BODY, ThemeText(), new Vector3(0, y, 0));
+                Label(r, Cut(SV(groups[i].RepresentativeStatus, Zh), 12f), T_BODY, Hex(groups[i].Glyph.ColorHex), new Vector3(0, y - 0.10f, 0));
+                y -= 0.26f;
             }
         }
 
         void RebuildRail(StoryScenario sc)
         {
-            var r = Region("bottom", new Vector3(-2.4f, -1.5f, 0));
+            var r = Region("bottom", new Vector3(-2.4f, -1.6f, 0));
             var items = ShadowAuditWorkspaceModel.BuildRail(_model, sc, _focusEntityId);
             float x = 0f;
             foreach (var it in items)
@@ -155,11 +171,11 @@ namespace ShadowLens.Workspace
                 var col = Hex(it.Glyph.ColorHex);
                 Quad(r, new Vector3(x, 0, 0), it.IsFirstFailure ? "#ef4444" : it.IsDownstream ? "#8a92a0" : it.Glyph.ColorHex, it.IsCurrent ? 0.15f : 0.09f);
                 Label(r, "#" + it.Sequence, it.IsCurrent ? 0.04f : 0.028f, col, new Vector3(x - 0.05f, -0.16f, 0));
-                if (it.IsFirstFailure) Label(r, "FIRST", T_SMALL, GlyphColor("FIRST_FAILURE"), new Vector3(x - 0.05f, 0.16f, 0));
-                if (it.IsDownstream) Label(r, "↓dep", T_SMALL, GlyphColor("AFFECTED_DOWNSTREAM"), new Vector3(x - 0.05f, 0.16f, 0));
+                if (it.IsFirstFailure) Label(r, LL("first_short"), T_SMALL, GlyphColor("FIRST_FAILURE"), new Vector3(x - 0.05f, 0.16f, 0));
+                else if (it.IsDownstream) Label(r, "↓" + LL("dep_short"), T_SMALL, GlyphColor("AFFECTED_DOWNSTREAM"), new Vector3(x - 0.05f, 0.16f, 0));
                 x += 0.62f;
             }
-            Label(r, "◀ Prev   ▶ Next   ⟳ Reset   ⌖ Recenter   [ OPEN 2D AUDIT ]", T_SMALL, ThemeSecondary(), new Vector3(0, -0.34f, 0));
+            Label(r, "◀ " + LL("prev") + "   ▶ " + LL("next") + "   ⟳ " + LL("reset") + "   ⌖ " + LL("recenter") + "   [ " + LL("open_2d_audit") + " ]", T_SMALL, ThemeSecondary(), new Vector3(0, -0.36f, 0));
         }
 
         // ── primitives (shared materials) ──

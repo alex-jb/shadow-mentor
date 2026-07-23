@@ -152,6 +152,48 @@ namespace ShadowLens.Tests
             Assert.AreEqual("Income", en.Title);
             Assert.AreEqual("收入", zh.Title);
         }
+
+        static bool HasCjk(string s) { foreach (var c in s) if (c >= 0x4E00 && c <= 0x9FFF) return true; return false; }
+
+        [Test] public void Localization_EveryLabelKey_HasEnglishAndChinese()
+        {
+            foreach (var k in ShadowWorkspaceLabels.Keys)
+            {
+                var en = ShadowWorkspaceLabels.Get(k, false);
+                var zh = ShadowWorkspaceLabels.Get(k, true);
+                Assert.IsFalse(string.IsNullOrEmpty(en), $"{k} empty EN");
+                Assert.IsFalse(string.IsNullOrEmpty(zh), $"{k} empty ZH");
+                if (k != "ocr") Assert.IsTrue(HasCjk(zh), $"{k} zh not Chinese: {zh}"); // OCR stays an acronym
+            }
+        }
+
+        [Test] public void CHINESE_LOCALIZATION_COMPLETE_forCriticalLabels()
+        {
+            // distinct from CJK glyph rendering (a capture concern): every critical UI label must have a
+            // real Chinese string, not an English fallback.
+            string[] critical = {
+                "current_focus", "source", "trust", "integrity", "provenance", "decision_support",
+                "human_policy", "verification", "analytical_correctness", "human_review", "approval",
+                "trust_posture", "first_failure", "downstream", "open_2d_audit", "prev", "next",
+                "reset", "recenter", "location_not_available", "source_not_present",
+            };
+            foreach (var k in critical)
+            {
+                Assert.IsTrue(ShadowWorkspaceLabels.Has(k), $"missing critical label {k}");
+                Assert.IsTrue(HasCjk(ShadowWorkspaceLabels.Get(k, true)), $"{k} zh not localized");
+                Assert.AreNotEqual(ShadowWorkspaceLabels.Get(k, false), ShadowWorkspaceLabels.Get(k, true), $"{k} zh == en (not localized)");
+            }
+        }
+
+        [Test] public void StatusValues_Localize_ViaGeneratedTokens_NotADuplicateTable()
+        {
+            // status VALUES come from the generated tokens (Text/TextZh), so zh values are covered too.
+            var g = ShadowStatusGlyph.Resolve("FIRST_FAILURE");
+            Assert.IsFalse(string.IsNullOrEmpty(g.Text));
+            Assert.IsTrue(HasCjk(g.TextZh), "generated token must carry Chinese for FIRST_FAILURE");
+            var ap = ShadowStatusGlyph.Resolve("APPROVAL_NOT_PRESENT");
+            Assert.IsTrue(HasCjk(ap.TextZh));
+        }
     }
 }
 #endif

@@ -1,9 +1,9 @@
 // apps/shadow-lens/unity/Assets/ShadowLens/Tests/PlayMode/ShadowAuditWorkspaceCaptureHarness.cs
-// PlayMode graphical capture of the REAL ShadowAuditWorkspace runtime component (not a mock). Builds a
-// sanitized Banking model in-code, instantiates the workspace, binds it, and renders deterministic
-// offscreen PNGs for visual acceptance. NOT device evidence (device_validated=false). Env-gated behind
-// SHADOW_CAPTURE=1 so the normal PlayMode suite is unaffected.
-//   SHADOW_CAPTURE=1 Unity -batchmode -runTests -testPlatform PlayMode -testFilter ".*AuditWorkspaceCapture.*" ...
+// PlayMode graphical capture of the REAL ShadowAuditWorkspace runtime component (not a mock). Renders
+// the full 14-state matrix in DesktopDark, plus representative states in Simplified Chinese and in the
+// XrealOstBright (SIMULATED) + AccessibilityHighContrast profiles. Deterministic naming
+// <state>__<lang>__<profile>.png. NOT device evidence (device_validated=false). Env-gated by
+// SHADOW_CAPTURE=1. Naming/state matrix documented in AUDIT_WORKSPACE_CAPTURE_MANIFEST.json.
 #if UNITY_INCLUDE_TESTS
 using System.Collections;
 using System.Collections.Generic;
@@ -32,17 +32,38 @@ namespace ShadowLens.Tests.PlayMode
             m.Entities.Add(new StoryEntity { Id = "pricing", Kind = "record", Sequence = 4, Label = new Bilingual { En = "Pricing Tier", Zh = "定价档位" }, EvidenceRef = "ev.pricing" });
             return m;
         }
-        static StoryScenario Scenario()
+        static StoryScenario Scenario(string review, string approval)
         {
             var sc = new StoryScenario { Id = "s", FirstFailure = "decision" };
             sc.AffectedDownstream.Add("pricing");
             sc.EntityStatus["income"] = "VERIFIED"; sc.EntityStatus["dti"] = "VERIFIED";
             sc.EntityStatus["decision"] = "FIRST_FAILURE"; sc.EntityStatus["pricing"] = "AFFECTED_DOWNSTREAM";
-            sc.DimensionStatus["HUMAN_REVIEW"] = "REQUIRES_HUMAN_REVIEW";
-            sc.DimensionStatus["HUMAN_APPROVAL"] = "APPROVAL_NOT_PRESENT";
+            sc.DimensionStatus["HUMAN_REVIEW"] = review;
+            sc.DimensionStatus["HUMAN_APPROVAL"] = approval;
             sc.DimensionStatus["TRUST_POSTURE"] = "SELF_SIGNED";
             return sc;
         }
+
+        // (state, focusId, review, approval, tracking)
+        static readonly (string state, string focus, string review, string approval, string tracking)[] STATES =
+        {
+            ("overview", "income", "REQUIRES_HUMAN_REVIEW", "APPROVAL_NOT_PRESENT", "TRACKED_3DOF"),
+            ("current-focus", "dti", "REQUIRES_HUMAN_REVIEW", "APPROVAL_NOT_PRESENT", "TRACKED_3DOF"),
+            ("source-card", "income", "REQUIRES_HUMAN_REVIEW", "APPROVAL_NOT_PRESENT", "TRACKED_3DOF"),
+            ("trust-strip", "decision", "REQUIRES_HUMAN_REVIEW", "APPROVAL_NOT_PRESENT", "TRACKED_3DOF"),
+            ("first-failure", "decision", "REQUIRES_HUMAN_REVIEW", "APPROVAL_NOT_PRESENT", "TRACKED_3DOF"),
+            ("downstream-affected", "pricing", "REQUIRES_HUMAN_REVIEW", "APPROVAL_NOT_PRESENT", "TRACKED_3DOF"),
+            ("human-review-required", "decision", "REQUIRES_HUMAN_REVIEW", "APPROVAL_NOT_PRESENT", "TRACKED_3DOF"),
+            ("human-review-recorded", "decision", "HUMAN_REVIEW_RECORDED", "APPROVAL_NOT_PRESENT", "TRACKED_3DOF"),
+            ("approval-not-present", "decision", "HUMAN_REVIEW_RECORDED", "APPROVAL_NOT_PRESENT", "TRACKED_3DOF"),
+            ("approval-present", "decision", "HUMAN_REVIEW_RECORDED", "APPROVAL_PRESENT", "TRACKED_3DOF"),
+            ("tracking-scanning", "decision", "REQUIRES_HUMAN_REVIEW", "APPROVAL_NOT_PRESENT", "SCANNING"),
+            ("tracking-limited", "decision", "REQUIRES_HUMAN_REVIEW", "APPROVAL_NOT_PRESENT", "LIMITED"),
+            ("tracking-lost", "decision", "REQUIRES_HUMAN_REVIEW", "APPROVAL_NOT_PRESENT", "LOST"),
+            ("tracking-recovering", "decision", "REQUIRES_HUMAN_REVIEW", "APPROVAL_NOT_PRESENT", "RECOVERING"),
+        };
+        // representative critical states for extra language/profile coverage
+        static readonly HashSet<string> REP = new HashSet<string> { "overview", "first-failure", "downstream-affected", "approval-present", "tracking-scanning", "tracking-lost" };
 
         [UnityTest]
         public IEnumerator CaptureAuditWorkspace()
@@ -50,7 +71,6 @@ namespace ShadowLens.Tests.PlayMode
             if (System.Environment.GetEnvironmentVariable("SHADOW_CAPTURE") != "1")
             { Assert.Ignore("Workspace capture — set SHADOW_CAPTURE=1."); yield break; }
             Directory.CreateDirectory(OutDir);
-            // remove AutoBoot-injected experiences so the workspace capture isn't polluted by a stray case sphere/ring
             yield return null;
             foreach (var stg in Object.FindObjectsByType<ShadowLens.Narrative.ShadowStageController>(FindObjectsSortMode.None)) Object.Destroy(stg.transform.root.gameObject);
             foreach (var bs in Object.FindObjectsByType<ShadowLens.Bootstrap.ShadowLensRuntimeBootstrap>(FindObjectsSortMode.None)) Object.Destroy(bs.transform.root.gameObject);
@@ -64,43 +84,48 @@ namespace ShadowLens.Tests.PlayMode
             _rt = new RenderTexture(W, H, 24, RenderTextureFormat.ARGB32);
             var camGo = new GameObject("CaptureCam"); camGo.tag = "MainCamera";
             _cam = camGo.AddComponent<Camera>();
-            _cam.transform.position = new Vector3(0f, 0.15f, -7.0f); _cam.transform.LookAt(new Vector3(0f, 0.15f, 0f));
+            _cam.transform.position = new Vector3(0f, 0.1f, -7.2f); _cam.transform.LookAt(new Vector3(0f, 0.1f, 0f));
             _cam.fieldOfView = 40; _cam.clearFlags = CameraClearFlags.SolidColor;
-            _cam.backgroundColor = new Color(0.043f, 0.059f, 0.086f);
             _cam.targetTexture = _rt;
 
             var wGo = new GameObject("AuditWorkspace");
             _ws = wGo.AddComponent<ShadowAuditWorkspace>();
-            _ws.Profile = P.DesktopDark; _ws.LabelFont = _cjk;
+            _ws.LabelFont = _cjk;
+            var model = Model();
 
-            var model = Model(); var sc = Scenario();
-
-            _ws.BindDirect(model, sc, "income");
-            yield return Shot("01-overview-en");
-
-            _ws.FocusOn("decision");
-            yield return Shot("02-first-failure-en");
-
-            _ws.FocusOn("pricing");
-            yield return Shot("03-downstream-affected-en");
-
-            _ws.FocusOn("decision"); _ws.SetTracking("SCANNING");
-            yield return Shot("04-tracking-scanning-en");
-
-            _ws.SetTracking("LOST");
-            yield return Shot("05-tracking-lost-en");
-
-            _ws.SetTracking("TRACKED_3DOF"); _ws.SetZh(true); _ws.FocusOn("income");
-            yield return Shot("06-overview-zh");
-
-            _ws.FocusOn("decision");
-            yield return Shot("07-first-failure-zh");
-
-            foreach (var n in new[] { "01-overview-en", "02-first-failure-en", "03-downstream-affected-en", "04-tracking-scanning-en", "05-tracking-lost-en", "06-overview-zh", "07-first-failure-zh" })
+            var manifest = new List<string>();
+            var profiles = new[] { P.DesktopDark, P.XrealOstBright, P.AccessibilityHighContrast };
+            foreach (var st in STATES)
             {
-                var p = Path.Combine(OutDir, n + ".png");
+                foreach (var prof in profiles)
+                {
+                    // DesktopDark: all 14 states. Other profiles: representative states only.
+                    if (prof != P.DesktopDark && !REP.Contains(st.state)) continue;
+                    bool[] langs = (prof == P.DesktopDark && REP.Contains(st.state)) || prof == P.DesktopDark
+                        ? (REP.Contains(st.state) ? new[] { false, true } : new[] { false })
+                        : new[] { false };
+                    foreach (var zh in langs)
+                    {
+                        _cam.backgroundColor = prof == P.XrealOstBright ? new Color(0.78f, 0.80f, 0.83f)
+                            : prof == P.AccessibilityHighContrast ? Color.black : new Color(0.043f, 0.059f, 0.086f);
+                        _ws.Profile = prof; _ws.Zh = zh; _ws.Tracking = st.tracking;
+                        _ws.BindDirect(model, Scenario(st.review, st.approval), st.focus);
+                        string lang = zh ? "zh-CN" : "en";
+                        string name = st.state + "__" + lang + "__" + prof;
+                        yield return Shot(name);
+                        manifest.Add("{\"state\":\"" + st.state + "\",\"language\":\"" + lang + "\",\"profile\":\"" + prof +
+                            "\",\"focus\":\"" + st.focus + "\",\"review\":\"" + st.review + "\",\"approval\":\"" + st.approval +
+                            "\",\"tracking\":\"" + st.tracking + "\",\"file\":\"" + name + ".png\",\"device_validated\":false}");
+                    }
+                }
+            }
+            File.WriteAllText(Path.Combine(OutDir, "harness-capture-list.json"), "[\n  " + string.Join(",\n  ", manifest) + "\n]\n");
+            // sanity: DesktopDark en exists for every state
+            foreach (var st in STATES)
+            {
+                var p = Path.Combine(OutDir, st.state + "__en__DesktopDark.png");
                 Assert.IsTrue(File.Exists(p), "missing " + p);
-                Assert.Greater(new FileInfo(p).Length, 3000, "suspiciously small PNG: " + n);
+                Assert.Greater(new FileInfo(p).Length, 3000, "small PNG: " + st.state);
             }
         }
 
