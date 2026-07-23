@@ -1,5 +1,5 @@
 (() => {
-  // ../../../../shadow-mentor/node_modules/three/build/three.module.js
+  // ../shadow-mentor/node_modules/three/build/three.module.js
   var REVISION = "160";
   var MOUSE = { LEFT: 0, MIDDLE: 1, RIGHT: 2, ROTATE: 0, DOLLY: 1, PAN: 2 };
   var TOUCH = { ROTATE: 0, PAN: 1, DOLLY_PAN: 2, DOLLY_ROTATE: 3 };
@@ -22283,7 +22283,7 @@
     }
   }
 
-  // ../../../../shadow-mentor/node_modules/three/examples/jsm/controls/OrbitControls.js
+  // ../shadow-mentor/node_modules/three/examples/jsm/controls/OrbitControls.js
   var _changeEvent = { type: "change" };
   var _startEvent = { type: "start" };
   var _endEvent = { type: "end" };
@@ -22997,16 +22997,16 @@
     }
   };
 
-  // constants.js
+  // demos/replay/3d/constants.js
   var STATUS = Object.freeze({
     intact: "#E8E8E8",
-    // trustworthy, verified
+    // resting/verified SURFACE — neutral paper (profile override, not status green)
     error: "#FFB020",
     // a lens/quality flag (amber) — not a chain break
     tampered: "#FF4A4A",
     // the mutated event / broken links (red)
     healed: "#3DDC97"
-    // transient reset-replay colour (green)
+    // transient verify/reset PULSE (green = verification EVENT cue)
   });
   var INK = Object.freeze({
     body: "#000000",
@@ -23128,7 +23128,7 @@
   }
   var C = buildConstants("laptop");
 
-  // labels.js
+  // demos/replay/3d/labels.js
   var PX_PER_UNIT = 900;
   var SANS = '-apple-system, "SF Pro Display", "Segoe UI", "PingFang SC", system-ui, sans-serif';
   var MONO = '"SF Mono", "JetBrains Mono", "Cascadia Code", ui-monospace, Menlo, monospace';
@@ -23260,7 +23260,7 @@
     obj.quaternion.copy(camera2.quaternion);
   }
 
-  // ../verify-browser.js
+  // demos/replay/verify-browser.js
   function canonicalize(value) {
     if (value === null || typeof value !== "object") return JSON.stringify(value);
     if (Array.isArray(value)) return "[" + value.map(canonicalize).join(",") + "]";
@@ -23405,7 +23405,7 @@
   }
   var _internal = { canonicalize, canonicalBytes, sha256Hex, signedShape };
 
-  // ../tamper.js
+  // demos/replay/tamper.js
   function clonePristine(bundle) {
     return JSON.parse(JSON.stringify(bundle));
   }
@@ -23451,7 +23451,7 @@
     return { tamperedSeq, verify, caption };
   }
 
-  // demo-data.js
+  // demos/replay/3d/demo-data.js
   var DEMO_BUNDLE = {
     "bundle_version": 1,
     "spec_version": "shadow-evidence/v1",
@@ -23668,7 +23668,7 @@
     { "n": 8, "name": "trust badges", "cam": { "frame": "badges" }, "action": "trust" }
   ];
 
-  // verify.js
+  // demos/replay/3d/verify.js
   var { canonicalBytes: canonicalBytes2, sha256Hex: sha256Hex2, signedShape: signedShape2 } = _internal;
   var REVIEWER_KEY_ID = "reviewer-local-demo";
   function hexToBytes2(hex) {
@@ -23746,7 +23746,35 @@ ${b64}
     return ev;
   }
 
-  // scene.js
+  // demos/replay/3d/annotation-anchor.js
+  function chooseAnnotationSide(cardX, arcCenterX = 0) {
+    return cardX < arcCenterX ? "upper-right" : "upper-left";
+  }
+  function anchorPanel({ card, panel, view, arcCenterX = 0, gap = 0.18 }) {
+    const side = chooseAnnotationSide(card.x, arcCenterX);
+    const dir = side === "upper-right" ? 1 : -1;
+    let px2 = card.x + dir * (card.halfW + gap + panel.halfW);
+    px2 = Math.max(view.minX + panel.halfW, Math.min(view.maxX - panel.halfW, px2));
+    const minPy = card.y + card.halfH + gap + panel.halfH;
+    let py2 = Math.min(minPy, view.maxY - panel.halfH);
+    py2 = Math.max(py2, minPy);
+    const pz2 = card.z;
+    const leaderStart = { x: card.x + dir * card.halfW, y: card.y + card.halfH * 0.4, z: card.z + 0.01 };
+    const leaderEnd = { x: px2 - dir * panel.halfW, y: py2 - panel.halfH, z: pz2 + 0.01 };
+    const overlaps = py2 - panel.halfH < card.y + card.halfH && Math.abs(px2 - card.x) < panel.halfW + card.halfW;
+    return { side, position: { x: px2, y: py2, z: pz2 }, leaderStart, leaderEnd, overlaps };
+  }
+  function viewRelativeFallback({ panel, view }) {
+    return {
+      side: "view-fixed",
+      position: { x: view.maxX - panel.halfW - 0.1, y: view.maxY - panel.halfH - 0.1, z: 0.6 },
+      leaderStart: null,
+      leaderEnd: null,
+      overlaps: false
+    };
+  }
+
+  // demos/replay/3d/scene.js
   var DEG = Math.PI / 180;
   var smooth = (k) => k * k * (3 - 2 * k);
   var clamp01 = (x) => x < 0 ? 0 : x > 1 ? 1 : x;
@@ -24060,6 +24088,10 @@ IMPACT  ${obj.impact}`;
       setTimeout(() => URL.revokeObjectURL(url), 1e3);
     }
     let inspector = null;
+    let trackingLost = false;
+    function setInspectorTrackingLost(v) {
+      trackingLost = !!v;
+    }
     function clearInspector() {
       if (inspector) {
         group.remove(inspector);
@@ -24067,10 +24099,10 @@ IMPACT  ${obj.impact}`;
         inspector = null;
       }
     }
-    function buildInspector(evt) {
+    function buildInspector(card) {
       clearInspector();
       inspector = new Group();
-      const w = 1.7, rows = inspectorRows(evt);
+      const w = 1.7, rows = inspectorRows(card.evt);
       const body = makeText(rows, {
         size: C3.FONT_SIZE_INSPECTOR,
         worldWidth: w - 0.14,
@@ -24084,7 +24116,24 @@ IMPACT  ${obj.impact}`;
       body.position.set(0, 0, 2e-3);
       inspector.add(frame2);
       inspector.add(body);
-      inspector.position.set(2.4, C3.ARC_Y + 0.2, 0.6);
+      const cardPos = card.group.getWorldPosition(_cardPos);
+      const panel = { halfW: w / 2, halfH: h / 2 };
+      const view = { minX: -3, maxX: 3, minY: C3.ARC_Y - 1.5, maxY: C3.ARC_Y + 1.5 };
+      const spec = trackingLost ? viewRelativeFallback({ panel, view }) : anchorPanel({
+        card: { x: cardPos.x, y: cardPos.y, z: cardPos.z, halfW: C3.CARD_W / 2, halfH: C3.CARD_H / 2 },
+        panel,
+        view,
+        arcCenterX: 0
+      });
+      inspector.position.set(spec.position.x, spec.position.y, spec.position.z);
+      if (spec.leaderStart && spec.leaderEnd) {
+        const geo = new BufferGeometry().setFromPoints([
+          new Vector3(spec.leaderStart.x - spec.position.x, spec.leaderStart.y - spec.position.y, spec.leaderStart.z - spec.position.z),
+          new Vector3(spec.leaderEnd.x - spec.position.x, spec.leaderEnd.y - spec.position.y, spec.leaderEnd.z - spec.position.z)
+        ]);
+        const mat = new LineBasicMaterial({ color: new Color(C3.INK.textDim).getHex(), transparent: true, opacity: 0.6, toneMapped: false });
+        inspector.add(new Line(geo, mat));
+      }
       group.add(inspector);
     }
     function inspectorRows(ev) {
@@ -24107,7 +24156,7 @@ IMPACT  ${obj.impact}`;
       selectedSeq = seq;
       const card = cards.find((c) => c.seq === seq);
       if (!card) return;
-      buildInspector(card.evt);
+      buildInspector(card);
       card.pulse = true;
       tween(0, 600, () => {
       }, () => {
@@ -24249,7 +24298,7 @@ IMPACT  ${obj.impact}`;
     };
   }
 
-  // stereo.js
+  // demos/replay/3d/stereo.js
   var LS_EYE_SEP = "shadow.auditroom.eyeSep";
   var LS_CONVERGENCE = "shadow.auditroom.convergence";
   function createStereo({ renderer: renderer2, scene: scene2, camera: camera2, C: C3 }) {
@@ -24345,7 +24394,7 @@ IMPACT  ${obj.impact}`;
     };
   }
 
-  // voice.js
+  // demos/replay/3d/voice.js
   var INTENTS = Object.freeze([
     "FOCUS_EVENT",
     "FILTER_BY_TYPE",
@@ -24481,7 +24530,7 @@ IMPACT  ${obj.impact}`;
     } };
   }
 
-  // beats.js
+  // demos/replay/3d/beats.js
   var smooth2 = (k) => k * k * (3 - 2 * k);
   function createBeats({ camera: camera2, controls: controls2, room: room2, C: C3 }) {
     let active = null;
@@ -24572,7 +24621,7 @@ IMPACT  ${obj.impact}`;
     } };
   }
 
-  // ../../../../shadow-mentor/node_modules/three/examples/jsm/webxr/XRButton.js
+  // ../shadow-mentor/node_modules/three/examples/jsm/webxr/XRButton.js
   var XRButton = class {
     static createButton(renderer2, sessionInit = {}) {
       const button = document.createElement("button");
@@ -24692,7 +24741,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../../../../shadow-mentor/node_modules/three/examples/jsm/utils/BufferGeometryUtils.js
+  // ../shadow-mentor/node_modules/three/examples/jsm/utils/BufferGeometryUtils.js
   function toTrianglesDrawMode(geometry, drawMode) {
     if (drawMode === TrianglesDrawMode) {
       console.warn("THREE.BufferGeometryUtils.toTrianglesDrawMode(): Geometry already defined as triangles.");
@@ -24748,7 +24797,7 @@ IMPACT  ${obj.impact}`;
     }
   }
 
-  // ../../../../shadow-mentor/node_modules/three/examples/jsm/loaders/GLTFLoader.js
+  // ../shadow-mentor/node_modules/three/examples/jsm/loaders/GLTFLoader.js
   var GLTFLoader = class extends Loader {
     constructor(manager) {
       super(manager);
@@ -27199,7 +27248,7 @@ IMPACT  ${obj.impact}`;
     });
   }
 
-  // ../../../../shadow-mentor/node_modules/three/examples/jsm/libs/motion-controllers.module.js
+  // ../shadow-mentor/node_modules/three/examples/jsm/libs/motion-controllers.module.js
   var Constants = {
     Handedness: Object.freeze({
       NONE: "none",
@@ -27490,7 +27539,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../../../../shadow-mentor/node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js
+  // ../shadow-mentor/node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js
   var DEFAULT_PROFILES_PATH = "https://cdn.jsdelivr.net/npm/@webxr-input-profiles/assets@1.0/dist/profiles";
   var DEFAULT_PROFILE = "generic-trigger";
   var XRControllerModel = class extends Object3D {
@@ -27645,7 +27694,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../../../../shadow-mentor/node_modules/three/examples/jsm/webxr/XRHandPrimitiveModel.js
+  // ../shadow-mentor/node_modules/three/examples/jsm/webxr/XRHandPrimitiveModel.js
   var _matrix = new Matrix4();
   var _vector = new Vector3();
   var XRHandPrimitiveModel = class {
@@ -27712,7 +27761,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../../../../shadow-mentor/node_modules/three/examples/jsm/webxr/XRHandMeshModel.js
+  // ../shadow-mentor/node_modules/three/examples/jsm/webxr/XRHandMeshModel.js
   var DEFAULT_HAND_PROFILE_PATH = "https://cdn.jsdelivr.net/npm/@webxr-input-profiles/assets@1.0/dist/profiles/generic-hand/";
   var XRHandMeshModel = class {
     constructor(handModel, controller, path, handedness, loader = null) {
@@ -27784,7 +27833,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../../../../shadow-mentor/node_modules/three/examples/jsm/webxr/XRHandModelFactory.js
+  // ../shadow-mentor/node_modules/three/examples/jsm/webxr/XRHandModelFactory.js
   var XRHandModel = class extends Object3D {
     constructor(controller) {
       super();
@@ -27831,7 +27880,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // webxr.js
+  // demos/replay/3d/webxr.js
   function createWebXR({ renderer: renderer2, scene: scene2, camera: camera2, room: room2, C: C3, mountButton }) {
     renderer2.xr.enabled = true;
     let savedBg;
@@ -27957,7 +28006,7 @@ IMPACT  ${obj.impact}`;
     } };
   }
 
-  // preflight.js
+  // demos/replay/3d/preflight.js
   function initPreflight({ renderer: renderer2, mount = document.body, appCommit = "" }) {
     const panel = document.createElement("div");
     panel.id = "xr-preflight";
@@ -28084,7 +28133,7 @@ IMPACT  ${obj.impact}`;
     return { updatePose, state, render };
   }
 
-  // gamepad.js
+  // demos/replay/3d/gamepad.js
   function createGamepad({ dispatch: dispatch2, nextBeat, prevBeat, gotoBeat, voice: voice2 }) {
     const prev2 = {};
     let talking = false;
@@ -28131,7 +28180,7 @@ IMPACT  ${obj.impact}`;
     } };
   }
 
-  // app.js
+  // demos/replay/3d/app.js
   var params = new URLSearchParams(location.search);
   var preset = params.get("xreal") === "1" ? "xreal" : "laptop";
   var C2 = buildConstants(preset);
@@ -28327,7 +28376,7 @@ IMPACT  ${obj.impact}`;
           } });
           renderer.setAnimationLoop(xrLoop);
         }
-        if (!preflight) preflight = initPreflight({ renderer, appCommit: "34fe8aa" });
+        if (!preflight) preflight = initPreflight({ renderer, appCommit: "ad2a39a" });
       } catch (e) {
         fatal("WebXR unavailable: " + e.message);
       }

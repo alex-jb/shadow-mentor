@@ -15,6 +15,7 @@ import * as THREE from "three";
 import { makeCardFace, makeText, disposeMesh, billboardInView } from "./labels.js";
 import { verifyWorking, runTamperCycle, annotate, clonePristine } from "./verify.js";
 import { DEMO_BUNDLE, DEMO_PUBLIC_KEY_PEM } from "./demo-data.js";
+import { anchorPanel, viewRelativeFallback } from "./annotation-anchor.js";
 
 const DEG = Math.PI / 180;
 const smooth = (k) => k * k * (3 - 2 * k);
@@ -326,15 +327,19 @@ export function createAuditRoom({ C, bundle = DEMO_BUNDLE } = {}) {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
-  // ── selection + inspector (Phase 5.2) ──
+  // ── selection + inspector (Phase 5.2) + Flow-inspired anchored annotation (V11) ──
   let inspector = null;
+  let trackingLost = false;
+  function setInspectorTrackingLost(v) { trackingLost = !!v; }
   function clearInspector() {
     if (inspector) { group.remove(inspector); inspector.traverse((o) => disposeMesh(o)); inspector = null; }
   }
-  function buildInspector(evt) {
+  // `card` carries .evt + .group (world-positioned on the arc). The panel now ANCHORS beside the
+  // selected card with a leader line to its boundary, instead of docking at a fixed world point.
+  function buildInspector(card) {
     clearInspector();
     inspector = new THREE.Group();
-    const w = 1.7, rows = inspectorRows(evt);
+    const w = 1.7, rows = inspectorRows(card.evt);
     const body = makeText(rows, {
       size: C.FONT_SIZE_INSPECTOR, worldWidth: w - 0.14, align: "left", color: C.INK.text, mono: true, weight: 500,
     });
@@ -342,8 +347,26 @@ export function createAuditRoom({ C, bundle = DEMO_BUNDLE } = {}) {
     const frame = edgeLoop(w, h, 0.05, new THREE.Color(C.INK.text).getHex(), 0.5);
     body.position.set(0, 0, 0.002);
     inspector.add(frame); inspector.add(body);
-    // dock the inspector beside the arc, camera-facing
-    inspector.position.set(2.4, C.ARC_Y + 0.2, 0.6);
+
+    const cardPos = card.group.getWorldPosition(_cardPos);
+    const panel = { halfW: w / 2, halfH: h / 2 };
+    const view = { minX: -3, maxX: 3, minY: C.ARC_Y - 1.5, maxY: C.ARC_Y + 1.5 };
+    const spec = trackingLost
+      ? viewRelativeFallback({ panel, view }) // Tracking Lost → stable view-relative, no leader line
+      : anchorPanel({
+          card: { x: cardPos.x, y: cardPos.y, z: cardPos.z, halfW: C.CARD_W / 2, halfH: C.CARD_H / 2 },
+          panel, view, arcCenterX: 0,
+        });
+    inspector.position.set(spec.position.x, spec.position.y, spec.position.z);
+    // leader line: card boundary → panel edge (omitted in the tracking-lost fallback)
+    if (spec.leaderStart && spec.leaderEnd) {
+      const geo = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3(spec.leaderStart.x - spec.position.x, spec.leaderStart.y - spec.position.y, spec.leaderStart.z - spec.position.z),
+        new THREE.Vector3(spec.leaderEnd.x - spec.position.x, spec.leaderEnd.y - spec.position.y, spec.leaderEnd.z - spec.position.z),
+      ]);
+      const mat = new THREE.LineBasicMaterial({ color: new THREE.Color(C.INK.textDim).getHex(), transparent: true, opacity: 0.6, toneMapped: false });
+      inspector.add(new THREE.Line(geo, mat));
+    }
     group.add(inspector);
   }
   function inspectorRows(ev) {
@@ -366,7 +389,7 @@ export function createAuditRoom({ C, bundle = DEMO_BUNDLE } = {}) {
     selectedSeq = seq;
     const card = cards.find((c) => c.seq === seq);
     if (!card) return;
-    buildInspector(card.evt);
+    buildInspector(card);
     // brief focus pulse
     card.pulse = true;
     tween(0, 600, () => {}, () => { card.pulse = false; });
