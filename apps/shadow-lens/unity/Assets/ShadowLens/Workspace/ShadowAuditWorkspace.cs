@@ -93,6 +93,9 @@ namespace ShadowLens.Workspace
         static string Cut(string s, float em) => ShadowLabelMetrics.TruncateWithAffordance(s ?? "", em);
 
         string LL(string key) => ShadowWorkspaceLabels.Get(key, Zh);
+        // The active profile as the token layer names it. Every status colour in this component resolves
+        // through it — never through the DesktopDark default (UX-01).
+        string ProfileId => Profile.ToString();
         static string SV(string status, bool zh) { var g = ShadowStatusGlyph.Resolve(status); return zh ? g.TextZh : g.Text; }
 
         void RebuildHeader(CurrentFocusVM focus)
@@ -100,9 +103,9 @@ namespace ShadowLens.Workspace
             var r = Region("top", new Vector3(-3.3f, 2.05f, 0));
             Label(r, Cut(_model?.Title?.Pick(Zh) ?? "Shadow Audit", 22f), T_TITLE, ThemeText(), Vector3.zero);
             Label(r, LL("tracking") + ": " + (ShadowWorkspaceLabels.Has(Tracking) ? LL(Tracking) : Tracking), T_HEAD, ThemeText(), new Vector3(0, -0.30f, 0));
-            Label(r, LL("simulated"), T_SMALL, Hex("#961418"), new Vector3(0, -0.46f, 0));
+            Label(r, LL("simulated"), T_SMALL, Hex(ShadowStatusGlyph.DisclaimerColor(ProfileId)), new Vector3(0, -0.46f, 0));
             if (ShadowTrackingBanner.IsDegraded(Tracking) || Tracking == "SCANNING")
-                Label(r, ShadowTrackingBanner.Copy(Tracking, Zh), T_BODY, Hex("#fbbf24"), new Vector3(2.9f, 0, 0));
+                Label(r, ShadowTrackingBanner.Copy(Tracking, Zh), T_BODY, Hex(ShadowStatusGlyph.FamilyColor("warning_amber", ProfileId)), new Vector3(2.9f, 0, 0));
         }
 
         void RebuildSource()
@@ -126,7 +129,7 @@ namespace ShadowLens.Workspace
             float y = -0.36f;
             foreach (var f in focus.Fields)
             {
-                var g = ShadowStatusGlyph.Resolve(f.Status);
+                var g = ShadowStatusGlyph.Resolve(f.Status, ProfileId);
                 string val = f.Key == "downstream" ? f.Value : SV(f.Status, Zh);
                 Label(r, Cut(LL(f.Key) + ": " + val, 14f), T_BODY, Hex(g.ColorHex), new Vector3(0, y, 0));
                 y -= 0.12f;
@@ -156,7 +159,7 @@ namespace ShadowLens.Workspace
             for (int i = 0; i < groups.Count; i++)
             {
                 Label(r, Cut(LL(keys[i]), 12f), T_BODY, ThemeText(), new Vector3(0, y, 0));
-                Label(r, Cut(SV(groups[i].RepresentativeStatus, Zh), 12f), T_BODY, Hex(groups[i].Glyph.ColorHex), new Vector3(0, y - 0.10f, 0));
+                Label(r, Cut(SV(groups[i].RepresentativeStatus, Zh), 12f), T_BODY, GlyphColor(groups[i].RepresentativeStatus), new Vector3(0, y - 0.10f, 0));
                 y -= 0.26f;
             }
         }
@@ -168,8 +171,11 @@ namespace ShadowLens.Workspace
             float x = 0f;
             foreach (var it in items)
             {
-                var col = Hex(it.Glyph.ColorHex);
-                Quad(r, new Vector3(x, 0, 0), it.IsFirstFailure ? "#ef4444" : it.IsDownstream ? "#8a92a0" : it.Glyph.ColorHex, it.IsCurrent ? 0.15f : 0.09f);
+                var col = GlyphColor(it.Status);
+                Quad(r, new Vector3(x, 0, 0),
+                    it.IsFirstFailure ? ShadowStatusGlyph.FamilyColor("failure_red", ProfileId)
+                    : it.IsDownstream ? ShadowStatusGlyph.FamilyColor("neutral_unknown", ProfileId)
+                    : ShadowStatusGlyph.Resolve(it.Status, ProfileId).ColorHex, it.IsCurrent ? 0.15f : 0.09f);
                 Label(r, "#" + it.Sequence, it.IsCurrent ? 0.04f : 0.028f, col, new Vector3(x - 0.05f, -0.16f, 0));
                 if (it.IsFirstFailure) Label(r, LL("first_short"), T_SMALL, GlyphColor("FIRST_FAILURE"), new Vector3(x - 0.05f, 0.16f, 0));
                 else if (it.IsDownstream) Label(r, "↓" + LL("dep_short"), T_SMALL, GlyphColor("AFFECTED_DOWNSTREAM"), new Vector3(x - 0.05f, 0.16f, 0));
@@ -198,7 +204,7 @@ namespace ShadowLens.Workspace
 
         Color ThemeText() => ShadowDesignTokens.Resolve(Profile).TextPrimary;
         Color ThemeSecondary() => ShadowDesignTokens.Resolve(Profile).TextSecondary;
-        Color GlyphColor(string status) => Hex(ShadowStatusGlyph.Resolve(status).ColorHex);
+        Color GlyphColor(string status) => Hex(ShadowStatusGlyph.Resolve(status, ProfileId).ColorHex);
 
         // Mode switch preserving state (§6).
         public void SwitchMode(ShadowPresentationMode target)

@@ -63,7 +63,9 @@ and dispositions in `SHADOW_XR_UX_ISSUE_MATRIX.md` / `shadow-xr-ux-issue-matrix.
 **Make status colours profile-aware** (UX-01 P0, folding in UX-09 and UX-05). It is the only P0, the
 defect is arithmetic rather than aesthetic, and fixing layout first would produce a well-spaced view
 that is still unreadable on the profile intended for the glasses. Full acceptance criteria in
-`SHADOW_FIRST_UX_INCREMENT_PROPOSAL.md`. **Not implemented here.**
+`SHADOW_FIRST_UX_INCREMENT_PROPOSAL.md`. **Not implemented in the audit** — subsequently implemented on
+`fix/shadow-v11-profile-aware-status-contrast` and marked
+`IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`.
 
 ## Honesty boundaries held
 

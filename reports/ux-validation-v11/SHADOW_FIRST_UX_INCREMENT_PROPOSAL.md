@@ -1,6 +1,10 @@
 # Shadow Lens V11 — recommended first implementation increment
 
-**Not implemented in this task.** This is the proposal only.
+**Implemented on `fix/shadow-v11-profile-aware-status-contrast`.** Offline acceptance passed:
+266 contrast combinations with 0 failures (lowest 4.65), EditMode 146/146, and an unchanged PlayMode
+failure identity set. See `SHADOW_PROFILE_AWARE_STATUS_CONTRAST_IMPLEMENTATION.md` and
+`SHADOW_PROFILE_AWARE_STATUS_REGRESSION.md`. `OST_READABILITY_DEVICE_VALIDATED` remains **false** —
+physical Beam Pro review is still required.
 
 ## The increment
 

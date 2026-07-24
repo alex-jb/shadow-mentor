@@ -16,8 +16,8 @@ const GREEN = "#4ade80", RED = "#ef4444", AMBER = "#fbbf24", BLUE = "#3b82f6";
 const CATEGORIES = ["status", "governance", "trust_posture", "tracking", "interaction", "capability"];
 const allStates = () => CATEGORIES.flatMap(cat => Object.entries(tok[cat]).map(([k, v]) => [`${cat}.${k}`, v]));
 
-test("CANONICAL-TOKEN-SOURCE-CONFIRMED: version 2, all six semantic categories present", () => {
-  assert.equal(tok.version, "shadow-spatial-tokens/2");
+test("CANONICAL-TOKEN-SOURCE-CONFIRMED: version 3, all six semantic categories present", () => {
+  assert.equal(tok.version, "shadow-spatial-tokens/3");
   for (const c of CATEGORIES) assert.ok(tok[c] && typeof tok[c] === "object", `missing category ${c}`);
 });
 

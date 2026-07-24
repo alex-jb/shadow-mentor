@@ -1,4 +1,4 @@
-/* AUTO-GENERATED — DO NOT EDIT. | Source: design/shadow-spatial-tokens.json (shadow-spatial-tokens/2) | Generator: scripts/generate-tokens.mjs — run it to regenerate. Deterministic; no timestamp/path. */
+/* AUTO-GENERATED — DO NOT EDIT. | Source: design/shadow-spatial-tokens.json (shadow-spatial-tokens/3) | Generator: scripts/generate-tokens.mjs — run it to regenerate. Deterministic; no timestamp/path. */
 :root {
   --shadow-status-downstream-affected-color: #8a92a0;
   --shadow-status-failed-color: #ef4444;
@@ -14,7 +14,7 @@
   --shadow-governance-abstained-color: #8a92a0;
   --shadow-governance-approval-not-present-color: #8a92a0;
   --shadow-governance-approval-present-color: #3b82f6;
-  --shadow-governance-human-review-recorded-color: #6b7280;
+  --shadow-governance-human-review-recorded-color: #b6bec9;
   --shadow-governance-requires-human-review-color: #3b82f6;
   --shadow-trust-posture-self-signed-color: #fbbf24;
   --shadow-trust-posture-time-anchored-color: #4ade80;
@@ -37,4 +37,64 @@
   --shadow-capability-device-validated-color: #4ade80;
   --shadow-capability-installed-color: #fbbf24;
   --shadow-capability-production-ready-color: #4ade80;
+}
+[data-shadow-profile="AccessibilityHighContrast"] {
+  --shadow-surface: #000000;
+  --shadow-disclaimer: #ff9d9d;
+  --shadow-family-edge-muted: #a9b3c2;
+  --shadow-family-failure-red: #ff6180;
+  --shadow-family-info-blue: #40C4FF;
+  --shadow-family-info-blue-alt: #8ad8ff;
+  --shadow-family-neutral-unknown: #BDBDBD;
+  --shadow-family-review-grey: #8e9bad;
+  --shadow-family-verification-green: #00E676;
+  --shadow-family-warning-amber: #FFD600;
+}
+[data-shadow-profile="BrowserDark"] {
+  --shadow-surface: #090D12;
+  --shadow-disclaimer: #ff8a8a;
+  --shadow-family-edge-muted: #7c8899;
+  --shadow-family-failure-red: #ef4444;
+  --shadow-family-info-blue: #3b82f6;
+  --shadow-family-info-blue-alt: #60a5fa;
+  --shadow-family-neutral-unknown: #8a92a0;
+  --shadow-family-review-grey: #b6bec9;
+  --shadow-family-verification-green: #4ade80;
+  --shadow-family-warning-amber: #fbbf24;
+}
+[data-shadow-profile="DesktopDark"] {
+  --shadow-surface: #090D12;
+  --shadow-disclaimer: #ff8a8a;
+  --shadow-family-edge-muted: #7c8899;
+  --shadow-family-failure-red: #ef4444;
+  --shadow-family-info-blue: #3b82f6;
+  --shadow-family-info-blue-alt: #60a5fa;
+  --shadow-family-neutral-unknown: #8a92a0;
+  --shadow-family-review-grey: #b6bec9;
+  --shadow-family-verification-green: #4ade80;
+  --shadow-family-warning-amber: #fbbf24;
+}
+[data-shadow-profile="ProjectorPresentation"] {
+  --shadow-surface: #05080B;
+  --shadow-disclaimer: #ff9d9d;
+  --shadow-family-edge-muted: #93a0ae;
+  --shadow-family-failure-red: #FF6B78;
+  --shadow-family-info-blue: #6FB4FF;
+  --shadow-family-info-blue-alt: #a8ccff;
+  --shadow-family-neutral-unknown: #AEB8C2;
+  --shadow-family-review-grey: #eaeff4;
+  --shadow-family-verification-green: #34E0A6;
+  --shadow-family-warning-amber: #FFD166;
+}
+[data-shadow-profile="XrealOstBright"] {
+  --shadow-surface: #F4F6F8;
+  --shadow-disclaimer: #8f1020;
+  --shadow-family-edge-muted: #4a5462;
+  --shadow-family-failure-red: #a12126;
+  --shadow-family-info-blue: #1254a0;
+  --shadow-family-info-blue-alt: #1a3d66;
+  --shadow-family-neutral-unknown: #4b545d;
+  --shadow-family-review-grey: #2a2f38;
+  --shadow-family-verification-green: #085e3f;
+  --shadow-family-warning-amber: #754c00;
 }

@@ -68,24 +68,51 @@ namespace ShadowLens.Workspace
             }
         }
 
-        public static ShadowGlyph Resolve(string status)
+        // The canonical profile name for the DesktopDark rendition. A status renderer must pass the
+        // ACTIVE profile (UX-01): resolving through this default while another profile is on screen is
+        // exactly the defect that made every OST status colour fall below 3:1.
+        public const string DefaultProfile = "DesktopDark";
+
+        /// <summary>Resolve a status in the DesktopDark rendition. Prefer the profile-aware overload.</summary>
+        public static ShadowGlyph Resolve(string status) => Resolve(status, DefaultProfile);
+
+        /// <summary>
+        /// Resolve a status FOR A VISUAL PROFILE. Identity (text/zh/icon/shape/a11y) is profile-invariant;
+        /// only the rendition changes. An unknown profile throws rather than silently falling back.
+        /// </summary>
+        public static ShadowGlyph Resolve(string status, string profile)
         {
             if (!Map(status, out var cat, out var key))
             {
-                // FAIL CLOSED — never VERIFIED
+                // FAIL CLOSED — never VERIFIED. The neutral rendition still follows the active profile.
                 return new ShadowGlyph {
                     Status = status, Text = "UNKNOWN STATUS", TextZh = "未知状态", Icon = "question",
-                    Shape = "box", ColorHex = "#8a92a0", A11y = "unknown status — fails closed, not verified",
+                    Shape = "box", ColorHex = FamilyColor("neutral_unknown", profile),
+                    A11y = "unknown status — fails closed, not verified",
                     A11yZh = "未知状态——安全失败,非已验证", ProceduralGlyph = "unknown", Known = false,
                 };
             }
             var t = ShadowSemanticTokens.Get(cat, key);
             return new ShadowGlyph {
                 Status = status, Text = t.Text, TextZh = t.TextZh, Icon = t.Icon, Shape = t.Shape,
-                ColorHex = t.ColorHex, A11y = t.A11y, A11yZh = t.A11yZh,
+                ColorHex = ShadowSemanticTokens.ColorFor(cat, key, profile), A11y = t.A11y, A11yZh = t.A11yZh,
                 ProceduralGlyph = Procedural(t.Icon), Known = true,
             };
         }
+
+        /// <summary>The rendition of a named colour family under a profile. Throws on an unknown profile.</summary>
+        public static string FamilyColor(string family, string profile)
+        {
+            var p = ShadowSemanticTokens.PaletteFor(profile);
+            for (int i = 0; i < p.FamilyKeys.Length; i++) if (p.FamilyKeys[i] == family) return p.FamilyColors[i];
+            throw new System.ArgumentException("profile " + profile + " has no family " + family);
+        }
+
+        /// <summary>The profile's surface colour — the background contrast is computed against.</summary>
+        public static string SurfaceColor(string profile) => ShadowSemanticTokens.PaletteFor(profile).Surface;
+
+        /// <summary>The profile-aware SIMULATED — NOT DEVICE VALIDATED disclaimer colour (UX-09).</summary>
+        public static string DisclaimerColor(string profile) => ShadowSemanticTokens.PaletteFor(profile).Disclaimer;
     }
 }
 #endif

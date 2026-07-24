@@ -3,7 +3,8 @@
 15 issues. Every row cites a source path, a capture, or a computed geometry input. Machine-readable:
 `shadow-xr-ux-issue-matrix.json`.
 
-Severity budget: **1 P0 · 5 P1 · 6 P2 · 3 P3.** P0 is reserved for a defect that stops the accepted
+Severity budget: **1 P0 · 5 P1 · 6 P2 · 3 P3.** UX-01, UX-05 and UX-09 are now
+`IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`; the other twelve are untouched. P0 is reserved for a defect that stops the accepted
 scene from communicating its audit result.
 
 ---
@@ -11,6 +12,9 @@ scene from communicating its audit result.
 ## P0
 
 ### UX-01 — On the OST-bright profile every status colour falls below WCAG 3:1
+
+> **STATUS — `IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`.** Fixed on `fix/shadow-v11-profile-aware-status-contrast`; see `SHADOW_PROFILE_AWARE_STATUS_CONTRAST_IMPLEMENTATION.md`. Offline acceptance only — `OST_READABILITY_DEVICE_VALIDATED` remains **false**.
+
 
 - **Scene / component:** Audit Workspace · `Workspace/ShadowStatusGlyph.cs` + `design/shadow-spatial-tokens.json`
 - **Evidence:** `PROVEN_IN_CODE` + `PROVEN_IN_EDITOR_CAPTURE` (`first-failure__en__XrealOstBright.png`) + computed
@@ -59,6 +63,9 @@ scene from communicating its audit result.
 
 ### UX-05 — The `SIMULATED — NOT DEVICE VALIDATED` disclaimer is the least readable text in the dark profiles
 
+> **STATUS — `IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`.** Fixed on `fix/shadow-v11-profile-aware-status-contrast`; see `SHADOW_PROFILE_AWARE_STATUS_CONTRAST_IMPLEMENTATION.md`. Offline acceptance only — `OST_READABILITY_DEVICE_VALIDATED` remains **false**.
+
+
 - **Evidence:** `PROVEN_IN_CODE` (`Hex("#961418")` hardcoded in `RebuildHeader`) + computed
 - **Computed:** `#961418` scores **2.20** on `DesktopDark` and **2.41** on `AccessibilityHighContrast` — both below 3:1. It scores 5.40 on the bright profile, i.e. the colour is tuned for the *opposite* profile and ignores the active one.
 - **User impact:** this is the honesty guarantee that stops an Editor screenshot being mistaken for device evidence. It is currently the hardest thing on screen to read, in the two profiles used for most captures.
@@ -88,6 +95,9 @@ scene from communicating its audit result.
 - **Impact:** the crowding in UX-02/UX-03 is self-inflicted — the composition has room it does not use. **P2 · `SAFE_V11_UX_MAINTENANCE`.**
 
 ### UX-09 — `AccessibilityHighContrast` is visually indistinguishable from `DesktopDark`
+
+> **STATUS — `IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`.** Fixed on `fix/shadow-v11-profile-aware-status-contrast`; see `SHADOW_PROFILE_AWARE_STATUS_CONTRAST_IMPLEMENTATION.md`. Offline acceptance only — `OST_READABILITY_DEVICE_VALIDATED` remains **false**.
+
 
 - **Evidence:** `PROVEN_IN_EDITOR_CAPTURE` (compare `tracking-lost__en__AccessibilityHighContrast.png` with `…__DesktopDark.png`) + computed (status ratios 5.58–12.58 vs 5.10–11.50 — a difference driven only by the black background, not by any token).
 - **Behaviour:** the profile changes `TextPrimary`/`TextSecondary` and the background; every status colour is identical. Since most semantic content is status-coloured, the "high contrast" profile delivers almost no additional contrast where it matters. **P2 · same root cause as UX-01 · `SAFE_V11_UX_MAINTENANCE`.**

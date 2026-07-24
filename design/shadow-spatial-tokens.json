@@ -1,486 +1,618 @@
 {
- "$comment": "Shared semantic spatial tokens for Unity + Three.js. Every state carries text + shape/icon + colour + accessible description — NEVER colour alone. Generate Unity constants and CSS/JS tokens from this file.",
- "version": "shadow-spatial-tokens/2",
- "status": {
-  "VERIFIED": {
-   "text": "VERIFIED",
-   "text_zh": "已验证",
-   "shape": "icosahedron",
-   "icon": "check",
-   "color": "#4ade80",
-   "a11y": "verified — record matches the sealed evidence",
-   "a11y_zh": "已验证——该记录与封存证据一致;不代表决策正确"
+  "$comment": "Shared semantic spatial tokens for Unity + Three.js. Every state carries text + shape/icon + colour + accessible description — NEVER colour alone. Generate Unity constants and CSS/JS tokens from this file. v3: every coloured state carries a `color_family`, and `visual_profiles` gives each family an explicit, reviewed rendition per visual profile plus that profile's surface and contrast floors. The per-state `color` remains the DesktopDark rendition and the canonical identity; profile resolution never changes a state's meaning, only its rendition. Added for UX-01/UX-05/UX-09 (offline contrast audit).",
+  "version": "shadow-spatial-tokens/3",
+  "status": {
+    "VERIFIED": {
+      "text": "VERIFIED",
+      "text_zh": "已验证",
+      "shape": "icosahedron",
+      "icon": "check",
+      "color": "#4ade80",
+      "a11y": "verified — record matches the sealed evidence",
+      "a11y_zh": "已验证——该记录与封存证据一致;不代表决策正确",
+      "color_family": "verification_green"
+    },
+    "TAMPERED": {
+      "text": "TAMPERED",
+      "text_zh": "已篡改",
+      "shape": "octahedron",
+      "icon": "alert",
+      "color": "#ef4444",
+      "a11y": "tampered — the mutated node; verification fails here",
+      "a11y_zh": "已篡改——被改动的节点;验证在此失败",
+      "color_family": "failure_red"
+    },
+    "NOT_VERIFIED": {
+      "text": "NOT VERIFIED",
+      "text_zh": "未验证",
+      "shape": "box",
+      "icon": "dash",
+      "color": "#8a92a0",
+      "a11y": "not verified — downstream of a tamper; frozen",
+      "a11y_zh": "未验证——位于篡改点的下游;已冻结",
+      "color_family": "neutral_unknown"
+    },
+    "NOT_CHECKED": {
+      "text": "NOT CHECKED",
+      "text_zh": "未检查",
+      "shape": "box",
+      "icon": "question",
+      "color": "#fbbf24",
+      "a11y": "not checked in this pass",
+      "a11y_zh": "本次未检查",
+      "color_family": "warning_amber"
+    },
+    "NOT_PRESENT": {
+      "text": "NOT PRESENT",
+      "text_zh": "不存在",
+      "shape": "ring",
+      "icon": "empty",
+      "color": "#8a92a0",
+      "a11y": "not present in the bundle",
+      "a11y_zh": "证据包中不存在",
+      "color_family": "neutral_unknown"
+    },
+    "UNSUPPORTED": {
+      "text": "UNSUPPORTED",
+      "text_zh": "不支持",
+      "shape": "box",
+      "icon": "block",
+      "color": "#fbbf24",
+      "a11y": "unsupported by this verifier",
+      "a11y_zh": "本验证器不支持",
+      "color_family": "warning_amber"
+    },
+    "FAILED": {
+      "text": "FAILED",
+      "text_zh": "验证失败",
+      "shape": "octahedron",
+      "icon": "cross",
+      "color": "#ef4444",
+      "a11y": "verification failed at this record",
+      "a11y_zh": "此记录验证失败",
+      "color_family": "failure_red"
+    },
+    "WARNING": {
+      "text": "WARNING",
+      "text_zh": "警告",
+      "shape": "tetrahedron",
+      "icon": "warning",
+      "color": "#fbbf24",
+      "a11y": "a caution/quality flag — not a chain break",
+      "a11y_zh": "警示/质量标记——非链断裂",
+      "color_family": "warning_amber"
+    },
+    "NOT_EVALUATED": {
+      "text": "NOT EVALUATED",
+      "text_zh": "未评估",
+      "shape": "ring",
+      "icon": "dash",
+      "color": "#8a92a0",
+      "a11y": "not evaluated — distinct from failed",
+      "a11y_zh": "未评估——不等于失败",
+      "color_family": "neutral_unknown"
+    },
+    "FIRST_FAILURE": {
+      "text": "FIRST FAILURE",
+      "text_zh": "首个失败",
+      "shape": "octahedron",
+      "icon": "broken-seal-first",
+      "color": "#ef4444",
+      "a11y": "the FIRST point where verification fails",
+      "a11y_zh": "验证首次失败的点",
+      "color_family": "failure_red"
+    },
+    "DOWNSTREAM_AFFECTED": {
+      "text": "AFFECTED DOWNSTREAM",
+      "text_zh": "受影响的后续",
+      "shape": "box",
+      "icon": "chain-arrow-dashed",
+      "color": "#8a92a0",
+      "a11y": "affected by an upstream failure — NOT an independent first failure",
+      "a11y_zh": "受上游失败影响——非独立首个失败",
+      "color_family": "neutral_unknown"
+    }
   },
-  "TAMPERED": {
-   "text": "TAMPERED",
-   "text_zh": "已篡改",
-   "shape": "octahedron",
-   "icon": "alert",
-   "color": "#ef4444",
-   "a11y": "tampered — the mutated node; verification fails here",
-   "a11y_zh": "已篡改——被改动的节点;验证在此失败"
-  },
-  "NOT_VERIFIED": {
-   "text": "NOT VERIFIED",
-   "text_zh": "未验证",
-   "shape": "box",
-   "icon": "dash",
-   "color": "#8a92a0",
-   "a11y": "not verified — downstream of a tamper; frozen",
-   "a11y_zh": "未验证——位于篡改点的下游;已冻结"
-  },
-  "NOT_CHECKED": {
-   "text": "NOT CHECKED",
-   "text_zh": "未检查",
-   "shape": "box",
-   "icon": "question",
-   "color": "#fbbf24",
-   "a11y": "not checked in this pass",
-   "a11y_zh": "本次未检查"
-  },
-  "NOT_PRESENT": {
-   "text": "NOT PRESENT",
-   "text_zh": "不存在",
-   "shape": "ring",
-   "icon": "empty",
-   "color": "#8a92a0",
-   "a11y": "not present in the bundle",
-   "a11y_zh": "证据包中不存在"
-  },
-  "UNSUPPORTED": {
-   "text": "UNSUPPORTED",
-   "text_zh": "不支持",
-   "shape": "box",
-   "icon": "block",
-   "color": "#fbbf24",
-   "a11y": "unsupported by this verifier",
-   "a11y_zh": "本验证器不支持"
-  },
-  "FAILED": {
-   "text": "FAILED",
-   "text_zh": "验证失败",
-   "shape": "octahedron",
-   "icon": "cross",
-   "color": "#ef4444",
-   "a11y": "verification failed at this record",
-   "a11y_zh": "此记录验证失败"
-  },
-  "WARNING": {
-   "text": "WARNING",
-   "text_zh": "警告",
-   "shape": "tetrahedron",
-   "icon": "warning",
-   "color": "#fbbf24",
-   "a11y": "a caution/quality flag — not a chain break",
-   "a11y_zh": "警示/质量标记——非链断裂"
-  },
-  "NOT_EVALUATED": {
-   "text": "NOT EVALUATED",
-   "text_zh": "未评估",
-   "shape": "ring",
-   "icon": "dash",
-   "color": "#8a92a0",
-   "a11y": "not evaluated — distinct from failed",
-   "a11y_zh": "未评估——不等于失败"
-  },
-  "FIRST_FAILURE": {
-   "text": "FIRST FAILURE",
-   "text_zh": "首个失败",
-   "shape": "octahedron",
-   "icon": "broken-seal-first",
-   "color": "#ef4444",
-   "a11y": "the FIRST point where verification fails",
-   "a11y_zh": "验证首次失败的点"
-  },
-  "DOWNSTREAM_AFFECTED": {
-   "text": "AFFECTED DOWNSTREAM",
-   "text_zh": "受影响的后续",
-   "shape": "box",
-   "icon": "chain-arrow-dashed",
-   "color": "#8a92a0",
-   "a11y": "affected by an upstream failure — NOT an independent first failure",
-   "a11y_zh": "受上游失败影响——非独立首个失败"
-  }
- },
- "verification_checks": [
-  "record_integrity",
-  "signature",
-  "hash_chain",
-  "profile",
-  "source_resolution",
-  "external_anchor"
- ],
- "analytical_correctness": {
-  "value": "NOT_EVALUATED",
-  "text": "NOT EVALUATED",
-  "text_zh": "不评估",
-  "a11y": "analytical correctness is not judged by the verifier"
- },
- "node_type_shape": {
-  "$note": "shape encodes STATUS, not type; type is shown by LABEL + icon glyph, not by a colour.",
-  "source": "disc",
-  "snapshot": "disc",
-  "evidence": "diamond",
-  "claim": "hex",
-  "recommendation": "pill",
-  "signature": "seal",
-  "audit_record": "ledger",
-  "dataset": "disc",
-  "feature": "diamond",
-  "model": "hex",
-  "metric": "pill",
-  "experiment": "flask",
-  "issue": "ticket",
-  "tool_call": "wrench",
-  "diff": "diff",
-  "test": "beaker",
-  "commit": "commit"
- },
- "edge_type": {
-  "SUPPORTS": {
-   "line": "solid",
-   "color": "#556",
-   "a11y": "supports"
-  },
-  "CONTRADICTS": {
-   "line": "dashed",
-   "color": "#ef4444",
-   "a11y": "contradicts"
-  },
-  "DERIVED_FROM": {
-   "line": "solid",
-   "color": "#556",
-   "a11y": "derived from"
-  },
-  "APPLIES_POLICY": {
-   "line": "dotted",
-   "color": "#60a5fa",
-   "a11y": "applies policy"
-  },
-  "CHALLENGED_BY": {
-   "line": "dashdot",
-   "color": "#fbbf24",
-   "a11y": "challenged by"
-  },
-  "SEALED_BY": {
-   "line": "double",
-   "color": "#4ade80",
-   "a11y": "sealed by signature"
-  },
-  "SUPERSEDES": {
-   "line": "arrow",
-   "color": "#8a92a0",
-   "a11y": "supersedes"
-  }
- },
- "provenance_mode": {
-  "FIXTURE": {
-   "text": "FIXTURE MODEL",
-   "text_zh": "测试模型",
-   "color": "#fbbf24"
-  },
-  "LIVE": {
-   "text": "LIVE MODEL",
-   "text_zh": "实时模型",
-   "color": "#60a5fa"
-  },
-  "DEVICE": {
-   "text": "DEVICE",
-   "text_zh": "设备",
-   "color": "#4ade80"
-  }
- },
- "surface": {
-  "panel": "#14181e",
-  "panel_border": "#232830",
-  "scrim_alpha_over_passthrough": 0.86,
-  "focus_ring": "#60a5fa",
-  "selected": "#172232"
- },
- "text_hierarchy": {
-  "hero": 26,
-  "subhead": 18,
-  "body": 15,
-  "seq_mono": 13,
-  "note": 11,
-  "mono_font": "ui-monospace"
- },
- "depth": {
-  "primary_work_plane_m": 2,
-  "context_layer_m_range": [
-   1.5,
-   3
+  "verification_checks": [
+    "record_integrity",
+    "signature",
+    "hash_chain",
+    "profile",
+    "source_resolution",
+    "external_anchor"
   ],
-  "audit_trajectory_layer_m": 2.2,
-  "$note": "HYPOTHESES — measure on One Pro before treating as truth"
- },
- "animation": {
-  "transition_ms": 220,
-  "cascade_reveal_ms": 400,
-  "reduced_motion": {
-   "transition_ms": 0,
-   "cascade_reveal_ms": 0,
-   "$note": "reduced-motion: no tween, instant state; no continuous decoration"
+  "analytical_correctness": {
+    "value": "NOT_EVALUATED",
+    "text": "NOT EVALUATED",
+    "text_zh": "不评估",
+    "a11y": "analytical correctness is not judged by the verifier"
+  },
+  "node_type_shape": {
+    "$note": "shape encodes STATUS, not type; type is shown by LABEL + icon glyph, not by a colour.",
+    "source": "disc",
+    "snapshot": "disc",
+    "evidence": "diamond",
+    "claim": "hex",
+    "recommendation": "pill",
+    "signature": "seal",
+    "audit_record": "ledger",
+    "dataset": "disc",
+    "feature": "diamond",
+    "model": "hex",
+    "metric": "pill",
+    "experiment": "flask",
+    "issue": "ticket",
+    "tool_call": "wrench",
+    "diff": "diff",
+    "test": "beaker",
+    "commit": "commit"
+  },
+  "edge_type": {
+    "SUPPORTS": {
+      "line": "solid",
+      "color": "#7c8899",
+      "a11y": "supports",
+      "color_family": "edge_muted"
+    },
+    "CONTRADICTS": {
+      "line": "dashed",
+      "color": "#ef4444",
+      "a11y": "contradicts",
+      "color_family": "failure_red"
+    },
+    "DERIVED_FROM": {
+      "line": "solid",
+      "color": "#7c8899",
+      "a11y": "derived from",
+      "color_family": "edge_muted"
+    },
+    "APPLIES_POLICY": {
+      "line": "dotted",
+      "color": "#60a5fa",
+      "a11y": "applies policy",
+      "color_family": "info_blue_alt"
+    },
+    "CHALLENGED_BY": {
+      "line": "dashdot",
+      "color": "#fbbf24",
+      "a11y": "challenged by",
+      "color_family": "warning_amber"
+    },
+    "SEALED_BY": {
+      "line": "double",
+      "color": "#4ade80",
+      "a11y": "sealed by signature",
+      "color_family": "verification_green"
+    },
+    "SUPERSEDES": {
+      "line": "arrow",
+      "color": "#8a92a0",
+      "a11y": "supersedes",
+      "color_family": "neutral_unknown"
+    }
+  },
+  "provenance_mode": {
+    "FIXTURE": {
+      "text": "FIXTURE MODEL",
+      "text_zh": "测试模型",
+      "color": "#fbbf24",
+      "color_family": "warning_amber"
+    },
+    "LIVE": {
+      "text": "LIVE MODEL",
+      "text_zh": "实时模型",
+      "color": "#60a5fa",
+      "color_family": "info_blue_alt"
+    },
+    "DEVICE": {
+      "text": "DEVICE",
+      "text_zh": "设备",
+      "color": "#4ade80",
+      "color_family": "verification_green"
+    }
+  },
+  "surface": {
+    "panel": "#14181e",
+    "panel_border": "#232830",
+    "scrim_alpha_over_passthrough": 0.86,
+    "focus_ring": "#60a5fa",
+    "selected": "#172232"
+  },
+  "text_hierarchy": {
+    "hero": 26,
+    "subhead": 18,
+    "body": 15,
+    "seq_mono": 13,
+    "note": 11,
+    "mono_font": "ui-monospace"
+  },
+  "depth": {
+    "primary_work_plane_m": 2,
+    "context_layer_m_range": [
+      1.5,
+      3
+    ],
+    "audit_trajectory_layer_m": 2.2,
+    "$note": "HYPOTHESES — measure on One Pro before treating as truth"
+  },
+  "animation": {
+    "transition_ms": 220,
+    "cascade_reveal_ms": 400,
+    "reduced_motion": {
+      "transition_ms": 0,
+      "cascade_reveal_ms": 0,
+      "$note": "reduced-motion: no tween, instant state; no continuous decoration"
+    }
+  },
+  "spatial_hypotheses": {
+    "$note": "NOT Beam Pro measurements — device-validation-pending",
+    "min_text_x_height_deg": 0.2,
+    "min_interactive_target_deg": 1.5,
+    "text_plate_contrast_min": "5:1",
+    "content_safe_zone_deg": {
+      "horizontal": 20,
+      "vertical": 12
+    },
+    "head_comfort_deg": {
+      "horizontal": 30,
+      "vertical_up": 15,
+      "vertical_down": 20
+    },
+    "motion_to_photon_ms_max": 20
+  },
+  "governance": {
+    "REQUIRES_HUMAN_REVIEW": {
+      "text": "REQUIRES REVIEW",
+      "text_zh": "需人工审核",
+      "shape": "diamond",
+      "icon": "human-diamond",
+      "color": "#3b82f6",
+      "a11y": "human review required (action)",
+      "a11y_zh": "需要人工审核(待处理)",
+      "color_family": "info_blue"
+    },
+    "HUMAN_REVIEW_RECORDED": {
+      "text": "REVIEW RECORDED",
+      "text_zh": "已记录审核",
+      "shape": "box",
+      "icon": "review-doc",
+      "color": "#b6bec9",
+      "a11y": "a human review was recorded — NOT the same as approval",
+      "a11y_zh": "已记录人工审核——不等于审批",
+      "color_family": "review_grey"
+    },
+    "APPROVAL_NOT_PRESENT": {
+      "text": "APPROVAL ABSENT",
+      "text_zh": "无审批",
+      "shape": "ring",
+      "icon": "stamp-empty",
+      "color": "#8a92a0",
+      "a11y": "no human approval is present",
+      "a11y_zh": "无人工审批",
+      "color_family": "neutral_unknown"
+    },
+    "APPROVAL_PRESENT": {
+      "text": "APPROVAL PRESENT",
+      "text_zh": "已审批",
+      "shape": "pill",
+      "icon": "stamp-signed",
+      "color": "#3b82f6",
+      "a11y": "explicit human approval (brand/stamp, NEVER verification green)",
+      "a11y_zh": "已获人工审批(品牌/印章色,绝不用验证绿)",
+      "color_family": "info_blue"
+    },
+    "ABSTAINED": {
+      "text": "ABSTAINED",
+      "text_zh": "弃权",
+      "shape": "ring",
+      "icon": "pause",
+      "color": "#8a92a0",
+      "a11y": "abstained from a stance",
+      "a11y_zh": "对该立场弃权",
+      "color_family": "neutral_unknown"
+    }
+  },
+  "trust_posture": {
+    "SELF_SIGNED": {
+      "text": "SELF-SIGNED",
+      "text_zh": "自签名",
+      "shape": "box",
+      "icon": "key",
+      "color": "#fbbf24",
+      "a11y": "verifies against the supplied key; an operator holding it could re-sign altered history without an external anchor",
+      "a11y_zh": "对提供的密钥可验证;持钥运营者在无外部锚定时理论上可重签改动的历史",
+      "color_family": "warning_amber"
+    },
+    "TIME_ANCHORED_STRUCTURAL": {
+      "text": "TIME-ANCHORED (STRUCTURAL)",
+      "text_zh": "结构化时间锚定",
+      "shape": "box",
+      "icon": "clock-outline",
+      "color": "#3b82f6",
+      "a11y": "structural timestamp present; not an external transparency anchor",
+      "a11y_zh": "存在结构化时间戳;非外部透明日志锚定",
+      "color_family": "info_blue"
+    },
+    "TIME_ANCHORED": {
+      "text": "TIME-ANCHORED",
+      "text_zh": "时间锚定",
+      "shape": "box",
+      "icon": "anchor-check",
+      "color": "#4ade80",
+      "a11y": "verified external time anchor (e.g. RFC 3161 / Rekor)",
+      "a11y_zh": "已验证的外部时间锚定(如 RFC 3161 / Rekor)",
+      "color_family": "verification_green"
+    }
+  },
+  "tracking": {
+    "INITIALIZING": {
+      "text": "INITIALIZING",
+      "text_zh": "初始化中",
+      "shape": "ring",
+      "icon": "spinner",
+      "color": "#8a92a0",
+      "a11y": "tracking initializing",
+      "a11y_zh": "追踪初始化中",
+      "color_family": "neutral_unknown"
+    },
+    "SCANNING": {
+      "text": "SCANNING FOR POSITION",
+      "text_zh": "定位扫描中",
+      "shape": "tetrahedron",
+      "icon": "scan",
+      "color": "#fbbf24",
+      "a11y": "scanning — hold still and slowly look around; core 3DoF review remains available. NOT lost.",
+      "a11y_zh": "扫描中——请稳住并缓慢环视;核心 3DoF 审阅仍可用。非丢失。",
+      "color_family": "warning_amber"
+    },
+    "TRACKED_3DOF": {
+      "text": "3DOF",
+      "text_zh": "3DoF 追踪",
+      "shape": "icosahedron",
+      "icon": "3dof",
+      "color": "#4ade80",
+      "a11y": "3DoF tracking active (orientation)",
+      "a11y_zh": "3DoF 追踪(姿态)",
+      "color_family": "verification_green"
+    },
+    "TRACKED_6DOF": {
+      "text": "6DOF",
+      "text_zh": "6DoF 追踪",
+      "shape": "icosahedron",
+      "icon": "6dof",
+      "color": "#4ade80",
+      "a11y": "6DoF tracking active (position)",
+      "a11y_zh": "6DoF 追踪(位置)",
+      "color_family": "verification_green"
+    },
+    "LIMITED": {
+      "text": "TRACKING LIMITED",
+      "text_zh": "追踪受限",
+      "shape": "tetrahedron",
+      "icon": "warning",
+      "color": "#fbbf24",
+      "a11y": "tracking limited — safe session-relative layout",
+      "a11y_zh": "追踪受限——安全的会话相对布局",
+      "color_family": "warning_amber"
+    },
+    "LOST": {
+      "text": "TRACKING LOST",
+      "text_zh": "追踪丢失",
+      "shape": "octahedron",
+      "icon": "lost",
+      "color": "#ef4444",
+      "a11y": "tracking lost — story/selection/audit preserved; Recenter + 2D audit available",
+      "a11y_zh": "追踪丢失——故事/选择/审计保留;Recenter 与 2D 审计可用",
+      "color_family": "failure_red"
+    },
+    "RECOVERING": {
+      "text": "RECOVERING",
+      "text_zh": "恢复中",
+      "shape": "tetrahedron",
+      "icon": "recover",
+      "color": "#fbbf24",
+      "a11y": "recovering — do not rebuild or replay stale voice",
+      "a11y_zh": "恢复中——不重建、不重放过期语音",
+      "color_family": "warning_amber"
+    }
+  },
+  "interaction": {
+    "DEFAULT": {
+      "text": "DEFAULT",
+      "text_zh": "默认",
+      "shape": "box",
+      "icon": "none",
+      "color": "#8a92a0",
+      "a11y": "default state",
+      "a11y_zh": "默认状态",
+      "color_family": "neutral_unknown"
+    },
+    "FOCUSED": {
+      "text": "FOCUSED",
+      "text_zh": "聚焦",
+      "shape": "box",
+      "icon": "focus-ring",
+      "color": "#3b82f6",
+      "a11y": "focused (hover/gaze) — highlight only, never selects or authorizes",
+      "a11y_zh": "聚焦(悬停/注视)——仅高亮,不选择、不授权",
+      "color_family": "info_blue"
+    },
+    "SELECTED": {
+      "text": "SELECTED",
+      "text_zh": "已选择",
+      "shape": "box",
+      "icon": "selected",
+      "color": "#3b82f6",
+      "a11y": "selected — moved to current focus",
+      "a11y_zh": "已选择——进入当前焦点",
+      "color_family": "info_blue"
+    },
+    "CONFIRM_REQUIRED": {
+      "text": "CONFIRM REQUIRED",
+      "text_zh": "需确认",
+      "shape": "diamond",
+      "icon": "confirm",
+      "color": "#fbbf24",
+      "a11y": "confirmation required (regulated/destructive)",
+      "a11y_zh": "需确认(受监管/破坏性操作)",
+      "color_family": "warning_amber"
+    },
+    "DISABLED": {
+      "text": "DISABLED",
+      "text_zh": "禁用",
+      "shape": "box",
+      "icon": "disabled",
+      "color": "#8a92a0",
+      "a11y": "disabled/inactive",
+      "a11y_zh": "禁用/未激活",
+      "color_family": "neutral_unknown"
+    }
+  },
+  "capability": {
+    "AUTHORED": {
+      "text": "AUTHORED",
+      "text_zh": "已编写",
+      "shape": "box",
+      "icon": "code",
+      "color": "#8a92a0",
+      "a11y": "source authored — not compiled",
+      "a11y_zh": "源代码已编写——未编译",
+      "color_family": "neutral_unknown"
+    },
+    "COMPILED": {
+      "text": "COMPILED",
+      "text_zh": "已编译",
+      "shape": "box",
+      "icon": "gear",
+      "color": "#8a92a0",
+      "a11y": "compiles — not built to an artifact",
+      "a11y_zh": "可编译——未构建产物",
+      "color_family": "neutral_unknown"
+    },
+    "BUILT": {
+      "text": "BUILT",
+      "text_zh": "已构建",
+      "shape": "box",
+      "icon": "package",
+      "color": "#3b82f6",
+      "a11y": "artifact built — not installed on a device",
+      "a11y_zh": "产物已构建——未安装到设备",
+      "color_family": "info_blue"
+    },
+    "INSTALLED": {
+      "text": "INSTALLED",
+      "text_zh": "已安装",
+      "shape": "box",
+      "icon": "download",
+      "color": "#fbbf24",
+      "a11y": "installed on a device — not device-validated",
+      "a11y_zh": "已安装到设备——未真机验证",
+      "color_family": "warning_amber"
+    },
+    "DEVICE_VALIDATED": {
+      "text": "DEVICE VALIDATED",
+      "text_zh": "真机已验证",
+      "shape": "box",
+      "icon": "device-check",
+      "color": "#4ade80",
+      "a11y": "validated on the physical device (only true with hardware evidence)",
+      "a11y_zh": "已在真机验证(仅在有硬件证据时为真)",
+      "color_family": "verification_green"
+    },
+    "PRODUCTION_READY": {
+      "text": "PRODUCTION READY",
+      "text_zh": "可生产",
+      "shape": "box",
+      "icon": "shield-check",
+      "color": "#4ade80",
+      "a11y": "production-ready (independent audit + device validation required)",
+      "a11y_zh": "可生产(需独立审计 + 真机验证)",
+      "color_family": "verification_green"
+    }
+  },
+  "visual_profiles": {
+    "AccessibilityHighContrast": {
+      "surface": "#000000",
+      "text_contrast_floor": 7.0,
+      "graphic_contrast_floor": 3.0,
+      "families": {
+        "edge_muted": "#a9b3c2",
+        "failure_red": "#ff6180",
+        "info_blue": "#40C4FF",
+        "info_blue_alt": "#8ad8ff",
+        "neutral_unknown": "#BDBDBD",
+        "review_grey": "#8e9bad",
+        "verification_green": "#00E676",
+        "warning_amber": "#FFD600"
+      },
+      "disclaimer": "#ff9d9d",
+      "capture_surface": "#000000"
+    },
+    "BrowserDark": {
+      "surface": "#090D12",
+      "text_contrast_floor": 4.5,
+      "graphic_contrast_floor": 3.0,
+      "families": {
+        "edge_muted": "#7c8899",
+        "failure_red": "#ef4444",
+        "info_blue": "#3b82f6",
+        "info_blue_alt": "#60a5fa",
+        "neutral_unknown": "#8a92a0",
+        "review_grey": "#b6bec9",
+        "verification_green": "#4ade80",
+        "warning_amber": "#fbbf24"
+      },
+      "disclaimer": "#ff8a8a"
+    },
+    "DesktopDark": {
+      "surface": "#090D12",
+      "text_contrast_floor": 4.5,
+      "graphic_contrast_floor": 3.0,
+      "families": {
+        "edge_muted": "#7c8899",
+        "failure_red": "#ef4444",
+        "info_blue": "#3b82f6",
+        "info_blue_alt": "#60a5fa",
+        "neutral_unknown": "#8a92a0",
+        "review_grey": "#b6bec9",
+        "verification_green": "#4ade80",
+        "warning_amber": "#fbbf24"
+      },
+      "disclaimer": "#ff8a8a",
+      "capture_surface": "#0B0F16"
+    },
+    "ProjectorPresentation": {
+      "surface": "#05080B",
+      "text_contrast_floor": 4.5,
+      "graphic_contrast_floor": 3.0,
+      "families": {
+        "edge_muted": "#93a0ae",
+        "failure_red": "#FF6B78",
+        "info_blue": "#6FB4FF",
+        "info_blue_alt": "#a8ccff",
+        "neutral_unknown": "#AEB8C2",
+        "review_grey": "#eaeff4",
+        "verification_green": "#34E0A6",
+        "warning_amber": "#FFD166"
+      },
+      "disclaimer": "#ff9d9d"
+    },
+    "XrealOstBright": {
+      "surface": "#F4F6F8",
+      "text_contrast_floor": 4.5,
+      "graphic_contrast_floor": 3.0,
+      "families": {
+        "edge_muted": "#4a5462",
+        "failure_red": "#a12126",
+        "info_blue": "#1254a0",
+        "info_blue_alt": "#1a3d66",
+        "neutral_unknown": "#4b545d",
+        "review_grey": "#2a2f38",
+        "verification_green": "#085e3f",
+        "warning_amber": "#754c00"
+      },
+      "disclaimer": "#8f1020",
+      "capture_surface": "#C7CCD4"
+    }
   }
- },
- "spatial_hypotheses": {
-  "$note": "NOT Beam Pro measurements — device-validation-pending",
-  "min_text_x_height_deg": 0.2,
-  "min_interactive_target_deg": 1.5,
-  "text_plate_contrast_min": "5:1",
-  "content_safe_zone_deg": {
-   "horizontal": 20,
-   "vertical": 12
-  },
-  "head_comfort_deg": {
-   "horizontal": 30,
-   "vertical_up": 15,
-   "vertical_down": 20
-  },
-  "motion_to_photon_ms_max": 20
- },
- "governance": {
-  "REQUIRES_HUMAN_REVIEW": {
-   "text": "REQUIRES REVIEW",
-   "text_zh": "需人工审核",
-   "shape": "diamond",
-   "icon": "human-diamond",
-   "color": "#3b82f6",
-   "a11y": "human review required (action)",
-   "a11y_zh": "需要人工审核(待处理)"
-  },
-  "HUMAN_REVIEW_RECORDED": {
-   "text": "REVIEW RECORDED",
-   "text_zh": "已记录审核",
-   "shape": "box",
-   "icon": "review-doc",
-   "color": "#6b7280",
-   "a11y": "a human review was recorded — NOT the same as approval",
-   "a11y_zh": "已记录人工审核——不等于审批"
-  },
-  "APPROVAL_NOT_PRESENT": {
-   "text": "APPROVAL ABSENT",
-   "text_zh": "无审批",
-   "shape": "ring",
-   "icon": "stamp-empty",
-   "color": "#8a92a0",
-   "a11y": "no human approval is present",
-   "a11y_zh": "无人工审批"
-  },
-  "APPROVAL_PRESENT": {
-   "text": "APPROVAL PRESENT",
-   "text_zh": "已审批",
-   "shape": "pill",
-   "icon": "stamp-signed",
-   "color": "#3b82f6",
-   "a11y": "explicit human approval (brand/stamp, NEVER verification green)",
-   "a11y_zh": "已获人工审批(品牌/印章色,绝不用验证绿)"
-  },
-  "ABSTAINED": {
-   "text": "ABSTAINED",
-   "text_zh": "弃权",
-   "shape": "ring",
-   "icon": "pause",
-   "color": "#8a92a0",
-   "a11y": "abstained from a stance",
-   "a11y_zh": "对该立场弃权"
-  }
- },
- "trust_posture": {
-  "SELF_SIGNED": {
-   "text": "SELF-SIGNED",
-   "text_zh": "自签名",
-   "shape": "box",
-   "icon": "key",
-   "color": "#fbbf24",
-   "a11y": "verifies against the supplied key; an operator holding it could re-sign altered history without an external anchor",
-   "a11y_zh": "对提供的密钥可验证;持钥运营者在无外部锚定时理论上可重签改动的历史"
-  },
-  "TIME_ANCHORED_STRUCTURAL": {
-   "text": "TIME-ANCHORED (STRUCTURAL)",
-   "text_zh": "结构化时间锚定",
-   "shape": "box",
-   "icon": "clock-outline",
-   "color": "#3b82f6",
-   "a11y": "structural timestamp present; not an external transparency anchor",
-   "a11y_zh": "存在结构化时间戳;非外部透明日志锚定"
-  },
-  "TIME_ANCHORED": {
-   "text": "TIME-ANCHORED",
-   "text_zh": "时间锚定",
-   "shape": "box",
-   "icon": "anchor-check",
-   "color": "#4ade80",
-   "a11y": "verified external time anchor (e.g. RFC 3161 / Rekor)",
-   "a11y_zh": "已验证的外部时间锚定(如 RFC 3161 / Rekor)"
-  }
- },
- "tracking": {
-  "INITIALIZING": {
-   "text": "INITIALIZING",
-   "text_zh": "初始化中",
-   "shape": "ring",
-   "icon": "spinner",
-   "color": "#8a92a0",
-   "a11y": "tracking initializing",
-   "a11y_zh": "追踪初始化中"
-  },
-  "SCANNING": {
-   "text": "SCANNING FOR POSITION",
-   "text_zh": "定位扫描中",
-   "shape": "tetrahedron",
-   "icon": "scan",
-   "color": "#fbbf24",
-   "a11y": "scanning — hold still and slowly look around; core 3DoF review remains available. NOT lost.",
-   "a11y_zh": "扫描中——请稳住并缓慢环视;核心 3DoF 审阅仍可用。非丢失。"
-  },
-  "TRACKED_3DOF": {
-   "text": "3DOF",
-   "text_zh": "3DoF 追踪",
-   "shape": "icosahedron",
-   "icon": "3dof",
-   "color": "#4ade80",
-   "a11y": "3DoF tracking active (orientation)",
-   "a11y_zh": "3DoF 追踪(姿态)"
-  },
-  "TRACKED_6DOF": {
-   "text": "6DOF",
-   "text_zh": "6DoF 追踪",
-   "shape": "icosahedron",
-   "icon": "6dof",
-   "color": "#4ade80",
-   "a11y": "6DoF tracking active (position)",
-   "a11y_zh": "6DoF 追踪(位置)"
-  },
-  "LIMITED": {
-   "text": "TRACKING LIMITED",
-   "text_zh": "追踪受限",
-   "shape": "tetrahedron",
-   "icon": "warning",
-   "color": "#fbbf24",
-   "a11y": "tracking limited — safe session-relative layout",
-   "a11y_zh": "追踪受限——安全的会话相对布局"
-  },
-  "LOST": {
-   "text": "TRACKING LOST",
-   "text_zh": "追踪丢失",
-   "shape": "octahedron",
-   "icon": "lost",
-   "color": "#ef4444",
-   "a11y": "tracking lost — story/selection/audit preserved; Recenter + 2D audit available",
-   "a11y_zh": "追踪丢失——故事/选择/审计保留;Recenter 与 2D 审计可用"
-  },
-  "RECOVERING": {
-   "text": "RECOVERING",
-   "text_zh": "恢复中",
-   "shape": "tetrahedron",
-   "icon": "recover",
-   "color": "#fbbf24",
-   "a11y": "recovering — do not rebuild or replay stale voice",
-   "a11y_zh": "恢复中——不重建、不重放过期语音"
-  }
- },
- "interaction": {
-  "DEFAULT": {
-   "text": "DEFAULT",
-   "text_zh": "默认",
-   "shape": "box",
-   "icon": "none",
-   "color": "#8a92a0",
-   "a11y": "default state",
-   "a11y_zh": "默认状态"
-  },
-  "FOCUSED": {
-   "text": "FOCUSED",
-   "text_zh": "聚焦",
-   "shape": "box",
-   "icon": "focus-ring",
-   "color": "#3b82f6",
-   "a11y": "focused (hover/gaze) — highlight only, never selects or authorizes",
-   "a11y_zh": "聚焦(悬停/注视)——仅高亮,不选择、不授权"
-  },
-  "SELECTED": {
-   "text": "SELECTED",
-   "text_zh": "已选择",
-   "shape": "box",
-   "icon": "selected",
-   "color": "#3b82f6",
-   "a11y": "selected — moved to current focus",
-   "a11y_zh": "已选择——进入当前焦点"
-  },
-  "CONFIRM_REQUIRED": {
-   "text": "CONFIRM REQUIRED",
-   "text_zh": "需确认",
-   "shape": "diamond",
-   "icon": "confirm",
-   "color": "#fbbf24",
-   "a11y": "confirmation required (regulated/destructive)",
-   "a11y_zh": "需确认(受监管/破坏性操作)"
-  },
-  "DISABLED": {
-   "text": "DISABLED",
-   "text_zh": "禁用",
-   "shape": "box",
-   "icon": "disabled",
-   "color": "#8a92a0",
-   "a11y": "disabled/inactive",
-   "a11y_zh": "禁用/未激活"
-  }
- },
- "capability": {
-  "AUTHORED": {
-   "text": "AUTHORED",
-   "text_zh": "已编写",
-   "shape": "box",
-   "icon": "code",
-   "color": "#8a92a0",
-   "a11y": "source authored — not compiled",
-   "a11y_zh": "源代码已编写——未编译"
-  },
-  "COMPILED": {
-   "text": "COMPILED",
-   "text_zh": "已编译",
-   "shape": "box",
-   "icon": "gear",
-   "color": "#8a92a0",
-   "a11y": "compiles — not built to an artifact",
-   "a11y_zh": "可编译——未构建产物"
-  },
-  "BUILT": {
-   "text": "BUILT",
-   "text_zh": "已构建",
-   "shape": "box",
-   "icon": "package",
-   "color": "#3b82f6",
-   "a11y": "artifact built — not installed on a device",
-   "a11y_zh": "产物已构建——未安装到设备"
-  },
-  "INSTALLED": {
-   "text": "INSTALLED",
-   "text_zh": "已安装",
-   "shape": "box",
-   "icon": "download",
-   "color": "#fbbf24",
-   "a11y": "installed on a device — not device-validated",
-   "a11y_zh": "已安装到设备——未真机验证"
-  },
-  "DEVICE_VALIDATED": {
-   "text": "DEVICE VALIDATED",
-   "text_zh": "真机已验证",
-   "shape": "box",
-   "icon": "device-check",
-   "color": "#4ade80",
-   "a11y": "validated on the physical device (only true with hardware evidence)",
-   "a11y_zh": "已在真机验证(仅在有硬件证据时为真)"
-  },
-  "PRODUCTION_READY": {
-   "text": "PRODUCTION READY",
-   "text_zh": "可生产",
-   "shape": "box",
-   "icon": "shield-check",
-   "color": "#4ade80",
-   "a11y": "production-ready (independent audit + device validation required)",
-   "a11y_zh": "可生产(需独立审计 + 真机验证)"
-  }
- }
 }

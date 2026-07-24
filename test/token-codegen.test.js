@@ -36,7 +36,7 @@ test("generated files carry the generated-warning + canonical source + no timest
   for (const [k, s] of Object.entries(GEN)) {
     assert.match(s, /AUTO-GENERATED/, `${k} missing generated warning`);
     assert.match(s, /design\/shadow-spatial-tokens\.json/, `${k} missing canonical source path`);
-    assert.match(s, /shadow-spatial-tokens\/2/, `${k} missing schema version`);
+    assert.match(s, /shadow-spatial-tokens\/3/, `${k} missing schema version`);
     assert.doesNotMatch(s, /\/Users\/|\/home\/|C:\\\\/, `${k} contains an absolute path`);
     assert.doesNotMatch(s, /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/, `${k} contains a timestamp`);
   }
