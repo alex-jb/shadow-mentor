@@ -1,0 +1,82 @@
+{
+  "baseline": "e14e264",
+  "auditWorkspace": {
+    "definedBy": "runtime code, not a serialized scene",
+    "sceneGenerator": "apps/shadow-lens/unity/Assets/ShadowLens/Editor/ShadowV11BeamProCandidate.cs :: BuildScene()",
+    "runtimeRoot": "apps/shadow-lens/unity/Assets/ShadowLens/Workspace/ShadowAuditWorkspace.cs",
+    "evidence": "PROVEN_FROM_GENERATOR_CODE",
+    "roots": ["Main Camera", "Directional Light", "AuditWorkspaceBootstrap", "CandidateBanner"],
+    "regions": {
+      "top":    {"localPosition": [-3.30, 2.05, 0.00], "contentExtent": [0, -0.46], "extras": {"degradedBannerXOffset": 2.90}},
+      "left":   {"localPosition": [-3.30, 1.10, 0.00], "contentExtent": [0, -0.62]},
+      "center": {"localPosition": [-0.90, 1.10, 0.05], "contentExtent": [0, -1.02]},
+      "right":  {"localPosition": [ 2.25, 1.10, 0.00], "contentExtent": [0, -1.04], "rowStep": -0.26, "labelValueStep": -0.10},
+      "bottom": {"localPosition": [-2.40, -1.60, 0.00], "contentExtent": [0.16, -0.36], "railStepX": 0.62}
+    },
+    "typeScale": {"T_TITLE": 0.052, "T_HEAD": 0.030, "T_LABEL": 0.030, "T_BODY": 0.026, "T_SMALL": 0.022, "fontSize": 64},
+    "camera": {
+      "count": 1, "tag": "MainCamera",
+      "buildScenePosition": [0, 0.1, -7.0], "captureHarnessPosition": [0, 0.1, -7.2],
+      "lookAt": [0, 0.1, 0], "clearFlags": "SolidColor",
+      "fieldOfViewSetInBuildScene": false, "captureHarnessFieldOfView": 40,
+      "clippingPlanes": "Unity defaults (never set)", "cullingMask": "Unity defaults (never set)"
+    },
+    "xr": {
+      "xrOrigin": false, "trackedPoseDriver": false, "xrealSessionManager": false,
+      "xriRig": false,
+      "trackingValueIsDisplayOnly": true,
+      "classification": "future loader/display-stage risk; NOT the current MR package-handoff root cause"
+    },
+    "ui": {
+      "canvasCount": 0, "uiToolkitDocuments": 0, "textMeshProComponents": 0,
+      "eventSystem": false, "raycaster": false, "selectableComponents": 0,
+      "primitives": "world-space legacy TextMesh + PrimitiveType.Quad with shared Unlit/Color materials from a hex-keyed cache"
+    },
+    "lifecycle": {
+      "regionsReused": true, "rebuildScope": "per region",
+      "verifiedBy": "ShadowAuditWorkspaceLifecycleTests — 32 cycles, regions=5, fixed unique material count, 0 orphans after destroy",
+      "evidence": "PROVEN_FROM_RUNTIME_TEST"
+    }
+  },
+  "auditRoomFlat": {
+    "definedBy": "demos/replay/3d/ (app.js, scene.js, constants.js, flat-fit.js)",
+    "evidence": "PROVEN_FROM_GENERATOR_CODE",
+    "committedCapture": false,
+    "palette": {"intact": "#E8E8E8", "tampered": "#FF4A4A", "healed": "#3DDC97", "text": "#E8E8E8"},
+    "namedProfile": "AuditRoomProvenance",
+    "profilePinnedBy": "test/threejs-profile-override.test.js"
+  },
+  "captureRigGeometry": {
+    "label": "EDITOR_GEOMETRY_ESTIMATE",
+    "note": "this is the capture rig, not a headset field of view; the repository asserts no headset FOV",
+    "formula": "halfHeight = d*tan(fovV/2); halfWidth = halfHeight*aspect; pxPerUnit = width/(2*halfWidth)",
+    "inputs": {"d": 7.2, "fovVDeg": 40, "resolution": [1600, 1000], "aspect": 1.6},
+    "outputs": {"halfHeight": 2.621, "halfWidth": 4.193, "visibleWidth": 8.386, "visibleHeight": 5.241, "pxPerWorldUnit": 190.8,
+                "visibleX": [-4.193, 4.193], "visibleY": [-2.521, 2.721]},
+    "derivedGaps": {
+      "leftToCenterUnits": 2.40, "leftToCenterPx": 458, "longestLeftContentPx": 438,
+      "centerToRightUnits": 3.15, "centerToRightPx": 601, "longestCenterContentPx": 693,
+      "rightToEdgePx": 371, "observedRightMarginPx": 47,
+      "bodyRowStepPx": 22.9, "trustLabelValueStepPx": 19.1, "renderedLineBoxPxApprox": 30,
+      "emptyVerticalBandUnits": 1.52, "emptyVerticalBandFraction": 0.29
+    }
+  },
+  "contrast": {
+    "method": "WCAG 2.x relative luminance ratio",
+    "backgrounds": {"DesktopDark": "#0B0F16", "XrealOstBright": "#C7CCD4", "AccessibilityHighContrast": "#000000"},
+    "statusTokens": {
+      "#4ade80": {"DesktopDark": 11.01, "XrealOstBright": 1.08, "AccessibilityHighContrast": 12.05},
+      "#ef4444": {"DesktopDark": 5.10, "XrealOstBright": 2.33, "AccessibilityHighContrast": 5.58},
+      "#8a92a0": {"DesktopDark": 6.12, "XrealOstBright": 1.94, "AccessibilityHighContrast": 6.70},
+      "#fbbf24": {"DesktopDark": 11.50, "XrealOstBright": 1.03, "AccessibilityHighContrast": 12.58}
+    },
+    "hardcoded": {"#961418 SIMULATED": {"DesktopDark": 2.20, "XrealOstBright": 5.40, "AccessibilityHighContrast": 2.41}},
+    "floor": 3.0
+  },
+  "unityTests": {
+    "editMode": {"total": 136, "passed": 136, "failed": 0, "skipped": 0},
+    "playModeWithoutCapture": {"total": 70, "passed": 60, "failed": 8, "skipped": 2},
+    "playModeWithCapture": {"total": 70, "passed": 60, "failed": 10, "skipped": 0},
+    "captureHarnessInducedFailures": ["ExactlyOneActiveMainCamera", "RepeatedUpdates_DoNotLeakOrDuplicate"]
+  }
+}

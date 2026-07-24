@@ -1,0 +1,189 @@
+{
+  "baseline": "e14e264",
+  "method": "every entry was opened and read; no path inferred from its filename alone",
+  "surfaces": {
+    "auditWorkspace": {
+      "kind": "unity-runtime-generated",
+      "serializedScene": null,
+      "generator": "apps/shadow-lens/unity/Assets/ShadowLens/Editor/ShadowV11BeamProCandidate.cs"
+    },
+    "auditRoomFlat": {
+      "kind": "threejs",
+      "serializedScene": null,
+      "root": "demos/replay/3d/"
+    }
+  },
+  "entries": [
+    {
+      "path": "apps/shadow-lens/unity/Assets/ShadowLens/Workspace/ShadowAuditWorkspace.cs",
+      "purpose": "workspace root: 5 regions, all label positions and colours",
+      "production": true,
+      "geometry": true,
+      "styling": true,
+      "localization": "via labels",
+      "runtimeState": true,
+      "tested": "logic only"
+    },
+    {
+      "path": "apps/shadow-lens/unity/Assets/ShadowLens/Workspace/ShadowAuditWorkspaceModel.cs",
+      "purpose": "pure VM builders (focus/source/trust/rail)",
+      "production": true,
+      "geometry": false,
+      "styling": false,
+      "localization": false,
+      "runtimeState": false,
+      "tested": true
+    },
+    {
+      "path": "apps/shadow-lens/unity/Assets/ShadowLens/Workspace/ShadowStatusGlyph.cs",
+      "purpose": "status -> text/zh/icon/shape/colour",
+      "production": true,
+      "geometry": false,
+      "styling": true,
+      "localization": true,
+      "runtimeState": false,
+      "tested": true
+    },
+    {
+      "path": "apps/shadow-lens/unity/Assets/ShadowLens/Workspace/ShadowWorkspaceLabels.cs",
+      "purpose": "bilingual UI strings + tracking short names",
+      "production": true,
+      "geometry": false,
+      "styling": false,
+      "localization": true,
+      "runtimeState": false,
+      "tested": true
+    },
+    {
+      "path": "apps/shadow-lens/unity/Assets/ShadowLens/Workspace/ShadowLabelMetrics.cs",
+      "purpose": "CJK/Latin/emoji em widths + truncation",
+      "production": true,
+      "geometry": true,
+      "styling": false,
+      "localization": true,
+      "runtimeState": false,
+      "tested": true
+    },
+    {
+      "path": "apps/shadow-lens/unity/Assets/ShadowLens/Workspace/ShadowTrackingBanner.cs",
+      "purpose": "degraded tracking copy EN/ZH",
+      "production": true,
+      "geometry": false,
+      "styling": false,
+      "localization": true,
+      "runtimeState": true,
+      "tested": true
+    },
+    {
+      "path": "apps/shadow-lens/unity/Assets/ShadowLens/Workspace/ShadowPresentationMode.cs",
+      "purpose": "mode switch preserving state",
+      "production": true,
+      "geometry": false,
+      "styling": false,
+      "localization": false,
+      "runtimeState": true,
+      "tested": true
+    },
+    {
+      "path": "apps/shadow-lens/unity/Assets/ShadowLens/Workspace/ShadowAuditWorkspaceDeviceBootstrap.cs",
+      "purpose": "device entry, fixture bind, Prev/Next/Select",
+      "production": true,
+      "geometry": "placement",
+      "styling": false,
+      "localization": true,
+      "runtimeState": true,
+      "tested": "partly"
+    },
+    {
+      "path": "apps/shadow-lens/unity/Assets/ShadowLens/Workspace/ShadowDeviceDiag.cs",
+      "purpose": "PID-tagged device diagnostics",
+      "production": true,
+      "geometry": false,
+      "styling": false,
+      "localization": false,
+      "runtimeState": false,
+      "tested": false
+    },
+    {
+      "path": "apps/shadow-lens/unity/Assets/ShadowLens/Design/ShadowDesignTokens.cs",
+      "purpose": "per-profile theme tokens",
+      "production": true,
+      "geometry": false,
+      "styling": true,
+      "localization": false,
+      "runtimeState": false,
+      "tested": true
+    },
+    {
+      "path": "design/shadow-spatial-tokens.json",
+      "purpose": "canonical token source; one colour per status, no per-profile variant",
+      "production": true,
+      "geometry": false,
+      "styling": true,
+      "localization": true,
+      "runtimeState": false,
+      "tested": true
+    },
+    {
+      "path": "apps/shadow-lens/unity/Assets/ShadowLens/Tests/PlayMode/ShadowAuditWorkspaceCaptureHarness.cs",
+      "purpose": "14-state x language x profile capture",
+      "production": false,
+      "captureOnly": true,
+      "geometry": "camera rig",
+      "tested": "is a test"
+    },
+    {
+      "path": "apps/shadow-lens/unity/Assets/ShadowLens/Tests/PlayMode/ShadowAuditWorkspaceLifecycleTests.cs",
+      "purpose": "32-cycle lifecycle/object-count assertions",
+      "production": false,
+      "captureOnly": false,
+      "tested": "is a test"
+    },
+    {
+      "path": "demos/replay/3d/constants.js",
+      "purpose": "Flat palette + geometry; AuditRoomProvenance override",
+      "production": true,
+      "geometry": true,
+      "styling": true,
+      "localization": false,
+      "runtimeState": false,
+      "tested": true
+    },
+    {
+      "path": "demos/replay/3d/app.js",
+      "purpose": "Flat fit-to-content camera, trust header, first-entry hint",
+      "production": true,
+      "geometry": true,
+      "styling": true,
+      "localization": false,
+      "runtimeState": true,
+      "tested": "partly"
+    },
+    {
+      "path": "demos/replay/3d/scene.js",
+      "purpose": "cards, anchored inspector, leader line, selected emphasis",
+      "production": true,
+      "geometry": true,
+      "styling": true,
+      "localization": false,
+      "runtimeState": true,
+      "tested": "partly"
+    },
+    {
+      "path": "demos/replay/3d/flat-fit.js",
+      "purpose": "pure fit math",
+      "production": true,
+      "geometry": true,
+      "styling": false,
+      "localization": false,
+      "runtimeState": false,
+      "tested": true
+    },
+    {
+      "path": "test/threejs-profile-override.test.js",
+      "purpose": "pins the AuditRoomProvenance deviation",
+      "production": false,
+      "tested": "is a test"
+    }
+  ]
+}
