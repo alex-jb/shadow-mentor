@@ -106,10 +106,13 @@ namespace ShadowLens.Workspace
         void RebuildHeader(CurrentFocusVM focus)
         {
             var r = Region("top", new Vector3(ShadowWorkspaceLayout.TopX, ShadowWorkspaceLayout.TopY, 0));
-            Label(r, Cut(_model?.Title?.Pick(Zh) ?? "Shadow Audit", ShadowWorkspaceLayout.TopTitleEm), T_TITLE, ThemeText(), Vector3.zero);
+            // UX-07: the story name is identity, not a conclusion. While the focused entity IS the
+            // first failure it steps down so it cannot out-weigh the audit result. Wording unchanged.
+            float titleSize = ShadowWorkspaceLayout.TitleSizeFor(focus.IsFirstFailure);
+            Label(r, Cut(_model?.Title?.Pick(Zh) ?? "Shadow Audit", ShadowWorkspaceLayout.WorldToEm(ShadowWorkspaceLayout.TopWidth, titleSize)), titleSize, ThemeText(), Vector3.zero);
             // same derived rhythm as the columns — the title line box is 0.32 world units, so the old
             // 0.30 step could not clear it.
-            float ty = -ShadowWorkspaceLayout.TitleToNextStep;
+            float ty = -(ShadowWorkspaceLayout.LineHeight(titleSize) + ShadowWorkspaceLayout.MinRowGap);
             Label(r, LL("tracking") + ": " + (ShadowWorkspaceLabels.Has(Tracking) ? LL(Tracking) : Tracking), T_HEAD, ThemeText(), new Vector3(0, ty, 0));
             ty -= ShadowWorkspaceLayout.LineHeight(T_HEAD) + ShadowWorkspaceLayout.MinRowGap;
             Label(r, LL("simulated"), T_SMALL, Hex(ShadowStatusGlyph.DisclaimerColor(ProfileId)), new Vector3(0, ty, 0));
@@ -145,9 +148,12 @@ namespace ShadowLens.Workspace
         void RebuildFocus(CurrentFocusVM focus)
         {
             var r = Region("center", new Vector3(ShadowWorkspaceLayout.CenterX, ShadowWorkspaceLayout.ColumnY, 0.05f));
-            string ftitle = Wrap(focus.Title, ShadowWorkspaceLayout.CenterTitleEm);
-            Label(r, ftitle, T_TITLE, ThemeText(), Vector3.zero); // dominant
-            float ty0 = -ShadowWorkspaceLayout.BlockStep(T_TITLE, Lines(ftitle));
+            // UX-07: while the first failure is the conclusion the entity title becomes SECONDARY
+            // context. It stays fully readable, keeps its wording, and simply stops competing.
+            float ctSize = ShadowWorkspaceLayout.TitleSizeFor(focus.IsFirstFailure);
+            string ftitle = Wrap(focus.Title, ShadowWorkspaceLayout.WorldToEm(ShadowWorkspaceLayout.CenterWidth, ctSize));
+            Label(r, ftitle, ctSize, ThemeText(), Vector3.zero);
+            float ty0 = -ShadowWorkspaceLayout.BlockStep(ctSize, Lines(ftitle));
             Label(r, Cut(LL("role") + ": " + focus.Role, ShadowWorkspaceLayout.CenterBodyEm), T_SMALL, ThemeSecondary(), new Vector3(0, ty0, 0));
             float y = ty0 - ShadowWorkspaceLayout.BodyRowStep;
             foreach (var f in focus.Fields)
@@ -159,8 +165,14 @@ namespace ShadowLens.Workspace
             }
             if (focus.IsFirstFailure)
             {
-                Label(r, Cut("◆ " + LL("first_failure"), ShadowWorkspaceLayout.CenterBodyEm), T_LABEL, GlyphColor("FIRST_FAILURE"), new Vector3(0, y, 0));
-                y -= ShadowWorkspaceLayout.LabelRowStep;
+                // PRIMARY_AUDIT_CONCLUSION — the only element rendered at ConclusionSize, separated by
+                // its own padding and underlined by an accent rule. Text and colour family unchanged.
+                y -= ShadowWorkspaceLayout.ConclusionPadAbove;
+                Label(r, Cut("◆ " + LL("first_failure"), ShadowWorkspaceLayout.ConclusionEm),
+                      ShadowWorkspaceLayout.ConclusionSize, GlyphColor("FIRST_FAILURE"), new Vector3(0, y, 0));
+                y -= ShadowWorkspaceLayout.LineHeight(ShadowWorkspaceLayout.ConclusionSize) + ShadowWorkspaceLayout.ConclusionRuleGap;
+                ConclusionRule(r, new Vector3(0, y, 0));
+                y -= ShadowWorkspaceLayout.ConclusionRuleHeight + ShadowWorkspaceLayout.ConclusionPadBelow;
             }
             // the next-action hint wraps inside the centre column instead of running into the Trust
             // Strip; the vertical room it needs is the capacity recorded as UX-08 (which stays open).
@@ -221,6 +233,20 @@ namespace ShadowLens.Workspace
             tm.text = text; tm.characterSize = size; tm.fontSize = 64; tm.color = color; tm.anchor = TextAnchor.UpperLeft;
             if (LabelFont != null) { tm.font = LabelFont; var mr = go.GetComponent<MeshRenderer>(); if (mr) mr.sharedMaterial = LabelFont.material; }
             return tm;
+        }
+
+        // UX-07 accent rule under the primary conclusion — a border/surface signal, not colour alone.
+        void ConclusionRule(GameObject parent, Vector3 local)
+        {
+            var go = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            go.name = "conclusion.rule";
+            Destroy(go.GetComponent<Collider>());
+            go.transform.SetParent(parent.transform, false);
+            go.transform.localScale = new Vector3(ShadowWorkspaceLayout.ConclusionRuleWidth, ShadowWorkspaceLayout.ConclusionRuleHeight, 1f);
+            // Quad is centre-pivoted; the region anchors labels at their upper-left, so offset by half.
+            go.transform.localPosition = local + new Vector3(ShadowWorkspaceLayout.ConclusionRuleWidth * 0.5f,
+                                                            -ShadowWorkspaceLayout.ConclusionRuleHeight * 0.5f, 0f);
+            go.GetComponent<Renderer>().sharedMaterial = SharedMat(ShadowStatusGlyph.FamilyColor("failure_red", ProfileId));
         }
 
         void Quad(GameObject parent, Vector3 local, string hex, float scale)

@@ -44,6 +44,10 @@ concepts.
 ## B. Spatial audit focus
 
 **Principle:** the first failure and its evidence lineage are the subject; everything else is context.
+
+> **Core delivered.** UX-07 (first failure as the primary conclusion) landed on
+> `fix/shadow-v11-first-failure-hierarchy`. The fuller depth/foreground rework in this direction
+> remains future work.
 Reduce the flat three-column dashboard to a foreground/background relationship.
 
 - **Scenes:** Audit Workspace primarily; the Flat surface becomes the consistency reference.

@@ -77,6 +77,38 @@ namespace ShadowLens.Workspace
         public static float RightBodyEm => WorldToEm(RightWidth, BodySize);   // ≈ 8.0
         public static float TopTitleEm => WorldToEm(TopWidth, TitleSize);
 
+        // ── audit-result hierarchy (UX-07) ──────────────────────────────────────────────────
+        // The failure conclusion was the FOURTH-largest thing on screen: "FIRST FAILURE" rendered at
+        // 0.030 while two unrelated titles rendered at 0.052, so the eye landed on the story name.
+        // Hierarchy is expressed as named presentation roles and applied ONLY while the focused entity
+        // is the first failure; every supporting element stays visible and keeps its wording, colour
+        // family and position.
+        //
+        // Three independent signals carry it — never colour alone, never motion, never hiding:
+        //   1. TYPOGRAPHY  the conclusion is the largest element, and the two titles step down to
+        //                  ContextTitleSize while a failure is on screen.
+        //   2. RULE        a short accent bar under the conclusion (surface/border emphasis).
+        //   3. PADDING     extra local space above and below, separating it from the field rows.
+        public enum PresentationRole { PrimaryAuditConclusion, SecondaryAuditContext, SupportingEvidence, SystemContext }
+
+        // 0.046 is the largest size at which "◆ FIRST FAILURE" (7.36 em) still fits CenterWidth
+        // without wrapping or truncating: 7.36 × 0.046 × 8.60 = 2.91 ≤ 3.18.
+        public const float ConclusionSize = 0.046f;
+        // Titles step down only while a failure is the conclusion. At 0.040 "Council Decision"
+        // (8.62 em → 2.97) also stops wrapping, so the centre column gets SHORTER, not taller.
+        public const float ContextTitleSize = 0.040f;
+        public const float ConclusionPadAbove = 0.055f, ConclusionPadBelow = 0.045f;
+        public const float ConclusionRuleHeight = 0.014f;   // accent bar thickness
+        public const float ConclusionRuleWidth = 1.05f;     // shorter than the text it underlines
+        public const float ConclusionRuleGap = 0.020f;      // between the text box and its rule
+
+        /// <summary>Title size for the current audit state — steps down while a first failure is the conclusion.</summary>
+        public static float TitleSizeFor(bool firstFailureIsConclusion) => firstFailureIsConclusion ? ContextTitleSize : TitleSize;
+        /// <summary>Truncation budget for the conclusion line at its own size.</summary>
+        public static float ConclusionEm => WorldToEm(CenterWidth, ConclusionSize);
+        /// <summary>Named ratio the conclusion must clear against the largest competing label.</summary>
+        public const float MinConclusionDominanceRatio = 1.12f;
+
         // ── degraded-tracking banner (UX-04) ────────────────────────────────────────────────
         // The banner sat at top+x 2.90 with UpperLeft anchoring and NO width bound, so
         // "TRACKING LOST — switched to session-relative layout; audit state preserved" (34.8 em ≈ 7.78

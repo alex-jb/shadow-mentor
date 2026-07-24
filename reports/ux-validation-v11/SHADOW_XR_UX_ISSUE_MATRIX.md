@@ -3,9 +3,9 @@
 15 issues. Every row cites a source path, a capture, or a computed geometry input. Machine-readable:
 `shadow-xr-ux-issue-matrix.json`.
 
-Severity budget: **1 P0 · 5 P1 · 6 P2 · 3 P3.** UX-01, UX-05, UX-09, UX-02, UX-03 and now UX-04 are
-`IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`; the other nine — including UX-08 and UX-14 —
-remain open. P0 is reserved for a defect that stops the accepted
+Severity budget: **1 P0 · 5 P1 · 6 P2 · 3 P3.** UX-01, UX-05, UX-09, UX-02, UX-03, UX-04 and now UX-07 are
+`IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`; the other eight — including UX-08, UX-12 and
+UX-14 — remain open. P0 is reserved for a defect that stops the accepted
 scene from communicating its audit result.
 
 ---
@@ -94,6 +94,9 @@ scene from communicating its audit result.
 ## P2
 
 ### UX-07 — First failure is not the visual focus
+
+> **STATUS — `IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`.** Fixed on `fix/shadow-v11-first-failure-hierarchy`; see `SHADOW_FIRST_FAILURE_HIERARCHY_IMPLEMENTATION.md`. Offline acceptance only. UX-12 is not resolved — only the Audit Workspace changed.
+
 
 - **Evidence:** `PROVEN_IN_EDITOR_CAPTURE` (`first-failure__en__DesktopDark.png`) + `PROVEN_IN_CODE`
 - **Behaviour:** the two largest elements are `Banking Audit` (`T_TITLE`) and the focused entity title `Council Decision` (`T_TITLE`). The first-failure marker is `T_LABEL 0.030` — smaller than both — and the word "FIRST FAILURE" appears four times at four sizes in three regions. Red is used for the failure, for the disclaimer and for the rail marker.
