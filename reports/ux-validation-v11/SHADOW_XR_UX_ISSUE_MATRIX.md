@@ -3,8 +3,9 @@
 15 issues. Every row cites a source path, a capture, or a computed geometry input. Machine-readable:
 `shadow-xr-ux-issue-matrix.json`.
 
-Severity budget: **1 P0 · 5 P1 · 6 P2 · 3 P3.** UX-01, UX-05 and UX-09 are now
-`IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`; the other twelve are untouched. P0 is reserved for a defect that stops the accepted
+Severity budget: **1 P0 · 5 P1 · 6 P2 · 3 P3.** UX-01, UX-05, UX-09 and now UX-02, UX-03 are
+`IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`; the other ten — including UX-04, UX-08 and
+UX-14 — remain open. P0 is reserved for a defect that stops the accepted
 scene from communicating its audit result.
 
 ---
@@ -40,6 +41,9 @@ scene from communicating its audit result.
 
 ### UX-02 — Left, centre and right regions overlap; text is unreadable in the accepted state
 
+> **STATUS — `IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`.** Fixed on `fix/shadow-v11-layout-capacity`; see `SHADOW_LAYOUT_CAPACITY_IMPLEMENTATION.md`. Offline acceptance only — no physical spatial or optical claim is made.
+
+
 - **Scene / component:** Audit Workspace · `ShadowAuditWorkspace.cs` region positions
 - **Evidence:** `PROVEN_IN_EDITOR_CAPTURE` (`first-failure__en__DesktopDark.png`) + `DERIVED_GEOMETRIC_ESTIMATE`
 - **Current behaviour:** `left` sits at x −3.30 and `center` at x −0.90 — a 2.40-unit (458 px) gap, while `SOURCE NOT PRESENT` alone measures 438 px. `loc: LOCATION NOT AVAILAB…` is drawn through by `Verification: FIRST FAILURE`. `center`'s longest line (`▶ OPEN 2D AUDIT — inspect the first failure`, 693 px) overruns the 601 px gap to `right` and prints over the Trust Strip.
@@ -48,6 +52,9 @@ scene from communicating its audit result.
 - **Correction:** widen the column gaps to the measured worst-case content width, or reduce `ShadowLabelMetrics` truncation budgets per column so measured width ≤ gap. **`SAFE_V11_UX_MAINTENANCE`** · low regression risk · zh-CN must be re-measured (CJK is wider per em).
 
 ### UX-03 — Row step is smaller than the line box, so every multi-row region self-overlaps
+
+> **STATUS — `IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`.** Fixed on `fix/shadow-v11-layout-capacity`; see `SHADOW_LAYOUT_CAPACITY_IMPLEMENTATION.md`. Offline acceptance only — no physical spatial or optical claim is made.
+
 
 - **Evidence:** `PROVEN_IN_EDITOR_CAPTURE` + `DERIVED_GEOMETRIC_ESTIMATE`
 - **Current behaviour:** body rows step −0.12 (22.9 px) and Trust-Strip label→value steps −0.10 (19.1 px), while a `T_BODY 0.026` / `fontSize 64` line box renders ≈ 30 px. `role: decision` is overprinted by `Verification:`; all four Trust Strip label/value pairs collide (`Integrity`/`FIRST FAILURE`, `Provenance`/`SELF-SIGNED`, `Decision Support`/`NOT EVALUATED`, `Human / Policy`/`APPROVAL ABSENT`).

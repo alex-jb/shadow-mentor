@@ -70,6 +70,63 @@ namespace ShadowLens.Workspace
 
         // Truncate with an explicit affordance when a single-line label overflows. Full text stays
         // reachable via Inspect/2D audit; the ellipsis marks that truncation happened.
+        /// <summary>
+        /// Deterministic wrap to a width budget. Breaks on spaces for Latin and between glyphs for CJK
+        /// (which has no spaces), never inside a run of non-space Latin, and never more than maxLines —
+        /// the final line is truncated with the usual affordance so a wrap can never silently grow a
+        /// column. Used where a long line would otherwise cross a column boundary (UX-02).
+        /// </summary>
+        public static string WrapToWidth(string text, float maxWidthEm, int maxLines = 2)
+        {
+            if (string.IsNullOrEmpty(text)) return text ?? "";
+            if (!Measure(text, maxWidthEm).Overflow) return text;
+
+            var lines = new System.Collections.Generic.List<string>();
+            var cur = new System.Text.StringBuilder();
+            float w = 0f;
+            var tokens = Tokenize(text);
+            foreach (var tk in tokens)
+            {
+                float tw = LineWidthEm(tk);
+                bool empty = cur.Length == 0;
+                // a leading space on a fresh line is dropped rather than carried
+                if (empty && tk == " ") continue;
+                if (!empty && w + tw > maxWidthEm)
+                {
+                    lines.Add(cur.ToString()); cur.Clear(); w = 0f;
+                    if (lines.Count >= maxLines) break;
+                    if (tk == " ") continue;
+                }
+                cur.Append(tk); w += tw;
+            }
+            if (cur.Length > 0 && lines.Count < maxLines) lines.Add(cur.ToString());
+            for (int i = 0; i < lines.Count; i++) lines[i] = TruncateWithAffordance(lines[i], maxWidthEm);
+            return string.Join("\n", lines);
+        }
+
+        // Latin words stay whole; CJK breaks per glyph; spaces are their own token so a break can
+        // consume one instead of leaving it dangling at a line start.
+        static System.Collections.Generic.List<string> Tokenize(string text)
+        {
+            var outp = new System.Collections.Generic.List<string>();
+            var word = new System.Text.StringBuilder();
+            for (int i = 0; i < text.Length; i++)
+            {
+                int cp = char.ConvertToUtf32(text, i);
+                if (char.IsSurrogatePair(text, i)) i++;
+                string g = char.ConvertFromUtf32(cp);
+                bool cjk = IsCjk(cp);
+                if (g == " " || cjk)
+                {
+                    if (word.Length > 0) { outp.Add(word.ToString()); word.Clear(); }
+                    outp.Add(g);
+                }
+                else word.Append(g);
+            }
+            if (word.Length > 0) outp.Add(word.ToString());
+            return outp;
+        }
+
         public static string TruncateWithAffordance(string text, float maxWidthEm = 22f)
         {
             if (Measure(text, maxWidthEm).Overflow == false) return text;

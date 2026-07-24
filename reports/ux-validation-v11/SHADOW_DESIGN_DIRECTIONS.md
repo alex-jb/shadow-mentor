@@ -14,6 +14,9 @@ refinement, and is therefore out of scope for all three.
 **Principle:** the accepted composition is right; its *metrics* are wrong. Fix the numbers, change no
 concepts.
 
+> **Partly delivered.** UX-02 and UX-03 landed on `fix/shadow-v11-layout-capacity`. Still open in
+> this direction: UX-04 (banner), UX-08 (unused space as a goal), UX-14 (rail internals), UX-10.
+
 - **Scenes:** Audit Workspace only.
 - **Components:** `ShadowAuditWorkspace.cs` (region positions, row steps, one banner call site),
   `ShadowLabelMetrics` truncation budgets, the hardcoded `#961418` disclaimer colour.

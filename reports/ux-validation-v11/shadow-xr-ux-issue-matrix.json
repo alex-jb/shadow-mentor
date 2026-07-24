@@ -81,7 +81,11 @@
       "regressionRisk": "low",
       "localizationImpact": "zh-CN must be re-measured",
       "performanceImpact": "none",
-      "disposition": "SAFE_V11_UX_MAINTENANCE"
+      "disposition": "SAFE_V11_UX_MAINTENANCE",
+      "status": "IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION",
+      "implementedIn": "fix/shadow-v11-layout-capacity",
+      "offlineAcceptance": "7/7 projected-bounds geometry tests over 90 combinations (5 profiles x 2 languages x 9 states); EditMode 146/146; PlayMode failure identity set unchanged",
+      "devicePassed": false
     },
     {
       "id": "UX-03",
@@ -102,7 +106,11 @@
       "scope": "layout constants",
       "regressionRisk": "low",
       "localizationImpact": "worse in zh-CN",
-      "disposition": "SAFE_V11_UX_MAINTENANCE"
+      "disposition": "SAFE_V11_UX_MAINTENANCE",
+      "status": "IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION",
+      "implementedIn": "fix/shadow-v11-layout-capacity",
+      "offlineAcceptance": "7/7 projected-bounds geometry tests over 90 combinations (5 profiles x 2 languages x 9 states); EditMode 146/146; PlayMode failure identity set unchanged",
+      "devicePassed": false
     },
     {
       "id": "UX-04",
@@ -206,7 +214,8 @@
       "impact": "the crowding is self-inflicted; unused space exists",
       "confidence": "high",
       "beamProRequired": false,
-      "disposition": "SAFE_V11_UX_MAINTENANCE"
+      "disposition": "SAFE_V11_UX_MAINTENANCE",
+      "note": "unused capacity partially borrowed by the UX-02 fix (left margin, lower band); the issue itself remains OPEN"
     },
     {
       "id": "UX-09",
@@ -300,7 +309,8 @@
       "impact": "minor legibility loss on the rail",
       "confidence": "high",
       "beamProRequired": false,
-      "disposition": "SAFE_V11_UX_MAINTENANCE"
+      "disposition": "SAFE_V11_UX_MAINTENANCE",
+      "note": "the rail was moved down so the taller centre column could not reach it; its own label/index collision is UNTOUCHED and remains OPEN"
     },
     {
       "id": "UX-15",
@@ -318,5 +328,5 @@
       "disposition": "SAFE_V11_UX_MAINTENANCE"
     }
   ],
-  "implementationNote": "UX-01/UX-05/UX-09 implemented offline (profile-aware semantic status colour). All other issues untouched."
+  "implementationNote": "UX-01/UX-05/UX-09 implemented offline (profile-aware status colour, d664873). UX-02/UX-03 implemented offline (layout capacity + vertical rhythm). UX-04 tracking banner, UX-06, UX-07, UX-08, UX-10..UX-15 remain open."
 }

@@ -91,5 +91,8 @@ OST_READABILITY_DEVICE_VALIDATED      false
 PRODUCTION_READY                      false
 ```
 
-candidate-05 not built · Time Mode not started · V12 not started · nothing merged · no UX change
-implemented.
+candidate-05 not built · Time Mode not started · V12 not started · nothing merged.
+
+Subsequently implemented offline, each in its own isolated branch: UX-01/UX-05/UX-09 (profile-aware
+status colour, `d664873`) and UX-02/UX-03 (layout capacity + vertical rhythm,
+`fix/shadow-v11-layout-capacity`). Both are `IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`.

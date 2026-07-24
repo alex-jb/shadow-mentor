@@ -1,0 +1,148 @@
+{
+  "baseline": "d664873",
+  "scope": "UX-02 (column capacity + cross-column collision) and UX-03 (body + Trust Strip vertical rhythm)",
+  "method": "real TextMesh renderer bounds projected through the capture rig with an analytic pinhole projection (Camera.WorldToScreenPoint uses the batchmode window size and is ~2.5x wrong)",
+  "captureRig": {
+    "pixels": [
+      1600,
+      1000
+    ],
+    "cameraZ": -7.2,
+    "cameraY": 0.1,
+    "fovDeg": 40,
+    "pxPerWorldUnit": 190.8,
+    "label": "EDITOR_GEOMETRY_ESTIMATE \u2014 not a headset field of view"
+  },
+  "measuredFactors": {
+    "lineBoxFactor": {
+      "value": 6.2,
+      "measured": 5.63,
+      "evidence": "one 0.026 line = 0.1464 world units"
+    },
+    "multiLineAdvanceFactor": {
+      "value": 9.7,
+      "measured": 9.6,
+      "evidence": "two 0.026 lines = 0.3960 world units; the second line advances 0.2496"
+    },
+    "emAdvanceFactor": {
+      "value": 8.6,
+      "evidence": "SOURCE NOT PRESENT = 8.92 em at 0.030 -> 2.3040 world units measured"
+    }
+  },
+  "columns": [
+    {
+      "region": "left",
+      "originX": -4.1,
+      "width": 2.58,
+      "endX": -1.52,
+      "widthPx": 492.3,
+      "emBudgetBody": 11.54,
+      "emBudgetLabel": 10.0
+    },
+    {
+      "region": "center",
+      "originX": -1.22,
+      "width": 3.18,
+      "endX": 1.96,
+      "widthPx": 606.7,
+      "emBudgetBody": 14.22,
+      "emBudgetLabel": 12.33
+    },
+    {
+      "region": "right",
+      "originX": 2.26,
+      "width": 1.84,
+      "endX": 4.1,
+      "widthPx": 351.1,
+      "emBudgetBody": 8.23,
+      "emBudgetLabel": 7.13
+    },
+    {
+      "region": "top",
+      "originX": -4.1,
+      "width": 3.9,
+      "endX": -0.2,
+      "widthPx": 744.1,
+      "emBudgetBody": 17.44,
+      "emBudgetLabel": 15.12
+    }
+  ],
+  "rowRhythm": {
+    "bodyRowStep": 0.1962,
+    "labelRowStep": 0.221,
+    "trustPairStep": 0.1962,
+    "trustGroupStep": 0.4274,
+    "bodyRowStepPx": 37.4,
+    "trustPairStepPx": 37.4,
+    "minRowGap": 0.035,
+    "railY": -1.98
+  },
+  "before": {
+    "leftToCenterUnits": 2.4,
+    "leftToCenterPx": 458,
+    "widestLeftContentPx": 438,
+    "centerToRightUnits": 3.15,
+    "centerToRightPx": 601,
+    "longestCenterContentPx": 693,
+    "bodyRowStepUnits": 0.12,
+    "bodyRowStepPx": 22.9,
+    "trustPairStepUnits": 0.1,
+    "trustPairStepPx": 19.1,
+    "renderedLineBoxPxApprox": 30,
+    "railY": -1.6
+  },
+  "after": {
+    "leftToCenterUnits": 0.3,
+    "centerToRightUnits": 0.3,
+    "bodyRowStepUnits": 0.1962,
+    "trustPairStepUnits": 0.1962,
+    "railY": -1.98
+  },
+  "gaps": {
+    "leftToCenter": 0.3,
+    "centerToRight": 0.3,
+    "minColumnGap": 0.3,
+    "rightEnd": 4.1,
+    "viewportSafeX": 4.1
+  },
+  "matrix": {
+    "profiles": [
+      "DesktopDark",
+      "BrowserDark",
+      "ProjectorPresentation",
+      "XrealOstBright",
+      "AccessibilityHighContrast"
+    ],
+    "languages": [
+      "en",
+      "zh-CN"
+    ],
+    "states": [
+      "source-present-normal",
+      "source-missing",
+      "location-unavailable",
+      "first-failure",
+      "source-missing+first-failure",
+      "human-review-required",
+      "approval-absent",
+      "trust-strip-populated",
+      "longest-source"
+    ],
+    "combinations": 90,
+    "assertions": [
+      "cross-column overlap",
+      "left/centre gap",
+      "Trust Strip pair overlap",
+      "intra-region line overlap",
+      "viewport containment (incl. the rail)",
+      "unintended truncation",
+      "semantic + colour stability"
+    ],
+    "result": "7/7 geometry tests pass"
+  },
+  "outOfScope": {
+    "UX-04_tracking_banner": "untouched \u2014 still clipped, still open",
+    "UX-14_rail_internal_collision": "untouched \u2014 the rail was only moved down so the taller centre column could not reach it",
+    "UX-08_unused_space": "partially borrowed (left margin, lower band) \u2014 remains open as an issue"
+  }
+}
