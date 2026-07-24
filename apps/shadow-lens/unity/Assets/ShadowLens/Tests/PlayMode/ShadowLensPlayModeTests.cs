@@ -76,21 +76,27 @@ namespace ShadowLens.Tests.PlayMode
 
         [Test] public void DecisionPanelPopulatesInView()
         {
+            // The FINDING renders inside the document footer, which lives in the source overlay
+            // (ShadowLensMockView: _decision = null; the finding is built into the SourceOverlay group,
+            // inactive until ShowSource). Analyze reaches Analyzed; ShowSource surfaces the finding.
             _boot.View.Analyze();
-            var decision = FindText("DECISION");
-            Assert.IsNotNull(decision);
-            Assert.IsNotEmpty(decision.text, "Analyze must populate a visible decision");
+            Assert.AreEqual(MockState.Analyzed, _boot.View.State, "Analyze must reach the Analyzed state");
+            _boot.View.ShowSource();
+            var finding = FindText("FindingText");
+            Assert.IsNotNull(finding, "ShowSource must surface the document-footer finding");
+            Assert.IsNotEmpty(finding.text);
         }
 
         [Test] public void MockReachesReady() => Assert.AreEqual(MockState.Ready, _boot.View.State);
 
         [Test] public void AnalyzeCausesVisibleStateChange()
         {
-            var status = FindText("STATUS");
-            string before = status.text;
+            // No top STATUS label exists (ShadowLensMockView: _status = null; the spatial-agent panel
+            // owns the single status row). Analyze's observable change in the legacy mock view is the
+            // state transition Ready -> Analyzed.
+            Assert.AreEqual(MockState.Ready, _boot.View.State, "SetUp leaves the view Ready");
             _boot.View.Analyze();
-            Assert.AreEqual(MockState.Analyzed, _boot.View.State);
-            Assert.AreNotEqual(before, status.text, "status text must change on Analyze");
+            Assert.AreEqual(MockState.Analyzed, _boot.View.State, "Analyze must move the view to Analyzed");
         }
 
         [Test] public void ResetReturnsToReady()
@@ -141,11 +147,12 @@ namespace ShadowLens.Tests.PlayMode
 
         [Test] public void Reset_ReturnsToReadyAndUnsigned()
         {
+            // No top STATUS label (ShadowLensMockView: _status = null). Ready + UNSIGNED trust is the
+            // full observable reset contract; the removed STATUS assertion is dropped.
             _boot.View.Analyze(); _boot.View.Verify();
             _boot.View.ResetView();
             Assert.AreEqual(MockState.Ready, _boot.View.State);
             Assert.AreEqual("UNSIGNED", FindText("TRUST").text);
-            StringAssert.Contains("READY TO ANALYZE", FindText("STATUS").text);
         }
 
         static Text FindText(string name)

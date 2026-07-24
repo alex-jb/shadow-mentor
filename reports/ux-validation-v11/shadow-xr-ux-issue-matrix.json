@@ -189,7 +189,10 @@
       "impact": "presenter state does not clear between profiles; prior green claims covered only the subsets that were run",
       "confidence": "high",
       "beamProRequired": false,
-      "disposition": "DEFER_TO_POST_V11"
+      "disposition": "DEFER_TO_POST_V11",
+      "status": "IMPLEMENTED_OFFLINE",
+      "implementedIn": "fix/shadow-v11-playmode-baseline",
+      "resolution": "2 production fixes (ClearCitations synchronous clear; ShowSource/ShowAudit LastAction ordering) + 4 stale expectations realigned to documented contracts. Full PlayMode 101/99/0/2 twice."
     },
     {
       "id": "UX-07",
@@ -339,5 +342,5 @@
       "disposition": "SAFE_V11_UX_MAINTENANCE"
     }
   ],
-  "implementationNote": "UX-01/05/09 (d664873), UX-02/03 (d7feb01), UX-04 (01864b4), UX-07 (3c5e9ba) and UX-14 implemented offline. UX-06, UX-08, UX-10, UX-11, UX-12, UX-13, UX-15 remain open."
+  "implementationNote": "UX-01/05/09 (d664873), UX-02/03 (d7feb01), UX-04 (01864b4), UX-07 (3c5e9ba), UX-14 (9958432) and UX-06 implemented offline. UX-08, UX-10, UX-11, UX-12, UX-13, UX-15 remain open."
 }

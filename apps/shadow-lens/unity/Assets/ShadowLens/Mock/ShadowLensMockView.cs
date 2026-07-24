@@ -195,8 +195,10 @@ namespace ShadowLens.Mock
         }
         public void ShowSource()
         {
-            LogAction("SHOW_SOURCE");
+            // ShowSource from Ready runs an internal Analyze() first; log the user's TOP-LEVEL action
+            // afterwards so LastAction reflects what the user did, not the internal Analyze (UX-06).
             if (State == MockState.Ready) Analyze();
+            LogAction("SHOW_SOURCE");
             State = MockState.SourceShown;
             if (_srcGroup) _srcGroup.SetActive(true);
             if (_status) _status.text = "SOURCE\nfinding bound to B0L1";
@@ -204,8 +206,8 @@ namespace ShadowLens.Mock
         }
         public void ShowAudit()
         {
-            LogAction("SHOW_AUDIT");
             if (State == MockState.Ready) Analyze();
+            LogAction("SHOW_AUDIT");   // top-level action wins over the internal Analyze (UX-06)
             State = MockState.AuditShown;
             BuildOrRefreshAuditArc();
             if (_status) _status.text = "AUDIT\n7-stage evidence chain";

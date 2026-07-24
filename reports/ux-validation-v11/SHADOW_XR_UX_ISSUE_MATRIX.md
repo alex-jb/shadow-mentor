@@ -83,6 +83,9 @@ scene from communicating its audit result.
 
 ### UX-06 — Eight PlayMode tests fail at the audited baseline
 
+> **STATUS — `IMPLEMENTED_OFFLINE`.** Restored on `fix/shadow-v11-playmode-baseline`; see `SHADOW_PLAYMODE_BASELINE_RESTORATION.md`. Full PlayMode 101/99/**0**/2 twice — 2 production fixes + 4 stale expectations realigned to documented contracts.
+
+
 - **Scene / component:** `Tests/PlayMode/ShadowLensPlayModeTests.cs` (4), `ShadowSpatialAgentPanelPlayModeTests.cs` (4)
 - **Evidence:** `PROVEN_IN_PLAYMODE` — full PlayMode run at `e14e264`: 70 total, 60 passed, **8 failed**, 2 skipped. Failures persist when the class is run in isolation, so they are not whole-suite ordering artefacts.
 - **Failures:** `AnalyzeCausesVisibleStateChange` (NullReference) · `DecisionPanelPopulatesInView` (expected not-null, was null) · `Reset_ReturnsToReadyAndUnsigned` (NullReference) · `ShowSource_CreatesVisibleOverlay` (got `ANALYZE`, expected `SHOW_SOURCE`) · `BankingThenDataScience_NoStaleCrossProfileState`, `DataScienceThenCoding_SwitchesCleanly`, `PresenterReset_FromAnyProfile_ReturnsToBankingReady` (all *expected 0, was 1*) · `Coding_DiffFocusVisible` (got `HIGHLIGHT: cmd_test`).
