@@ -1,0 +1,54 @@
+{
+  "package": "shadow-flow-demo-package",
+  "presentation_version": "shadow-flow-presentation/1.0",
+  "export_contract": "shadow-flow-export/1.0",
+  "shadow_source_commit": "84561eb",
+  "fixture_id": "case-2026-Q3-0042",
+  "guided_story_id": "audit-chain",
+  "language_support": [
+    "en",
+    "zh"
+  ],
+  "generated_at": "2026-07-22T00:00:00.000Z",
+  "network_used": false,
+  "physical_device_validated": false,
+  "mode_label": "FIXTURE MODEL",
+  "provenance": {
+    "narrative": "apps/shadow-lens/fixtures/banking-narrative.mjs",
+    "lineage": "fixtures/guided-stories/audit-chain.guided-story.json",
+    "vocabulary": "lib/shadow-semantic-vocabulary.mjs",
+    "row_contract": "apps/shadow-lens/flow/flow-export-contract.mjs"
+  },
+  "verification_summary": {
+    "pristine": {
+      "HASH_CHAIN": "VERIFIED",
+      "RECORD_INTEGRITY": "VERIFIED",
+      "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED"
+    },
+    "tamper_seq_3": {
+      "HASH_CHAIN": "FAILED",
+      "RECORD_INTEGRITY": "FAILED",
+      "first_failure": "banking-v1:n3:claim",
+      "affected_downstream": [
+        "banking-v1:n4:recommendation",
+        "banking-v1:n5:signature",
+        "banking-v1:n6:audit_record"
+      ]
+    },
+    "note": "Verification statuses are copied from Shadow fixtures; Flow must display, never recompute them."
+  },
+  "capability": {
+    "claim": "Flow is the visualization layer only. Shadow is the analysis, audit, and evidence authority.",
+    "not_claimed": [
+      "native Shadow Lens APK success",
+      "MyGlasses MR package handoff resolution",
+      "physical XREAL / Beam Pro validation of this Flow scene",
+      "a live Flow API import (no credentials; offline package only)"
+    ]
+  },
+  "counts": {
+    "nodes": 25,
+    "edges": 19,
+    "export_rows": 16
+  }
+}

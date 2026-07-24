@@ -1,0 +1,666 @@
+{
+  "presentation_version": "shadow-flow-presentation/1.0",
+  "export_contract": "shadow-flow-export/1.0",
+  "case_id": "case-2026-Q3-0042",
+  "generated_at": "2026-07-22T00:00:00.000Z",
+  "mode_label": "FIXTURE MODEL",
+  "presented_scenario": "tamper_seq_3",
+  "scenarios": {
+    "pristine": {
+      "entity_status": {
+        "banking-v1:n0:source": "VERIFIED",
+        "banking-v1:n1:snapshot": "VERIFIED",
+        "banking-v1:n2:evidence": "VERIFIED",
+        "banking-v1:n3:claim": "VERIFIED",
+        "banking-v1:n4:recommendation": "VERIFIED",
+        "banking-v1:n5:signature": "VERIFIED",
+        "banking-v1:n6:audit_record": "VERIFIED"
+      },
+      "dimension_status": {
+        "RECORD_INTEGRITY": "VERIFIED",
+        "DIGITAL_SIGNATURE": "VERIFIED",
+        "HASH_CHAIN": "VERIFIED",
+        "PROFILE": "VERIFIED",
+        "SOURCE_RESOLUTION": "NOT_PRESENT",
+        "EXTERNAL_ANCHOR": "NOT_PRESENT",
+        "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED"
+      },
+      "first_failure": null,
+      "affected_downstream": []
+    },
+    "tamper_seq_3": {
+      "entity_status": {
+        "banking-v1:n0:source": "VERIFIED",
+        "banking-v1:n1:snapshot": "VERIFIED",
+        "banking-v1:n2:evidence": "VERIFIED",
+        "banking-v1:n3:claim": "FIRST_FAILURE",
+        "banking-v1:n4:recommendation": "AFFECTED_DOWNSTREAM",
+        "banking-v1:n5:signature": "AFFECTED_DOWNSTREAM",
+        "banking-v1:n6:audit_record": "AFFECTED_DOWNSTREAM"
+      },
+      "dimension_status": {
+        "RECORD_INTEGRITY": "FAILED",
+        "DIGITAL_SIGNATURE": "FAILED",
+        "HASH_CHAIN": "FAILED",
+        "PROFILE": "VERIFIED",
+        "SOURCE_RESOLUTION": "NOT_PRESENT",
+        "EXTERNAL_ANCHOR": "NOT_PRESENT",
+        "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED"
+      },
+      "first_failure": "banking-v1:n3:claim",
+      "affected_downstream": [
+        "banking-v1:n4:recommendation",
+        "banking-v1:n5:signature",
+        "banking-v1:n6:audit_record"
+      ]
+    }
+  },
+  "first_failure": "banking-v1:n3:claim",
+  "affected_downstream": [
+    "banking-v1:n4:recommendation",
+    "banking-v1:n5:signature",
+    "banking-v1:n6:audit_record"
+  ],
+  "nodes": [
+    {
+      "id": "presentation:case-card",
+      "type": "case",
+      "label_en": "MID-MARKET LOAN — CASE #SL-2026-014 — $8.4M REQUEST",
+      "label_zh": "中型市场贷款 — CASE #SL-2026-014 — 请求金额 $8.4M",
+      "status": "PRESENT",
+      "status_family": "neutral",
+      "group": "left-case",
+      "source_ref": "fixtures/banking-narrative.mjs#case_display",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain"
+      }
+    },
+    {
+      "id": "evidence:B0L1",
+      "type": "evidence_item",
+      "label_en": "Debt-to-income: 0.41",
+      "label_zh": "债务收入比:0.41",
+      "status": "VERIFIED",
+      "status_family": "pass",
+      "group": "left-case",
+      "source_ref": "fixtures/banking-narrative.mjs#evidence.B0L1",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain"
+      }
+    },
+    {
+      "id": "evidence:B0L2",
+      "type": "evidence_item",
+      "label_en": "Policy ceiling: 0.36",
+      "label_zh": "政策上限:0.36",
+      "status": "VERIFIED",
+      "status_family": "pass",
+      "group": "left-case",
+      "source_ref": "fixtures/banking-narrative.mjs#evidence.B0L2",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain"
+      }
+    },
+    {
+      "id": "evidence:B0L0",
+      "type": "evidence_item",
+      "label_en": "Annual income: $82,400",
+      "label_zh": "年收入:$82,400",
+      "status": "VERIFIED",
+      "status_family": "pass",
+      "group": "left-case",
+      "source_ref": "fixtures/banking-narrative.mjs#evidence.B0L0",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain"
+      }
+    },
+    {
+      "id": "council:credit-fundamentals",
+      "type": "council_voice",
+      "label_en": "Credit Fundamentals — approve-with-conditions (0.72)",
+      "label_zh": "信贷基本面 — 有条件批准(置信度 0.72)",
+      "status": "approve-with-conditions",
+      "status_family": "warn",
+      "group": "ring-council",
+      "source_ref": "fixtures/banking-narrative.mjs#council.Credit Fundamentals",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain"
+      }
+    },
+    {
+      "id": "council:risk-officer",
+      "type": "council_voice",
+      "label_en": "Risk Officer — caution (0.68)",
+      "label_zh": "风险官 — 谨慎(置信度 0.68)",
+      "status": "caution",
+      "status_family": "warn",
+      "group": "ring-council",
+      "source_ref": "fixtures/banking-narrative.mjs#council.Risk Officer",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain"
+      }
+    },
+    {
+      "id": "council:fair-lending-compliance",
+      "type": "council_voice",
+      "label_en": "Fair Lending Compliance — no-disparate-impact (0.80)",
+      "label_zh": "公平信贷合规 — 无差别性影响(置信度 0.80)",
+      "status": "no-disparate-impact",
+      "status_family": "pass",
+      "group": "ring-council",
+      "source_ref": "fixtures/banking-narrative.mjs#council.Fair Lending Compliance",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain"
+      }
+    },
+    {
+      "id": "council:customer-advocate",
+      "type": "council_voice",
+      "label_en": "Customer Advocate — support-with-structure (0.61)",
+      "label_zh": "客户代表 — 支持但需重组(置信度 0.61)",
+      "status": "support-with-structure",
+      "status_family": "warn",
+      "group": "ring-council",
+      "source_ref": "fixtures/banking-narrative.mjs#council.Customer Advocate",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain"
+      }
+    },
+    {
+      "id": "council:macro-contrarian",
+      "type": "council_voice",
+      "label_en": "Macro Contrarian — abstain (0.50)",
+      "label_zh": "宏观反方 — 弃权(置信度 0.50)",
+      "status": "abstain",
+      "status_family": "abstain",
+      "group": "ring-council",
+      "source_ref": "fixtures/banking-narrative.mjs#council.Macro Contrarian",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain"
+      }
+    },
+    {
+      "id": "banking-v1:n0:source",
+      "type": "source",
+      "sequence": 0,
+      "label_en": "Loan file",
+      "label_zh": "循环贷款文件",
+      "status": "VERIFIED",
+      "status_family": "pass",
+      "status_by_scenario": {
+        "pristine": "VERIFIED",
+        "tamper_seq_3": "VERIFIED"
+      },
+      "group": "path-lineage",
+      "source_ref": "fixtures/guided-stories/audit-chain.guided-story.json#banking-v1:n0:source",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain",
+        "is_first_failure": false,
+        "is_affected_downstream": false
+      }
+    },
+    {
+      "id": "banking-v1:n1:snapshot",
+      "type": "snapshot",
+      "sequence": 1,
+      "label_en": "Intake snapshot",
+      "label_zh": "受理快照",
+      "status": "VERIFIED",
+      "status_family": "pass",
+      "status_by_scenario": {
+        "pristine": "VERIFIED",
+        "tamper_seq_3": "VERIFIED"
+      },
+      "group": "path-lineage",
+      "source_ref": "fixtures/guided-stories/audit-chain.guided-story.json#banking-v1:n1:snapshot",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain",
+        "is_first_failure": false,
+        "is_affected_downstream": false
+      }
+    },
+    {
+      "id": "banking-v1:n2:evidence",
+      "type": "evidence",
+      "sequence": 2,
+      "label_en": "DTI / FICO / LTV",
+      "label_zh": "DTI / FICO / LTV",
+      "status": "VERIFIED",
+      "status_family": "pass",
+      "status_by_scenario": {
+        "pristine": "VERIFIED",
+        "tamper_seq_3": "VERIFIED"
+      },
+      "group": "path-lineage",
+      "source_ref": "fixtures/guided-stories/audit-chain.guided-story.json#banking-v1:n2:evidence",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain",
+        "is_first_failure": false,
+        "is_affected_downstream": false
+      }
+    },
+    {
+      "id": "banking-v1:n3:claim",
+      "type": "claim",
+      "sequence": 3,
+      "label_en": "Council claims",
+      "label_zh": "council 声明",
+      "status": "FIRST_FAILURE",
+      "status_family": "fail",
+      "status_by_scenario": {
+        "pristine": "VERIFIED",
+        "tamper_seq_3": "FIRST_FAILURE"
+      },
+      "group": "center",
+      "source_ref": "fixtures/guided-stories/audit-chain.guided-story.json#banking-v1:n3:claim",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain",
+        "is_first_failure": true,
+        "is_affected_downstream": false
+      }
+    },
+    {
+      "id": "banking-v1:n4:recommendation",
+      "type": "recommendation",
+      "sequence": 4,
+      "label_en": "REVIEW",
+      "label_zh": "REVIEW",
+      "status": "AFFECTED_DOWNSTREAM",
+      "status_family": "fail",
+      "status_by_scenario": {
+        "pristine": "VERIFIED",
+        "tamper_seq_3": "AFFECTED_DOWNSTREAM"
+      },
+      "group": "path-lineage",
+      "source_ref": "fixtures/guided-stories/audit-chain.guided-story.json#banking-v1:n4:recommendation",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain",
+        "is_first_failure": false,
+        "is_affected_downstream": true
+      }
+    },
+    {
+      "id": "banking-v1:n5:signature",
+      "type": "signature",
+      "sequence": 5,
+      "label_en": "Ed25519 seal",
+      "label_zh": "Ed25519 封签",
+      "status": "AFFECTED_DOWNSTREAM",
+      "status_family": "fail",
+      "status_by_scenario": {
+        "pristine": "VERIFIED",
+        "tamper_seq_3": "AFFECTED_DOWNSTREAM"
+      },
+      "group": "path-lineage",
+      "source_ref": "fixtures/guided-stories/audit-chain.guided-story.json#banking-v1:n5:signature",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain",
+        "is_first_failure": false,
+        "is_affected_downstream": true
+      }
+    },
+    {
+      "id": "banking-v1:n6:audit_record",
+      "type": "audit_record",
+      "sequence": 6,
+      "label_en": "Audit record",
+      "label_zh": "审计记录",
+      "status": "AFFECTED_DOWNSTREAM",
+      "status_family": "fail",
+      "status_by_scenario": {
+        "pristine": "VERIFIED",
+        "tamper_seq_3": "AFFECTED_DOWNSTREAM"
+      },
+      "group": "path-lineage",
+      "source_ref": "fixtures/guided-stories/audit-chain.guided-story.json#banking-v1:n6:audit_record",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain",
+        "is_first_failure": false,
+        "is_affected_downstream": true
+      }
+    },
+    {
+      "id": "presentation:decision",
+      "type": "recommendation",
+      "label_en": "Council recommendation: REVIEW (dissent 3/5)",
+      "label_zh": "Council 建议:REVIEW(异议 3/5)",
+      "status": "REQUIRES_HUMAN_REVIEW",
+      "status_family": "warn",
+      "group": "right-downstream",
+      "source_ref": "fixtures/banking-narrative.mjs#decision",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain"
+      }
+    },
+    {
+      "id": "presentation:human-review",
+      "type": "human_review",
+      "label_en": "REQUIRES HUMAN REVIEW — routed to a person",
+      "label_zh": "需人工复核——已转交人工",
+      "status": "REQUIRES_HUMAN_REVIEW",
+      "status_family": "warn",
+      "group": "right-downstream",
+      "source_ref": "fixtures/banking-narrative.mjs#decision.recommendation=REVIEW",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain"
+      }
+    },
+    {
+      "id": "presentation:approval",
+      "type": "human_approval",
+      "label_en": "Human approval: NOT PRESENT in this fixture (distinct from review)",
+      "label_zh": "人工批准:本 fixture 中不存在(与人工复核是两回事)",
+      "status": "NOT_PRESENT",
+      "status_family": "neutral",
+      "group": "right-downstream",
+      "source_ref": "lib/shadow-semantic-vocabulary.mjs#TRUST_DIMENSIONS.HUMAN_APPROVAL",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain"
+      }
+    },
+    {
+      "id": "presentation:verify-hash-chain",
+      "type": "verification",
+      "label_en": "HASH CHAIN: FAILED",
+      "label_zh": "哈希链:失败",
+      "status": "FAILED",
+      "status_family": "fail",
+      "status_by_scenario": {
+        "pristine": "VERIFIED",
+        "tamper_seq_3": "FAILED"
+      },
+      "group": "verification-area",
+      "source_ref": "fixtures/guided-stories/audit-chain.guided-story.json#scenarios.tamper_seq_3.dimension_status.HASH_CHAIN",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain"
+      }
+    },
+    {
+      "id": "presentation:verify-record-integrity",
+      "type": "verification",
+      "label_en": "RECORD INTEGRITY: FAILED",
+      "label_zh": "记录完整性:失败",
+      "status": "FAILED",
+      "status_family": "fail",
+      "status_by_scenario": {
+        "pristine": "VERIFIED",
+        "tamper_seq_3": "FAILED"
+      },
+      "group": "verification-area",
+      "source_ref": "fixtures/guided-stories/audit-chain.guided-story.json#scenarios.tamper_seq_3.dimension_status.RECORD_INTEGRITY",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain"
+      }
+    },
+    {
+      "id": "presentation:verify-signature",
+      "type": "verification",
+      "label_en": "DIGITAL SIGNATURE: FAILED",
+      "label_zh": "数字签名:失败",
+      "status": "FAILED",
+      "status_family": "fail",
+      "status_by_scenario": {
+        "pristine": "VERIFIED",
+        "tamper_seq_3": "FAILED"
+      },
+      "group": "verification-area",
+      "source_ref": "fixtures/guided-stories/audit-chain.guided-story.json#scenarios.tamper_seq_3.dimension_status.DIGITAL_SIGNATURE",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain"
+      }
+    },
+    {
+      "id": "presentation:verify-analytical",
+      "type": "verification",
+      "label_en": "ANALYTICAL CORRECTNESS: NOT EVALUATED",
+      "label_zh": "分析正确性:不评估",
+      "status": "NOT_EVALUATED",
+      "status_family": "info",
+      "status_by_scenario": {
+        "pristine": "NOT_EVALUATED",
+        "tamper_seq_3": "NOT_EVALUATED"
+      },
+      "group": "verification-area",
+      "source_ref": "fixtures/guided-stories/audit-chain.guided-story.json#scenarios.tamper_seq_3.dimension_status.ANALYTICAL_CORRECTNESS",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain"
+      }
+    },
+    {
+      "id": "presentation:attestation",
+      "type": "attestation",
+      "label_en": "Attestation status: sealed-verified (hash-chain:demo)",
+      "label_zh": "签章状态:sealed-verified(hash-chain:demo)",
+      "status": "PRESENT",
+      "status_family": "neutral",
+      "group": "verification-area",
+      "source_ref": "fixtures/banking-narrative.mjs#decision.signed_result_status",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain"
+      }
+    },
+    {
+      "id": "presentation:device-boundary",
+      "type": "capability_disclaimer",
+      "label_en": "SIMULATION — Flow visualization of a Shadow fixture; no physical Shadow Lens capability is claimed",
+      "label_zh": "模拟——Flow 对 Shadow fixture 的可视化;不声称任何 Shadow Lens 实体设备能力",
+      "status": "NOT_EVALUATED",
+      "status_family": "info",
+      "group": "verification-area",
+      "source_ref": "reports/flow-v11/shadow-flow-demo-manifest.json#capability",
+      "refs": {
+        "first_failure_ref": "banking-v1:n3:claim",
+        "human_review_ref": "presentation:human-review",
+        "approval_ref": "presentation:approval",
+        "verification_ref": "presentation:verify-hash-chain"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:risk-officer-cites-b0l1",
+      "from": "council:risk-officer",
+      "to": "evidence:B0L1",
+      "type": "cites",
+      "category": "council"
+    },
+    {
+      "id": "edge:credit-fundamentals-cites-b0l2",
+      "from": "council:credit-fundamentals",
+      "to": "evidence:B0L2",
+      "type": "cites",
+      "category": "council"
+    },
+    {
+      "id": "edge:risk-officer-disagrees-credit-fundamentals",
+      "from": "council:risk-officer",
+      "to": "council:credit-fundamentals",
+      "type": "disagrees",
+      "category": "council"
+    },
+    {
+      "id": "edge:customer-advocate-cites-b0l1",
+      "from": "council:customer-advocate",
+      "to": "evidence:B0L1",
+      "type": "cites",
+      "category": "council"
+    },
+    {
+      "id": "edge:e1",
+      "from": "banking-v1:n1:snapshot",
+      "to": "banking-v1:n0:source",
+      "type": "DERIVED_FROM",
+      "category": "lineage"
+    },
+    {
+      "id": "edge:e2",
+      "from": "banking-v1:n2:evidence",
+      "to": "banking-v1:n1:snapshot",
+      "type": "DERIVED_FROM",
+      "category": "lineage"
+    },
+    {
+      "id": "edge:e3",
+      "from": "banking-v1:n3:claim",
+      "to": "banking-v1:n2:evidence",
+      "type": "DERIVED_FROM",
+      "category": "lineage"
+    },
+    {
+      "id": "edge:e4",
+      "from": "banking-v1:n4:recommendation",
+      "to": "banking-v1:n3:claim",
+      "type": "DERIVED_FROM",
+      "category": "lineage"
+    },
+    {
+      "id": "edge:e5",
+      "from": "banking-v1:n5:signature",
+      "to": "banking-v1:n4:recommendation",
+      "type": "SEALED_BY",
+      "category": "lineage"
+    },
+    {
+      "id": "edge:e6",
+      "from": "banking-v1:n6:audit_record",
+      "to": "banking-v1:n5:signature",
+      "type": "DERIVED_FROM",
+      "category": "lineage"
+    },
+    {
+      "id": "edge:downstream:banking-v1-n4-recommendation",
+      "from": "banking-v1:n4:recommendation",
+      "to": "banking-v1:n3:claim",
+      "type": "DERIVED_FROM",
+      "category": "downstream"
+    },
+    {
+      "id": "edge:downstream:banking-v1-n5-signature",
+      "from": "banking-v1:n5:signature",
+      "to": "banking-v1:n3:claim",
+      "type": "DERIVED_FROM",
+      "category": "downstream"
+    },
+    {
+      "id": "edge:downstream:banking-v1-n6-audit-record",
+      "from": "banking-v1:n6:audit_record",
+      "to": "banking-v1:n3:claim",
+      "type": "DERIVED_FROM",
+      "category": "downstream"
+    },
+    {
+      "id": "edge:decision-review",
+      "from": "presentation:decision",
+      "to": "presentation:human-review",
+      "type": "BINDS",
+      "category": "human_review"
+    },
+    {
+      "id": "edge:review-approval",
+      "from": "presentation:human-review",
+      "to": "presentation:approval",
+      "type": "BINDS",
+      "category": "approval"
+    },
+    {
+      "id": "edge:verify:hash-chain",
+      "from": "presentation:verify-hash-chain",
+      "to": "banking-v1:n3:claim",
+      "type": "ATTESTS",
+      "category": "verification"
+    },
+    {
+      "id": "edge:verify:record-integrity",
+      "from": "presentation:verify-record-integrity",
+      "to": "banking-v1:n3:claim",
+      "type": "ATTESTS",
+      "category": "verification"
+    },
+    {
+      "id": "edge:verify:digital-signature",
+      "from": "presentation:verify-signature",
+      "to": "banking-v1:n3:claim",
+      "type": "ATTESTS",
+      "category": "verification"
+    },
+    {
+      "id": "edge:verify:analytical-correctness",
+      "from": "presentation:verify-analytical",
+      "to": "banking-v1:n3:claim",
+      "type": "ATTESTS",
+      "category": "verification"
+    }
+  ]
+}
