@@ -1,0 +1,73 @@
+{
+  "baselineCommit": "aae8bea",
+  "cumulativeImplementationCommits": {
+    "d664873": "UX-01/05/09 profile-aware semantic status contrast",
+    "d7feb01": "UX-02/03 layout capacity + Trust Strip rhythm",
+    "01864b4": "UX-04 tracking-banner viewport safety",
+    "3c5e9ba": "UX-07 first-failure information hierarchy",
+    "9958432": "UX-14 evidence-guide internal layout",
+    "aae8bea": "UX-06 PlayMode baseline restoration"
+  },
+  "protectedArtifacts": {
+    "candidate01": "8ea859df", "candidate02": "6ee4d4ff", "candidate03": "11454763",
+    "candidate04": "832c875a", "stableApk": "9efadf0a", "verifier": "c478b46f",
+    "packagesManifest": "3120f9bf73d5", "packagesLock": "26e2d12d485c"
+  },
+  "offlineRegression": {
+    "harnessSelftest": "34/34",
+    "node": {"total": 2060, "passed": 2057, "failed": 0, "skipped": 3},
+    "tokensCheck": "clean",
+    "editMode": {"total": 146, "passed": 146, "failed": 0},
+    "playModeRun1": {"total": 101, "passed": 99, "failed": 0, "skipped": 2},
+    "playModeRun2": {"total": 101, "passed": 99, "failed": 0, "skipped": 2},
+    "targetedUxLifecycleIsolation": {"total": 32, "passed": 32, "failed": 0},
+    "captureSmoke": {"total": 1, "passed": 1, "failed": 0},
+    "skippedIdentity": ["CaptureAuditWorkspace", "CaptureReviewMedia"],
+    "skippedReason": "environment-gated capture harnesses; never converted from failures"
+  },
+  "abArtifacts": {
+    "shadow": {
+      "package": "com.shadowlens.xrealvoice",
+      "location": "apps/shadow-lens/unity/Build/Android/shadow-lens-v11-beampro-candidate-04.apk",
+      "launcher": "ai.nreal.activitylife.NRXRActivity",
+      "sha256Prefix": "832c875a",
+      "bytes": 128758703,
+      "identity": "shadow-lens-v11-beampro-candidate-04 (versionName 0.11-beampro-candidate.4, versionCode 114)",
+      "frozen": true,
+      "installedOnDevice": true
+    },
+    "control": {
+      "package": "com.shadowlens.xrealcontrol",
+      "location": "<OPERATOR_CONTROL_DIR>/xreal-sdk31-hello-mr-control.apk (operator-local, outside the repository)",
+      "launcher": "ai.nreal.activitylife.NRXRActivity",
+      "sha256Prefix": "0d629d75bd03ffce",
+      "bytes": 128489344,
+      "sdk": "com.xreal.xr 3.1.0",
+      "unity": "6000.0.23f1",
+      "buildResult": "OFFICIAL_XREAL_CONTROL_APK_BUILT=true",
+      "installedOnDevice": false,
+      "renderedInGlasses": false,
+      "threeDofValidated": false,
+      "presentOnOperatorDisk": true
+    },
+    "mrCriticalManifestComparison": "identical on all 16 fields (shadow-vs-control-diff.json, mrCriticalIdentical=true)"
+  },
+  "remainingIssues": "see v11-remaining-issue-disposition.json",
+  "candidate05Gate": {"CANDIDATE_05_JUSTIFIED": false, "CANDIDATE_05_BLOCKED": true},
+  "physicalFlags": {
+    "SHADOW_MR_PACKAGE_HANDOFF_PASSED": false,
+    "SHADOW_XREAL_LOADER_DEVICE_PASSED": false,
+    "AUDIT_WORKSPACE_RENDERED_IN_GLASSES": false,
+    "XREAL_3DOF_DEVICE_VALIDATED": false,
+    "BEAM_PRO_CONTROLLER_VALIDATED": false,
+    "OST_READABILITY_DEVICE_VALIDATED": false,
+    "PROFILE_AWARE_STATUS_CONTRAST_DEVICE_PASSED": false,
+    "SHADOW_LAYOUT_CAPACITY_DEVICE_PASSED": false,
+    "SHADOW_TRACKING_BANNER_DEVICE_PASSED": false,
+    "SHADOW_FIRST_FAILURE_HIERARCHY_DEVICE_PASSED": false,
+    "SHADOW_EVIDENCE_GUIDE_DEVICE_PASSED": false,
+    "PRODUCTION_READY": false
+  },
+  "offlineExitDecision": "V11_OFFLINE_READY_FOR_DEVICE_AB",
+  "nextPhysicalAction": "Run BEAM_PRO_SHADOW_VS_CONTROL_AB_RUNBOOK.md: Phase A (com.shadowlens.xrealvoice via the MyGlasses MR grid), save evidence, Phase B (com.shadowlens.xrealcontrol with --apk), save evidence, then apply BEAM_PRO_AB_INTERPRETATION_MATRIX.md. No flag promotion in that session."
+}

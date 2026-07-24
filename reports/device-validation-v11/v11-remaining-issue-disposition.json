@@ -1,0 +1,41 @@
+{
+  "baseline": "aae8bea",
+  "issues": [
+    {"id":"UX-08","title":"29% of the frame is empty while the top band is crowded","severity":"P2",
+     "scene":"Audit Workspace","evidence":"DERIVED_GEOMETRIC_ESTIMATE",
+     "blocksDeviceAB":false,"blocksLoaderCheck":false,"blocksWorkspaceVisibility":false,"blocksControllerValidation":false,"blocksOfflineDemo":false,"blocksV11Completion":false,
+     "primaryDisposition":"SAFE_TO_DEFER_WITHIN_V11","implementationRecommendation":"DO_NOT_IMPLEMENT_IN_V11",
+     "rationale":"unused space alone is not a defect; the UX-02 and UX-14 fixes already borrowed the capacity they needed"},
+    {"id":"UX-10","title":"role: value is not localized","severity":"P2",
+     "scene":"Audit Workspace","evidence":"PROVEN_IN_EDITOR_CAPTURE + PROVEN_IN_CODE",
+     "blocksDeviceAB":false,"blocksLoaderCheck":false,"blocksWorkspaceVisibility":false,"blocksControllerValidation":false,"blocksOfflineDemo":false,"blocksV11Completion":false,
+     "primaryDisposition":"SAFE_TO_DEFER_WITHIN_V11","implementationRecommendation":"IMPLEMENT_ONLY_AFTER_HANDOFF",
+     "rationale":"one-line localization fix, but not worth re-baselining the stable offline state before the device run"},
+    {"id":"UX-11","title":"Absence is encoded three different ways","severity":"P2",
+     "scene":"Audit Workspace","evidence":"PROVEN_IN_EDITOR_CAPTURE + PROVEN_IN_CODE",
+     "blocksDeviceAB":false,"blocksLoaderCheck":false,"blocksWorkspaceVisibility":false,"blocksControllerValidation":false,"blocksOfflineDemo":false,"blocksV11Completion":false,
+     "primaryDisposition":"SAFE_TO_DEFER_WITHIN_V11","implementationRecommendation":"REQUIRES_PRODUCT_DECISION",
+     "rationale":"distinguishing absent vs unknown vs downstream needs a reviewed token-family split in the schema-/3 palette"},
+    {"id":"UX-12","title":"Workspace and Audit Room Flat disagree on what verified looks like","severity":"P2",
+     "scene":"cross-scene","evidence":"PROVEN_IN_CODE",
+     "blocksDeviceAB":false,"blocksLoaderCheck":false,"blocksWorkspaceVisibility":false,"blocksControllerValidation":false,"blocksOfflineDemo":false,"blocksV11Completion":false,
+     "primaryDisposition":"DEFER_TO_POST_V11","implementationRecommendation":"REQUIRES_PRODUCT_DECISION",
+     "rationale":"choosing one colour grammar for both surfaces is a design decision; the Flat grammar is the documented, test-pinned one"},
+    {"id":"UX-13","title":"No focus / selected / hover / disabled model exists","severity":"P3",
+     "scene":"Audit Workspace","evidence":"PROVEN_IN_CODE",
+     "blocksDeviceAB":false,"blocksLoaderCheck":false,"blocksWorkspaceVisibility":false,"blocksControllerValidation":false,"blocksOfflineDemo":false,"blocksV11Completion":false,
+     "primaryDisposition":"REQUIRES_PHYSICAL_EVIDENCE_BEFORE_IMPLEMENTATION","implementationRecommendation":"IMPLEMENT_ONLY_AFTER_PHYSICAL_OBSERVATION",
+     "rationale":"controller affordance design needs real controller-in-hand evidence; it is the SUBJECT of physical validation, not a blocker of it"},
+    {"id":"UX-15","title":"Capture harness pollutes the shared PlayMode session + PNG non-byte-determinism","severity":"P3",
+     "scene":"audit tooling","evidence":"PROVEN_IN_PLAYMODE",
+     "blocksDeviceAB":false,"blocksLoaderCheck":false,"blocksWorkspaceVisibility":false,"blocksControllerValidation":false,"blocksOfflineDemo":false,"blocksV11Completion":false,
+     "primaryDisposition":"SAFE_TO_DEFER_WITHIN_V11","implementationRecommendation":"IMPLEMENT_ONLY_AFTER_HANDOFF",
+     "rationale":"fully mitigated operationally by fresh-process discipline (proven by two identical 101/99/0/2 full runs); PNG nondeterminism does not block human evidence"}
+  ],
+  "answers": {
+    "blocksAB": [], "blocksLoaderCheck": [], "blocksWorkspaceVisibility": [], "blocksControllerValidation": [],
+    "safeToRemainOpen": ["UX-08","UX-10","UX-11","UX-12","UX-13","UX-15"],
+    "deferToPostV11": ["UX-08","UX-12"],
+    "additionalOfflineImplementationJustified": false
+  }
+}

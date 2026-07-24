@@ -99,3 +99,11 @@ status colour, `d664873`) UX-02/UX-03 (layout capacity + vertical rhythm,
 `fix/shadow-v11-tracking-banner`) UX-07 (first-failure information hierarchy,
 `fix/shadow-v11-first-failure-hierarchy`) and UX-14 (evidence-guide internal layout,
 `fix/shadow-v11-evidence-guide-layout`). All are `IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`.
+
+
+---
+
+**Pre-device gate (2026-07-24):** the offline exit gate passed — see
+`reports/device-validation-v11/V11_OFFLINE_EXIT_GATE.md` and `V11_PRE_DEVICE_HANDOFF.md`. Remaining
+open issues (UX-08/10/11/12/13/15) are dispositioned in `V11_REMAINING_ISSUE_DISPOSITION.md`; none
+blocks the Beam Pro A/B. No physical flag has been promoted.
