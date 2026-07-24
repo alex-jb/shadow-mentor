@@ -129,7 +129,11 @@
       "correction": "truncate via ShadowLabelMetrics or right-anchor",
       "scope": "one call site",
       "regressionRisk": "low",
-      "disposition": "SAFE_V11_UX_MAINTENANCE"
+      "disposition": "SAFE_V11_UX_MAINTENANCE",
+      "status": "IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION",
+      "implementedIn": "fix/shadow-v11-tracking-banner",
+      "offlineAcceptance": "6/6 banner geometry tests over 40 combinations (5 profiles x 2 languages x 4 banner states) plus 4 silent states; EditMode 146/146; PlayMode failure identity set unchanged",
+      "devicePassed": false
     },
     {
       "id": "UX-05",
@@ -328,5 +332,5 @@
       "disposition": "SAFE_V11_UX_MAINTENANCE"
     }
   ],
-  "implementationNote": "UX-01/UX-05/UX-09 implemented offline (profile-aware status colour, d664873). UX-02/UX-03 implemented offline (layout capacity + vertical rhythm). UX-04 tracking banner, UX-06, UX-07, UX-08, UX-10..UX-15 remain open."
+  "implementationNote": "UX-01/UX-05/UX-09 (d664873), UX-02/UX-03 (d7feb01) and UX-04 implemented offline. UX-06, UX-07, UX-08, UX-10..UX-15 remain open."
 }

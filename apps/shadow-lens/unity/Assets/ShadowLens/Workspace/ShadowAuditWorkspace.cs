@@ -108,13 +108,19 @@ namespace ShadowLens.Workspace
             var r = Region("top", new Vector3(ShadowWorkspaceLayout.TopX, ShadowWorkspaceLayout.TopY, 0));
             Label(r, Cut(_model?.Title?.Pick(Zh) ?? "Shadow Audit", ShadowWorkspaceLayout.TopTitleEm), T_TITLE, ThemeText(), Vector3.zero);
             // same derived rhythm as the columns — the title line box is 0.32 world units, so the old
-            // 0.30 step could not clear it. The banner below is UX-04 and is deliberately untouched.
+            // 0.30 step could not clear it.
             float ty = -ShadowWorkspaceLayout.TitleToNextStep;
             Label(r, LL("tracking") + ": " + (ShadowWorkspaceLabels.Has(Tracking) ? LL(Tracking) : Tracking), T_HEAD, ThemeText(), new Vector3(0, ty, 0));
             ty -= ShadowWorkspaceLayout.LineHeight(T_HEAD) + ShadowWorkspaceLayout.MinRowGap;
             Label(r, LL("simulated"), T_SMALL, Hex(ShadowStatusGlyph.DisclaimerColor(ProfileId)), new Vector3(0, ty, 0));
+            // UX-04: the explanatory degradation banner now renders inside an explicit bounded region
+            // (ShadowWorkspaceLayout.Banner*) and wraps rather than running off the right edge. Copy,
+            // colour family and the short tracking header above are unchanged.
             if (ShadowTrackingBanner.IsDegraded(Tracking) || Tracking == "SCANNING")
-                Label(r, ShadowTrackingBanner.Copy(Tracking, Zh), T_BODY, Hex(ShadowStatusGlyph.FamilyColor("warning_amber", ProfileId)), new Vector3(2.9f, 0, 0));
+                Label(r, ShadowLabelMetrics.WrapBlock(ShadowTrackingBanner.Copy(Tracking, Zh),
+                          ShadowWorkspaceLayout.BannerEm, ShadowWorkspaceLayout.BannerMaxLines),
+                      T_BODY, Hex(ShadowStatusGlyph.FamilyColor("warning_amber", ProfileId)),
+                      new Vector3(ShadowWorkspaceLayout.BannerLocalX, ShadowWorkspaceLayout.BannerLocalY, 0));
         }
 
         void RebuildSource()

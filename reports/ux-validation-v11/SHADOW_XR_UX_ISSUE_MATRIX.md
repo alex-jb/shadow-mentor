@@ -3,9 +3,9 @@
 15 issues. Every row cites a source path, a capture, or a computed geometry input. Machine-readable:
 `shadow-xr-ux-issue-matrix.json`.
 
-Severity budget: **1 P0 · 5 P1 · 6 P2 · 3 P3.** UX-01, UX-05, UX-09 and now UX-02, UX-03 are
-`IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`; the other ten — including UX-04, UX-08 and
-UX-14 — remain open. P0 is reserved for a defect that stops the accepted
+Severity budget: **1 P0 · 5 P1 · 6 P2 · 3 P3.** UX-01, UX-05, UX-09, UX-02, UX-03 and now UX-04 are
+`IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`; the other nine — including UX-08 and UX-14 —
+remain open. P0 is reserved for a defect that stops the accepted
 scene from communicating its audit result.
 
 ---
@@ -62,6 +62,9 @@ scene from communicating its audit result.
 - **Severity P1 · confidence high.** **`SAFE_V11_UX_MAINTENANCE`** · low risk · worse in zh-CN, so both languages must be checked.
 
 ### UX-04 — The degraded-tracking banner is clipped mid-sentence
+
+> **STATUS — `IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`.** Fixed on `fix/shadow-v11-tracking-banner`; see `SHADOW_TRACKING_BANNER_IMPLEMENTATION.md`. Offline acceptance only — no physical tracking or optical claim is made.
+
 
 - **Evidence:** `PROVEN_IN_EDITOR_CAPTURE` (`tracking-lost__en__AccessibilityHighContrast.png`)
 - **Current behaviour:** the banner is placed at `top` + x 2.90 → world x −0.40 with `UpperLeft` anchoring and no truncation. `TRACKING LOST — switched to session-relative layout;` runs past the right frame edge.

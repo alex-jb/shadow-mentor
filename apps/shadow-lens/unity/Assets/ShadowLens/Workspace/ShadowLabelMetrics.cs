@@ -71,6 +71,30 @@ namespace ShadowLens.Workspace
         // Truncate with an explicit affordance when a single-line label overflows. Full text stays
         // reachable via Inspect/2D audit; the ellipsis marks that truncation happened.
         /// <summary>
+        /// Wrap a block that may ALREADY contain deliberate line breaks (the SCANNING tracking copy
+        /// ships three authored lines). Each authored line is wrapped independently so an authored
+        /// break is never lost, and the whole block is capped at maxLines. Added for the tracking
+        /// banner (UX-04); WrapToWidth's own contract is unchanged.
+        /// </summary>
+        public static string WrapBlock(string text, float maxWidthEm, int maxLines)
+        {
+            if (string.IsNullOrEmpty(text)) return text ?? "";
+            var outLines = new System.Collections.Generic.List<string>();
+            foreach (var authored in text.Split('\n'))
+            {
+                if (outLines.Count >= maxLines) break;
+                int budget = maxLines - outLines.Count;
+                var wrapped = WrapToWidth(authored, maxWidthEm, budget);
+                foreach (var l in wrapped.Split('\n'))
+                {
+                    if (outLines.Count >= maxLines) break;
+                    outLines.Add(l);
+                }
+            }
+            return string.Join("\n", outLines);
+        }
+
+        /// <summary>
         /// Deterministic wrap to a width budget. Breaks on spaces for Latin and between glyphs for CJK
         /// (which has no spaces), never inside a run of non-space Latin, and never more than maxLines —
         /// the final line is truncated with the usual affordance so a wrap can never silently grow a

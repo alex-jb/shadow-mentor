@@ -77,6 +77,27 @@ namespace ShadowLens.Workspace
         public static float RightBodyEm => WorldToEm(RightWidth, BodySize);   // ≈ 8.0
         public static float TopTitleEm => WorldToEm(TopWidth, TitleSize);
 
+        // ── degraded-tracking banner (UX-04) ────────────────────────────────────────────────
+        // The banner sat at top+x 2.90 with UpperLeft anchoring and NO width bound, so
+        // "TRACKING LOST — switched to session-relative layout; audit state preserved" (34.8 em ≈ 7.78
+        // world units) ran straight off the right edge. It now has an explicit bounded region:
+        //   · starts one MinColumnGap right of the header title's own width, so a long story title and
+        //     the banner can never share x,
+        //   · ends at the viewport-safe edge,
+        //   · wraps deterministically inside that width to at most BannerMaxLines,
+        //   · sits high enough that the tallest wrap still clears the column tops.
+        // Anchor stays UpperLeft: every other label in the workspace reads left-aligned, and a bounded
+        // width plus wrapping removes the clipping without inverting the reading rhythm.
+        public const float BannerLocalX = TopWidth + MinColumnGap;      // local to the top region
+        public const float BannerLocalY = 0.06f;                        // clears the column tops when wrapped
+        public const int BannerMaxLines = 3;                            // SCANNING already ships 3 lines
+        public static float BannerWorldX => TopX + BannerLocalX;
+        public static float BannerWidth => ViewportSafeX - BannerWorldX;
+        public static float BannerEm => WorldToEm(BannerWidth, BodySize);
+        public static float BannerTopY => TopY + BannerLocalY;
+        public static float BannerBottomBound => ColumnY + MinRowGap;   // must not reach the columns
+        public static float BannerMaxHeight => BannerTopY - BannerBottomBound;
+
         // The capture rig the geometry tests project through. EDITOR_GEOMETRY_ESTIMATE — not a headset.
         public static class CaptureRig
         {

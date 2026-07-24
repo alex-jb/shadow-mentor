@@ -94,5 +94,6 @@ PRODUCTION_READY                      false
 candidate-05 not built · Time Mode not started · V12 not started · nothing merged.
 
 Subsequently implemented offline, each in its own isolated branch: UX-01/UX-05/UX-09 (profile-aware
-status colour, `d664873`) and UX-02/UX-03 (layout capacity + vertical rhythm,
-`fix/shadow-v11-layout-capacity`). Both are `IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`.
+status colour, `d664873`) UX-02/UX-03 (layout capacity + vertical rhythm,
+`fix/shadow-v11-layout-capacity`) and UX-04 (tracking-banner viewport safety,
+`fix/shadow-v11-tracking-banner`). All are `IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`.

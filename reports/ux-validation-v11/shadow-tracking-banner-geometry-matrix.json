@@ -1,0 +1,122 @@
+{
+  "baseline": "d7feb01",
+  "scope": "UX-04 — degraded-tracking banner viewport safety",
+  "method": "real TextMesh renderer bounds projected through the capture rig with the analytic pinhole model established by d7feb01",
+  "contract": {
+    "bannerLocalX": 4.2,
+    "bannerLocalY": 0.06,
+    "bannerWorldX": 0.1,
+    "bannerWidth": 4.0,
+    "bannerEmBudget": 17.89,
+    "bannerMaxLines": 3,
+    "bannerTopY": 2.11,
+    "bannerBottomBound": 1.135,
+    "bannerMaxHeight": 0.975,
+    "threeLineHeight": 0.666,
+    "anchor": "UpperLeft (unchanged)",
+    "alignment": "left (unchanged)",
+    "viewportSafeX": 4.1,
+    "derivation": "starts one MinColumnGap right of the header title width; ends at the viewport-safe edge"
+  },
+  "before": {
+    "bannerLocalX": 2.9,
+    "bannerWorldX": -0.4,
+    "widthBound": "none",
+    "truncation": "none",
+    "evidence": "TRACKING LOST — switched to session-relative layout; audit state preserved ran past the right frame edge",
+    "capture": "media/spatial-ux-v11/audit-workspace/tracking-lost__en__AccessibilityHighContrast.png"
+  },
+  "messages": [
+    {
+      "state": "SCANNING",
+      "en": "SCANNING FOR POSITION\\nHold still and slowly look around.\\nCore 3DoF review remains available.",
+      "zh": "正在扫描空间位置\\n请保持稳定并缓慢环视。\\n核心 3DoF 审查仍可继续。",
+      "enEm": 43.94,
+      "zhEm": 31.24,
+      "enAuthoredLines": 3,
+      "zhAuthoredLines": 3,
+      "fitsOneLineEn": false,
+      "fitsOneLineZh": false
+    },
+    {
+      "state": "LIMITED",
+      "en": "TRACKING LIMITED — safe layout",
+      "zh": "追踪受限——安全布局",
+      "enEm": 14.72,
+      "zhEm": 9.2,
+      "enAuthoredLines": 1,
+      "zhAuthoredLines": 1,
+      "fitsOneLineEn": true,
+      "fitsOneLineZh": true
+    },
+    {
+      "state": "LOST",
+      "en": "TRACKING LOST — switched to session-relative layout; audit state preserved",
+      "zh": "追踪丢失——切换到会话相对布局;审计状态保留",
+      "enEm": 36.5,
+      "zhEm": 20.94,
+      "enAuthoredLines": 1,
+      "zhAuthoredLines": 1,
+      "fitsOneLineEn": false,
+      "fitsOneLineZh": false
+    },
+    {
+      "state": "RECOVERING",
+      "en": "RECOVERING — no stale voice replay",
+      "zh": "恢复中——不重放过期语音",
+      "enEm": 16.58,
+      "zhEm": 11.24,
+      "enAuthoredLines": 1,
+      "zhAuthoredLines": 1,
+      "fitsOneLineEn": true,
+      "fitsOneLineZh": true
+    }
+  ],
+  "matrix": {
+    "profiles": [
+      "DesktopDark",
+      "BrowserDark",
+      "ProjectorPresentation",
+      "XrealOstBright",
+      "AccessibilityHighContrast"
+    ],
+    "languages": [
+      "en",
+      "zh-CN"
+    ],
+    "trackingStates": [
+      "INITIALIZING",
+      "SCANNING",
+      "TRACKED_3DOF",
+      "TRACKED_6DOF",
+      "LIMITED",
+      "LOST",
+      "RECOVERING",
+      "UNKNOWN_STATE"
+    ],
+    "bannerStates": [
+      "SCANNING",
+      "LIMITED",
+      "LOST",
+      "RECOVERING"
+    ],
+    "combinations": 40,
+    "assertions": [
+      "viewport containment + safe margins",
+      "semantic completeness (newline-insensitive) + no ellipsis",
+      "no stranded punctuation at a line start",
+      "no overlap with any other content",
+      "bounded + deterministic wrap",
+      "short tracking header stays distinct",
+      "d664873 colours and d7feb01 geometry unchanged",
+      "non-degraded states raise no banner"
+    ],
+    "result": "6/6 banner geometry tests pass"
+  },
+  "outOfScope": {
+    "UX-08": "open — unused capacity not treated as a goal",
+    "UX-14": "open — evidence guide internals untouched",
+    "UX-02_UX-03": "preserved unchanged from d7feb01 (asserted by a regression test)",
+    "UX-01_UX-05_UX-09": "preserved unchanged from d664873 (asserted by a regression test)"
+  }
+}
