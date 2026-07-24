@@ -1,0 +1,53 @@
+{
+  "package": "com.unity.ai.assistant",
+  "versionRequested": "2.0.0-pre.1",
+  "versionResolved": "2.0.0-pre.1",
+  "declaredUnity": "6000.0",
+  "declaredUnityRelease": "60f1",
+  "shadowUnity": "6000.0.23f1",
+  "unityVersionSupported": false,
+  "auditedFrom": "package source in a disposable project outside the repository",
+  "executionGatedByEnabledState": false,
+  "executionGateEvidence": "Bridge.ExecuteCommandAsync -> McpToolRegistry.ExecuteToolAsync looks up the full k_Tools registry; IsToolEnabled is consulted only in GetAvailableTools (discovery) and the settings UI",
+  "enforcementClassification": "CLIENT_ALLOWLIST_ONLY",
+  "relaySourceAvailable": false,
+  "editorTransport": "unix-domain-socket (macOS/Linux) / named-pipe (Windows); no TCP bind in the Editor bridge",
+  "dynamicToolRegistration": {
+    "typeCacheScanAllAssemblies": true,
+    "runtimeRegisterTool": true,
+    "assistantAgentToolsAutoExported": true
+  },
+  "categoryFilter": {
+    "granularity": "category",
+    "alwaysEnabledCategories": ["core"],
+    "logic": "OR across a tool's categories",
+    "note": "every destructive tool also carries the non-disableable 'core' group"
+  },
+  "tools": [
+    {"name": "Unity.RunCommand", "source": "Tools/RunCommand.cs", "groups": ["core", "scripting"], "enabledByDefault": true, "actions": ["compile-and-execute-csharp"], "classification": "EXECUTE_CODE", "reads": false, "writes": true, "executesCode": true, "safeForShadowReadOnly": false, "mustBeDisabled": true},
+    {"name": "Unity.ManageMenuItem", "source": "Tools/ManageMenuItem.cs", "groups": ["core", "editor"], "enabledByDefault": false, "actions": ["execute-menu-item"], "classification": "EXECUTE_CODE", "reads": false, "writes": true, "executesCode": true, "safeForShadowReadOnly": false, "mustBeDisabled": true},
+    {"name": "Unity.ManageScene", "source": "Tools/ManageScene.cs", "groups": ["core", "scene"], "enabledByDefault": false, "actions": ["Create", "Load", "Save", "GetHierarchy", "GetActive", "GetBuildSettings"], "classification": "MIXED_READ_WRITE", "reads": true, "writes": true, "saves": true, "safeForShadowReadOnly": false, "mustBeDisabled": true, "note": "the hierarchy read Shadow needs is fused with create/load/save; no action-level allowlist exists"},
+    {"name": "Unity.ManageGameObject", "source": "Tools/ManageGameObject.cs", "groups": ["core", "scene"], "enabledByDefault": false, "actions": ["find", "get_components", "create", "modify", "delete", "add_component", "remove_component", "set_component_property"], "classification": "MIXED_READ_WRITE", "reads": true, "writes": true, "deletes": true, "safeForShadowReadOnly": false, "mustBeDisabled": true},
+    {"name": "Unity.ManageEditor", "source": "Tools/ManageEditor.cs", "groups": ["core", "editor"], "enabledByDefault": false, "actions": ["Play", "Pause", "Stop", "GetState", "GetProjectRoot", "tag/layer management"], "classification": "MIXED_READ_WRITE", "reads": true, "writes": true, "entersPlayMode": true, "safeForShadowReadOnly": false, "mustBeDisabled": true},
+    {"name": "Unity.ManageAsset", "source": "Tools/ManageAsset.cs", "groups": ["core", "assets"], "enabledByDefault": false, "actions": ["Import", "Create", "Modify"], "classification": "WRITE_PROJECT", "reads": false, "writes": true, "safeForShadowReadOnly": false, "mustBeDisabled": true},
+    {"name": "Unity.ReadConsole", "source": "Tools/ReadConsole.cs", "groups": ["debug", "editor"], "enabledByDefault": false, "actions": ["Get", "Clear"], "classification": "MIXED_READ_WRITE", "reads": true, "clearsLogs": true, "safeForShadowReadOnly": false, "mustBeDisabled": true, "note": "Clear reflects UnityEditor.LogEntries.Clear; Get and Clear cannot be separated server-side"},
+    {"name": "Unity.ManageScript", "source": "Tools/ManageScript.cs", "groups": ["core", "scripting"], "enabledByDefault": false, "classification": "MIXED_READ_WRITE", "reads": true, "writes": true, "deletes": true, "safeForShadowReadOnly": false, "mustBeDisabled": true},
+    {"name": "Unity.CreateScript", "source": "Tools/CreateScript.cs", "groups": ["core", "scripting"], "enabledByDefault": false, "classification": "WRITE_PROJECT", "writes": true, "safeForShadowReadOnly": false, "mustBeDisabled": true},
+    {"name": "Unity.DeleteScript", "source": "Tools/DeleteScript.cs", "groups": ["core", "scripting"], "enabledByDefault": false, "classification": "DELETE_OR_DESTRUCTIVE", "deletes": true, "safeForShadowReadOnly": false, "mustBeDisabled": true},
+    {"name": "Unity.ApplyTextEdits", "source": "Tools/ApplyTextEdits.cs", "groups": ["core", "scripting"], "enabledByDefault": false, "classification": "WRITE_PROJECT", "writes": true, "safeForShadowReadOnly": false, "mustBeDisabled": true},
+    {"name": "Unity.ScriptApplyEdits", "source": "Tools/ScriptApplyEdits.cs", "groups": ["core", "scripting"], "enabledByDefault": false, "classification": "WRITE_PROJECT", "writes": true, "safeForShadowReadOnly": false, "mustBeDisabled": true},
+    {"name": "Unity.ManageShader", "source": "Tools/ManageShader.cs", "groups": ["assets", "scripting"], "enabledByDefault": false, "classification": "WRITE_PROJECT", "writes": true, "deletes": true, "safeForShadowReadOnly": false, "mustBeDisabled": true},
+    {"name": "Unity.ImportExternalModel", "source": "Tools/ImportExternalModel.cs", "groups": ["core", "assets"], "enabledByDefault": false, "classification": "WRITE_PROJECT", "writes": true, "safeForShadowReadOnly": false, "mustBeDisabled": true},
+    {"name": "Unity.ValidateScript", "source": "Tools/ValidateScript.cs", "groups": ["core", "scripting"], "enabledByDefault": false, "classification": "MIXED_READ_WRITE", "note": "compiles supplied C# via bundled Roslyn", "safeForShadowReadOnly": false, "mustBeDisabled": true},
+    {"name": "Unity.ManageScript_capabilities", "source": "Tools/ManageScriptCapabilities.cs", "groups": ["core", "scripting"], "enabledByDefault": false, "classification": "PURE_READ", "reads": true, "safeForShadowReadOnly": true, "note": "read-safe but provides nothing for XR/UX review"},
+    {"name": "Unity.GetSha", "source": "Tools/GetSHA.cs", "groups": ["core", "scripting"], "enabledByDefault": false, "classification": "PURE_READ", "reads": true, "safeForShadowReadOnly": true, "note": "read-safe but provides nothing for XR/UX review"},
+    {"name": "Unity.ListResources", "source": "Tools/ResourceTools.cs", "groups": ["core", "resources"], "enabledByDefault": false, "classification": "PURE_READ", "reads": true, "safeForShadowReadOnly": true, "note": "file-level only; cannot return a scene graph or resolved component values"},
+    {"name": "Unity.ReadResource", "source": "Tools/ResourceTools.cs", "groups": ["core", "resources"], "enabledByDefault": false, "classification": "PURE_READ", "reads": true, "safeForShadowReadOnly": true, "note": "file-level only"},
+    {"name": "Unity.FindInFile", "source": "Tools/ResourceTools.cs", "groups": ["core", "resources"], "enabledByDefault": false, "classification": "PURE_READ", "reads": true, "safeForShadowReadOnly": true, "note": "file-level only"}
+  ],
+  "decision": "NOT_SAFE_FOR_EXTERNAL_READONLY",
+  "uxAuditResult": "SHADOW_UX_AUDIT_BLOCKED_BY_MCP_SAFETY",
+  "connectedToClaudeCode": false,
+  "shadowWorktreeOpenedInUnity": false,
+  "evaluationWorktreeCreated": false
+}
