@@ -3,9 +3,9 @@
 15 issues. Every row cites a source path, a capture, or a computed geometry input. Machine-readable:
 `shadow-xr-ux-issue-matrix.json`.
 
-Severity budget: **1 P0 · 5 P1 · 6 P2 · 3 P3.** UX-01, UX-05, UX-09, UX-02, UX-03, UX-04 and now UX-07 are
-`IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`; the other eight — including UX-08, UX-12 and
-UX-14 — remain open. P0 is reserved for a defect that stops the accepted
+Severity budget: **1 P0 · 5 P1 · 6 P2 · 3 P3.** UX-01, UX-05, UX-09, UX-02, UX-03, UX-04, UX-07 and now UX-14 are
+`IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`; the other seven — including UX-08 and UX-12 —
+remain open. P0 is reserved for a defect that stops the accepted
 scene from communicating its audit result.
 
 ---
@@ -140,6 +140,9 @@ scene from communicating its audit result.
 `PROVEN_IN_CODE` — no `EventSystem`, no raycaster, no `Selectable`; focus is a rebuild of the centre region with no persistent visual state. Prev/Next/Select map to `FocusOn` only. Rail items encode `IsCurrent` as a quad scale (0.15 vs 0.09) and a slightly larger `#n`. There is no hit target, so accidental-activation risk is nil, and equally there is no controller affordance. **P3 · `REQUIRES_DEVICE_VALIDATION`** before designing one.
 
 ### UX-14 — Rail label collides with the rail index
+
+> **STATUS — `IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`.** Fixed on `fix/shadow-v11-evidence-guide-layout`; see `SHADOW_EVIDENCE_GUIDE_IMPLEMENTATION.md`. Offline acceptance only.
+
 
 `PROVEN_IN_EDITOR_CAPTURE` — `FIRST` (y +0.16) sits over `#3` (y −0.16) at the same x, and the action row at y −0.36 runs under the `#n` row. **P3 · `SAFE_V11_UX_MAINTENANCE`.**
 

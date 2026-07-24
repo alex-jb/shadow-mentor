@@ -96,5 +96,6 @@ candidate-05 not built · Time Mode not started · V12 not started · nothing me
 Subsequently implemented offline, each in its own isolated branch: UX-01/UX-05/UX-09 (profile-aware
 status colour, `d664873`) UX-02/UX-03 (layout capacity + vertical rhythm,
 `fix/shadow-v11-layout-capacity`) and UX-04 (tracking-banner viewport safety,
-`fix/shadow-v11-tracking-banner`) and UX-07 (first-failure information hierarchy,
-`fix/shadow-v11-first-failure-hierarchy`). All are `IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`.
+`fix/shadow-v11-tracking-banner`) UX-07 (first-failure information hierarchy,
+`fix/shadow-v11-first-failure-hierarchy`) and UX-14 (evidence-guide internal layout,
+`fix/shadow-v11-evidence-guide-layout`). All are `IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION`.

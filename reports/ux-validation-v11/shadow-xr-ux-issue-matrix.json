@@ -318,7 +318,10 @@
       "confidence": "high",
       "beamProRequired": false,
       "disposition": "SAFE_V11_UX_MAINTENANCE",
-      "note": "the rail was moved down so the taller centre column could not reach it; its own label/index collision is UNTOUCHED and remains OPEN"
+      "status": "IMPLEMENTED_OFFLINE_AWAITING_PHYSICAL_VALIDATION",
+      "implementedIn": "fix/shadow-v11-evidence-guide-layout",
+      "offlineAcceptance": "6/6 guide geometry tests over 90 combinations (5 profiles x 2 languages x 9 states, step counts 1/2/3/4/6); EditMode 146/146; PlayMode failure identity set unchanged",
+      "devicePassed": false
     },
     {
       "id": "UX-15",
@@ -336,5 +339,5 @@
       "disposition": "SAFE_V11_UX_MAINTENANCE"
     }
   ],
-  "implementationNote": "UX-01/05/09 (d664873), UX-02/03 (d7feb01), UX-04 (01864b4) and UX-07 implemented offline. UX-06, UX-08, UX-10, UX-11, UX-12, UX-13, UX-14, UX-15 remain open."
+  "implementationNote": "UX-01/05/09 (d664873), UX-02/03 (d7feb01), UX-04 (01864b4), UX-07 (3c5e9ba) and UX-14 implemented offline. UX-06, UX-08, UX-10, UX-11, UX-12, UX-13, UX-15 remain open."
 }

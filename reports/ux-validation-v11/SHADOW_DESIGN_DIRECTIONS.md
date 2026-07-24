@@ -24,7 +24,7 @@ concepts.
 - **Visual changes:** derive row step from the rendered line box per type size (UX-03); widen the
   column gaps or tighten per-column truncation so measured width ≤ gap (UX-02); truncate or
   right-anchor the degraded-tracking banner (UX-04); pull the rail up into the empty 29 % band and
-  separate the rail label from the index (UX-08, UX-14); route the disclaimer colour through the
+  separate the rail label from the index (UX-14 done; UX-08 open); route the disclaimer colour through the
   active profile (UX-05).
 - **Interaction changes:** none.
 - **Localization:** every gap must be re-measured in zh-CN, where CJK is ~2× the Latin em width. The

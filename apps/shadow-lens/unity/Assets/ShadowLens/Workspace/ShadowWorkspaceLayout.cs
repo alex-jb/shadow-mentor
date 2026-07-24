@@ -77,6 +77,26 @@ namespace ShadowLens.Workspace
         public static float RightBodyEm => WorldToEm(RightWidth, BodySize);   // ≈ 8.0
         public static float TopTitleEm => WorldToEm(TopWidth, TitleSize);
 
+        // ── evidence guide / rail (UX-14) ───────────────────────────────────────────────────
+        // The bottom rail stacked four things in ~0.16-unit steps while their line boxes are
+        // 0.14-0.25 tall, so the top label ("FIRST"/"↓dep") touched its node and the action legend
+        // ran under the "#n" index. The stack is re-derived from the real line boxes so every row
+        // clears the next, and lifted into the empty band above the rail (the UX-08 space) so it does
+        // not touch the viewport bottom OR the centre column. The region origin (BottomX, BottomY
+        // = -1.98) is unchanged; only the local layout inside it moves.
+        public const float RailStepSpacing = 0.62f;          // horizontal step pitch (measured safe)
+        public const float RailLabelInsetX = -0.05f;         // labels sit just left of the node centre
+        public const float RailNodeCurrentScale = 0.15f, RailNodeOtherScale = 0.09f;
+        public const float RailSeqCurrentSize = 0.040f, RailSeqOtherSize = 0.028f;
+        public const float RailTopLabelSize = SmallSize;     // FIRST / ↓dep
+        public const float RailActionSize = SmallSize;       // ◀ Prev ▶ Next … legend
+        // vertical stack, top → bottom, each row separated by its own line box + MinRowGap:
+        public const float RailTopLabelY = 0.42f;
+        public static float RailNodeCenterY => RailTopLabelY - LineHeight(RailTopLabelSize) - MinRowGap - RailNodeCurrentScale * 0.5f;
+        public static float RailSeqY => RailNodeCenterY - RailNodeCurrentScale * 0.5f - MinRowGap;
+        public static float RailActionY => RailSeqY - LineHeight(RailSeqCurrentSize) - MinRowGap;
+        public static float RailBottomExtent => RailActionY - LineHeight(RailActionSize); // for the containment test
+
         // ── audit-result hierarchy (UX-07) ──────────────────────────────────────────────────
         // The failure conclusion was the FOURTH-largest thing on screen: "FIRST FAILURE" rendered at
         // 0.030 while two unrelated titles rendered at 0.052, so the eye landed on the story name.

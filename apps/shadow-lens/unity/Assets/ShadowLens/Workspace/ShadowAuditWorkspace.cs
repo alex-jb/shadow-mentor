@@ -209,20 +209,25 @@ namespace ShadowLens.Workspace
         {
             var r = Region("bottom", new Vector3(ShadowWorkspaceLayout.BottomX, ShadowWorkspaceLayout.BottomY, 0));
             var items = ShadowAuditWorkspaceModel.BuildRail(_model, sc, _focusEntityId);
+            // UX-14: node / index / top-label / action rows are separated by their real line boxes so
+            // they no longer touch, and the whole stack sits in the band above the rail region.
             float x = 0f;
+            float inset = ShadowWorkspaceLayout.RailLabelInsetX;
             foreach (var it in items)
             {
                 var col = GlyphColor(it.Status);
-                Quad(r, new Vector3(x, 0, 0),
+                float nodeScale = it.IsCurrent ? ShadowWorkspaceLayout.RailNodeCurrentScale : ShadowWorkspaceLayout.RailNodeOtherScale;
+                Quad(r, new Vector3(x, ShadowWorkspaceLayout.RailNodeCenterY, 0),
                     it.IsFirstFailure ? ShadowStatusGlyph.FamilyColor("failure_red", ProfileId)
                     : it.IsDownstream ? ShadowStatusGlyph.FamilyColor("neutral_unknown", ProfileId)
-                    : ShadowStatusGlyph.Resolve(it.Status, ProfileId).ColorHex, it.IsCurrent ? 0.15f : 0.09f);
-                Label(r, "#" + it.Sequence, it.IsCurrent ? 0.04f : 0.028f, col, new Vector3(x - 0.05f, -0.16f, 0));
-                if (it.IsFirstFailure) Label(r, LL("first_short"), T_SMALL, GlyphColor("FIRST_FAILURE"), new Vector3(x - 0.05f, 0.16f, 0));
-                else if (it.IsDownstream) Label(r, "↓" + LL("dep_short"), T_SMALL, GlyphColor("AFFECTED_DOWNSTREAM"), new Vector3(x - 0.05f, 0.16f, 0));
-                x += 0.62f;
+                    : ShadowStatusGlyph.Resolve(it.Status, ProfileId).ColorHex, nodeScale);
+                Label(r, "#" + it.Sequence, it.IsCurrent ? ShadowWorkspaceLayout.RailSeqCurrentSize : ShadowWorkspaceLayout.RailSeqOtherSize,
+                      col, new Vector3(x + inset, ShadowWorkspaceLayout.RailSeqY, 0));
+                if (it.IsFirstFailure) Label(r, LL("first_short"), ShadowWorkspaceLayout.RailTopLabelSize, GlyphColor("FIRST_FAILURE"), new Vector3(x + inset, ShadowWorkspaceLayout.RailTopLabelY, 0));
+                else if (it.IsDownstream) Label(r, "↓" + LL("dep_short"), ShadowWorkspaceLayout.RailTopLabelSize, GlyphColor("AFFECTED_DOWNSTREAM"), new Vector3(x + inset, ShadowWorkspaceLayout.RailTopLabelY, 0));
+                x += ShadowWorkspaceLayout.RailStepSpacing;
             }
-            Label(r, "◀ " + LL("prev") + "   ▶ " + LL("next") + "   ⟳ " + LL("reset") + "   ⌖ " + LL("recenter") + "   [ " + LL("open_2d_audit") + " ]", T_SMALL, ThemeSecondary(), new Vector3(0, -0.36f, 0));
+            Label(r, "◀ " + LL("prev") + "   ▶ " + LL("next") + "   ⟳ " + LL("reset") + "   ⌖ " + LL("recenter") + "   [ " + LL("open_2d_audit") + " ]", ShadowWorkspaceLayout.RailActionSize, ThemeSecondary(), new Vector3(0, ShadowWorkspaceLayout.RailActionY, 0));
         }
 
         // ── primitives (shared materials) ──
