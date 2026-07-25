@@ -31,6 +31,7 @@
     "verify:bundle": "node bin/shadow-verify.mjs",
     "gsar:report": "node bin/gsar-provenance-report.mjs",
     "flow:export": "node bin/shadow-flow-export.mjs",
+    "audit:package": "node bin/shadow-audit-package.mjs",
     "health": "curl -s http://localhost:3000/api/health",
     "calibration": "curl -s 'http://localhost:3000/api/calibration?persona=compliance'",
     "mcp": "node mcp/server.js",
