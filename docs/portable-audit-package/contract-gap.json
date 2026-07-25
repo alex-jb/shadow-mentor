@@ -1,0 +1,33 @@
+{
+  "record": "shadow-portable-audit-package-discovery/contract-gap",
+  "discovery_date": "2026-07-24",
+  "legal_classifications": ["DIRECT", "DERIVED_REPRODUCIBLY", "ADAPTER_REQUIRED", "MISSING", "SECURITY_SENSITIVE", "PRODUCT_DECISION_REQUIRED", "NOT_PORTABLE"],
+  "fields": [
+    { "field": "case_identity", "classification": ["DIRECT", "PRODUCT_DECISION_REQUIRED"], "note": "case_id exists (narrative/flow-export/web); session_id exists (bundle); the case_id<->session_id binding exists NOWHERE and must be created in the signed manifest" },
+    { "field": "council", "classification": ["DIRECT", "ADAPTER_REQUIRED"], "note": "narrative council rows DIRECT; richer runLoanCouncil output (verdicts, AA codes, weighted aggregate) needs a declared-lineage mapping" },
+    { "field": "first_failure", "classification": ["DERIVED_REPRODUCIBLY", "MISSING"], "note": "integrity first-failure derivable from verifyBundle {seq,reason,impact}; business first-failure MISSING from Core; never synthesized" },
+    { "field": "downstream_impact", "classification": ["DERIVED_REPRODUCIBLY", "MISSING"], "note": "chain-break cascade (seq N breaks N..end) derivable; business consequences MISSING" },
+    { "field": "evidence_lineage", "classification": ["DIRECT"], "note": "bundle events with seq/prev_hash/payload_hash; payload CONTENTS are off-chain and SECURITY_SENSITIVE + PRODUCT_DECISION_REQUIRED to include" },
+    { "field": "citations", "classification": ["ADAPTER_REQUIRED"], "note": "citation_registry + citation_registry_sha256 exist on the loan-council/attestation path; flow export carries only cites relationships" },
+    { "field": "human_review", "classification": ["DIRECT", "ADAPTER_REQUIRED", "SECURITY_SENSITIVE"], "note": "human_approval event + reviewer_interaction payload exist; reviewer_id/override_rationale are PII; payload-level checks need --payloads" },
+    { "field": "approval", "classification": ["DERIVED_REPRODUCIBLY"], "note": "event presence checkable via banking-v1 profile; no approval-state field exists (by design)" },
+    { "field": "trust_posture", "classification": ["DERIVED_REPRODUCIBLY"], "note": "verifier output trustLevel only; never stored in a bundle; ship only in the derived verification member" },
+    { "field": "hashes", "classification": ["DIRECT"], "note": "payload_hash/prev_hash/batch_root portable; web displays format-checked only" },
+    { "field": "signatures", "classification": ["DIRECT"], "note": "single Ed25519 bundle signature; verifyBundle reads signatures[0] only; attestation signature separate" },
+    { "field": "public_key", "classification": ["DIRECT"], "note": "SPKI PEM + opaque key_id; embed as member + full-length fingerprint in manifest; identity trust remains out-of-band; revocation ABSENT" },
+    { "field": "verifier_outcome", "classification": ["DERIVED_REPRODUCIBLY"], "note": "ship as reproducible view; consumers re-derive; disagreement is a first-class display state; never evidence" },
+    { "field": "model_prompt_tool_provenance", "classification": ["DIRECT", "MISSING"], "note": "header.models[] + sampling_params_hash + prompt_sha256 DIRECT; tool VERSION fields MISSING (names only)" },
+    { "field": "build_version_identity", "classification": ["DIRECT"], "note": "build_commit (acceptance manifest), verifier_version+commit_sha (verify-manifest), schema_versions (bundle header)" },
+    { "field": "capability_claims", "classification": ["NOT_PORTABLE"], "note": "authored labels only; DEVICE_VALIDATED/PRODUCTION_READY hard-error in web contract; physical claims never ride a package" },
+    { "field": "localization", "classification": ["ADAPTER_REQUIRED"], "note": "bilingual verification-report.{en,zh-CN}.json precedent exists; flow export monolingual (web adapter writes en=zh)" }
+  ],
+  "cross_cutting_gaps": [
+    "case_id<->session_id binding MISSING (most load-bearing new manifest field)",
+    "business first-failure/downstream MISSING from Core; display models exist only web-side",
+    "two-way package completeness MISSING (checkAssets is one-way; extra files undetected)",
+    "schema/code drifts: event enum 13 vs 18; attestation `version` vs required `spec_version`; anchor kind `rekor` vs schema enum; anchor_errors undeclared; raw-seed base64 vs hex",
+    "tool version provenance MISSING",
+    "browser-side cryptography MISSING in the Web app (verify.html in Core repo is the reference)",
+    "HMAC-mode artifacts NOT_PORTABLE (verification requires the signing secret)"
+  ]
+}

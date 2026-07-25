@@ -1,0 +1,37 @@
+# Portable audit package — security model (discovery)
+
+> Answers are grounded in the inventory (`EXISTING_SIGNING_AND_VERIFICATION_INVENTORY.md`).
+> Nothing here claims the prototype is production-secure; §Non-claims lists what is unproven.
+
+## Keys
+
+- **Where is the private key generated?** Locally: `bin/generate-attestation-keypair.mjs` (`generateKeyPairSync("ed25519")`), or supplied via env (`SHADOW_LENS_PRIVATE_KEY`, `SHADOW_ATTESTATION_ED25519_PRIVATE_KEY`). Fixture flows generate ephemeral in-process keys (`scripts/gen-acceptance-package.mjs`, `runOneShot` without env keys, `verify/fixture-release-key.mjs`).
+- **Where is it stored?** `shadow-private.pem` chmod 0600 (CLI-refuses-overwrite), or env var PEM. Never in any package artifact; the acceptance test pins that `api-transcript.json` never matches `/PRIVATE KEY/`. The package must inherit this rule: **no private key material in any member, ever**.
+- **Is fixture-mode ephemeral signing suitable only for demos? Yes.** Every existing surface labels it (`FIXTURE RELEASE KEY … not production-signed`; `signing_key: "ephemeral-demo…"`). An ephemeral key proves internal consistency only — the verifying party has no reason to trust the key's identity. The package manifest must carry an explicit key-provenance label (`fixture | operator | production`) so demo packages cannot be mistaken for production-signed ones.
+- **What public material is sufficient to verify?** The SPKI PEM public key (per member type: bundle key, attestation key, manifest release key) + the `key_id`/fingerprint to select it. Resolution of key_id → key is out-of-band (`GET /api/attestation-info` precedent); a portable package should embed the public key(s) as members *and* their fingerprints in the signed manifest, while documenting that an embedded key only supports tamper-evidence, not key-identity trust (that needs out-of-band comparison).
+
+## Canonicalization & binding
+
+- **Which bytes are canonicalized before signing?**
+  - Bundle: `shadow-canon/1` (sorted-keys JSON) over header-seed and per-event signed shapes; Ed25519 signs the raw 32 bytes of `batch_root`.
+  - Attestation: positional `|`-joined payload string (not JSON) — with the known weakness that optional fields are appended untagged.
+  - Manifest (`shadow-verify-manifest-v1` precedent): Ed25519 over `canonicalize(manifest minus signature)`.
+  - The package should sign **exactly one thing**: the canonical manifest; members are bound through `assets[]{path, sha256}` entries. Member bytes are hashed as-written (the flow-export artifact is already byte-deterministic; the bundle is canonical at seal time).
+- **How are filenames and paths bound?** Via `assets[].path` inside the signed manifest (relative, forward-slash, no `..` — must be validated on both produce and consume). Renaming a member breaks the path binding; editing it breaks the sha256.
+- **Can files be substituted without invalidating verification?** Listed members: no (hash mismatch). **Gap:** the existing `checkAssets` checks only listed assets — an *added* file is not detected. The package rule must be two-way completeness: every listed asset present with matching hash **and** no unlisted file in the package. Partial packages (missing member) are rejected by the first direction.
+- **Can a valid signature be replayed against another case?** Today's precedents allow it in principle: `shadow-verify-manifest-v1` has no case binding, and an evidence bundle's signature binds only its own content (session_id ≠ case_id — no shared identifier exists between the banking narrative and a bundle). The package manifest must therefore bind, inside the signed bytes: `package_id` (content-derived, e.g. sha256 over member hashes), `case_id`, the member-role map, and the schema versions. Replaying the manifest with different members fails hashes; replaying a whole package against another case fails the embedded `case_id`; replaying an old complete package remains *valid but stale* — supersession (new package version referencing the prior `package_id`) is the mitigation, not signature revocation.
+- **How are case ID, package ID and schema version bound?** They must all be fields of the signed manifest. Today: case_id exists only in the presentation member; session_id only in evidence; nothing links them (see contract gap — PRODUCT_DECISION_REQUIRED).
+- **How is key identity represented?** `key_id` (opaque string) inside bundle signatures and attestations; `release_public_key_fingerprint` (truncated hex — 16 chars in the precedent; a full-length SHA-256 fingerprint is preferable for the package) in the manifest.
+- **How are revoked or rotated keys handled?** Rotation: convention only (key_id + grace window); `verifyBundle` reads only `signatures[0]`. **Revocation: ABSENT** — no expiry, CRL, or OCSP anywhere. The package can only record `key_id` + fingerprint + provenance label; revocation handling is out of scope and must be documented as such.
+
+## Privacy / browser boundary
+
+- **Which fields could leak PII or secrets?** `header.agent.identity_ref` (inside the signed shape — not post-hoc redactable), event payloads (file paths, shell commands, tool descriptions, OTel `raw_attributes`), `reviewer_interaction` payloads (`reviewer_id`, free-text `override_rationale`), `environment_fingerprint`, HMAC secrets (dev mode only — HMAC-mode artifacts must be barred from portable packages since verification would require sharing the signing secret).
+- **What may be safely rendered in the browser?** The presentation member (already honest-absence-guarded), the manifest, public keys/fingerprints, hashes, the derived verification result, and evidence *metadata* (event types, seq, hashes). Web already commits to: signing never in the browser; verification is public-key-only (`docs/core-integration/WEB_END_TO_END_WORKFLOW.md` in the web repo).
+- **What must never enter IndexedDB?** Today the web app persists nothing (no IndexedDB/localStorage — verified). Keep that default. If persistence ever arrives: never store event payload *contents*, `identity_ref`, reviewer identities/rationales, or any raw imported package member; at most store safe metadata (package_id, case_id, schema versions, verification verdict, timestamps).
+- **What is the tamper-evidence boundary?** Signed: the canonical manifest → transitively every member listed with a hash (presentation, evidence bundle, attestation, provenance manifest, embedded public keys). Deliberately *derived, reproducible, and re-derivable by the consumer*: `verification/verification-result.json` — it should still be hash-listed (integrity in transit) but consumers must re-derive it and never treat the shipped copy as evidence ("verifier disagreement" is a first-class display state). Outside any signature: nothing — two-way completeness means unlisted files are rejected rather than tolerated.
+
+## Non-claims (explicit)
+
+- No production-security claim: fixture/ephemeral keys, no key-identity PKI, no revocation, truncated fingerprints in the precedent, `-0`/number canonicalization caveats, attestation payload untagged-append weakness, single-signature verification, and schema/code drifts (event enum 13 vs 18; `version` vs `spec_version`; anchor kinds) are all open, documented, and must be resolved or explicitly scoped out during implementation.
+- A valid package signature never implies business correctness, Flow vendor import success, native Shadow Lens behavior, or any physical XR capability.
