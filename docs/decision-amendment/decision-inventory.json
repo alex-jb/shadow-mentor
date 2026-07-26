@@ -1,0 +1,148 @@
+{
+  "schema": "shadow-decision-inventory-discovery/1",
+  "status": "discovery-only",
+  "sources": {
+    "core": { "repo": "shadow-mentor-package-supersession", "branch": "feat/shadow-portable-package-supersession", "commit": "8fae7e7" },
+    "web": { "repo": "shadow-web-audit-room", "branch": "feat/shadow-web-package-supersession-timeline", "commit": "d7935bf" },
+    "control_plane": { "repo": "shadow-control-plane", "commit": "0ef772b" }
+  },
+  "concepts": [
+    {
+      "name": "reviewer_interaction",
+      "repo": "core",
+      "path": "lib/reviewer-interaction.js",
+      "schema_version": null,
+      "vocabulary": ["approved", "modified", "rejected"],
+      "invariant": "override_rationale required when decision is modified or rejected (CAAT)",
+      "producer": "apps/shadow-lens/backend/lens-api.mjs; apps/shadow-lens/backend/build-session.mjs",
+      "consumer": "lib/enforce-banking-profile.js; lib/evidence-packet.js; apps/shadow-lens/web/spatial-agent/*",
+      "signed": "transitively (hash-bound human_approval event payload; off-chain, redactable)",
+      "immutable": "after bundle seal",
+      "actor": "reviewer_id (optional, unverified free string)",
+      "timestamp": "none of its own (event ts_utc)",
+      "case_binding": "transitive via bundle header.session_id only",
+      "authorization": "none",
+      "tests": ["test/reviewer-interaction.test.js", "test/shadow-lens-staged-api.test.js", "test/banking-profile.test.js"],
+      "portable": true,
+      "sensitive_fields": ["reviewer_id", "override_rationale"],
+      "reuse": "vocabulary and reason-required rule: high; as signed artifact: unusable as-is"
+    },
+    {
+      "name": "human_approval evidence event",
+      "repo": "core",
+      "path": "packages/attest-core/session.js; spec/evidence-bundle.schema.json",
+      "schema_version": "shadow-evidence/v1",
+      "producer": "attest-core session API; api/evidence/events.js",
+      "consumer": "verifyBundle; bin/shadow-verify.mjs; lib/enforce-banking-profile.js; python/shadow_verify",
+      "signed": "collectively (prev_hash chain, batch_root, single ed25519 base64url)",
+      "immutable": "after seal",
+      "actor": "events[].actor role class [agent,user,model,tool,system]; header.agent.identity_ref only human identity field",
+      "timestamp": "ts_utc RFC3339",
+      "case_binding": "header.session_id",
+      "authorization": "none",
+      "tests": ["test/session-api.test.js", "test/attest-core-contract.test.js", "test/evidence-events-endpoint.test.js"],
+      "portable": true,
+      "sensitive_fields": ["header.agent.identity_ref", "event payloads", "environment_fingerprint"],
+      "reuse": "optional companion recording only; wrong as the decision contract (sealed bundles, frozen enum, bundle_version bump trap, 13-vs-18 enum drift)"
+    },
+    {
+      "name": "banking-evidence-profile human_review / reviewer_interaction checks",
+      "repo": "core",
+      "path": "spec/banking-evidence-profile-v1.json; lib/enforce-banking-profile.js",
+      "schema_version": "banking-v1 / 1.0.0",
+      "signed": false,
+      "reuse": "existing human-in-loop checker; decision contract must not weaken it"
+    },
+    {
+      "name": "council verdict + escalation",
+      "repo": "core",
+      "path": "lib/run-loan-council.js",
+      "schema_version": "1.1.0-mode-a",
+      "vocabulary": ["block", "escalate", "approve"],
+      "gap": "escalate is a terminal output; nothing records human resolution",
+      "tests": ["test/run-loan-council.test.js", "test/verdict-invariance.test.js"],
+      "reuse": "the decision target; the unresolved-escalation gap is what the amendment contract closes"
+    },
+    {
+      "name": "portable audit package + supersession relation",
+      "repo": "core",
+      "path": "lib/portable-audit-package.mjs; lib/portable-audit-package-chain.mjs; bin/shadow-audit-package.mjs",
+      "schema_version": "shadow-portable-audit-package/1.0, /1.1; shadow-package-supersession/1; shadow-audit-package-provenance/1.0, /1.1; shadow-canon/1",
+      "supersedes_block_keys": ["relation", "predecessor_package_id", "predecessor_manifest_sha256", "predecessor_manifest_version", "predecessor_case_id", "predecessor_evidence_session_id", "marker"],
+      "markers": ["FIXTURE_SUCCESSOR"],
+      "signed": "manifest ed25519 over canonicalize(manifest minus signature); members hash-bound",
+      "immutable": true,
+      "actor": "none (producer machine identity + signing key provenance only)",
+      "timestamp": "built_at (fixture-deterministic, never wall clock)",
+      "case_binding": "case_id + bindings.evidence_session_id; same-case rule enforced three times",
+      "authorization": "none; fixture-only signing enforced",
+      "tests": ["test/shadow-audit-package-cli.test.js", "test/shadow-audit-package-verify.test.js", "test/shadow-audit-package-supersession-cli.test.js", "test/shadow-audit-package-chain.test.js"],
+      "portable": true,
+      "reuse": "binding, signing, immutability, chain machinery directly reusable; missing decision member, actor block, reason slot, decision timestamp",
+      "reserved_path": "PACKAGE_SUPERSESSION_ADR.md reserves relation/marker vocabulary for review/approval successors; chain test pins marker APPROVED as non-parsing until then"
+    },
+    {
+      "name": "attestation + chains",
+      "repo": "core",
+      "path": "packages/attest-core/attestation.js; packages/attest-core/attestation-chain.js",
+      "schema_version": "aex-attestation/v1",
+      "actor": "key_id only",
+      "reuse": "not a decision surface; positional untagged-append signing weakness documented"
+    },
+    {
+      "name": "dictionary registry lifecycle (only superseded_by back-pointer in Core)",
+      "repo": "core",
+      "path": "lib/schemas/reason-code-dictionary-registry.json; lib/enforce-dictionary-governance.js",
+      "vocabulary": ["active", "superseded", "retired"],
+      "reuse": "precedent only; decision chain stays forward-linked like package supersession"
+    },
+    {
+      "name": "placeholder human signer block",
+      "repo": "core",
+      "path": "lib/schemas/reason-code-dictionary.json",
+      "fields": ["signer_name", "signer_role", "signed_at_utc", "signature_hmac_sha256"],
+      "note": "all literal PLACEHOLDER; closest precedent for a named human signer; unimplemented"
+    },
+    {
+      "name": "verification-derived member + VERIFIER_DISAGREEMENT",
+      "repo": "core",
+      "path": "lib/portable-audit-package.mjs",
+      "schema_version": "shadow-audit-package-verification/1.0",
+      "reuse": "pattern for shipped-claim vs re-derived-claim; reusable for decision-state claims"
+    },
+    {
+      "name": "web semantic decision statuses (display only)",
+      "repo": "web",
+      "path": "src/tokens/tokens.ts; src/components/HumanReviewApproval.tsx; src/contract/types.ts",
+      "vocabulary": ["REQUIRES_HUMAN_REVIEW", "HUMAN_REVIEW_RECORDED", "APPROVAL_NOT_PRESENT", "APPROVAL_PRESENT", "ABSTAINED"],
+      "signed": false,
+      "mutable": "display-only; Web cannot record or mutate",
+      "reuse": "existing display vocabulary maps cleanly onto signed decision packages later"
+    },
+    {
+      "name": "web chain timeline + fork handling",
+      "repo": "web",
+      "path": "src/package/chain-verify.ts; src/package/TimelineView.tsx",
+      "vocabulary": ["SUPERSESSION_VALID", "SUPERSESSION_FAILED", "STANDALONE_1_0", "VALID_SUCCESSOR", "PREDECESSOR_NOT_SUPPLIED", "BROKEN_LINK", "INVALID_PACKAGE", "FORK_BRANCH", "CYCLE_MEMBER", "NOT_ON_VALID_CHAIN"],
+      "reuse": "decision timeline extends this node model; fork posture (render all, resolve none) carries over"
+    },
+    {
+      "name": "control-plane reservation of review/approval vocabulary",
+      "repo": "control_plane",
+      "path": "CONTRACT_REGISTRY.md; INTEGRATION_GATES.md (G8); PROGRAM_STATUS.md",
+      "note": "future review/approval vocabulary requires a new bounded increment + ADR; G8 does not authorize Human Review or Approval mutation; no actor/authorization model exists (free-text approvers; only principal named is Alex)"
+    }
+  ],
+  "gaps": [
+    "signed decision artifact",
+    "actor block with identity class + role",
+    "reason code + bounded signed reason text in signed bytes",
+    "decision-type relation/marker vocabulary",
+    "decision timestamps (decided_at)",
+    "sub-package target-object binding",
+    "escalation resolution closure",
+    "decision-level conflict vocabulary",
+    "separation-of-duties representation",
+    "non-fixture signing path (out of scope; must not be blocked)"
+  ]
+}

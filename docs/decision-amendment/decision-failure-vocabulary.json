@@ -1,0 +1,47 @@
+{
+  "schema": "shadow-decision-failure-vocabulary-discovery/1",
+  "status": "discovery-only",
+  "closed": true,
+  "classes": {
+    "integrity": [
+      { "token": "DECISION_AMENDMENT_MALFORMED", "severity": "fatal_integrity" },
+      { "token": "DECISION_TYPE_UNSUPPORTED", "severity": "fatal_integrity" },
+      { "token": "DECISION_SIGNATURE_INVALID", "severity": "fatal_integrity" },
+      { "token": "DECISION_PACKAGE_TAMPERED", "severity": "fatal_integrity" },
+      { "token": "DECISION_SIZE_BOUND_EXCEEDED", "severity": "fatal_integrity" },
+      { "token": "DECISION_TEXT_UNSAFE", "severity": "fatal_integrity" }
+    ],
+    "binding": [
+      { "token": "MISSING_DECISION_TARGET", "severity": "fatal_binding" },
+      { "token": "TARGET_PACKAGE_MISMATCH", "severity": "fatal_binding" },
+      { "token": "TARGET_OBJECT_MISMATCH", "severity": "fatal_binding" },
+      { "token": "CASE_MISMATCH", "severity": "fatal_binding" },
+      { "token": "SESSION_MISMATCH", "severity": "fatal_binding" },
+      { "token": "REFERENCED_EVIDENCE_MISSING", "severity": "fatal_binding" },
+      { "token": "DUPLICATE_DECISION", "severity": "fatal_binding" },
+      { "token": "REPLAYED_DECISION", "severity": "fatal_binding" },
+      { "token": "FORKED_DECISION_CHAIN", "severity": "condition" },
+      { "token": "DECISION_CYCLE", "severity": "fatal_binding" }
+    ],
+    "actor_authorization": [
+      { "token": "ACTOR_MISSING", "severity": "fatal_integrity" },
+      { "token": "ACTOR_IDENTITY_UNVERIFIABLE", "severity": "annotation" },
+      { "token": "ACTOR_ROLE_UNSUPPORTED", "severity": "fatal_integrity" },
+      { "token": "ACTOR_AUTHORITY_UNVERIFIABLE", "severity": "annotation" },
+      { "token": "SEPARATION_OF_DUTIES_VIOLATION", "severity": "fatal_lifecycle" }
+    ],
+    "business_lifecycle": [
+      { "token": "UNSUPPORTED_TRANSITION", "severity": "fatal_lifecycle" },
+      { "token": "REASON_MISSING", "severity": "fatal_lifecycle" },
+      { "token": "REASON_CODE_UNSUPPORTED", "severity": "fatal_lifecycle" },
+      { "token": "CONFLICTING_DECISION", "severity": "condition" }
+    ]
+  },
+  "rules": [
+    "integrity, binding, and authorization/business tokens never share an enum",
+    "a failed decision amendment never invalidates its predecessor package",
+    "annotation severities are carried alongside derived lifecycle state",
+    "condition severities require display and forbid silent resolution",
+    "verifiers report the first provable failing class without speculating about later classes"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "shadow-decision-contract-decision-discovery/1",
+  "status": "discovery-only",
+  "architecture_decision": "NEW_DECISION_MEMBER_IN_PACKAGE_VERSION_RECOMMENDED",
+  "selected_option": "B",
+  "summary": "Decision amendments are immutable successor packages on additive shadow-portable-audit-package/1.2 carrying a new signed member decision/decision-amendment.json (role: decision, contract: shadow-decision-amendment/1), bound via the existing manifest assets[] hash mechanism, linked via unchanged shadow-package-supersession/1 with exactly one new neutral marker DECISION_AMENDMENT.",
+  "options_rejected": {
+    "A_extend_manifest_with_decision_fields": "mixes business decision content into the integrity artifact; manifest churn for business vocabulary changes",
+    "C_separate_external_decision_contract": "duplicates signing/verification machinery; breaks one-directory-is-whole-truth portability; danglable reference",
+    "D_supersession_vocabulary_extension_only": "markers cannot carry actor, reason, target hash, or policy flags; closed key set would need reopening",
+    "E_evidence_event_extension": "sealed bundles cannot accept post-hoc decisions; frozen event enum requires bundle_version bump and is already drifted 13-vs-18; reason text would be off-chain redactable"
+  },
+  "contract_changes": [
+    { "contract": "shadow-portable-audit-package/1.2", "change": "new additive version permitting role 'decision'; required when supersedes.marker == DECISION_AMENDMENT; 1.0/1.1 byte-identical and independently valid" },
+    { "contract": "shadow-package-supersession/1", "change": "structure unchanged; marker enum gains DECISION_AMENDMENT only; decision semantics never live in the marker" },
+    { "contract": "shadow-decision-amendment/1", "change": "new member schema: target reference, decision payload, actor block, signed policy flags, status tokens, closed reason codes" },
+    { "contract": "shadow-evidence/v1", "change": "none (hard boundary)" },
+    { "contract": "shadow-audit-package-provenance", "change": "1.2 successor mirrors supersession block as today; decision member listed in member_contracts" }
+  ],
+  "invariants": [
+    "Review is not Approval",
+    "Override does not erase the original decision",
+    "Approval is not signature verification",
+    "Valid signature does not prove decision correctness",
+    "Rejection is not package invalidity",
+    "Package supersession does not invalidate predecessor evidence",
+    "package signer and decision actor are distinct concepts",
+    "no unsigned prose changes the effective decision",
+    "effective decisions are derived from the local package set only"
+  ],
+  "recommended_execution_workflow": "A_core_cli_only",
+  "fixture_status_tokens": [
+    "FIXTURE_DECISION_ONLY",
+    "DECISION_IDENTITY_DECLARED_NOT_VERIFIED",
+    "DECISION_AUTHORITY_UNVERIFIED",
+    "SEPARATION_OF_DUTIES_NOT_ENFORCED",
+    "DERIVED_FROM_LOCAL_SET"
+  ]
+}
