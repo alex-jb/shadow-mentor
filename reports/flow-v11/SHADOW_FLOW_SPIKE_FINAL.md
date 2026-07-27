@@ -1,11 +1,13 @@
 # Shadow → Flow presentation spike — final report
 
-**Result: `SHADOW_FLOW_PRESENTATION_READY_PENDING_VENDOR_IMPORT`**
+**Result: `SHADOW_FLOW_PRESENTATION_BROWSER_IMPORT_VALIDATED`**
 
 A sanitized, deterministic, offline Flow demo package for one completed Shadow banking audit is
-built, tested, and committed. No live Flow import was attempted (no credentials — by design). No
-native Shadow Lens claim is made or implied. Native Lens (Terminal 1) and Web Audit Room
-(Terminal 2) were not touched.
+built, tested, and committed. On 2026-07-27 the operator imported the vendor CSV into Flow on a
+desktop browser at `a.flow.gl`: 25 rows accepted, Network Graph rendered, links and labels
+visible, Present Flow mode opened. No XR device validation has been performed. No native Shadow
+Lens claim is made or implied. Native Lens (Terminal 1) and Web Audit Room (Terminal 2) were not
+touched.
 
 ## 1 · Baseline
 
@@ -87,10 +89,37 @@ and a descriptive sentence in this report set.
 - Main V11 worktree (`shadow-mentor-story-adapters`) still at `e14e264` with its pre-existing
   local state; Terminal 1 and Terminal 2 repositories unmodified.
 
+## 12 · Real browser import validation (2026-07-27)
+
+Operator-observed evidence is recorded in `FLOW_BROWSER_IMPORT_EVIDENCE_2026-07-27.md` and the
+runbook status is updated in `SHADOW_FLOW_IMPORT_RUNBOOK.md`.
+
+- CSV upload: `reports/flow-v11/demo-package/shadow-flow-vendor-graph.csv`
+- Flow Data Preview: **25 rows**
+- Accepted columns: 19 Shadow payload columns + `id` / `idList`
+- Network Graph: created with `id` identifier and pipe-delimited `idList` connections
+- Rendered scene: Shadow labels visible, links between nodes visible
+- Present Flow mode: opened successfully in desktop browser
+- Disclaimer: remained visible
+
+Honest status register:
+
+- `flow_csv_import_tested`: `true`
+- `flow_csv_import_passed`: `true`
+- `flow_rows_imported`: `25`
+- `flow_network_graph_rendered`: `true`
+- `flow_browser_present_mode_validated`: `true`
+- `flow_save_reopen_validated`: `pending`
+- `flow_beam_pro_browser_validated`: `false`
+- `flow_xreal_display_validated`: `false`
+- `device_validated`: `false`
+- `production_ready`: `false`
+
+No physical XR flag was promoted. `CANDIDATE_05_BLOCKED` remains `true`.
+
 ## Next action (Bill / Jason)
 
-Send `FLOW_SUPPORT_QUESTIONS_FOR_BILL_AND_JASON.md` with the demo package attached (or offer it).
-The decisive unknowns are Q1–Q2 (ingestion path for the CSV/JSON + node/edge shape) and Q4–Q6
-(supported launch route on Beam Pro + XREAL One Pro without a custom APK). A yes on those converts
-this package to `SHADOW_FLOW_PRESENTATION_PACKAGE_READY` after one supervised import attempt with
-official credentials — which is out of scope for this spike.
+The CSV ingestion-path questions (Q1–Q2) are now closed for the desktop browser case. The remaining
+open items are save/reopen persistence and the Beam Pro + XREAL One Pro device path (Q4–Q6). See
+`FLOW_BEAM_PRO_XREAL_CHECKLIST.md` for the exact device checks. Continue to treat SCP as not
+production-available.

@@ -62,5 +62,6 @@ The SCP prompt (`SHADOW_FLOW_SCP_PROMPT.md`) remains available for the arrange-b
 step. **SCP is in the final stages of production release and is not treated as currently
 production-available**; nothing in the import path above depends on it.
 
-Honest status of this package: **prepared and validated offline; live Flow ingestion not yet
-attempted; no Flow scene rendered; no XR device validated.**
+Honest status of this package: **prepared, validated offline, and successfully imported into
+Flow on a desktop browser (2026-07-27): 25 rows accepted, Network Graph rendered, Present Flow mode
+opened. Save/reopen and XR device validation are still pending.**

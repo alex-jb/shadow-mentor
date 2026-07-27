@@ -1,8 +1,9 @@
 # Shadow → Flow import runbook
 
-**Status: NOT YET EXECUTED.** Every step below is a *prepared* procedure. No import has been
-attempted, no Flow scene has rendered, and no XR device has displayed this dataset. Do not cite
-this runbook as evidence that any of those happened.
+**Status: DESKTOP BROWSER IMPORT EXECUTED 2026-07-27.** The CSV was imported into Flow on a
+desktop browser, the Network Graph rendered, and Present Flow mode opened successfully. XR device
+validation (Beam Pro + XREAL One Pro) is still pending. See
+`FLOW_BROWSER_IMPORT_EVIDENCE_2026-07-27.md` for the verbatim observed facts.
 
 **Vendor guidance** — Bill Morton, VP Customer Success, Flow Immersive, 2026-07-27:
 a Flow can be prepared on Mac or PC; it opens through `a.flow.gl` on supported XR devices including
@@ -72,6 +73,22 @@ Expected shape (all pinned by the validator):
 4. **Verify before believing:** confirm Flow reports **25 nodes**. If it reports fewer, the
    importer merged or dropped rows — stop and record the discrepancy rather than adjusting the CSV
    to please the importer.
+
+## Stage 2a — Actual import record (operator, 2026-07-27)
+
+The runbook above was executed on a desktop browser. The observed results are recorded in
+`FLOW_BROWSER_IMPORT_EVIDENCE_2026-07-27.md`. Key facts:
+
+- Dataset: `reports/flow-v11/demo-package/shadow-flow-vendor-graph.csv`
+- Flow Data Preview: **25 rows**
+- Columns accepted: all 19 Shadow payload columns plus `id` / `idList`
+- Network Graph created with `id` as identifier and `idList` (pipe-delimited) as connections
+- Shadow labels and links appeared in the rendered scene
+- Present Flow mode opened successfully in the desktop browser
+- Disclaimer remained visible
+
+This stage validates browser import and presentation only. It does not validate save/reopen,
+Beam Pro, XREAL, or any native Shadow Lens capability.
 
 ## Stage 3 — Open on the XR device (operator, manual)
 
