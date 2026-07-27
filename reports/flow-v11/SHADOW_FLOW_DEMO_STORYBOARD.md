@@ -19,6 +19,29 @@ supports it — step 4/8 fallbacks assume it may not).
 | 8 | Hash-chain / verifier result | "Verification lives apart from the business view: hash chain FAILED in the tampered replay, and note — analytical correctness is NEVER evaluated by the chain. Integrity, not correctness." (验证与业务结论分区;完整性≠正确性) | Pan to `verification-area` | 4 `presentation:verify-*` + attestation | Focus verification area | HASH CHAIN: FAILED · ANALYTICAL CORRECTNESS: NOT EVALUATED · sealed-verified attestation | Narrate from the verification nodes; optionally show the offline verifier output on a laptop screen beside the glasses feed |
 | 9 | Shadow / Flow / XREAL relation | "Division of labor: Shadow analyzed and attested this case; Flow made it spatial; XREAL displays it. The SIMULATION node is our own disclaimer — no native Shadow Lens device claim is being made here." (Shadow 分析签章,Flow 可视化,XREAL 显示) | Wide shot incl. `presentation:device-boundary` | device-boundary + manifest | Pull back to full scene | SIMULATION disclaimer node + FIXTURE MODEL label | This step is pure narration; works identically on a flat screen |
 
+## CSV-structure notes (added 2026-07-27 with the vendor graph dataset)
+
+The nine steps are unchanged. The vendor CSV (`shadow-flow-vendor-graph.csv`, one row per node with
+a pipe-delimited `idList`) changes two things a presenter will be asked about on the floor:
+
+- **Step 2 — two council voices render unconnected, on purpose.** `Fair Lending Compliance` and
+  `Macro Contrarian` have no edge, and neither does the `Annual income` evidence item. In this case
+  those voices reached a finding **without citing an evidence item**, and nobody cited B0L0. If an
+  auditor asks why they float, that is the correct answer: the absence is the audit record. Do not
+  apologize for it, and do not let anyone "fix" the dataset to connect them — a test pins these six
+  nodes as isolated precisely so a future edit cannot invent citations.
+  (Also isolated by design: the case card, the attestation panel and the SIMULATION disclaimer —
+  contextual panels, not graph participants.)
+- **Step 4 — arrow direction is `DERIVED_FROM`, not flow-of-time.** In `idList` each row names the
+  nodes it points *to*, and Shadow's lineage edges point from a successor to the thing it was
+  derived from. So if Flow draws arrowheads, the chain reads `n6 → n5 → … → n0` — child pointing at
+  parent. Narrate the sequence numbers (`lineage_order` 0→6), which ascend in narration order, and
+  let the arrows mean provenance rather than chronology.
+
+Everything else the storyboard relies on survives the projection unchanged: statuses, first-failure
+and downstream markers, bilingual labels, review-vs-approval separation, and the verification
+grouping are all copied from the same Shadow fixtures the earlier steps already cite.
+
 ## Timing
 
 ~20–35 s per step ≈ 3–5 min total. Steps 3–5 are the hero arc (first failure → lineage →
@@ -28,6 +51,8 @@ consequence); if time is short, compress 1–2 and 6–7, never 3–5.
 
 - **Flow account unavailable / import unconfirmed** → present the identical storyboard from the
   existing offline surfaces (Three.js guided story / 2D replay) and say so honestly; the data and
-  narration are unchanged because Shadow owns the canonical story.
+  narration are unchanged because Shadow owns the canonical story. **As of 2026-07-27 this is still
+  the operative case**: the vendor CSV is prepared and validated offline, but no import has been
+  performed and no Flow scene has rendered — see `SHADOW_FLOW_IMPORT_RUNBOOK.md`.
 - **XREAL unavailable** → browser on a laptop/projector; the storyboard has no device-only step.
 - **AI querying unavailable** → all 9 steps work as a guided walkthrough with zero live AI.

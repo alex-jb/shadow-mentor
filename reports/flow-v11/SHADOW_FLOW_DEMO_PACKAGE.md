@@ -10,10 +10,15 @@ honor the "inspect conventions before creating a directory" rule.
 
 | File | Purpose |
 |---|---|
+| **`demo-package/shadow-flow-vendor-graph.csv`** | **Vendor-compatible graph dataset — one row per node, unique integer `id`, pipe-delimited `idList` (25 rows, 18 adjacency entries). This is the file to import.** |
+| **`shadow-flow-vendor-graph-stats.json`** | **Vendor CSV counts + contract metadata (`import_tested: false`, `device_validated: false`)** |
+| **`VENDOR_CSV_FIELD_MAPPING.md`** | **Column-by-column field mapping for the vendor CSV** |
+| **`VENDOR_CSV_TRANSFORMATION.md`** | **Node/edge transformation rules, multi-edge collapse accounting, isolated-node rationale** |
+| **`SHADOW_FLOW_IMPORT_RUNBOOK.md`** | **Mac/PC preparation → a.flow.gl → Flow Lister → supported XR browser (not yet executed)** |
 | `demo-package/shadow-flow-demo-export.json` | Canonical audit JSON export (`shadow-flow-export/1.0`, 16 rows) |
 | `demo-package/shadow-flow-demo-export.csv` | Corresponding CSV (closed 20-column header) |
-| `demo-package/shadow-flow-presentation-nodes.csv` | Node table (22 nodes: case, 3 evidence, 5 council, 7 lineage, decision/review/approval, 4 verification, attestation, device boundary) |
-| `demo-package/shadow-flow-presentation-edges.csv` | Edge table (19 edges across 6 categories) |
+| `demo-package/shadow-flow-presentation-nodes.csv` | Node table, string IDs (25 nodes: case, 3 evidence, 5 council, 7 lineage, decision/review/approval, 4 verification, attestation, device boundary) |
+| `demo-package/shadow-flow-presentation-edges.csv` | **Authoritative** directed + typed edge table (19 edges across 6 categories) |
 | `demo-package/FIELD_DICTIONARY.md` | Field dictionary + localization mapping + invariants |
 | `shadow-flow-presentation-mapping.json` | Full node/edge mapping incl. per-scenario statuses |
 | `shadow-flow-demo-manifest.json` | Source-provenance manifest + verification summary + capability/disclaimer record |
@@ -34,15 +39,28 @@ Contains none of: usernames, private/absolute paths, private IPs, device serials
 tokens, pairing codes, real customer data, APKs, Unity assets, XREAL SDK files. All physical
 capability flags are false. No live Flow API call was made to produce it.
 
-## How it would be used (pending vendor confirmation)
+## How it is used (vendor guidance received 2026-07-27)
 
-1. Operator opens a Flow SCP / Flow Editor session with their own account (credentials never enter
-   this repo).
-2. Imports `shadow-flow-demo-export.csv` (row layer) and/or the node/edge CSVs (spatial layer),
-   per whichever import path Bill/Jason confirm (`FLOW_SUPPORT_QUESTIONS_FOR_BILL_AND_JASON.md` Q1–Q2).
-3. Pastes the SCP prompt (`SHADOW_FLOW_SCP_PROMPT.md`) so the AI arranges — but does not invent —
-   the supplied data.
+Bill Morton (VP Customer Success, Flow Immersive) confirmed that Flow currently ingests CSV
+directly, that a graph dataset should be one row per node with a unique ID, and that edges belong
+in a column such as `idList` holding pipe-delimited connected node IDs. That closes the Q1–Q2
+ingestion-path question for the CSV *shape*, and `shadow-flow-vendor-graph.csv` implements it.
+
+1. Operator prepares on Mac or PC — regenerate + validate offline (no account needed):
+   `node scripts/gen-flow-presentation-package.mjs --check`, then
+   `node scripts/validate-flow-vendor-csv.mjs`.
+2. Signs in to Flow with their own account (credentials never enter this repo) and imports
+   `demo-package/shadow-flow-vendor-graph.csv`, mapping node id → `id`, connections → `idList`.
+   Optionally starts from a copied Featured Flow, per vendor guidance.
+3. Opens it on the device: browser → `a.flow.gl` → Flow Lister → select the Flow. XREAL One Pro
+   paired with Beam Pro is a vendor-supported target; **unverified by us on that hardware**.
 4. Presents per `SHADOW_FLOW_DEMO_STORYBOARD.md`.
 
-Until a vendor-confirmed import succeeds, the honest status of this package is:
-**prepared and validated offline; live Flow ingestion not yet attempted.**
+Full procedure, verification steps and honest failure handling: `SHADOW_FLOW_IMPORT_RUNBOOK.md`.
+
+The SCP prompt (`SHADOW_FLOW_SCP_PROMPT.md`) remains available for the arrange-but-never-invent
+step. **SCP is in the final stages of production release and is not treated as currently
+production-available**; nothing in the import path above depends on it.
+
+Honest status of this package: **prepared and validated offline; live Flow ingestion not yet
+attempted; no Flow scene rendered; no XR device validated.**

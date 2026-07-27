@@ -1,0 +1,42 @@
+{
+  "version": "shadow-flow-vendor-csv/1.0",
+  "presentation_version": "shadow-flow-presentation/1.0",
+  "presented_scenario": "tamper_seq_3",
+  "case_id": "case-2026-Q3-0042",
+  "generated_at": "2026-07-22T00:00:00.000Z",
+  "columns": [
+    "id",
+    "idList",
+    "idListTypes",
+    "label_en",
+    "label_zh",
+    "node_type",
+    "status",
+    "status_family",
+    "presentation_group",
+    "shadow_node_id",
+    "evidence_ref",
+    "council_role",
+    "council_finding",
+    "is_first_failure",
+    "lineage_order",
+    "is_affected_downstream",
+    "human_review_status",
+    "approval_status",
+    "verification_status"
+  ],
+  "stats": {
+    "node_rows": 25,
+    "typed_edges": 19,
+    "adjacency_pairs": 18,
+    "collapsed_multi_edges": 1,
+    "first_failure_rows": 1,
+    "downstream_rows": 3,
+    "council_rows": 5,
+    "lineage_rows": 7,
+    "isolated_rows": 10
+  },
+  "vendor_guidance": "Bill Morton, VP Customer Success, Flow Immersive — 2026-07-27",
+  "import_tested": false,
+  "device_validated": false
+}
