@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { generateKeyPairSync } from "node:crypto";
-import { REVIEWER_DECISIONS, validateReviewerInteraction } from "../lib/reviewer-interaction.js";
+import { REVIEWER_DECISIONS, validateReviewerInteraction, deriveReviewState } from "../lib/reviewer-interaction.js";
 import { createSession, appendEvent, sealSession, verifyBundle } from "../packages/attest-core/session.js";
 import { checkBankingProfileV1 } from "../lib/enforce-banking-profile.js";
 import { computeDictionaryHash } from "../lib/enforce-reason-code-dictionary.js";
@@ -68,4 +68,97 @@ test("profile reviewer_interaction: unknown → present → missing across the t
   const badPayloads = {};
   badBundle.events.forEach((e) => { if (e.event_type === "human_approval") badPayloads[e.seq] = badApproval; });
   assert.equal(riStatus(checkBankingProfileV1(badBundle, { verified: verifyBundle(badBundle, { publicKey: k.pub }), payloads: badPayloads })), "missing");
+});
+
+// ── FINDING-C1 regression: fail-closed multi-reviewer aggregation ──────────────
+
+test("deriveReviewState: [approved, approved] -> approved", () => {
+  const r = deriveReviewState([
+    { decision: "approved", reviewer_id: "r1" },
+    { decision: "approved", reviewer_id: "r2" },
+  ]);
+  assert.equal(r.status, "approved");
+  assert.equal(r.reviewer_interaction.decision, "approved");
+});
+
+test("deriveReviewState: [approved, rejected] -> rejected, never approved", () => {
+  const r = deriveReviewState([
+    { decision: "approved", reviewer_id: "r1" },
+    { decision: "rejected", reviewer_id: "r2", override_rationale: "risk too high" },
+  ]);
+  assert.notEqual(r.status, "approved");
+  assert.equal(r.status, "rejected");
+  assert.equal(r.reviewer_interaction.decision, "rejected");
+});
+
+test("deriveReviewState: [rejected, approved] -> same result as [approved, rejected]", () => {
+  const a = deriveReviewState([
+    { decision: "approved", reviewer_id: "r1" },
+    { decision: "rejected", reviewer_id: "r2", override_rationale: "risk too high" },
+  ]);
+  const b = deriveReviewState([
+    { decision: "rejected", reviewer_id: "r2", override_rationale: "risk too high" },
+    { decision: "approved", reviewer_id: "r1" },
+  ]);
+  assert.equal(a.status, b.status);
+  assert.equal(a.status, "rejected");
+});
+
+test("deriveReviewState: [approved, modified] -> modified", () => {
+  const r = deriveReviewState([
+    { decision: "approved", reviewer_id: "r1" },
+    { decision: "modified", reviewer_id: "r2", override_rationale: "lower exposure", modified_fields: ["limit"] },
+  ]);
+  assert.equal(r.status, "modified");
+  assert.equal(r.reviewer_interaction.decision, "modified");
+});
+
+test("deriveReviewState: [approved, missing] -> pending, never approved", () => {
+  const r = deriveReviewState([
+    { decision: "approved", reviewer_id: "r1" },
+    {}, // missing decision
+  ]);
+  assert.notEqual(r.status, "approved");
+  assert.equal(r.status, "pending");
+});
+
+test("deriveReviewState: malformed + approved -> fail closed, never approved", () => {
+  const r = deriveReviewState([
+    { decision: "approved", reviewer_id: "r1" },
+    { decision: "nonsense", reviewer_id: "r2" },
+  ]);
+  assert.notEqual(r.status, "approved");
+  assert.equal(r.status, "pending");
+  assert.ok(r.conflict_evidence.length > 0);
+});
+
+test("deriveReviewState: empty / null -> pending", () => {
+  assert.equal(deriveReviewState([]).status, "pending");
+  assert.equal(deriveReviewState(null).status, "pending");
+  assert.equal(deriveReviewState(undefined).status, "pending");
+});
+
+test("deriveReviewState: reversing reviewer order produces the same result", () => {
+  const forward = deriveReviewState([
+    { decision: "approved", reviewer_id: "r1" },
+    { decision: "modified", reviewer_id: "r2", override_rationale: "x" },
+    { decision: "rejected", reviewer_id: "r3", override_rationale: "y" },
+  ]);
+  const reversed = deriveReviewState([
+    { decision: "rejected", reviewer_id: "r3", override_rationale: "y" },
+    { decision: "modified", reviewer_id: "r2", override_rationale: "x" },
+    { decision: "approved", reviewer_id: "r1" },
+  ]);
+  assert.equal(forward.status, reversed.status);
+  assert.equal(forward.status, "rejected");
+});
+
+test("deriveReviewState: single approved -> approved", () => {
+  const r = deriveReviewState([{ decision: "approved", reviewer_id: "r1" }]);
+  assert.equal(r.status, "approved");
+});
+
+test("deriveReviewState: single rejected -> rejected", () => {
+  const r = deriveReviewState([{ decision: "rejected", reviewer_id: "r1", override_rationale: "no" }]);
+  assert.equal(r.status, "rejected");
 });

@@ -10,6 +10,7 @@ import { validateImageInput, gateFindings } from "./input-guards.mjs";
 import { computeSourceMapHash, sourceCoverage, analyzeSourceBound } from "./analyze.mjs";
 import { buildShadowLensSession } from "./build-session.mjs";
 import { validateShadowLensSession } from "../contracts/validate.mjs";
+import { deriveReviewState } from "../../../lib/reviewer-interaction.js";
 import {
   InMemoryLensStore, issueSessionToken, verifySessionToken,
   resolveSessionSecret, newSessionId,
@@ -139,11 +140,13 @@ export async function sealEvidence({ token, signingKeyPem, publicKeyPem, keyId, 
   if (!s.analysis) return err("not_analyzed", "call analyze first");
   if (expected_version != null && expected_version !== (s.session_version ?? 0)) return err("version_conflict", `stale session_version (have ${s.session_version ?? 0})`, { current_version: s.session_version ?? 0 });
 
+  // Build the session fail-closed from the reviewers array (FINDING-C1).
+  // buildShadowLensSession derives reviewer_interaction internally;
+  // never read only reviewers[0].
   const built = buildShadowLensSession({
     session_id: s.session_id, device: s.device, build: s.build, capture: s.capture,
     sourceMap: s.source_map, analysisResult: s.analysis,
     reviewers: s.reviewers, decision: s.decision,
-    reviewer_interaction: s.reviewers?.[0] ? { decision: s.reviewers[0].decision, override_rationale: s.reviewers[0].override_rationale } : null,
     signingKeyPem, publicKeyPem, keyId,
   });
   const r = await mutate(store, a.session_id, {
