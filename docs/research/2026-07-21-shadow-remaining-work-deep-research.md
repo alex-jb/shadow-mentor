@@ -26,7 +26,7 @@ Prefer primary sources over blogs. Nothing here claims device validation.
 and brain memory state that **SR 26-2 scopes GenAI/agentic AI out (a "Tier 3 exemption")**. The competitive-research
 agent fetched the official SR 26-2 letter (federalreserve.gov/supervisionreg/srletters/SR2602.htm, 2026-04-17,
 supersedes SR 11-7 + SR 21-8) and **found no GenAI/agentic exemption or three-tier framing in the text**. → The
-"SR 26-2 Tier 3 companion" positioning lacks primary-source support. **Recommended action: soften that copy to a
+"SR 26-2 'Tier 3' companion" positioning (quoted here only as the copy under critique) lacks primary-source support. **Recommended action: soften that copy to a
 verifiable statement, or locate the real Tier source before reuse.** Not a Wednesday-demo blocker (the demo is the
 verifier), so per instruction not modified during this research pass.
 
