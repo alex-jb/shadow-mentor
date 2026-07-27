@@ -59,3 +59,47 @@ test("tamper the sealed bundle → the SAME verifier fails at the exact seq", ()
   assert.equal(r.ok, false);
   assert.equal(typeof r.failedSeq, "number");
 });
+
+// ── approval-integrity regression (fix/shadow-lens-approved-default) ───────────────────────────
+// The defect hardcoded human_review:"approved" (and a sealed approved:true) whenever reviewers
+// existed, ignoring the real decision — reachable from lens-api's review endpoint, which accepts
+// rejected/modified. verification.human_review is the field the renderer reads to show Approval, so
+// it is the observable approval surface; the sealed bundle stores only payload hashes.
+function inputWith(k, ri, extra = {}) { return { ...input(k), reviewer_interaction: ri, ...extra }; }
+function hasSealedApprovalEvent(bundle) { return bundle.events.some((e) => e.event_type === "human_approval"); }
+
+test("rejected review is NEVER rendered as an approval", () => {
+  const k = keys();
+  const { session, bundle } = buildShadowLensSession(
+    inputWith(k, { decision: "rejected", reviewer_id: "u-9", override_rationale: "figures did not reconcile" }));
+  assert.equal(session.verification.human_review, "rejected", "a rejected review must not render as approved");
+  assert.ok(hasSealedApprovalEvent(bundle), "the review is still recorded for audit completeness");
+});
+
+test("modified review is recorded but is not an approval", () => {
+  const k = keys();
+  const { session } = buildShadowLensSession(
+    inputWith(k, { decision: "modified", reviewer_id: "u-9", override_rationale: "corrected DTI rounding" }));
+  assert.equal(session.verification.human_review, "modified");
+});
+
+test("reviewers present with NO decision evidence stays pending — approval is never synthesized", () => {
+  const k = keys();
+  const { session } = buildShadowLensSession(inputWith(k, null)); // no reviewer_interaction, no decision
+  assert.equal(session.verification.human_review, "pending", "missing decision evidence must never become approved");
+});
+
+test("the lens-api decision.outcome shape drives approval too", () => {
+  const k = keys();
+  const { session } = buildShadowLensSession(inputWith(k, null, { decision: { outcome: "rejected" } }));
+  assert.equal(session.verification.human_review, "rejected");
+});
+
+test("an explicit approved decision still approves (no regression)", () => {
+  const k = keys();
+  const { session, bundle } = buildShadowLensSession(
+    inputWith(k, { decision: "approved", reviewer_id: "u-9", review_duration_ms: 30000 }));
+  assert.equal(session.verification.human_review, "approved");
+  assert.ok(hasSealedApprovalEvent(bundle));
+});
+

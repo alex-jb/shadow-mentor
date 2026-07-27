@@ -39,9 +39,20 @@ export function buildShadowLensSession(input) {
     extensions: { source_map_hash: analysisResult?.source_map_hash } });
   appendEvent(s, { event_type: "model_output", actor: "model",
     payload: { findings_count: analysisResult?.source_bound_count ?? 0, model_id: analysisResult?.model_id, prompt_hash: analysisResult?.prompt_hash } });
+  // The reviewer's ACTUAL decision — never a synthesized approval. "approved" is the only decision
+  // that constitutes an approval; "modified" and "rejected" are recorded reviews that did NOT approve.
+  // Sources, in order: reviewer_interaction.decision, the lens-api decision.outcome shape, or a single
+  // reviewer's own decision. When none is present there is no approval evidence, so nothing is claimed.
+  const reviewerDecision =
+    (reviewer_interaction && typeof reviewer_interaction.decision === "string" ? reviewer_interaction.decision : null) ??
+    (decision && typeof decision.outcome === "string" ? decision.outcome : null) ??
+    (reviewers && reviewers.length && typeof reviewers[0]?.decision === "string" ? reviewers[0].decision : null);
+  const approved = reviewerDecision === "approved";
   if (reviewers && reviewers.length) {
+    // A human_approval event is still recorded when a review happened (audit completeness), but its
+    // `approved` flag reflects the real decision rather than a hardcoded true.
     appendEvent(s, { event_type: "human_approval", actor: "user",
-      payload: { approved: true, ...(reviewer_interaction ? { reviewer_interaction } : {}) } });
+      payload: { approved, ...(reviewer_interaction ? { reviewer_interaction } : {}) } });
   }
   const bundle = sealSession(s);
   const verified = verifyBundle(bundle, { publicKey: publicKeyPem });
@@ -77,7 +88,11 @@ export function buildShadowLensSession(input) {
       external_anchor: "none",
       source_coverage_pct: analysisResult?.source_coverage_pct ?? null,
       analysis_confidence: null,
-      human_review: reviewers && reviewers.length ? "approved" : "pending",
+      human_review: !(reviewers && reviewers.length) ? "pending"
+        : reviewerDecision === "approved" ? "approved"
+        : reviewerDecision === "modified" ? "modified"
+        : reviewerDecision === "rejected" ? "rejected"
+        : "pending", // reviewers present but no decision evidence → never synthesized as approved
       data_freshness_sec: null,
     },
   };
