@@ -1,0 +1,14 @@
+{
+  "intent_schema": "shadow-decision-intent/1",
+  "decision_type": "HUMAN_REVIEW_COMPLETED",
+  "actor": { "actor_id": "fixture:reviewer-1", "display_name": "Fixture Reviewer One", "role": "reviewer" },
+  "target": { "type": "council_decision" },
+  "content": {
+    "reason_code": "ANALYST_JUDGMENT",
+    "reason_text": "Fixture review: DTI 0.41 exceeds the 0.36 ceiling; a compensating-factor override is proposed.",
+    "review_outcome": "OVERRIDE_PROPOSED",
+    "reviewer_findings": "FICO 706 clears the floor; income stability documented in evidence B0L0. Restructured term brings DTI to 0.35."
+  },
+  "policy": { "review_required": true, "approval_required": true, "separation_of_duties": "enforced" },
+  "decided_at_utc": "2026-07-22T01:00:00.000Z"
+}

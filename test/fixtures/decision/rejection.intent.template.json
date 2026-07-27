@@ -1,0 +1,24 @@
+{
+  "intent_schema": "shadow-decision-intent/1",
+  "decision_type": "DECISION_REJECTED",
+  "actor": {
+    "actor_id": "fixture:approver-1",
+    "display_name": "Fixture Approver One",
+    "role": "approver"
+  },
+  "target": {
+    "type": "prior_decision",
+    "decision_id": "FILLED_BY_TEST"
+  },
+  "content": {
+    "reason_code": "INSUFFICIENT_EVIDENCE",
+    "reason_text": "Fixture rejection: the restructured term sheet was not attached to the override.",
+    "rejection_basis": "The override cites a restructured term but no term-sheet evidence reference was supplied."
+  },
+  "policy": {
+    "review_required": true,
+    "approval_required": true,
+    "separation_of_duties": "enforced"
+  },
+  "decided_at_utc": "2026-07-22T03:30:00.000Z"
+}

@@ -16,6 +16,9 @@
 //   shadow-audit-package verify --package <dir> [--public-key <key.pem>] [--json]
 //   shadow-audit-package verify-chain --package <dir> [--package <dir> ...]
 //       [--public-key <key.pem>] [--json]
+//   shadow-audit-package decide --predecessor <prior-package-dir>
+//       --intent <decision-intent.json> --output-dir <new-package-dir>
+//       [--built-at <iso8601>] [--build-commit <sha>] [--force] [--json]
 //
 //   create   Assemble a package from the shipped canonical fixture narrative
 //            plus an EXISTING sealed shadow-evidence/v1 bundle (never re-run,
@@ -38,12 +41,33 @@
 //            self-references, cycles, forks, broken chains, and the LOCALLY
 //            OBSERVED chain head. A valid chain head is never a claim of
 //            global latest — only the head of the packages you supplied.
+//            When 1.2 decision packages are supplied, the DECISION LIFECYCLE
+//            (a separate derived business axis) is reported alongside:
+//            review / override / approval / rejection states derived from the
+//            signed decision members ONLY — never from import order or time.
+//   decide   Record a signed HUMAN decision (HUMAN_REVIEW_COMPLETED,
+//            DECISION_OVERRIDDEN, APPROVAL_GRANTED, DECISION_REJECTED) as a
+//            NEW immutable shadow-portable-audit-package/1.2 successor.
+//            The predecessor is verified first and NEVER modified — an
+//            override never erases the original Council conclusion. The
+//            unsigned intent file (shadow-decision-intent/1) is an operator
+//            REQUEST: Core validates it strictly, derives every binding from
+//            the verified predecessor, generates the signed decision member
+//            (shadow-decision-amendment/1) and signs with the FIXTURE
+//            RELEASE KEY. Fixture decisions carry FIXTURE_DECISION_ONLY,
+//            DECISION_IDENTITY_DECLARED_NOT_VERIFIED and
+//            DECISION_AUTHORITY_UNVERIFIED inside the signed bytes: actor
+//            identity is operator-declared, authority is NOT verified, and
+//            separation-of-duties is a declared policy, never an
+//            organizational enforcement claim.
 //
 // Exit codes:
 //   create:       0 ok · 2 usage · 3 input/I-O error · 4 assembled package
 //                 failed self-verification (nothing is written)
 //   verify:       0 verified · 1 package verification failed · 2 usage · 3 I/O error
 //   verify-chain: 0 chain valid · 1 chain verification failed · 2 usage · 3 I/O error
+//   decide:       0 ok · 2 usage · 3 input/I-O error · 4 assembled package
+//                 failed self-verification (nothing is written)
 //
 // Guarantees: offline (no network, no credentials); deterministic bytes for
 // the same inputs (built_at defaults to the fixture timestamp, never wall
@@ -60,6 +84,8 @@ import { BANKING_NARRATIVE } from "../apps/shadow-lens/fixtures/banking-narrativ
 import { FIXTURE_RELEASE_PRIVATE_PEM, FIXTURE_RELEASE_PUBLIC_PEM, FIXTURE_RELEASE_LABEL } from "../verify/fixture-release-key.mjs";
 import { assemblePackage, verifyPackageDir, MEMBER_PATHS, SUPPORTED_PACKAGE_VERSIONS, BOUNDARY_STATEMENT } from "../lib/portable-audit-package.mjs";
 import { verifyPackageChain, CHAIN_BOUNDARY_STATEMENT } from "../lib/portable-audit-package-chain.mjs";
+import { assembleDecisionPackage, verifyDecisionChain } from "../lib/decision-package.mjs";
+import { DECISION_BOUNDARY_STATEMENT, LIFECYCLE_QUALIFIER } from "../lib/decision-amendment.mjs";
 import { sha256Hex } from "../verify/verify-manifest.mjs";
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -302,25 +328,156 @@ function cmdVerifyChain(rest) {
   for (const d of dirs) if (!existsSync(d)) die(3, `shadow-audit-package: package directory not found: ${d}`);
   const publicKeyPem = args.publicKey ? readInput(args.publicKey, "--public-key").toString("utf8") : null;
 
-  let res;
-  try { res = verifyPackageChain(dirs, { publicKeyPem }); }
+  // decision-aware wrapper: for sets WITHOUT 1.2 packages the result is
+  // byte-identical to the plain chain result (1.0/1.1 behavior unchanged)
+  let dec;
+  try { dec = verifyDecisionChain(dirs, { publicKeyPem }); }
   catch (e) { die(e.code === "USAGE" ? 2 : 3, `shadow-audit-package: ${e.message}`); }
+  const res = dec.chain;
+  const hasDecisions = dec.decisions.length > 0;
+  const overallOk = hasDecisions ? dec.ok : res.ok;
 
   if (args.json) {
-    process.stdout.write(JSON.stringify(res) + "\n");
-  } else if (res.ok) {
+    const out = hasDecisions
+      ? { ...res, ok: overallOk, decisions: dec.decisions, decision_failures: dec.decision_failures, decision_lifecycle: dec.lifecycle }
+      : res;
+    process.stdout.write(JSON.stringify(out) + "\n");
+  } else if (overallOk) {
     const head = res.packages.find((p) => p.package_id === res.local_head);
     process.stdout.write(
       `✓ supersession chain verified  (${res.packages.length} package${res.packages.length === 1 ? "" : "s"}, case ${head?.case_id})\n` +
       `order (root → head): ${res.order.map((id) => id.slice(0, 16) + "…").join(" → ")}\n` +
       `local head: ${res.local_head.slice(0, 16)}… — head of the SUPPLIED chain only, never a claim of globally latest\n` +
       `every predecessor remains a valid, unchanged, independently verifiable package\n` +
+      (hasDecisions
+        ? `decision lifecycle (${LIFECYCLE_QUALIFIER}): ${dec.lifecycle.state} — effective disposition: ${dec.lifecycle.effective_disposition ?? "(original council output)"}\n` +
+          `fixture decisions only: actor identity operator-declared, authority NOT verified, separation-of-duties NOT organizationally enforced\n`
+        : "") +
       `${CHAIN_BOUNDARY_STATEMENT}\n`);
   } else {
-    process.stdout.write(`✗ supersession chain verification FAILED\n` +
-      res.chain_failures.map((f) => `  - ${f.code}: ${f.detail}`).join("\n") + "\n");
+    const failLines = [
+      ...res.chain_failures.map((f) => `  - ${f.code}: ${f.detail}`),
+      ...(hasDecisions ? dec.decision_failures.map((f) => `  - ${f.code}: ${f.detail}`) : []),
+      ...(hasDecisions ? dec.lifecycle.failures.map((f) => `  - ${f.code}: ${f.detail}`) : []),
+    ];
+    process.stdout.write(`✗ supersession chain verification FAILED\n` + failLines.join("\n") + "\n");
   }
-  process.exit(res.ok ? 0 : 1);
+  process.exit(overallOk ? 0 : 1);
+}
+
+function parseDecideArgs(rest) {
+  const o = { predecessor: null, intent: null, outputDir: null, builtAt: null, buildCommit: null, force: false, json: false };
+  for (let i = 0; i < rest.length; i++) {
+    const a = rest[i];
+    if (a === "-h" || a === "--help") return { help: true };
+    else if (a === "--predecessor") o.predecessor = rest[++i];
+    else if (a === "--intent") o.intent = rest[++i];
+    else if (a === "--output-dir") o.outputDir = rest[++i];
+    else if (a === "--built-at") o.builtAt = rest[++i];
+    else if (a === "--build-commit") o.buildCommit = rest[++i];
+    else if (a === "--force") o.force = true;
+    else if (a === "--json") o.json = true;
+    else die(2, `shadow-audit-package: unknown argument: ${a}`);
+  }
+  return o;
+}
+
+function cmdDecide(rest) {
+  const args = parseDecideArgs(rest);
+  if (args.help) { process.stdout.write(readHelp()); process.exit(0); }
+  if (!args.predecessor) die(2, "shadow-audit-package decide: --predecessor <prior-package-dir> is required");
+  if (!args.intent) die(2, "shadow-audit-package decide: --intent <decision-intent.json> is required");
+  if (!args.outputDir) die(2, "shadow-audit-package decide: --output-dir <dir> is required (explicit, never implied)");
+
+  const predecessorDir = resolve(args.predecessor);
+  if (!existsSync(predecessorDir)) die(3, `shadow-audit-package: --predecessor package directory not found: ${predecessorDir}`);
+  const outDir = resolve(args.outputDir);
+  if (outDir === predecessorDir)
+    die(3, "shadow-audit-package: --output-dir must not be the --predecessor package — the predecessor is immutable and is never overwritten (not even with --force)");
+  if (existsSync(outDir) && !args.force)
+    die(3, `shadow-audit-package: ${outDir} already exists. Refusing to overwrite (pass --force to replace it).`);
+
+  let intent;
+  try { intent = JSON.parse(readInput(resolve(args.intent), "--intent decision intent").toString("utf8")); }
+  catch (e) { die(3, `shadow-audit-package: --intent is not valid JSON: ${e.message}`); }
+
+  let producerVersion = "unknown";
+  try { producerVersion = JSON.parse(readFileSync(join(REPO_ROOT, "package.json"), "utf8")).version ?? "unknown"; } catch { /* keep "unknown" */ }
+
+  let assembled;
+  try {
+    assembled = assembleDecisionPackage({
+      predecessorDir,
+      intent,
+      // deterministic: the intent's own decided_at_utc by default, never wall clock
+      builtAt: args.builtAt ?? intent?.decided_at_utc ?? null,
+      buildCommit: args.buildCommit ?? detectBuildCommit(),
+      producerVersion,
+      packagePrivateKeyPem: FIXTURE_RELEASE_PRIVATE_PEM,
+      packagePublicKeyPem: FIXTURE_RELEASE_PUBLIC_PEM,
+      keyLabel: FIXTURE_RELEASE_LABEL,
+    });
+  } catch (e) {
+    die(e.code === "SELF_VALIDATION" ? 4 : 3, `shadow-audit-package: ${e.message}`);
+  }
+
+  // atomic: write everything into a temp sibling, self-verify (package + chain +
+  // lifecycle), then rename; a failed run leaves no partial package
+  const tmpDir = `${outDir}.tmp-${process.pid}`;
+  let selfChain;
+  try {
+    mkdirSync(tmpDir, { recursive: true });
+    for (const [rel, bytes] of assembled.files) {
+      const abs = join(tmpDir, rel);
+      mkdirSync(dirname(abs), { recursive: true });
+      writeFileSync(abs, bytes);
+    }
+    const self = verifyPackageDir(tmpDir);
+    if (!self.ok) {
+      rmSync(tmpDir, { recursive: true, force: true });
+      die(4, `shadow-audit-package: assembled decision package failed self-verification — nothing written:\n  - ${self.failures.map((f) => `${f.code}: ${f.detail}`).join("\n  - ")}`);
+    }
+    selfChain = verifyDecisionChain([predecessorDir, tmpDir], { requireCompleteChain: false });
+    if (!selfChain.ok) {
+      rmSync(tmpDir, { recursive: true, force: true });
+      const fails = [...selfChain.chain.chain_failures, ...selfChain.decision_failures, ...selfChain.lifecycle.failures];
+      die(4, `shadow-audit-package: assembled decision successor failed chain/lifecycle self-verification — nothing written:\n  - ${fails.map((f) => `${f.code}: ${f.detail}`).join("\n  - ")}`);
+    }
+    if (existsSync(outDir)) rmSync(outDir, { recursive: true, force: true }); // only reachable with --force
+    renameSync(tmpDir, outDir);
+  } catch (e) {
+    try { rmSync(tmpDir, { recursive: true, force: true }); } catch { /* best-effort cleanup */ }
+    if (typeof e?.status === "number") throw e; // process.exit already in flight
+    die(3, `shadow-audit-package: cannot write package: ${e.message}`);
+  }
+
+  const m = assembled.manifest;
+  const d = assembled.decisionMember;
+  if (args.json) {
+    process.stdout.write(JSON.stringify({
+      ok: true, manifest_version: m.manifest_version, package_id: m.package_id,
+      case_id: m.case_id, evidence_session_id: m.bindings.evidence_session_id,
+      key_provenance: m.signing.key_provenance, member_count: m.assets.length,
+      output_dir: outDir,
+      supersedes: m.supersedes,
+      decision: {
+        decision_id: d.decision_id, decision_type: d.decision_type,
+        actor_id: d.actor.actor_id, actor_role: d.actor.role,
+        identity_class: d.actor.identity_class,
+        target_type: d.target.type, target_object_id: d.target.object_id,
+        status_tokens: d.status_tokens,
+      },
+      lifecycle: { state: selfChain.lifecycle.state, effective_disposition: selfChain.lifecycle.effective_disposition, qualifier: selfChain.lifecycle.qualifier },
+    }) + "\n");
+  } else {
+    process.stdout.write(
+      `wrote ${outDir}  (${m.manifest_version}, ${m.assets.length} members, case ${m.case_id})\n` +
+      `decision: ${d.decision_type} by ${d.actor.actor_id} (${d.actor.role}, operator-declared fixture identity — NOT authenticated)\n` +
+      `supersedes package ${m.supersedes.predecessor_package_id.slice(0, 16)}… — the predecessor and the original Council conclusion remain valid, unchanged, independently verifiable\n` +
+      `lifecycle (${selfChain.lifecycle.qualifier}): ${selfChain.lifecycle.state} — effective disposition: ${selfChain.lifecycle.effective_disposition ?? "(original council output)"}\n` +
+      `signed with ${m.signing.key_label} (key_provenance=fixture) — the package signer is NOT the decision actor\n` +
+      `${DECISION_BOUNDARY_STATEMENT}\n`);
+  }
 }
 
 function main() {
@@ -329,7 +486,8 @@ function main() {
   if (cmd === "create") return cmdCreate(rest);
   if (cmd === "verify") return cmdVerify(rest);
   if (cmd === "verify-chain") return cmdVerifyChain(rest);
-  die(2, `shadow-audit-package: unknown command "${cmd}" (supported: create, verify, verify-chain)`);
+  if (cmd === "decide") return cmdDecide(rest);
+  die(2, `shadow-audit-package: unknown command "${cmd}" (supported: create, verify, verify-chain, decide)`);
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();
