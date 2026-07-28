@@ -1,0 +1,8 @@
+{"kind":"run_start","actor":"system","run_id":"run-7f3a","timestamp":"2026-07-29T14:00:00Z","payload":{"company":"demo-co","agent":"growth-lead"}}
+{"kind":"hire_approval","actor":"human","run_id":"run-7f3a","timestamp":"2026-07-29T14:01:12Z","decision":"approved","payload":{"role":"content-writer","proposed_by":"growth-lead","budget_usd":50}}
+{"kind":"tool_call","actor":"agent","run_id":"run-7f3a","timestamp":"2026-07-29T14:02:03Z","payload":{"tool":"web_search","args":{"q":"competitor pricing pages"}}}
+{"kind":"tool_result","actor":"agent","run_id":"run-7f3a","timestamp":"2026-07-29T14:02:41Z","payload":{"tool":"web_search","result_digest":"3 pages summarized"}}
+{"kind":"agent_message","actor":"agent","run_id":"run-7f3a","timestamp":"2026-07-29T14:03:15Z","payload":{"text":"Draft pricing-comparison post ready for review."}}
+{"kind":"approval","actor":"human","run_id":"run-7f3a","timestamp":"2026-07-29T14:10:02Z","decision":"rejected","payload":{"item":"publish draft","reason":"claims need sourcing"}}
+{"kind":"budget_pause","actor":"system","run_id":"run-7f3a","timestamp":"2026-07-29T14:15:00Z","payload":{"spent_usd":50.0,"cap_usd":50,"action":"auto-paused"}}
+{"kind":"run_end","actor":"system","run_id":"run-7f3a","timestamp":"2026-07-29T14:15:01Z","payload":{"status":"paused"}}
