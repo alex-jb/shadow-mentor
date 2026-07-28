@@ -20,7 +20,7 @@ The wedge decays as they add signing natively. Fire this week.
 
 ## Positioning rules (unchanged, binding)
 
-- "SR 26-2 Tier 3 companion" — always quote-scoped, never "compliant"
+- SR 26-2: reference footnote 3 delegation positioning / the model-purpose materiality construct — never "compliant", and never a "Tier" taxonomy (SR 26-2 has none)
 - EU: "GDPR Art. 22 + Schufa C-634/21", never "AI Act ready"
 - Honest Microsoft-overlap answer (see hn-show Q&A) — never dodge it
 - Never claim production readiness, device validation, or WCAG certification
