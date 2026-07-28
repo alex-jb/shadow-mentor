@@ -30,8 +30,7 @@ function input(k) {
       source_bound_count: 2, rejected_count: 0, source_map_hash: computeSourceMapHash(SM),
       model_id: "claude-haiku-4-5", prompt_hash: "sha256:" + "b".repeat(64), source_coverage_pct: 100,
     },
-    reviewers: [{ voice: "Risk Officer", stance: "caution", confidence: 0.8 }],
-    reviewer_interaction: { decision: "approved", reviewer_id: "u-9", review_duration_ms: 30000 },
+    reviewers: [{ reviewer_id: "u-9", decision: "approved", review_duration_ms: 30000 }],
     signingKeyPem: k.priv, publicKeyPem: k.pub,
   };
 }

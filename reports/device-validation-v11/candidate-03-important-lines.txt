@@ -1,0 +1,1065 @@
+16:07-23 12:40:25.394 12985 13007 D tag.xreal.client: (ClientBindService.java:212)#bindService | [bindService:  has Bind .]
+28:07-23 12:40:27.639 10778 10839 D tag.xreal.client: (ClientBindService.java:220)#bindService | [bindService:  has Bind .]
+29:07-23 12:40:27.640  2161  2340 D ActivityManager: sync unfroze 10778 com.xreal.evapro.store for 3
+49:07-23 12:40:30.399 12985 13007 D tag.xreal.client: (ClientBindService.java:212)#bindService | [bindService:  has Bind .]
+58:07-23 12:40:32.646 10778 10839 D tag.xreal.client: (ClientBindService.java:220)#bindService | [bindService:  has Bind .]
+63:07-23 12:40:35.408 12985 13007 D tag.xreal.client: (ClientBindService.java:212)#bindService | [bindService:  has Bind .]
+64:07-23 12:40:36.441  2161  5828 I ActivityManager: Force stopping com.shadowlens.xrealvoice appid=10204 user=0: from pid 28882
+69:07-23 12:40:36.458  3029  3029 D CarrierSvcBindHelper: onHandleForceStop: [com.shadowlens.xrealvoice]
+82:07-23 12:40:36.564  2921  3007 I DynamicDDSService: handleMessage(ACTIVITY_INVOKE{appInfo=com.shadowlens.xrealvoice isFullScreen=}true)
+84:07-23 12:40:36.567  2161  5828 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=com.shadowlens.xrealvoice/com.unity3d.player.UnityPlayerActivity} with LAUNCH_SINGLE_TASK from uid 2000 (BAL_ALLOW_PERMISSION) result code=0
+93:07-23 12:40:36.582  2161  2341 I ActivityManager: Start proc 28893:com.shadowlens.xrealvoice/u0a204 for next-top-activity {com.shadowlens.xrealvoice/com.unity3d.player.UnityPlayerActivity}
+96:07-23 12:40:36.586  4721  7002 W SQLiteLog: (28) double-quoted string literal: "com.shadowlens.xrealvoice"
+97:07-23 12:40:36.587  2161  4493 V PackageManagerUtils: isPreloadOemApp/data/app/~~dOMyRTkVJOWwLWnMSbd8tg==/com.shadowlens.xrealvoice-3hmJTEWwMdK9PN0YOcNWjA==/base.apk
+98:07-23 12:40:36.592 28893 28893 I lens.xrealvoice: Using CollectorTypeCMC GC.
+100:07-23 12:40:36.595 28893 28893 E lens.xrealvoice: Not starting debugger since process cannot load the jdwp agent.
+101:07-23 12:40:36.598  2161  4493 D CoreBackPreview: Window{f29b7d3 u0 Splash Screen com.shadowlens.xrealvoice}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@301bc3c, mPriority=0, mIsAnimationCallback=false}
+109:07-23 12:40:36.610 28893 28893 D nativeloader: Configuring clns-4 for other apk /data/app/~~dOMyRTkVJOWwLWnMSbd8tg==/com.shadowlens.xrealvoice-3hmJTEWwMdK9PN0YOcNWjA==/base.apk. target_sdk_version=34, uses_libraries=libOpenCL.so:libcdsprpc.so:libnr_api.xreal.so, library_path=/data/app/~~dOMyRTkVJOWwLWnMSbd8tg==/com.shadowlens.xrealvoice-3hmJTEWwMdK9PN0YOcNWjA==/lib/arm64:/data/app/~~dOMyRTkVJOWwLWnMSbd8tg==/com.shadowlens.xrealvoice-3hmJTEWwMdK9PN0YOcNWjA==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.shadowlens.xrealvoice
+110:07-23 12:40:36.610 28893 28893 D nativeloader: Extending system_exposed_libraries: libnr_api.xreal.so
+112:07-23 12:40:36.616  2161  2313 V WindowManager: Sent Transition #217 createdAt=07-23 12:40:36.553 via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=54 displayId=0 isRunning=true baseIntent=Intent { flg=0x10000000 cmp=com.shadowlens.xrealvoice/com.unity3d.player.UnityPlayerActivity } baseActivity=ComponentInfo{com.shadowlens.xrealvoice/com.unity3d.player.UnityPlayerActivity} topActivity=ComponentInfo{com.shadowlens.xrealvoice/com.unity3d.player.UnityPlayerActivity} origActivity=null realActivity=ComponentInfo{com.shadowlens.xrealvoice/com.unity3d.player.UnityPlayerActivity} numActivities=1 lastActiveTime=9237491 supportsMultiWindow=true resizeMode=2 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{d5796e6 Task{8b85f37 #54 type=standard A=10204:com.shadowlens.xrealvoice}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=null topActivityInfo=ActivityInfo{a298427 com.unity3d.player.UnityPlayerActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isSleeping=false topActivityInSizeCompat=false topActivityEligibleForLetterboxEducation= false topActivityLetterboxed= false isFromDoubleTap= false topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 locusId=null displayAreaFeatureId=1 cameraCompatControlState=hidden}, remoteTransition = null, displayChange = null }
+114:07-23 12:40:36.616  2161  2313 V WindowManager:     info={id=217 t=OPEN f=0x0 trk=0 r=[0@Point(0, 0)] c=[{WCT{RemoteToken{d5796e6 Task{8b85f37 #54 type=standard A=10204:com.shadowlens.xrealvoice}}} m=OPEN f=NONE leash=Surface(name=Task=54)/@0x74c6028 sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0},{WCT{RemoteToken{9a0db2b Task{f507696 #22 type=standard A=1000:com.android.settings.root}}} m=TO_BACK f=NONE leash=Surface(name=Task=22)/@0x5df7d0f sb=Rect(0, 0 - 1080, 2400) eb=Rect(0, 0 - 1080, 2400) d=0}]}
+129:07-23 12:40:36.618 28893 28893 V GraphicsEnvironment: com.shadowlens.xrealvoice is not listed in per-application setting
+138:07-23 12:40:36.621 28893 28893 D LogControl: (GlassesInitProvider.java:23)#onCreate | [GlassesInitSetting init start.]
+139:07-23 12:40:36.621 28893 28893 D LogControl: (GlassesInitSetting.java:50)#init | [context=, android.app.Application@94c08ee]
+143:07-23 12:40:36.623 28893 28893 D LogControl: (GlassesThreadHelper.java:27)#<init> | [thread name = glasses_thread, id = 28913]
+144:07-23 12:40:36.623 28893 28893 D LogControl: (GlassesInitProvider.java:25)#onCreate | [GlassesInitSetting init successful.]
+151:07-23 12:40:36.631  1231  1231 E QTI PowerHAL: Failed to acquire lock for hint_id: 10A5.
+154:07-23 12:40:36.652 28893 28893 V Unity   : Context Type: ActivityOrService
+160:07-23 12:40:36.661  2161  5828 W WindowManager: Failed looking up window session=Session{8e00cb1 28893:u0a10204} callers=com.android.server.wm.WindowManagerService.windowForClientLocked:6200 com.android.server.wm.Session.updateRequestedVisibleTypes:690 android.view.IWindowSession$Stub.onTransact:1034 
+161:07-23 12:40:36.666  2161  5865 D CoreBackPreview: Window{965c517 u0 com.shadowlens.xrealvoice/com.unity3d.player.UnityPlayerActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@4f06522, mPriority=0, mIsAnimationCallback=false}
+166:07-23 12:40:36.708  2161  2313 I ActivityTaskManager: Displayed com.shadowlens.xrealvoice/com.unity3d.player.UnityPlayerActivity for user 0: +157ms
+169:07-23 12:40:36.726  2161  5828 W InputManager-JNI: Input channel object 'f29b7d3 Splash Screen com.shadowlens.xrealvoice (client)' was disposed without first being removed with the input manager!
+170:07-23 12:40:36.727  2161  4493 D CoreBackPreview: Window{f29b7d3 u0 Splash Screen com.shadowlens.xrealvoice EXITING}: Setting back callback null
+172:07-23 12:40:36.729  2161  4494 I ImeTracker: com.shadowlens.xrealvoice:121341dc: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+173:07-23 12:40:36.729  2161  4494 I ImeTracker: com.shadowlens.xrealvoice:121341dc: onCancelled at PHASE_SERVER_SHOULD_HIDE
+177:07-23 12:40:36.731  4653  4696 D Settings: getXrealCusRegion locale = US
+178:07-23 12:40:36.732 28893 28915 I Unity   : MemoryManager: Using 'Dynamic Heap' Allocator.
+183:07-23 12:40:36.736  6101  6101 I DataReceiver: misery handlePackageUsage app_start, package = com.shadowlens.xrealvoice
+185:07-23 12:40:36.737  4653  4675 D Settings: getXrealCusRegion locale = US
+188:07-23 12:40:36.738  4787  4787 I GoogleInputMethodService: GoogleInputMethodService.onStartInput():1950 onStartInput(EditorInfo{EditorInfo{packageName=com.shadowlens.xrealvoice, inputType=0, inputTypeString=NULL, enableLearning=false, autoCorrection=false, autoComplete=false, imeOptions=0, privateImeOptions=null, actionName=UNSPECIFIED, actionLabel=null, initialSelStart=-1, initialSelEnd=-1, initialCapsMode=0, label=null, fieldId=0, fieldName=null, extras=null, hintText=null, hintLocales=[]}}, false)
+189:07-23 12:40:36.738  6101  6101 V UploadService: misery logEvent, event = app_start, map = {package_name=com.shadowlens.xrealvoice}
+192:07-23 12:40:36.739  2161  4493 W PackageConfigPersister: App-specific configuration not found for packageName: com.shadowlens.xrealvoice and userId: 0
+193:07-23 12:40:36.742 28893 28915 I Unity   : SystemInfo CPU = ARM64 FP ASIMD AES, Cores = 8, Memory = 7481mb
+194:07-23 12:40:36.742 28893 28915 I Unity   : SystemInfo ARM big.LITTLE configuration: 4 big (mask: 0xf0), 4 little (mask: 0xf)
+195:07-23 12:40:36.742 28893 28915 I Unity   : ApplicationInfo 'com.shadowlens.xrealvoice', Version '0.11-beampro-candidate.3', Min API Level '29', Target API Level '34'
+196:07-23 12:40:36.742 28893 28915 I Unity   : Built from '6000.0/staging' branch, Version '6000.0.23f1 (1c4764c07fb4)', Build type 'Release', Scripting Backend 'il2cpp', CPU 'arm64-v8a', Stripping 'Enabled'
+197:07-23 12:40:36.743 28893 28915 I Unity   : Device Model 'XREAL X4200', OS 'Android OS 14 (API 34)'
+198:07-23 12:40:36.890 28893 28915 I VulkanSupport: [Main] UnityPluginLoad
+199:07-23 12:40:36.890 28893 28915 I VulkanSupport: [Main] UnityPluginLoad: renderer=4
+203:07-23 12:40:36.890 28893 28915 I Unity   : Company Name: DefaultCompany
+204:07-23 12:40:36.890 28893 28915 I Unity   : Product Name: Shadow Lens
+206:07-23 12:40:36.897 28893 28915 D vulkan  : searching for layers in '/data/app/~~dOMyRTkVJOWwLWnMSbd8tg==/com.shadowlens.xrealvoice-3hmJTEWwMdK9PN0YOcNWjA==/lib/arm64'
+207:07-23 12:40:36.898 28893 28915 D vulkan  : searching for layers in '/data/app/~~dOMyRTkVJOWwLWnMSbd8tg==/com.shadowlens.xrealvoice-3hmJTEWwMdK9PN0YOcNWjA==/base.apk!/lib/arm64-v8a'
+235:07-23 12:40:36.911 28893 28915 I AdrenoVK-0: Engine Name         : Unity
+267:07-23 12:40:36.918 28893 28915 I AdrenoVK-0: Engine Name         : Unity
+459:07-23 12:40:36.941 28893 28915 E Gralloc4: isSupported(1, 1, 56, 1, ...) failed with 5
+464:07-23 12:40:36.941  1294  9302 E qdgralloc: libdma alloc failed ion_fd -22 size 0 align 4096 heap_name qcom,system flags 0
+465:07-23 12:40:36.941  1294  9302 E qdgralloc: AllocateMem: Failed to allocate buffer - heap name: qcom,system flags: 0x0 ret: -22
+466:07-23 12:40:36.941  1294  9302 E qdgralloc: gralloc failed to allocate err=Invalid argument format 56 size 0 WxH 4x4 usage 2816
+467:07-23 12:40:36.942 28893 28915 E GraphicBufferAllocator: Failed to allocate (4 x 4) layerCount 1 format 56 usage b00: 5
+468:07-23 12:40:36.942 28893 28915 E AHardwareBuffer: GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -5), handle=0x0
+470:07-23 12:40:36.942 28893 28915 E Gralloc4: isSupported(1, 1, 59, 1, ...) failed with 5
+475:07-23 12:40:36.942  1294  9302 E qdgralloc: libdma alloc failed ion_fd -22 size 0 align 4096 heap_name qcom,system flags 0
+476:07-23 12:40:36.942  1294  9302 E qdgralloc: AllocateMem: Failed to allocate buffer - heap name: qcom,system flags: 0x0 ret: -22
+477:07-23 12:40:36.942  1294  9302 E qdgralloc: gralloc failed to allocate err=Invalid argument format 59 size 0 WxH 4x4 usage 2816
+478:07-23 12:40:36.942 28893 28915 E GraphicBufferAllocator: Failed to allocate (4 x 4) layerCount 1 format 59 usage b00: 5
+479:07-23 12:40:36.942 28893 28915 E AHardwareBuffer: GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -5), handle=0x0
+481:07-23 12:40:36.942 28893 28915 E Gralloc4: isSupported(1, 1, 56, 1, ...) failed with 5
+486:07-23 12:40:36.942  1294  9302 E qdgralloc: libdma alloc failed ion_fd -22 size 0 align 4096 heap_name qcom,system flags 0
+487:07-23 12:40:36.942  1294  9302 E qdgralloc: AllocateMem: Failed to allocate buffer - heap name: qcom,system flags: 0x0 ret: -22
+488:07-23 12:40:36.942  1294  9302 E qdgralloc: gralloc failed to allocate err=Invalid argument format 56 size 0 WxH 4x4 usage 2816
+489:07-23 12:40:36.942 28893 28915 E GraphicBufferAllocator: Failed to allocate (4 x 4) layerCount 1 format 56 usage b00: 5
+490:07-23 12:40:36.942 28893 28915 E AHardwareBuffer: GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -5), handle=0x0
+492:07-23 12:40:36.942 28893 28915 E Gralloc4: isSupported(1, 1, 59, 1, ...) failed with 5
+497:07-23 12:40:36.942  1294  9302 E qdgralloc: libdma alloc failed ion_fd -22 size 0 align 4096 heap_name qcom,system flags 0
+498:07-23 12:40:36.942  1294  9302 E qdgralloc: AllocateMem: Failed to allocate buffer - heap name: qcom,system flags: 0x0 ret: -22
+499:07-23 12:40:36.942  1294  9302 E qdgralloc: gralloc failed to allocate err=Invalid argument format 59 size 0 WxH 4x4 usage 2816
+500:07-23 12:40:36.942 28893 28915 E GraphicBufferAllocator: Failed to allocate (4 x 4) layerCount 1 format 59 usage b00: 5
+501:07-23 12:40:36.942 28893 28915 E AHardwareBuffer: GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -5), handle=0x0
+514:07-23 12:40:36.970 28893 28915 D lens.xrealvoice: PlayerBase::PlayerBase()
+520:07-23 12:40:36.976  1367 27436 D AAudioServiceEndpointMMAP: openWithFormat() mMapClient.attributionSource = AttributionSourceState{pid: 1367, uid: 1041, packageName: (null), attributionTag: (null), token: binder:0xb4000074b44a0b90, renouncedPermissions: (null), next: []} => portHandle = 0
+522:07-23 12:40:36.976  1367 27436 D AAudioServiceEndpointMMAP: open() 0x5 failed, perhaps due to format. Try again with 0x3
+527:07-23 12:40:36.980  1367 27436 D AAudioServiceEndpointMMAP: openWithFormat() mMapClient.attributionSource = AttributionSourceState{pid: 1367, uid: 1041, packageName: (null), attributionTag: (null), token: binder:0xb4000074b44a0b90, renouncedPermissions: (null), next: []} => portHandle = 0
+529:07-23 12:40:36.980  1367 27436 D AAudioServiceEndpointMMAP: open() 0x3 failed, perhaps due to format. Try again with 0x6
+534:07-23 12:40:36.985  1367 27436 D AAudioServiceEndpointMMAP: openWithFormat() mMapClient.attributionSource = AttributionSourceState{pid: 1367, uid: 1041, packageName: (null), attributionTag: (null), token: binder:0xb4000074b44a0b90, renouncedPermissions: (null), next: []} => portHandle = 0
+536:07-23 12:40:36.986  1367 27436 D AAudioServiceEndpointMMAP: open() 0x6 failed, perhaps due to format. Try again with 0x1
+542:07-23 12:40:36.989  1367 27436 D AAudioServiceEndpointMMAP: openWithFormat() mMapClient.attributionSource = AttributionSourceState{pid: 1367, uid: 1041, packageName: (null), attributionTag: (null), token: binder:0xb4000074b44a0b90, renouncedPermissions: (null), next: []} => portHandle = 0
+544:07-23 12:40:36.989  1367 27436 D AAudioServiceEndpointMMAP: open() 0x1 failed, perhaps due to format. Try again with 0
+555:07-23 12:40:36.991 28893 28915 D lens.xrealvoice: PlayerBase::PlayerBase()
+558:07-23 12:40:36.991 28893 28915 D lens.xrealvoice: PlayerBase::~PlayerBase()
+562:07-23 12:40:36.996  1367 27436 I UsecaseValidator: verifyAudioAttributes update usage: 1 to AUDIO_USAGE_GAME for output: 13 pid: 28893 package: com.shadowlens.xrealvoice
+577:07-23 12:40:37.027  1367 27436 D audioserver: FGS Logger Transaction failed
+662:07-23 12:40:37.037  2884  3961 D Avrcp_ext: AudioManager Player in started state: com.shadowlens.xrealvoice
+663:07-23 12:40:37.037  2884  3961 D Avrcp_ext: AudioManager Active Player: com.shadowlens.xrealvoice
+764:07-23 12:40:37.058  1285  9670 E gsl     : gsl_get_graph_alias:2182 acdb get graph alias failed 19, len 255
+842:07-23 12:40:37.230 28893 28915 I Unity   : XRGeneral Settings awakening...
+843:07-23 12:40:37.230 28893 28915 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+844:07-23 12:40:37.230 28893 28915 I Unity   : UnityEngine.XR.Management.XRGeneralSettings:Awake()
+845:07-23 12:40:37.230 28893 28915 I Unity   : 
+847:07-23 12:40:37.283 28893 28915 I Unity   : [XREALXRLoader] Init
+848:07-23 12:40:37.283 28893 28915 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+849:07-23 12:40:37.283 28893 28915 I Unity   : Unity.XR.XREAL.XREALXRLoader:Initialize()
+850:07-23 12:40:37.283 28893 28915 I Unity   : UnityEngine.XR.Management.XRManagerSettings:InitializeLoaderSync()
+851:07-23 12:40:37.283 28893 28915 I Unity   : UnityEngine.XR.Management.XRGeneralSettings:InitXRSDK()
+852:07-23 12:40:37.283 28893 28915 I Unity   : 
+853:07-23 12:40:37.285 28893 28915 I Unity   : [XREALXRLoader] XREALPackageVersion: 3.1.0
+854:07-23 12:40:37.285 28893 28915 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+855:07-23 12:40:37.285 28893 28915 I Unity   : Unity.XR.XREAL.XREALXRLoader:Initialize()
+856:07-23 12:40:37.285 28893 28915 I Unity   : UnityEngine.XR.Management.XRManagerSettings:InitializeLoaderSync()
+857:07-23 12:40:37.285 28893 28915 I Unity   : UnityEngine.XR.Management.XRGeneralSettings:InitXRSDK()
+858:07-23 12:40:37.285 28893 28915 I Unity   : 
+860:07-23 12:40:37.286 28893 28915 I Unity   : [XR] [SessionManager] InitUnityInterfaces
+861:07-23 12:40:37.287 28893 28915 I Unity   : [XREALXRLoader] GetPluginVersion: 3.0.20251121
+862:07-23 12:40:37.287 28893 28915 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+863:07-23 12:40:37.287 28893 28915 I Unity   : Unity.XR.XREAL.XREALXRLoader:Initialize()
+864:07-23 12:40:37.287 28893 28915 I Unity   : UnityEngine.XR.Management.XRManagerSettings:InitializeLoaderSync()
+865:07-23 12:40:37.287 28893 28915 I Unity   : UnityEngine.XR.Management.XRGeneralSettings:InitXRSDK()
+866:07-23 12:40:37.287 28893 28915 I Unity   : 
+867:07-23 12:40:37.287 28893 28915 E Unity   : Unable to start XREAL XR Plugin. Failed to get XREAL Settings.
+868:07-23 12:40:37.287 28893 28915 E Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+869:07-23 12:40:37.287 28893 28915 E Unity   : Unity.XR.XREAL.XREALXRLoader:Initialize()
+870:07-23 12:40:37.287 28893 28915 E Unity   : UnityEngine.XR.Management.XRManagerSettings:InitializeLoaderSync()
+871:07-23 12:40:37.287 28893 28915 E Unity   : UnityEngine.XR.Management.XRGeneralSettings:InitXRSDK()
+872:07-23 12:40:37.287 28893 28915 E Unity   : 
+897:07-23 12:40:37.307 28893 28915 E Gralloc4: isSupported(1, 1, 56, 1, ...) failed with 5
+902:07-23 12:40:37.307  1294  9302 E qdgralloc: libdma alloc failed ion_fd -22 size 0 align 4096 heap_name qcom,system flags 0
+903:07-23 12:40:37.307  1294  9302 E qdgralloc: AllocateMem: Failed to allocate buffer - heap name: qcom,system flags: 0x0 ret: -22
+904:07-23 12:40:37.307  1294  9302 E qdgralloc: gralloc failed to allocate err=Invalid argument format 56 size 0 WxH 4x4 usage 2816
+905:07-23 12:40:37.307 28893 28915 E GraphicBufferAllocator: Failed to allocate (4 x 4) layerCount 1 format 56 usage b00: 5
+906:07-23 12:40:37.307 28893 28915 E AHardwareBuffer: GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -5), handle=0x0
+908:07-23 12:40:37.307 28893 28915 E Gralloc4: isSupported(1, 1, 59, 1, ...) failed with 5
+913:07-23 12:40:37.308  1294  9302 E qdgralloc: libdma alloc failed ion_fd -22 size 0 align 4096 heap_name qcom,system flags 0
+914:07-23 12:40:37.308  1294  9302 E qdgralloc: AllocateMem: Failed to allocate buffer - heap name: qcom,system flags: 0x0 ret: -22
+915:07-23 12:40:37.308  1294  9302 E qdgralloc: gralloc failed to allocate err=Invalid argument format 59 size 0 WxH 4x4 usage 2816
+916:07-23 12:40:37.308 28893 28915 E GraphicBufferAllocator: Failed to allocate (4 x 4) layerCount 1 format 59 usage b00: 5
+917:07-23 12:40:37.308 28893 28915 E AHardwareBuffer: GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -5), handle=0x0
+919:07-23 12:40:37.308 28893 28915 E Gralloc4: isSupported(1, 1, 56, 1, ...) failed with 5
+924:07-23 12:40:37.308  1294  9302 E qdgralloc: libdma alloc failed ion_fd -22 size 0 align 4096 heap_name qcom,system flags 0
+925:07-23 12:40:37.308  1294  9302 E qdgralloc: AllocateMem: Failed to allocate buffer - heap name: qcom,system flags: 0x0 ret: -22
+926:07-23 12:40:37.308  1294  9302 E qdgralloc: gralloc failed to allocate err=Invalid argument format 56 size 0 WxH 4x4 usage 2816
+927:07-23 12:40:37.308 28893 28915 E GraphicBufferAllocator: Failed to allocate (4 x 4) layerCount 1 format 56 usage b00: 5
+928:07-23 12:40:37.308 28893 28915 E AHardwareBuffer: GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -5), handle=0x0
+930:07-23 12:40:37.309 28893 28915 E Gralloc4: isSupported(1, 1, 59, 1, ...) failed with 5
+935:07-23 12:40:37.309  1294  9302 E qdgralloc: libdma alloc failed ion_fd -22 size 0 align 4096 heap_name qcom,system flags 0
+936:07-23 12:40:37.309  1294  9302 E qdgralloc: AllocateMem: Failed to allocate buffer - heap name: qcom,system flags: 0x0 ret: -22
+937:07-23 12:40:37.309  1294  9302 E qdgralloc: gralloc failed to allocate err=Invalid argument format 59 size 0 WxH 4x4 usage 2816
+938:07-23 12:40:37.309 28893 28915 E GraphicBufferAllocator: Failed to allocate (4 x 4) layerCount 1 format 59 usage b00: 5
+939:07-23 12:40:37.309 28893 28915 E AHardwareBuffer: GraphicBuffer(w=4, h=4, lc=1) failed (Unknown error -5), handle=0x0
+945:07-23 12:40:37.496  2161  2313 I ActivityTaskManager: Fully drawn com.shadowlens.xrealvoice/com.unity3d.player.UnityPlayerActivity: +951ms
+948:07-23 12:40:37.652 10778 10839 D tag.xreal.client: (ClientBindService.java:220)#bindService | [bindService:  has Bind .]
+950:07-23 12:40:37.682  2161  2550 D ActivityManager: freezing 10778 com.xreal.evapro.store
+953:07-23 12:40:39.559 28893 28915 I Unity   : [XREALSettings] OnLoad
+954:07-23 12:40:39.559 28893 28915 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+955:07-23 12:40:39.559 28893 28915 I Unity   : Unity.XR.XREAL.XREALSettings:OnLoad()
+956:07-23 12:40:39.559 28893 28915 I Unity   : 
+961:07-23 12:40:39.617 28893 28915 E Unity   : ArgumentNullException: Value cannot be null.
+962:07-23 12:40:39.617 28893 28915 E Unity   : Parameter name: shader
+963:07-23 12:40:39.617 28893 28915 E Unity   :   at UnityEngine.Bindings.ThrowHelper.ThrowArgumentNullException (System.Object obj, System.String parameterName) [0x00000] in <00000000000000000000000000000000>:0 
+964:07-23 12:40:39.617 28893 28915 E Unity   :   at UnityEngine.Material.CreateWithShader (UnityEngine.Material self, UnityEngine.Shader shader) [0x00000] in <00000000000000000000000000000000>:0 
+965:07-23 12:40:39.617 28893 28915 E Unity   :   at ShadowLens.Workspace.ShadowAuditWorkspace.SharedMat (System.String hex) [0x00000] in <00000000000000000000000000000000>:0 
+966:07-23 12:40:39.617 28893 28915 E Unity   :   at ShadowLens.Workspace.ShadowAuditWorkspace.Quad (UnityEngine.GameObject parent, UnityEngine.Vector3 local, System.String hex, System.Single scale) [0x00000] in <00000000000000000000000000000000>:0 
+967:07-23 12:40:39.617 28893 28915 E Unity   :   at ShadowLens.Workspace.ShadowAuditWorkspace.RebuildRail (ShadowLens.GuidedStory.StoryScenario sc) [0x00000] in <00000000000000000000000000000000>:0 
+968:07-23 12:40:39.617 28893 28915 E Unity   :   at ShadowLens.Workspace.ShadowAuditWorkspace.RebuildAll () [0x00000] in <00000000000000000000000000000000>:0 
+969:07-23 12:40:39.617 28893 28915 E Unity   : 
+971:07-23 12:40:39.619 28893 28915 I Unity   : [XREALCallbackHandler] OnLoad
+972:07-23 12:40:39.619 28893 28915 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+973:07-23 12:40:39.619 28893 28915 I Unity   : Unity.XR.XREAL.XREALCallbackHandler:OnLoad()
+974:07-23 12:40:39.619 28893 28915 I Unity   : 
+975:07-23 12:40:39.620 28893 28915 I Unity   : [XR] [LogHelper] SetNativeErrorCallback
+976:07-23 12:40:39.621 28893 28915 I Unity   : [XREALMultiResumeMediator] OnLoad
+977:07-23 12:40:39.621 28893 28915 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+978:07-23 12:40:39.621 28893 28915 I Unity   : Unity.XR.XREAL.XREALMultiResumeMediator:OnLoad()
+979:07-23 12:40:39.621 28893 28915 I Unity   : 
+980:07-23 12:40:39.621 28893 28915 E Unity   : NullReferenceException: Object reference not set to an instance of an object.
+981:07-23 12:40:39.621 28893 28915 E Unity   :   at Unity.XR.XREAL.XREALMultiResumeMediator.OnLoad () [0x00000] in <00000000000000000000000000000000>:0 
+982:07-23 12:40:39.621 28893 28915 E Unity   : 
+984:07-23 12:40:39.665 28893 28915 I Unity   : [XREALMainThreadDispatcher] OnApplicationPause: False
+985:07-23 12:40:39.665 28893 28915 I Unity   : UnityEngine.DebugLogHandler:Internal_Log(LogType, LogOption, String, Object)
+986:07-23 12:40:39.665 28893 28915 I Unity   : Unity.XR.XREAL.XREALMainThreadDispatcher:OnApplicationPause(Boolean)
+987:07-23 12:40:39.665 28893 28915 I Unity   : 
+988:07-23 12:40:39.666 28893 28915 I Unity   : [XR] [SessionManager] ResumeSession
+989:07-23 12:40:39.666 28893 28915 I Unity   : [XR] [SessionManager] ResumeSession End
+1015:07-23 12:40:39.869 17841 24506 I BiasUtils: handleMessage: { when=-84ms what=2 target=ai.nreal.sensorcalib.BiasUtils$SerializeHandler }
+1089:07-23 12:40:40.414 12985 13007 D tag.xreal.client: (ClientBindService.java:212)#bindService | [bindService:  has Bind .]
+1109:07-23 12:40:45.417 12985 13007 D tag.xreal.client: (ClientBindService.java:212)#bindService | [bindService:  has Bind .]
+1123:07-23 12:40:49.919 17841 24506 I BiasUtils: handleMessage: { when=-49ms what=3 target=ai.nreal.sensorcalib.BiasUtils$SerializeHandler }
+1138:07-23 12:40:50.423 12985 13007 D tag.xreal.client: (ClientBindService.java:212)#bindService | [bindService:  has Bind .]
+1181:07-23 12:40:55.427 12985 13007 D tag.xreal.client: (ClientBindService.java:212)#bindService | [bindService:  has Bind .]
+1184:07-23 12:40:57.832  3345  5618 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+1189:07-23 12:40:57.846  3345  5618 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+1193:07-23 12:40:59.311  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1194:07-23 12:40:59.335  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1195:07-23 12:40:59.350  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1196:07-23 12:40:59.359  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1197:07-23 12:40:59.360  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1198:07-23 12:40:59.389  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1199:07-23 12:40:59.436  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1200:07-23 12:40:59.452  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1201:07-23 12:40:59.460  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1202:07-23 12:40:59.461  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1205:07-23 12:40:59.806  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1206:07-23 12:40:59.839  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1220:07-23 12:41:00.433 12985 13007 D tag.xreal.client: (ClientBindService.java:212)#bindService | [bindService:  has Bind .]
+1222:07-23 12:41:00.753  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1223:07-23 12:41:00.792  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1224:07-23 12:41:00.794  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1225:07-23 12:41:00.804  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1227:07-23 12:41:00.824  3345  4196 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+1233:07-23 12:41:00.833  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1234:07-23 12:41:00.834  3345  4196 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+1236:07-23 12:41:00.837  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1237:07-23 12:41:00.838  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1238:07-23 12:41:00.854  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1239:07-23 12:41:00.871  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1240:07-23 12:41:00.877  2687  2706 W ndroid.systemui: ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~dOMyRTkVJOWwLWnMSbd8tg==/com.shadowlens.xrealvoice-3hmJTEWwMdK9PN0YOcNWjA==/base.apk' with 1 weak references
+1241:07-23 12:41:00.878  2687  2706 W System  : A resource failed to call release. 
+1242:07-23 12:41:00.878  2687  2706 W System  : A resource failed to call release. 
+1243:07-23 12:41:00.891  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1244:07-23 12:41:00.894  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1245:07-23 12:41:00.896  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1246:07-23 12:41:00.905  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1247:07-23 12:41:00.922  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1248:07-23 12:41:00.938  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1249:07-23 12:41:00.940  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1250:07-23 12:41:00.955  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1251:07-23 12:41:00.971  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1252:07-23 12:41:00.988  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1253:07-23 12:41:01.006  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1254:07-23 12:41:01.022  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1255:07-23 12:41:01.040  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1256:07-23 12:41:01.155  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1257:07-23 12:41:01.240  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1258:07-23 12:41:01.273  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1259:07-23 12:41:01.307  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1260:07-23 12:41:01.323  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1261:07-23 12:41:01.339  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1262:07-23 12:41:01.356  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1263:07-23 12:41:01.374  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1266:07-23 12:41:01.474  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1267:07-23 12:41:01.490  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1268:07-23 12:41:01.523  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1269:07-23 12:41:01.540  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1270:07-23 12:41:01.557  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1271:07-23 12:41:01.574  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1272:07-23 12:41:01.580  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1273:07-23 12:41:01.582  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1274:07-23 12:41:01.590  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1275:07-23 12:41:01.607  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1276:07-23 12:41:01.624  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1277:07-23 12:41:01.697  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1278:07-23 12:41:01.699  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1279:07-23 12:41:01.724  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1280:07-23 12:41:01.741  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1281:07-23 12:41:01.757  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1282:07-23 12:41:01.774  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1283:07-23 12:41:01.791  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1284:07-23 12:41:01.803  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1285:07-23 12:41:01.804  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1286:07-23 12:41:01.924  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1287:07-23 12:41:01.958  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1288:07-23 12:41:01.991  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1289:07-23 12:41:02.008  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1290:07-23 12:41:02.025  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1291:07-23 12:41:02.042  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1292:07-23 12:41:02.108  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1293:07-23 12:41:02.125  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1294:07-23 12:41:02.142  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1295:07-23 12:41:02.158  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1296:07-23 12:41:02.225  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1297:07-23 12:41:02.244  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1298:07-23 12:41:02.260  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1299:07-23 12:41:02.275  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1300:07-23 12:41:02.293  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1301:07-23 12:41:02.309  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1302:07-23 12:41:02.326  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1303:07-23 12:41:02.344  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1304:07-23 12:41:02.360  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1305:07-23 12:41:02.375  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1306:07-23 12:41:02.384  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1307:07-23 12:41:02.386  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1308:07-23 12:41:02.394  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1309:07-23 12:41:02.441  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1310:07-23 12:41:02.442  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1311:07-23 12:41:02.486  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1312:07-23 12:41:02.494  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1313:07-23 12:41:02.609  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1314:07-23 12:41:02.626  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1315:07-23 12:41:02.642  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1316:07-23 12:41:02.661  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1317:07-23 12:41:02.675  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1318:07-23 12:41:02.676  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1319:07-23 12:41:02.692  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1320:07-23 12:41:02.710  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1321:07-23 12:41:02.727  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1322:07-23 12:41:02.730  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1323:07-23 12:41:02.732  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1324:07-23 12:41:02.743  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1325:07-23 12:41:02.752  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1326:07-23 12:41:02.753  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1327:07-23 12:41:02.759  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1328:07-23 12:41:02.776  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1329:07-23 12:41:02.809  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1330:07-23 12:41:02.818  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1331:07-23 12:41:02.819  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1332:07-23 12:41:02.843  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1333:07-23 12:41:02.845  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1334:07-23 12:41:02.859  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1335:07-23 12:41:02.867  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1336:07-23 12:41:02.980  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1337:07-23 12:41:03.111  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1338:07-23 12:41:03.161  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1339:07-23 12:41:03.176  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1340:07-23 12:41:03.194  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1341:07-23 12:41:03.211  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1342:07-23 12:41:03.213  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1343:07-23 12:41:03.238  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1344:07-23 12:41:03.239  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1345:07-23 12:41:03.260  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1346:07-23 12:41:03.262  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1347:07-23 12:41:03.276  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1348:07-23 12:41:03.279  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1349:07-23 12:41:03.280  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1350:07-23 12:41:03.310  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1351:07-23 12:41:03.327  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1352:07-23 12:41:03.344  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1353:07-23 12:41:03.360  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1354:07-23 12:41:03.371  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1355:07-23 12:41:03.372  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1356:07-23 12:41:03.378  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1357:07-23 12:41:03.394  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1358:07-23 12:41:03.412  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1359:07-23 12:41:03.414  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1360:07-23 12:41:03.416  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1361:07-23 12:41:03.428  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1362:07-23 12:41:03.444  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1363:07-23 12:41:03.462  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1364:07-23 12:41:03.478  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1365:07-23 12:41:03.495  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1366:07-23 12:41:03.511  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1367:07-23 12:41:03.527  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1368:07-23 12:41:03.544  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1369:07-23 12:41:03.561  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1370:07-23 12:41:03.578  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1371:07-23 12:41:03.595  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1372:07-23 12:41:03.612  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1373:07-23 12:41:03.629  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1374:07-23 12:41:03.645  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1375:07-23 12:41:03.662  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1376:07-23 12:41:03.664  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1377:07-23 12:41:03.678  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1378:07-23 12:41:03.695  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1379:07-23 12:41:03.711  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1380:07-23 12:41:03.714  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1381:07-23 12:41:03.716  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1382:07-23 12:41:03.744  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1383:07-23 12:41:03.761  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1384:07-23 12:41:03.794  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1385:07-23 12:41:03.805  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1386:07-23 12:41:03.806  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1387:07-23 12:41:03.828  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1388:07-23 12:41:03.845  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1389:07-23 12:41:03.862  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1390:07-23 12:41:03.879  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1391:07-23 12:41:03.895  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1392:07-23 12:41:03.912  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1393:07-23 12:41:03.930  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1394:07-23 12:41:03.946  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1395:07-23 12:41:03.955  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1396:07-23 12:41:03.956  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1397:07-23 12:41:03.962  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1398:07-23 12:41:03.979  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1399:07-23 12:41:03.995  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1400:07-23 12:41:04.012  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1401:07-23 12:41:04.021  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1402:07-23 12:41:04.116  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1403:07-23 12:41:04.163  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1404:07-23 12:41:04.179  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1405:07-23 12:41:04.196  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1406:07-23 12:41:04.212  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1407:07-23 12:41:04.215  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1408:07-23 12:41:04.216  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1409:07-23 12:41:04.229  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1410:07-23 12:41:04.239  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1411:07-23 12:41:04.240  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1412:07-23 12:41:04.245  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1413:07-23 12:41:04.263  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1414:07-23 12:41:04.280  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1415:07-23 12:41:04.296  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1416:07-23 12:41:04.313  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1417:07-23 12:41:04.323  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1418:07-23 12:41:04.324  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1419:07-23 12:41:04.347  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1420:07-23 12:41:04.355  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1421:07-23 12:41:04.357  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1422:07-23 12:41:04.363  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1423:07-23 12:41:04.380  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1424:07-23 12:41:04.396  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1425:07-23 12:41:04.414  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1426:07-23 12:41:04.430  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1427:07-23 12:41:04.433  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1428:07-23 12:41:04.447  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1429:07-23 12:41:04.480  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1430:07-23 12:41:04.497  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1431:07-23 12:41:04.530  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1432:07-23 12:41:04.547  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1433:07-23 12:41:04.564  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1434:07-23 12:41:04.581  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1435:07-23 12:41:04.588  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1436:07-23 12:41:04.590  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1437:07-23 12:41:04.597  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1438:07-23 12:41:04.614  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1439:07-23 12:41:04.630  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1440:07-23 12:41:04.647  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1441:07-23 12:41:04.656  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1442:07-23 12:41:04.657  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1451:07-23 12:41:04.681  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1452:07-23 12:41:04.698  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1453:07-23 12:41:04.732  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1454:07-23 12:41:04.748  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1455:07-23 12:41:04.755  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1456:07-23 12:41:04.764  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1457:07-23 12:41:04.788  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1458:07-23 12:41:04.834  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1459:07-23 12:41:04.875  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1460:07-23 12:41:04.931  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1461:07-23 12:41:04.948  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1462:07-23 12:41:04.964  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1463:07-23 12:41:04.981  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1464:07-23 12:41:04.982  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1465:07-23 12:41:05.014  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1466:07-23 12:41:05.017  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1467:07-23 12:41:05.018  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1468:07-23 12:41:05.031  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1469:07-23 12:41:05.040  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1470:07-23 12:41:05.041  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1471:07-23 12:41:05.048  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1472:07-23 12:41:05.115  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1473:07-23 12:41:05.131  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1474:07-23 12:41:05.140  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1475:07-23 12:41:05.142  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1476:07-23 12:41:05.143  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1477:07-23 12:41:05.168  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1482:07-23 12:41:05.192  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1483:07-23 12:41:05.226  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1484:07-23 12:41:05.227  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1485:07-23 12:41:05.249  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1486:07-23 12:41:05.265  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1487:07-23 12:41:05.299  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1488:07-23 12:41:05.401  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1489:07-23 12:41:05.416  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1490:07-23 12:41:05.424  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1491:07-23 12:41:05.432  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1492:07-23 12:41:05.439 12985 13007 D tag.xreal.client: (ClientBindService.java:212)#bindService | [bindService:  has Bind .]
+1493:07-23 12:41:05.449  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1494:07-23 12:41:05.466  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1495:07-23 12:41:05.483  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1496:07-23 12:41:05.516  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1497:07-23 12:41:05.533  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1498:07-23 12:41:05.551  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1499:07-23 12:41:05.554  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1500:07-23 12:41:05.556  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1501:07-23 12:41:05.567  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1502:07-23 12:41:05.583  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1503:07-23 12:41:05.633  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1504:07-23 12:41:05.649  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1505:07-23 12:41:05.651  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1506:07-23 12:41:05.666  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1507:07-23 12:41:05.700  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1508:07-23 12:41:05.733  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1509:07-23 12:41:05.750  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1510:07-23 12:41:05.767  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1511:07-23 12:41:05.784  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1512:07-23 12:41:05.801  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1513:07-23 12:41:05.817  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1514:07-23 12:41:05.843  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1515:07-23 12:41:05.845  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1516:07-23 12:41:05.867  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1517:07-23 12:41:05.884  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1518:07-23 12:41:05.899  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1519:07-23 12:41:05.902  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1520:07-23 12:41:05.917  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1521:07-23 12:41:05.924  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1522:07-23 12:41:05.926  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1523:07-23 12:41:05.951  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1524:07-23 12:41:05.968  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1525:07-23 12:41:05.984  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1526:07-23 12:41:05.990  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1527:07-23 12:41:05.991  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1528:07-23 12:41:06.000  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1529:07-23 12:41:06.018  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1530:07-23 12:41:06.052  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1531:07-23 12:41:06.168  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1532:07-23 12:41:06.185  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1533:07-23 12:41:06.235  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1534:07-23 12:41:06.247  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1535:07-23 12:41:06.250  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1536:07-23 12:41:06.300  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1537:07-23 12:41:06.305  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1538:07-23 12:41:06.368  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1539:07-23 12:41:06.384  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1540:07-23 12:41:06.402  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1541:07-23 12:41:06.418  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1542:07-23 12:41:06.439  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1543:07-23 12:41:06.452  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1544:07-23 12:41:06.468  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1545:07-23 12:41:06.485  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1546:07-23 12:41:06.502  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1547:07-23 12:41:06.504  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1548:07-23 12:41:06.518  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1549:07-23 12:41:06.535  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1550:07-23 12:41:06.551  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1551:07-23 12:41:06.568  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1552:07-23 12:41:06.585  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1553:07-23 12:41:06.602  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1554:07-23 12:41:06.620  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1555:07-23 12:41:06.635  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1556:07-23 12:41:06.652  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1557:07-23 12:41:06.669  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1558:07-23 12:41:06.686  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1559:07-23 12:41:06.702  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1560:07-23 12:41:06.719  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1561:07-23 12:41:06.735  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1562:07-23 12:41:06.786  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1563:07-23 12:41:06.802  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1564:07-23 12:41:06.852  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1565:07-23 12:41:06.869  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1566:07-23 12:41:06.887  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1567:07-23 12:41:06.903  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1568:07-23 12:41:06.953  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1569:07-23 12:41:06.970  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1570:07-23 12:41:06.987  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1571:07-23 12:41:07.012  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1572:07-23 12:41:07.015  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1573:07-23 12:41:07.037  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1574:07-23 12:41:07.043  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1575:07-23 12:41:07.044  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1576:07-23 12:41:07.054  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1577:07-23 12:41:07.071  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1578:07-23 12:41:07.088  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1579:07-23 12:41:07.103  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1580:07-23 12:41:07.120  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1581:07-23 12:41:07.137  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1582:07-23 12:41:07.154  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1583:07-23 12:41:07.171  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1584:07-23 12:41:07.187  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1585:07-23 12:41:07.204  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1586:07-23 12:41:07.287  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1587:07-23 12:41:07.303  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1588:07-23 12:41:07.321  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1589:07-23 12:41:07.337  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1590:07-23 12:41:07.371  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1593:07-23 12:41:07.522  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1594:07-23 12:41:07.571  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1595:07-23 12:41:07.587  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1596:07-23 12:41:07.671  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1597:07-23 12:41:07.688  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1598:07-23 12:41:07.706  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1599:07-23 12:41:07.739  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1600:07-23 12:41:07.772  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1601:07-23 12:41:07.789  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1602:07-23 12:41:07.808  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1603:07-23 12:41:07.823  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1604:07-23 12:41:07.839  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1605:07-23 12:41:07.848  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1606:07-23 12:41:07.850  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1607:07-23 12:41:07.872  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1608:07-23 12:41:07.889  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1609:07-23 12:41:07.899  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1610:07-23 12:41:07.901  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1611:07-23 12:41:07.905  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1612:07-23 12:41:07.922  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1613:07-23 12:41:07.957  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1614:07-23 12:41:07.973  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1615:07-23 12:41:07.990  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1616:07-23 12:41:08.006  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1617:07-23 12:41:08.023  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1618:07-23 12:41:08.039  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1619:07-23 12:41:08.056  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1620:07-23 12:41:08.072  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1621:07-23 12:41:08.106  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1622:07-23 12:41:08.124  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1623:07-23 12:41:08.139  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1624:07-23 12:41:08.156  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1625:07-23 12:41:08.172  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1626:07-23 12:41:08.223  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1627:07-23 12:41:08.291  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1628:07-23 12:41:08.314  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1629:07-23 12:41:08.315  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1630:07-23 12:41:08.340  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1631:07-23 12:41:08.356  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1632:07-23 12:41:08.372  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1633:07-23 12:41:08.375  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1634:07-23 12:41:08.390  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1635:07-23 12:41:08.406  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1636:07-23 12:41:08.424  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1637:07-23 12:41:08.440  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1638:07-23 12:41:08.457  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1639:07-23 12:41:08.473  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1640:07-23 12:41:08.490  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1641:07-23 12:41:08.497  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1642:07-23 12:41:08.499  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1643:07-23 12:41:08.524  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1644:07-23 12:41:08.574  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1645:07-23 12:41:08.591  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1646:07-23 12:41:08.608  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1647:07-23 12:41:08.623  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1648:07-23 12:41:08.640  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1649:07-23 12:41:08.654  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1650:07-23 12:41:08.655  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1651:07-23 12:41:08.675  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1652:07-23 12:41:08.707  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1653:07-23 12:41:08.729  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1654:07-23 12:41:08.731  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1655:07-23 12:41:08.758  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1656:07-23 12:41:08.763  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1657:07-23 12:41:08.765  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1666:07-23 12:41:08.775  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1667:07-23 12:41:08.791  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1668:07-23 12:41:08.807  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1669:07-23 12:41:08.841  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1670:07-23 12:41:08.858  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1671:07-23 12:41:08.870  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1672:07-23 12:41:08.872  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1673:07-23 12:41:08.891  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1674:07-23 12:41:08.896  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1675:07-23 12:41:08.898  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1676:07-23 12:41:08.907  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1677:07-23 12:41:08.925  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1678:07-23 12:41:08.941  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1679:07-23 12:41:08.958  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1680:07-23 12:41:08.975  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1681:07-23 12:41:08.991  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1682:07-23 12:41:09.009  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1683:07-23 12:41:09.024  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1684:07-23 12:41:09.042  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1685:07-23 12:41:09.058  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1686:07-23 12:41:09.070  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1687:07-23 12:41:09.073  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1688:07-23 12:41:09.092  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1689:07-23 12:41:09.109  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1690:07-23 12:41:09.125  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1691:07-23 12:41:09.142  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1692:07-23 12:41:09.145  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1693:07-23 12:41:09.158  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1694:07-23 12:41:09.176  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1695:07-23 12:41:09.210  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1696:07-23 12:41:09.226  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1697:07-23 12:41:09.242  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1698:07-23 12:41:09.260  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1699:07-23 12:41:09.276  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1700:07-23 12:41:09.292  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1701:07-23 12:41:09.302  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1702:07-23 12:41:09.303  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1703:07-23 12:41:09.326  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1704:07-23 12:41:09.328  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1705:07-23 12:41:09.343  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1706:07-23 12:41:09.346  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1707:07-23 12:41:09.348  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1708:07-23 12:41:09.359  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1709:07-23 12:41:09.376  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1710:07-23 12:41:09.384  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1711:07-23 12:41:09.386  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1712:07-23 12:41:09.393  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1713:07-23 12:41:09.409  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1714:07-23 12:41:09.426  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1715:07-23 12:41:09.476  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1716:07-23 12:41:09.526  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1717:07-23 12:41:09.542  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1718:07-23 12:41:09.559  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1719:07-23 12:41:09.595  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1720:07-23 12:41:09.627  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1721:07-23 12:41:09.643  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1722:07-23 12:41:09.660  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1723:07-23 12:41:09.678  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1724:07-23 12:41:09.681  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1725:07-23 12:41:09.694  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1726:07-23 12:41:09.700  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1727:07-23 12:41:09.701  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1728:07-23 12:41:09.710  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1729:07-23 12:41:09.726  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1730:07-23 12:41:09.760  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1731:07-23 12:41:09.777  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1732:07-23 12:41:09.794  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1733:07-23 12:41:09.810  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1734:07-23 12:41:09.827  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1735:07-23 12:41:09.844  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1736:07-23 12:41:09.910  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1737:07-23 12:41:09.927  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1738:07-23 12:41:09.944  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1739:07-23 12:41:09.961  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1740:07-23 12:41:09.976  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1741:07-23 12:41:09.993  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1742:07-23 12:41:10.010  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1743:07-23 12:41:10.027  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1744:07-23 12:41:10.060  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1745:07-23 12:41:10.078  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1746:07-23 12:41:10.094  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1747:07-23 12:41:10.127  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1748:07-23 12:41:10.160  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1749:07-23 12:41:10.177  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1750:07-23 12:41:10.195  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1751:07-23 12:41:10.227  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1752:07-23 12:41:10.245  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1753:07-23 12:41:10.262  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1754:07-23 12:41:10.278  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1755:07-23 12:41:10.295  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1760:07-23 12:41:10.307  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1761:07-23 12:41:10.309  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1762:07-23 12:41:10.444 12985 13007 D tag.xreal.client: (ClientBindService.java:212)#bindService | [bindService:  has Bind .]
+1763:07-23 12:41:10.483  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1764:07-23 12:41:10.515  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1767:07-23 12:41:10.800  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1768:07-23 12:41:10.832  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1769:07-23 12:41:10.867  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1770:07-23 12:41:10.913  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1771:07-23 12:41:10.929  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1772:07-23 12:41:10.939  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1773:07-23 12:41:10.941  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1774:07-23 12:41:10.964  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1775:07-23 12:41:10.978  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1798:07-23 12:41:10.995  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1800:07-23 12:41:11.012  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1801:07-23 12:41:11.014   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup38 (../../devices/platform/soc/soc:qcom,nopmi-chg/wakeup/wakeup38): Permission denied
+1804:07-23 12:41:11.016   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup18 (../../devices/platform/soc/soc:ant_check/wakeup/wakeup18): Permission denied
+1806:07-23 12:41:11.018   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup2 (../../devices/platform/soc/a94000.qcom,qup_uart/wakeup/wakeup2): Permission denied
+1808:07-23 12:41:11.019   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup36 (../../devices/platform/soc/a80000.i2c/i2c-4/4-006a/power_supply/bbc/wakeup36): Permission denied
+1809:07-23 12:41:11.023   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup34 (../../devices/platform/soc/a80000.i2c/i2c-4/4-004e/tcpc/type_c_port0/wakeup34): Permission denied
+1811:07-23 12:41:11.024   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup62 (../../devices/platform/soc/soc:qcom,pmic_glink/soc:qcom,pmic_glink:qcom,battery_charger/power_supply/battery-bak/wakeup62): Permission denied
+1814:07-23 12:41:11.024   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup24 (../../devices/platform/soc/980000.i2c/i2c-2/2-0064/power_supply/bms/wakeup24): Permission denied
+1815:07-23 12:41:11.028   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup42 (../../devices/platform/soc/a8c000.spi/spi_master/spi0/spi0.0/wakeup/wakeup42): Permission denied
+1817:07-23 12:41:11.029   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup32 (../../devices/platform/soc/a80000.i2c/i2c-4/4-006a/wakeup/wakeup32): Permission denied
+1818:07-23 12:41:11.029   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup22 (../../devices/platform/soc/980000.i2c/i2c-2/2-006d/wakeup/wakeup22): Permission denied
+1820:07-23 12:41:11.030   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup40 (../../devices/platform/soc/soc:qcom,nopmi-chg/power_supply/ac/wakeup40): Permission denied
+1821:07-23 12:41:11.030  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1822:07-23 12:41:11.030   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup30 (../../devices/platform/soc/a80000.i2c/i2c-4/4-004e/tcpc/type_c_port0/wakeup30): Permission denied
+1823:07-23 12:41:11.031   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup39 (../../devices/platform/soc/soc:qcom,nopmi-chg/power_supply/battery/wakeup39): Permission denied
+1824:07-23 12:41:11.033   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup37 (../../devices/platform/soc/a80000.i2c/i2c-4/4-006a/wakeup/wakeup37): Permission denied
+1825:07-23 12:41:11.034   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup17 (../../devices/platform/soc/soc:ant_check_div/wakeup/wakeup17): Permission denied
+1827:07-23 12:41:11.034   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup35 (../../devices/platform/soc/a80000.i2c/i2c-4/4-004e/wakeup/wakeup35): Permission denied
+1828:07-23 12:41:11.035   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup25 (../../devices/platform/soc/a80000.i2c/i2c-4/4-0035/wakeup/wakeup25): Permission denied
+1829:07-23 12:41:11.035   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup43 (../../devices/platform/soc/988000.i2c/i2c-3/3-0059/wakeup/wakeup43): Permission denied
+1830:07-23 12:41:11.036   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup33 (../../devices/platform/soc/a80000.i2c/i2c-4/4-004e/tcpc/type_c_port0/wakeup33): Permission denied
+1831:07-23 12:41:11.036   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup61 (../../devices/platform/soc/soc:qcom,pmic_glink/soc:qcom,pmic_glink:qcom,battery_charger/power_supply/usb-bak/wakeup61): Permission denied
+1832:07-23 12:41:11.036   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup23 (../../devices/platform/soc/990000.i2c/i2c-1/1-002c/wakeup/wakeup23): Permission denied
+1833:07-23 12:41:11.036   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup41 (../../devices/platform/soc/soc:qcom,nopmi-chg/power_supply/usb/wakeup41): Permission denied
+1834:07-23 12:41:11.037   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup31 (../../devices/platform/soc/a80000.i2c/i2c-4/4-004e/tcpc/type_c_port0/wakeup31): Permission denied
+1835:07-23 12:41:11.037   931  2034 E android.system.suspend-service: Error opening kernel wakelock stats for: wakeup21 (../../devices/platform/soc/980000.i2c/i2c-2/2-006d/power_supply/charger_standalone/wakeup21): Permission denied
+1836:07-23 12:41:11.046  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1837:07-23 12:41:11.064  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1838:07-23 12:41:11.065  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1839:07-23 12:41:11.079  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1840:07-23 12:41:11.097  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1841:07-23 12:41:11.113  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1842:07-23 12:41:11.129  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1843:07-23 12:41:11.163  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1844:07-23 12:41:11.179  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1845:07-23 12:41:11.182  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1846:07-23 12:41:11.183  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1847:07-23 12:41:11.196  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1848:07-23 12:41:11.212  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1849:07-23 12:41:11.231  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1850:07-23 12:41:11.232  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1851:07-23 12:41:11.246  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1852:07-23 12:41:11.263  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1853:07-23 12:41:11.280  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1854:07-23 12:41:11.297  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1855:07-23 12:41:11.314  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1856:07-23 12:41:11.330  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1857:07-23 12:41:11.346  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1858:07-23 12:41:11.363  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1859:07-23 12:41:11.380  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1860:07-23 12:41:11.398  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1861:07-23 12:41:11.431  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1862:07-23 12:41:11.447  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1863:07-23 12:41:11.462  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1864:07-23 12:41:11.465  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1865:07-23 12:41:11.480  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1866:07-23 12:41:11.496  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1867:07-23 12:41:11.498  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1868:07-23 12:41:11.518  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1869:07-23 12:41:11.523  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1870:07-23 12:41:11.524  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1889:07-23 12:41:11.550  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1890:07-23 12:41:11.557  4744  4744 D XrealOtaService: Wi-Fi connected, firstQuery = false, currentState = WaitDownload
+1892:07-23 12:41:11.563  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1893:07-23 12:41:11.563  3345  5665 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+1904:07-23 12:41:11.576  3345  5665 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+1907:07-23 12:41:11.579  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1909:07-23 12:41:11.631  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1910:07-23 12:41:11.648  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1911:07-23 12:41:11.664  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1912:07-23 12:41:11.678  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1913:07-23 12:41:11.680  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1914:07-23 12:41:11.698  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1915:07-23 12:41:11.715  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1916:07-23 12:41:11.732  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1917:07-23 12:41:11.736  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1918:07-23 12:41:11.738  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1919:07-23 12:41:11.752  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1920:07-23 12:41:11.767  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1921:07-23 12:41:11.797  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1922:07-23 12:41:11.799  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1923:07-23 12:41:11.816  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1924:07-23 12:41:11.831  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1925:07-23 12:41:11.832  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1926:07-23 12:41:11.920  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1929:07-23 12:41:12.081  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1930:07-23 12:41:12.091  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1931:07-23 12:41:12.093  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1932:07-23 12:41:12.133  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1934:07-23 12:41:12.167  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1935:07-23 12:41:12.243  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1936:07-23 12:41:12.266  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1937:07-23 12:41:12.275  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1938:07-23 12:41:12.277  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1939:07-23 12:41:12.302  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1940:07-23 12:41:12.335  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1943:07-23 12:41:12.629  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1944:07-23 12:41:12.718  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1945:07-23 12:41:12.785  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1946:07-23 12:41:12.818  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1947:07-23 12:41:12.835  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1948:07-23 12:41:12.851  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1949:07-23 12:41:12.856  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1950:07-23 12:41:12.859  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1951:07-23 12:41:12.866  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1952:07-23 12:41:12.876  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1953:07-23 12:41:12.876  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1954:07-23 12:41:12.883  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1955:07-23 12:41:12.900  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1956:07-23 12:41:12.918  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1957:07-23 12:41:12.935  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1958:07-23 12:41:12.952  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1959:07-23 12:41:12.956  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1960:07-23 12:41:12.989  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1961:07-23 12:41:13.019  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1962:07-23 12:41:13.021  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1963:07-23 12:41:13.045  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1964:07-23 12:41:13.047  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1965:07-23 12:41:13.066  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1966:07-23 12:41:13.083  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1967:07-23 12:41:13.101  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1968:07-23 12:41:13.112  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1969:07-23 12:41:13.135  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1970:07-23 12:41:13.151  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1971:07-23 12:41:13.161  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1972:07-23 12:41:13.162  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1973:07-23 12:41:13.184  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1974:07-23 12:41:13.201  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1975:07-23 12:41:13.218  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1976:07-23 12:41:13.234  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1977:07-23 12:41:13.319  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1978:07-23 12:41:13.335  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1979:07-23 12:41:13.369  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1980:07-23 12:41:13.384  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1981:07-23 12:41:13.402  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1982:07-23 12:41:13.418  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1983:07-23 12:41:13.421  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1984:07-23 12:41:13.436  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1985:07-23 12:41:13.452  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1986:07-23 12:41:13.470  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1987:07-23 12:41:13.485  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1988:07-23 12:41:13.502  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1989:07-23 12:41:13.536  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1990:07-23 12:41:13.552  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1991:07-23 12:41:13.569  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1992:07-23 12:41:13.585  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1993:07-23 12:41:13.603  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1994:07-23 12:41:13.619  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1995:07-23 12:41:13.703  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1996:07-23 12:41:13.719  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1997:07-23 12:41:13.736  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1998:07-23 12:41:13.753  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+1999:07-23 12:41:13.786  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2000:07-23 12:41:13.803  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2001:07-23 12:41:13.852  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2002:07-23 12:41:13.870  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2003:07-23 12:41:13.887  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2004:07-23 12:41:13.903  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2005:07-23 12:41:13.919  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2006:07-23 12:41:13.938  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2007:07-23 12:41:13.954  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2008:07-23 12:41:13.971  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2010:07-23 12:41:13.987  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2011:07-23 12:41:13.994  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2012:07-23 12:41:13.999  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2013:07-23 12:41:14.037  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2014:07-23 12:41:14.054  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2015:07-23 12:41:14.071  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2016:07-23 12:41:14.104  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2017:07-23 12:41:14.120  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2020:07-23 12:41:14.138  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2021:07-23 12:41:14.155  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2022:07-23 12:41:14.187  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2023:07-23 12:41:14.203  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2024:07-23 12:41:14.205  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2025:07-23 12:41:14.399  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2026:07-23 12:41:14.455  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2027:07-23 12:41:14.471  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2028:07-23 12:41:14.487  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2029:07-23 12:41:14.497  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2030:07-23 12:41:14.498  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2031:07-23 12:41:14.522  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2032:07-23 12:41:14.523  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2033:07-23 12:41:14.555  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2034:07-23 12:41:14.571  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2035:07-23 12:41:14.588  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2036:07-23 12:41:14.605  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2037:07-23 12:41:14.614  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2038:07-23 12:41:14.638  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2039:07-23 12:41:14.640  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2040:07-23 12:41:14.655  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2041:07-23 12:41:14.672  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2042:07-23 12:41:14.689  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2043:07-23 12:41:14.705  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2044:07-23 12:41:14.738  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2045:07-23 12:41:14.755  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2046:07-23 12:41:14.771  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2047:07-23 12:41:14.788  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2048:07-23 12:41:14.806  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2049:07-23 12:41:14.821  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2050:07-23 12:41:14.838  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2051:07-23 12:41:14.872  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2052:07-23 12:41:14.888  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2053:07-23 12:41:14.905  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2054:07-23 12:41:14.955  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2055:07-23 12:41:14.972  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2056:07-23 12:41:15.056  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2057:07-23 12:41:15.072  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2058:07-23 12:41:15.191  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2059:07-23 12:41:15.207  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2060:07-23 12:41:15.224  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2061:07-23 12:41:15.340  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2062:07-23 12:41:15.356  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2063:07-23 12:41:15.375  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2064:07-23 12:41:15.407  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2069:07-23 12:41:15.423  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2070:07-23 12:41:15.440  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2071:07-23 12:41:15.449 12985 13007 D tag.xreal.client: (ClientBindService.java:212)#bindService | [bindService:  has Bind .]
+2072:07-23 12:41:15.457  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2073:07-23 12:41:15.474  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2074:07-23 12:41:15.524  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2075:07-23 12:41:15.540  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2076:07-23 12:41:15.557  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2077:07-23 12:41:15.575  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2078:07-23 12:41:15.591  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2079:07-23 12:41:15.607  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2080:07-23 12:41:15.624  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2081:07-23 12:41:15.640  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2082:07-23 12:41:15.659  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2083:07-23 12:41:15.675  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2084:07-23 12:41:15.691  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2085:07-23 12:41:15.708  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2086:07-23 12:41:15.742  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2087:07-23 12:41:15.775  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2088:07-23 12:41:15.791  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2089:07-23 12:41:15.809  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2090:07-23 12:41:15.842  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2091:07-23 12:41:15.858  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2093:07-23 12:41:15.882  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2094:07-23 12:41:15.885  3345  4196 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+2098:07-23 12:41:15.891  3345  5618 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+2102:07-23 12:41:15.908  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2112:07-23 12:41:16.008  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2113:07-23 12:41:16.025  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2114:07-23 12:41:16.110  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2115:07-23 12:41:16.125  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2118:07-23 12:41:16.410  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2119:07-23 12:41:16.476  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2120:07-23 12:41:16.493  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2121:07-23 12:41:16.510  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2122:07-23 12:41:16.526  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2123:07-23 12:41:16.559  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2124:07-23 12:41:16.576  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2125:07-23 12:41:16.593  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2126:07-23 12:41:16.609  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2127:07-23 12:41:16.626  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2128:07-23 12:41:16.643  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2129:07-23 12:41:16.660  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2130:07-23 12:41:16.711  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2131:07-23 12:41:16.727  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2132:07-23 12:41:16.743  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2133:07-23 12:41:16.795  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2134:07-23 12:41:16.810  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2135:07-23 12:41:16.827  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2136:07-23 12:41:16.844  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2137:07-23 12:41:16.860  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2138:07-23 12:41:16.877  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2139:07-23 12:41:16.894  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2140:07-23 12:41:16.910  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2141:07-23 12:41:16.927  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2142:07-23 12:41:16.943  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2143:07-23 12:41:16.960  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2144:07-23 12:41:17.028  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2145:07-23 12:41:17.111  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2146:07-23 12:41:17.128  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2147:07-23 12:41:17.138  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2150:07-23 12:41:19.065  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2151:07-23 12:41:19.251  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2152:07-23 12:41:19.265  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2153:07-23 12:41:19.282  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2154:07-23 12:41:19.301  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2155:07-23 12:41:19.316  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2156:07-23 12:41:19.332  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2157:07-23 12:41:19.350  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2158:07-23 12:41:19.366  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2159:07-23 12:41:19.383  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2160:07-23 12:41:19.392  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2161:07-23 12:41:19.395  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2162:07-23 12:41:19.416  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2163:07-23 12:41:19.424  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2164:07-23 12:41:19.426  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2165:07-23 12:41:19.449  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2166:07-23 12:41:19.466  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2167:07-23 12:41:19.483  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2168:07-23 12:41:19.499  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2169:07-23 12:41:19.517  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2170:07-23 12:41:19.535  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2171:07-23 12:41:19.550  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2172:07-23 12:41:19.566  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2173:07-23 12:41:19.583  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2174:07-23 12:41:19.616  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2175:07-23 12:41:19.650  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2176:07-23 12:41:19.683  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2177:07-23 12:41:19.701  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2178:07-23 12:41:19.717  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2179:07-23 12:41:19.734  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2180:07-23 12:41:19.750  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2181:07-23 12:41:19.884  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2182:07-23 12:41:19.901  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2183:07-23 12:41:19.918  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2184:07-23 12:41:19.951  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2185:07-23 12:41:19.967  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2186:07-23 12:41:19.985  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2187:07-23 12:41:20.019  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2190:07-23 12:41:20.369  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2191:07-23 12:41:20.455 12985 13007 D tag.xreal.client: (ClientBindService.java:212)#bindService | [bindService:  has Bind .]
+2192:07-23 12:41:20.519  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2193:07-23 12:41:20.536  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2198:07-23 12:41:20.555  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2199:07-23 12:41:20.569  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2200:07-23 12:41:20.586  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2201:07-23 12:41:20.603  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2202:07-23 12:41:20.621  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2203:07-23 12:41:20.624  3103  3103 D TouchInteractionService: Navigation: formBack currentPackage =com.shadowlens.xrealvoice currentActivity = com.unity3d.player.UnityPlayerActivity
+2205:07-23 12:41:21.933  3345  4196 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+2208:07-23 12:41:21.937  3345  4196 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+2222:07-23 12:41:25.462 12985 13007 D tag.xreal.client: (ClientBindService.java:212)#bindService | [bindService:  has Bind .]
+2230:07-23 12:41:27.641  2161  2340 D ActivityManager: sync unfroze 10778 com.xreal.evapro.store for 3
+2232:07-23 12:41:27.643 10778 10839 D tag.xreal.client: (ClientBindService.java:220)#bindService | [bindService:  has Bind .]
+2238:07-23 12:41:27.995  3345  5733 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+2242:07-23 12:41:28.006  3345  5733 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+2255:07-23 12:41:30.465 12985 13007 D tag.xreal.client: (ClientBindService.java:212)#bindService | [bindService:  has Bind .]
+2260:07-23 12:41:31.000  3345  5733 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+2262:07-23 12:41:31.002  3345  5733 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+2276:07-23 12:41:32.653 10778 10839 D tag.xreal.client: (ClientBindService.java:220)#bindService | [bindService:  has Bind .]
+2279:07-23 12:41:34.043  3345  4196 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+2284:07-23 12:41:34.054  3345  4196 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+2286:07-23 12:41:35.470 12985 13007 D tag.xreal.client: (ClientBindService.java:212)#bindService | [bindService:  has Bind .]
+2296:07-23 12:41:37.659 10778 10839 D tag.xreal.client: (ClientBindService.java:220)#bindService | [bindService:  has Bind .]
+2298:07-23 12:41:37.664  2161  2550 D ActivityManager: freezing 10778 com.xreal.evapro.store
+2299:07-23 12:41:40.001 17841 24506 I BiasUtils: handleMessage: { when=-82ms what=2 target=ai.nreal.sensorcalib.BiasUtils$SerializeHandler }
+2343:07-23 12:41:40.079  3345  3494 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+2348:07-23 12:41:40.085  3345  5618 I NullBinder: NullBinder for android.net.action.RECOMMEND_NETWORKS triggering remote TransactionTooLargeException due to Service without Chimera impl, calling uid: 1000, calling pid: 0
+2381:07-23 12:41:40.473 12985 13007 D tag.xreal.client: (ClientBindService.java:212)#bindService | [bindService:  has Bind .]
+2386:07-23 12:41:45.477 12985 13007 D tag.xreal.client: (ClientBindService.java:212)#bindService | [bindService:  has Bind .]

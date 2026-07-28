@@ -83,15 +83,16 @@
     font-size: 12px; font-weight: 800; letter-spacing: 1px;
     margin-bottom: 10px;
   }
-  .persona .verdict.approve { background: rgba(43, 165, 96, 0.16); color: #2BA560; }
+  .persona .verdict.approve { background: rgba(59, 130, 246, 0.16); color: #3B82F6; }  /* decision blue, not verification green (§4) */
   .persona .verdict.escalate { background: rgba(229, 167, 63, 0.16); color: #E5A73F; }
   .persona .verdict.block { background: rgba(229, 42, 90, 0.16); color: #E52A5A; }
   .persona .verdict.refuse_to_serve { background: rgba(139, 92, 246, 0.16); color: #8B5CF6; }
   .persona .rationale {
     font-size: 13px; line-height: 1.55;
     color: #A3A5AA;
-    max-height: 5.5em; overflow: hidden;
-    text-overflow: ellipsis;
+    /* proper multiline truncation — text-overflow:ellipsis is single-line only (deep-audit §14 fix) */
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .persona.no-council .rationale::after {
     content: "Awaiting deliberation…";
@@ -99,23 +100,24 @@
   }
   .persona.no-council .rationale { min-height: 2em; }
 
-  /* Center verdict pill */
+  /* Conclusion verdict pill — a HEADER banner, not over the persona arc (deep-audit §14: was top:42%
+     centre, overlapping 3 of the 5 persona cards). */
   .verdict-pill {
-    position: absolute;
-    left: 50%; top: 42%;
-    transform: translate(-50%, -50%);
-    z-index: 10;
-    padding: 20px 40px;
+    align-self: center; z-index: 10;
+    padding: 14px 40px; margin: 4px auto 0;
     border-radius: 999px;
-    font-size: 36px; font-weight: 900; letter-spacing: 3px;
+    font-size: 32px; font-weight: 900; letter-spacing: 3px;
     background: rgba(0, 0, 0, 0.6);
     border: 2px solid;
     backdrop-filter: blur(20px);
-    opacity: 0;
+    opacity: 0; transform: scale(0.92);
     transition: opacity 0.6s ease, transform 0.6s ease;
   }
-  .verdict-pill.mounted { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-  .verdict-pill.approve { border-color: #2BA560; color: #2BA560; }
+  .verdict-pill.mounted { opacity: 1; transform: scale(1); }
+  /* Business APPROVAL uses a brand/decision treatment + an explicit ✓ stamp — NOT the cryptographic
+     verification green, which stays reserved for integrity verification (deep-audit §4/§14). */
+  .verdict-pill.approve { border-color: #3B82F6; color: #3B82F6; }
+  .verdict-pill.approve::before, .persona .verdict.approve::before { content: "✓ "; }
   .verdict-pill.escalate { border-color: #E5A73F; color: #E5A73F; }
   .verdict-pill.block { border-color: #E52A5A; color: #E52A5A; }
   .verdict-pill.refuse_to_serve { border-color: #8B5CF6; color: #8B5CF6; }
@@ -179,9 +181,11 @@
 
   <div class="question" id="question">Loading…</div>
 
-  <div class="arc" id="arc">
-    <div class="verdict-pill pending mounted" id="verdict-pill">DELIBERATING</div>
-  </div>
+  <!-- Conclusion verdict is a flow header BETWEEN the question and the persona arc — never overlapping the
+       cards (deep-audit §14; was absolutely positioned at top:42% inside #arc, covering 3 of 5 cards). -->
+  <div class="verdict-pill pending mounted" id="verdict-pill">DELIBERATING</div>
+
+  <div class="arc" id="arc"></div>
 
   <div class="context" id="context"></div>
 
@@ -262,7 +266,9 @@ function renderDescriptor(d) {
   // as the 171-inch floating screen.
   const arc = document.getElementById("arc");
   arc.querySelectorAll(".persona").forEach((el) => el.remove());
-  const SCALE_X = 260;  // px per meter
+  // Responsive horizontal spread (deep-audit §14: fixed 260px/m clumped the 5 personas into the centre
+  // ~700px of wide screens). Scale with viewport so cards spread on wide displays, clamped for small ones.
+  const SCALE_X = Math.max(230, Math.min(420, window.innerWidth * 0.16));  // px per meter (personas span ±1.2m)
   const SCALE_Y = 200;
   const SCALE_Z = 100;
   for (let i = 0; i < d.personas.length; i++) {
@@ -273,11 +279,24 @@ function renderDescriptor(d) {
     el.style.borderLeftColor = p.accent_color;
     el.style.transform =
       `translate3d(${p.position.x * SCALE_X}px, ${p.position.y * SCALE_Y}px, ${p.position.z * SCALE_Z}px)`;
-    el.innerHTML = `
-      <div class="name" style="color: ${p.accent_color}">${p.display_name}</div>
-      ${p.verdict ? `<div class="verdict ${p.verdict}">${p.verdict.toUpperCase().replace(/_/g, " ")}</div>` : ""}
-      <div class="rationale">${p.rationale || ""}</div>
-    `;
+    // Build persona card with explicit nodes + textContent — /api/ambient-turn is LLM output and MUST NOT
+    // be parsed as HTML (P1 security fix from the 2026-07 deep-audit; was innerHTML with interpolated
+    // display_name/rationale/verdict → prompt-injection → script execution). All dynamic values are text.
+    const name = document.createElement("div");
+    name.className = "name";
+    if (typeof p.accent_color === "string") name.style.color = p.accent_color;   // CSS, cannot execute
+    name.textContent = p.display_name == null ? "" : String(p.display_name);
+    el.appendChild(name);
+    if (p.verdict) {
+      const v = document.createElement("div");
+      v.className = "verdict " + String(p.verdict).replace(/[^a-zA-Z0-9_-]/g, "");   // safe class token
+      v.textContent = String(p.verdict).toUpperCase().replace(/_/g, " ");
+      el.appendChild(v);
+    }
+    const rat = document.createElement("div");
+    rat.className = "rationale";
+    rat.textContent = p.rationale == null ? "" : String(p.rationale);
+    el.appendChild(rat);
     arc.appendChild(el);
     // Stagger the mount so cards fade in one by one
     setTimeout(() => el.classList.add("mounted"), 300 + i * 220);
@@ -299,8 +318,12 @@ function renderDescriptor(d) {
   ctx.innerHTML = "";
   for (const n of d.context_nodes) {
     const el = document.createElement("div");
-    el.className = `node anchor-${n.anchor}`;
-    el.innerHTML = `<span class="label">${n.label}</span><span class="value">${n.value}</span>`;
+    el.className = "node anchor-" + String(n.anchor == null ? "" : n.anchor).replace(/[^a-zA-Z0-9_-]/g, "");
+    // text-safe: label/value come from /api/ambient-turn (LLM) — never parse as HTML (P1 security fix).
+    const label = document.createElement("span");
+    label.className = "label"; label.textContent = n.label == null ? "" : String(n.label); el.appendChild(label);
+    const value = document.createElement("span");
+    value.className = "value"; value.textContent = n.value == null ? "" : String(n.value); el.appendChild(value);
     ctx.appendChild(el);
   }
 }

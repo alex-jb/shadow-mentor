@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; frame-src 'self'; base-uri 'none'; form-action 'none'; connect-src 'none'" />
+<title>Shadow — inspectable, replayable, independently-verifiable AI evidence</title>
+<style>
+  :root{--bg:#0b0d10;--panel:#14181e;--bd:#232830;--text:#e6e6e6;--dim:#8a92a0;--ok:#4ade80;--bad:#ef4444;--warn:#fbbf24;--accent:#60a5fa;--mono:ui-monospace,Menlo,Consolas,monospace}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+  a.skip{position:absolute;left:-999px} a.skip:focus{left:8px;top:8px;background:var(--accent);color:#0b0d10;padding:6px 10px;border-radius:6px;z-index:20}
+  .wrap{max-width:1040px;margin:0 auto;padding:20px 16px}
+  header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px}
+  h1{font-size:22px;margin:0} .lead{color:var(--dim);font-size:14px;margin:4px 0 0}
+  .badge{display:inline-block;font-size:11px;font-family:var(--mono);color:var(--warn);border:1px solid var(--warn);border-radius:5px;padding:1px 6px}
+  button{font:inherit;cursor:pointer;border-radius:7px;border:1px solid var(--bd);background:var(--panel);color:var(--text);padding:6px 12px}
+  button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  button[aria-pressed="true"]{background:var(--accent);color:#0b0d10;border-color:var(--accent)}
+  .prog{color:var(--dim);font-family:var(--mono);font-size:13px}
+  .cards{display:grid;grid-template-columns:1fr;gap:14px;margin-top:16px}
+  .card{background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:14px;display:grid;grid-template-columns:220px 1fr;gap:14px}
+  @media(max-width:680px){.card{grid-template-columns:1fr}}
+  .card img{width:100%;border:1px solid var(--bd);border-radius:8px;aspect-ratio:16/9;object-fit:cover;object-position:top left}
+  .card h2{font-size:15px;margin:0 0 4px} .card .q{font-size:13px;color:var(--text)} .card .a{font-size:13px;color:var(--dim);margin:2px 0 8px}
+  .pdl{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;font-size:12px;margin:8px 0}
+  @media(max-width:520px){.pdl{grid-template-columns:1fr}}
+  .pdl .proves{color:var(--ok)} .pdl .not{color:var(--warn)}
+  .step-badge{font-family:var(--mono);font-size:11px;color:var(--dim)}
+  #stage{margin-top:14px;background:var(--panel);border:1px solid var(--accent);border-radius:12px;padding:8px;display:none}
+  #stage.open{display:block} #stage .sbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+  #stage h3{font-size:14px;margin:0;flex:1} .frameWrap{position:relative;width:100%;aspect-ratio:16/10;background:#0e1420;border-radius:8px;overflow:hidden}
+  .frameWrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .loading,.failed{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:13px}
+  .net{margin-top:16px;color:var(--dim);font-size:12px;border-top:1px solid var(--bd);padding-top:10px}
+  .foot{margin-top:14px;color:var(--dim);font-size:12px}
+</style>
+</head>
+<body>
+<a class="skip" href="#main" id="t-skip">Skip to content</a>
+<div class="wrap">
+  <header>
+    <div><h1 id="t-title">Shadow</h1><p class="lead" id="t-lead">Evidence that can be inspected, replayed and independently verified.</p><span class="badge" id="t-fix">INTERACTIVE FIXTURE DEMONSTRATIONS</span></div>
+    <div><span class="prog" id="prog">— / 3</span> <button id="lang-en" aria-pressed="true">EN</button><button id="lang-zh" aria-pressed="false">中文</button></div>
+  </header>
+  <main id="main">
+    <div class="cards" id="cards"></div>
+    <section id="stage" role="dialog" aria-label="interactive explainer" aria-live="polite">
+      <div class="sbar"><span class="step-badge" id="s-step"></span><h3 id="s-title"></h3>
+        <button id="s-prev" data-i="prev">◀ Prev</button><button id="s-next" data-i="next">Next ▶</button>
+        <button id="s-restart" data-i="restart">↻ Restart demo</button><button id="s-close" data-i="close">✕ Close</button></div>
+      <div class="frameWrap" id="fw"></div>
+    </section>
+    <div class="net" id="net"></div>
+    <p class="foot" id="t-foot">Frozen Wednesday verifier package is not modified by this page. Production integration remains separate.</p>
+  </main>
+</div>
+<script type="module">
+import { EMBED_PROTOCOL, validateMessage } from "./shadow-embed-protocol.mjs";
+const ORDER = ["audit-chain", "reason-code", "persona-deliberation"];
+const EX = {
+  "audit-chain": { path: "../apps/shadow-lens/explainers/audit-chain.html", poster: "posters/audit-chain.png",
+    en:{ step:"STEP 1", title:"Audit chain", q:"Was the recorded workflow changed after it was sealed?", a:"A hash-chained, Ed25519-signed provenance chain — tamper one link and every downstream link fails.", proves:"The supplied record matches the sealed evidence.", not:"The analytical conclusion is correct." },
+    zh:{ step:"步骤 1", title:"审计链", q:"封存后的工作流程记录是否被修改?", a:"哈希链 + Ed25519 签名的溯源链——篡改任一环,其后每一环都失败。", proves:"当前记录与封存证据一致。", not:"分析结论一定正确。" } },
+  "reason-code": { path: "animations/reason-code-attestation.html", poster: "posters/reason-code.png",
+    en:{ step:"STEP 2", title:"Reason-code binding", q:"Is the displayed decision reason the same version bound to the original attestation?", a:"The reason is bound to a hashed, versioned dictionary — changing the text after signing is caught.", proves:"The reason text/version is the one that was bound + signed.", not:"The reason is adequate, fair, legal, or correct." },
+    zh:{ step:"步骤 2", title:"理由代码绑定", q:"当前显示的决策理由,是否就是原始证明中绑定的版本?", a:"理由绑定到哈希化的版本字典——签名后改文字会被抓到。", proves:"理由文字/版本就是被绑定并签名的那个。", not:"理由充分、公平、合法或正确。" } },
+  "persona-deliberation": { path: "animations/persona-deliberation.html", poster: "posters/persona-deliberation.png",
+    en:{ step:"STEP 3", title:"Persona deliberation", q:"How are multiple analytical perspectives combined without treating a vote as truth?", a:"Configured perspectives over shared evidence; dissent, unsupported claims and abstention are preserved.", proves:"The synthesis traces to evidence; majority is descriptive only.", not:"Majority proves correctness, or that any conclusion is correct." },
+    zh:{ step:"步骤 3", title:"Persona 审议", q:"多个分析视角如何综合,同时避免把多数意见当作事实?", a:"对共享证据的配置化视角;分歧、无证据主张、弃权都被保留。", proves:"综合可溯源到证据;多数仅为描述性。", not:"多数证明正确,或任何结论一定正确。" } },
+};
+const I18N = { en:{ title:"Shadow", lead:"Evidence that can be inspected, replayed and independently verified.", fix:"INTERACTIVE FIXTURE DEMONSTRATIONS", skip:"Skip to content", open:"Open interactive demo", proves:"WHAT THIS PROVES", not:"WHAT THIS DOES NOT PROVE", prev:"◀ Prev", next:"Next ▶", restart:"↻ Restart demo", close:"✕ Close", loading:"Loading…", failed:"Could not load the demo.", net:"All explainers run locally in the browser using deterministic fixture data. External requests: 0 · analytics: disabled · telemetry: disabled · no model API · no evidence upload · no third-party fonts · no CDN · no cookies.", foot:"Frozen Wednesday verifier package is not modified by this page. Production integration remains separate." },
+  zh:{ title:"Shadow", lead:"可检查、可回放、可独立验证的 AI 证据。", fix:"交互式测试数据演示", skip:"跳到内容", open:"打开交互演示", proves:"能证明什么", not:"不能证明什么", prev:"◀ 上一步", next:"下一步 ▶", restart:"↻ 重启演示", close:"✕ 关闭", loading:"加载中……", failed:"无法加载演示。", net:"所有解释动画均使用确定性测试数据在本地浏览器中运行。外部请求:0 · 分析:已禁用 · 遥测:已禁用 · 无模型 API · 不上传证据 · 无第三方字体 · 无 CDN · 无 cookie。", foot:"本页面不修改冻结的 Wednesday 验证器包。生产集成保持独立。" } };
+let LANG = "en", CURRENT = null, opener = null;
+const T = () => I18N[LANG], esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+function renderCards() {
+  document.getElementById("cards").innerHTML = ORDER.map((id) => { const e = EX[id], t = e[LANG];
+    return `<article class="card"><img src="${esc(e.poster)}" alt="${esc(t.title)} — browser-rendered fixture preview" loading="lazy" />
+      <div><div class="step-badge">${esc(t.step)}</div><h2>${esc(t.title)}</h2><div class="q">${esc(t.q)}</div><div class="a">${esc(t.a)}</div>
+      <div class="pdl"><div class="proves">${esc(T().proves)}</div><div class="not">${esc(T().not)}</div><div>${esc(t.proves)}</div><div>${esc(t.not)}</div></div>
+      <button class="openbtn" data-id="${id}" aria-haspopup="dialog">${esc(T().open)}</button></div></article>`; }).join("");
+}
+function openDemo(id, ev) {
+  CURRENT = id; if (ev?.currentTarget) opener = ev.currentTarget; else opener = document.querySelector(`.openbtn[data-id="${id}"]`);
+  const e = EX[id], t = e[LANG];
+  document.getElementById("s-step").textContent = t.step; document.getElementById("s-title").textContent = t.title;
+  document.getElementById("prog").textContent = `${ORDER.indexOf(id) + 1} / 3`;
+  const fw = document.getElementById("fw"); fw.innerHTML = `<div class="loading">${esc(T().loading)}</div>`;
+  const iframe = document.createElement("iframe");
+  iframe.title = t.title + " interactive explainer"; iframe.loading = "lazy";
+  iframe.setAttribute("sandbox", "allow-scripts");
+  iframe.src = e.path;
+  iframe.addEventListener("load", () => { const l = fw.querySelector(".loading"); if (l) l.remove(); });
+  iframe.addEventListener("error", () => { fw.innerHTML = `<div class="failed">${esc(T().failed)}</div>`; });
+  fw.appendChild(iframe);
+  document.getElementById("stage").classList.add("open"); document.getElementById("s-close").focus();
+}
+function closeDemo() { document.getElementById("fw").innerHTML = ""; document.getElementById("stage").classList.remove("open"); document.getElementById("prog").textContent = "— / 3"; if (opener) opener.focus(); CURRENT = null; }
+function step(d) { if (!CURRENT) return; const i = ORDER.indexOf(CURRENT) + d; if (i >= 0 && i < ORDER.length) openDemo(ORDER[i]); }
+function applyLang() {
+  document.documentElement.lang = LANG === "zh" ? "zh-CN" : "en"; const t = T();
+  for (const [id, k] of [["t-title","title"],["t-lead","lead"],["t-fix","fix"],["t-skip","skip"],["t-foot","foot"]]) document.getElementById(id).textContent = t[k];
+  for (const [id, k] of [["s-prev","prev"],["s-next","next"],["s-restart","restart"],["s-close","close"]]) document.getElementById(id).textContent = t[k];
+  document.getElementById("net").textContent = t.net;
+  document.getElementById("lang-en").setAttribute("aria-pressed", String(LANG === "en")); document.getElementById("lang-zh").setAttribute("aria-pressed", String(LANG === "zh"));
+  renderCards(); if (CURRENT) openDemo(CURRENT);
+}
+document.getElementById("cards").addEventListener("click", (e) => { const b = e.target.closest(".openbtn"); if (b) openDemo(b.dataset.id, e); });
+document.getElementById("s-prev").onclick = () => step(-1); document.getElementById("s-next").onclick = () => step(1);
+document.getElementById("s-restart").onclick = () => { if (CURRENT) openDemo(CURRENT); }; document.getElementById("s-close").onclick = closeDemo;
+document.getElementById("lang-en").onclick = () => { LANG = "en"; applyLang(); }; document.getElementById("lang-zh").onclick = () => { LANG = "zh"; applyLang(); };
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && CURRENT) closeDemo(); });
+window.addEventListener("message", (event) => { const v = validateMessage(event, { allowedOrigins: [location.origin], direction: "child_to_parent" }); if (!v.ok) return; if (v.message.type === "ERROR") console.warn("[embed] child error", v.message.id); });
+window.__embedProtocol = EMBED_PROTOCOL; window.__ready = true; applyLang();
+</script>
+</body>
+</html>

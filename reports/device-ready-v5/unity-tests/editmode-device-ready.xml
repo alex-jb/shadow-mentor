@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="16" result="Passed" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.0164431">
+  <test-suite type="TestSuite" id="1000" name="unity" fullname="unity" runstate="Runnable" testcasecount="74" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.016443" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1086" name="ShadowLens.Tests.dll" fullname="/Users/alexji/Desktop/AI-Projects/shadow-mentor-story-adapters/apps/shadow-lens/unity/Library/ScriptAssemblies/ShadowLens.Tests.dll" runstate="Runnable" testcasecount="54" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.014696" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="12406" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1087" name="ShadowLens" fullname="ShadowLens" runstate="Runnable" testcasecount="54" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.014608" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1088" name="Tests" fullname="ShadowLens.Tests" runstate="Runnable" testcasecount="54" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.014548" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1026" name="ShadowDeviceReadyEditTests" fullname="ShadowLens.Tests.ShadowDeviceReadyEditTests" classname="ShadowLens.Tests.ShadowDeviceReadyEditTests" runstate="Runnable" testcasecount="16" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.014022" total="16" passed="16" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1039" name="BackCancel_AbortPendingConfirmationAndAreAlwaysReachable" fullname="ShadowLens.Tests.ShadowDeviceReadyEditTests.BackCancel_AbortPendingConfirmationAndAreAlwaysReachable" methodname="BackCancel_AbortPendingConfirmationAndAreAlwaysReachable" classname="ShadowLens.Tests.ShadowDeviceReadyEditTests" runstate="Runnable" seed="1605595595" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.005847" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1040" name="BareConfirm_WithNothingPending_IsNoop" fullname="ShadowLens.Tests.ShadowDeviceReadyEditTests.BareConfirm_WithNothingPending_IsNoop" methodname="BareConfirm_WithNothingPending_IsNoop" classname="ShadowLens.Tests.ShadowDeviceReadyEditTests" runstate="Runnable" seed="260870932" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.000415" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1028" name="BeamPro_NotInferredFromAndroidAlone" fullname="ShadowLens.Tests.ShadowDeviceReadyEditTests.BeamPro_NotInferredFromAndroidAlone" methodname="BeamPro_NotInferredFromAndroidAlone" classname="ShadowLens.Tests.ShadowDeviceReadyEditTests" runstate="Runnable" seed="1336152806" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.000210" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1042" name="CapabilityReport_IsEvidenceFreeAndNamesUnsupported" fullname="ShadowLens.Tests.ShadowDeviceReadyEditTests.CapabilityReport_IsEvidenceFreeAndNamesUnsupported" methodname="CapabilityReport_IsEvidenceFreeAndNamesUnsupported" classname="ShadowLens.Tests.ShadowDeviceReadyEditTests" runstate="Runnable" seed="811256972" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.001245" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1038" name="DestructiveAction_RequiresSeparateConfirm" fullname="ShadowLens.Tests.ShadowDeviceReadyEditTests.DestructiveAction_RequiresSeparateConfirm" methodname="DestructiveAction_RequiresSeparateConfirm" classname="ShadowLens.Tests.ShadowDeviceReadyEditTests" runstate="Runnable" seed="955156773" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.000134" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1032" name="DeviceValidated_RequiresEvidenceAndNotEditorOrEmulator" fullname="ShadowLens.Tests.ShadowDeviceReadyEditTests.DeviceValidated_RequiresEvidenceAndNotEditorOrEmulator" methodname="DeviceValidated_RequiresEvidenceAndNotEditorOrEmulator" classname="ShadowLens.Tests.ShadowDeviceReadyEditTests" runstate="Runnable" seed="484569705" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.000059" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1036" name="EveryStateHasHonestBilingualInfoWithRecovery" fullname="ShadowLens.Tests.ShadowDeviceReadyEditTests.EveryStateHasHonestBilingualInfoWithRecovery" methodname="EveryStateHasHonestBilingualInfoWithRecovery" classname="ShadowLens.Tests.ShadowDeviceReadyEditTests" runstate="Runnable" seed="304459322" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.000652" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1033" name="FirstPersonView_NotClaimedUntilNonBlackFrame" fullname="ShadowLens.Tests.ShadowDeviceReadyEditTests.FirstPersonView_NotClaimedUntilNonBlackFrame" methodname="FirstPersonView_NotClaimedUntilNonBlackFrame" classname="ShadowLens.Tests.ShadowDeviceReadyEditTests" runstate="Runnable" seed="1824766676" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.000058" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1041" name="NonDestructiveActions_DispatchImmediately" fullname="ShadowLens.Tests.ShadowDeviceReadyEditTests.NonDestructiveActions_DispatchImmediately" methodname="NonDestructiveActions_DispatchImmediately" classname="ShadowLens.Tests.ShadowDeviceReadyEditTests" runstate="Runnable" seed="1076016288" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.000038" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1027" name="NullProbe_FailsClosedToDesktopMock" fullname="ShadowLens.Tests.ShadowDeviceReadyEditTests.NullProbe_FailsClosedToDesktopMock" methodname="NullProbe_FailsClosedToDesktopMock" classname="ShadowLens.Tests.ShadowDeviceReadyEditTests" runstate="Runnable" seed="1374351991" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.000038" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1037" name="PassiveChannel_OnlyProducesFocus" fullname="ShadowLens.Tests.ShadowDeviceReadyEditTests.PassiveChannel_OnlyProducesFocus" methodname="PassiveChannel_OnlyProducesFocus" classname="ShadowLens.Tests.ShadowDeviceReadyEditTests" runstate="Runnable" seed="1466880427" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.000087" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1029" name="SixDof_NotInferredFromGlassesOrSdkSymbolAlone" fullname="ShadowLens.Tests.ShadowDeviceReadyEditTests.SixDof_NotInferredFromGlassesOrSdkSymbolAlone" methodname="SixDof_NotInferredFromGlassesOrSdkSymbolAlone" classname="ShadowLens.Tests.ShadowDeviceReadyEditTests" runstate="Runnable" seed="1515369642" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.000059" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1030" name="SixDof_RequiresEyePlusSixDofPlusTranslation" fullname="ShadowLens.Tests.ShadowDeviceReadyEditTests.SixDof_RequiresEyePlusSixDofPlusTranslation" methodname="SixDof_RequiresEyePlusSixDofPlusTranslation" classname="ShadowLens.Tests.ShadowDeviceReadyEditTests" runstate="Runnable" seed="1394551041" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.000039" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1034" name="TrackingHealth_OverridesToLimitedOrLost" fullname="ShadowLens.Tests.ShadowDeviceReadyEditTests.TrackingHealth_OverridesToLimitedOrLost" methodname="TrackingHealth_OverridesToLimitedOrLost" classname="ShadowLens.Tests.ShadowDeviceReadyEditTests" runstate="Runnable" seed="1954367435" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.000034" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1035" name="TrackingStateMachine_ScanningIsLimited_NotLost" fullname="ShadowLens.Tests.ShadowDeviceReadyEditTests.TrackingStateMachine_ScanningIsLimited_NotLost" methodname="TrackingStateMachine_ScanningIsLimited_NotLost" classname="ShadowLens.Tests.ShadowDeviceReadyEditTests" runstate="Runnable" seed="741890118" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.000081" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1031" name="UnsupportedCapabilities_AreNeverSet" fullname="ShadowLens.Tests.ShadowDeviceReadyEditTests.UnsupportedCapabilities_AreNeverSet" methodname="UnsupportedCapabilities_AreNeverSet" classname="ShadowLens.Tests.ShadowDeviceReadyEditTests" runstate="Runnable" seed="1678310422" result="Passed" start-time="2026-07-22 01:41:15Z" end-time="2026-07-22 01:41:15Z" duration="0.000186" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: /private/tmp/claude-501/-Users-alexji-Desktop-vibex/cfb502a3-1a5c-4f60-a390-d756b56a18f1/scratchpad/editmode-v5.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

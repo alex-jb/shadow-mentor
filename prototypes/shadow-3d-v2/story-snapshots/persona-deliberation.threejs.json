@@ -1,0 +1,682 @@
+{
+  "compiler_version": "shadow-guided-story-compiler/1",
+  "target": "threejs",
+  "semantic_hash": "cf2379348fb67e2e0385ef38e91d24e61247d4fe06758c4623fb0dbd1df2f441",
+  "semantic": {
+    "entities": [
+      {
+        "a11y": {
+          "en": "shared evidence E-101: High revolving utilization",
+          "zh": "共享证据 E-101:循环额度使用率高"
+        },
+        "evidence_ref": null,
+        "id": "E-101",
+        "kind": "shared_evidence",
+        "label": {
+          "en": "High revolving utilization",
+          "zh": "循环额度使用率高"
+        },
+        "sequence": 5,
+        "trust_dimension": null
+      },
+      {
+        "a11y": {
+          "en": "shared evidence E-102: Verified income documentation",
+          "zh": "共享证据 E-102:已核验收入文件"
+        },
+        "evidence_ref": null,
+        "id": "E-102",
+        "kind": "shared_evidence",
+        "label": {
+          "en": "Verified income documentation",
+          "zh": "已核验收入文件"
+        },
+        "sequence": 6,
+        "trust_dimension": null
+      },
+      {
+        "a11y": {
+          "en": "shared evidence E-103: Recent delinquency record",
+          "zh": "共享证据 E-103:近期逾期记录"
+        },
+        "evidence_ref": null,
+        "id": "E-103",
+        "kind": "shared_evidence",
+        "label": {
+          "en": "Recent delinquency record",
+          "zh": "近期逾期记录"
+        },
+        "sequence": 7,
+        "trust_dimension": null
+      },
+      {
+        "a11y": {
+          "en": "shared evidence E-104: Long-standing customer relationship",
+          "zh": "共享证据 E-104:长期客户关系"
+        },
+        "evidence_ref": null,
+        "id": "E-104",
+        "kind": "shared_evidence",
+        "label": {
+          "en": "Long-standing customer relationship",
+          "zh": "长期客户关系"
+        },
+        "sequence": 8,
+        "trust_dimension": null
+      },
+      {
+        "a11y": {
+          "en": "shared evidence E-105: Policy exception criteria",
+          "zh": "共享证据 E-105:政策例外条件"
+        },
+        "evidence_ref": null,
+        "id": "E-105",
+        "kind": "shared_evidence",
+        "label": {
+          "en": "Policy exception criteria",
+          "zh": "政策例外条件"
+        },
+        "sequence": 9,
+        "trust_dimension": null
+      },
+      {
+        "a11y": {
+          "en": "analytical perspective Customer Advocate",
+          "zh": "分析视角:客户倡导"
+        },
+        "evidence_ref": null,
+        "id": "persona:CA",
+        "kind": "persona",
+        "label": {
+          "en": "Customer Advocate",
+          "zh": "客户倡导"
+        },
+        "sequence": 3,
+        "trust_dimension": "PERSONA_OUTPUT_INTEGRITY"
+      },
+      {
+        "a11y": {
+          "en": "analytical perspective Credit Fundamentals",
+          "zh": "分析视角:信贷基本面"
+        },
+        "evidence_ref": null,
+        "id": "persona:CF",
+        "kind": "persona",
+        "label": {
+          "en": "Credit Fundamentals",
+          "zh": "信贷基本面"
+        },
+        "sequence": 0,
+        "trust_dimension": "PERSONA_OUTPUT_INTEGRITY"
+      },
+      {
+        "a11y": {
+          "en": "analytical perspective Fair Lending Compliance",
+          "zh": "分析视角:公平放贷合规"
+        },
+        "evidence_ref": null,
+        "id": "persona:FL",
+        "kind": "persona",
+        "label": {
+          "en": "Fair Lending Compliance",
+          "zh": "公平放贷合规"
+        },
+        "sequence": 2,
+        "trust_dimension": "PERSONA_OUTPUT_INTEGRITY"
+      },
+      {
+        "a11y": {
+          "en": "analytical perspective Macro Contrarian",
+          "zh": "分析视角:宏观逆向"
+        },
+        "evidence_ref": null,
+        "id": "persona:MC",
+        "kind": "persona",
+        "label": {
+          "en": "Macro Contrarian",
+          "zh": "宏观逆向"
+        },
+        "sequence": 4,
+        "trust_dimension": "PERSONA_OUTPUT_INTEGRITY"
+      },
+      {
+        "a11y": {
+          "en": "analytical perspective Risk Officer",
+          "zh": "分析视角:风险官"
+        },
+        "evidence_ref": null,
+        "id": "persona:RO",
+        "kind": "persona",
+        "label": {
+          "en": "Risk Officer",
+          "zh": "风险官"
+        },
+        "sequence": 1,
+        "trust_dimension": "PERSONA_OUTPUT_INTEGRITY"
+      },
+      {
+        "a11y": {
+          "en": "synthesis over the perspectives; majority is descriptive only",
+          "zh": "对各视角的综合;多数仅为描述性"
+        },
+        "evidence_ref": null,
+        "id": "persona:synthesis",
+        "kind": "synthesis",
+        "label": {
+          "en": "Evidence-grounded synthesis",
+          "zh": "以证据为基础的综合"
+        },
+        "sequence": 10,
+        "trust_dimension": "SYNTHESIS_PROVENANCE"
+      }
+    ],
+    "provenance_mode": "FIXTURE",
+    "relations": [
+      {
+        "from": "persona:CA",
+        "id": "s4",
+        "to": "E-104",
+        "type": "SUPPORTS"
+      },
+      {
+        "from": "persona:CF",
+        "id": "s1",
+        "to": "E-101",
+        "type": "SUPPORTS"
+      },
+      {
+        "from": "persona:FL",
+        "id": "s3",
+        "to": "E-105",
+        "type": "SUPPORTS"
+      },
+      {
+        "from": "persona:MC",
+        "id": "s5",
+        "to": "E-102",
+        "type": "SUPPORTS"
+      },
+      {
+        "from": "persona:RO",
+        "id": "s2",
+        "to": "E-103",
+        "type": "SUPPORTS"
+      },
+      {
+        "from": "persona:CA",
+        "id": "y4",
+        "to": "persona:synthesis",
+        "type": "SYNTHESIZES_INTO"
+      },
+      {
+        "from": "persona:CF",
+        "id": "y1",
+        "to": "persona:synthesis",
+        "type": "SYNTHESIZES_INTO"
+      },
+      {
+        "from": "persona:FL",
+        "id": "y3",
+        "to": "persona:synthesis",
+        "type": "SYNTHESIZES_INTO"
+      },
+      {
+        "from": "persona:MC",
+        "id": "y5",
+        "to": "persona:synthesis",
+        "type": "SYNTHESIZES_INTO"
+      },
+      {
+        "from": "persona:RO",
+        "id": "y2",
+        "to": "persona:synthesis",
+        "type": "SYNTHESIZES_INTO"
+      }
+    ],
+    "scenarios": [
+      {
+        "affected_downstream": [],
+        "dimension_status": {
+          "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+          "CLAIM_EVIDENCE_BINDING": "VERIFIED",
+          "HUMAN_APPROVAL": "NOT_PRESENT",
+          "LEGAL_FAIRNESS_REVIEW": "REQUIRES_HUMAN_REVIEW",
+          "PERSONA_OUTPUT_INTEGRITY": "VERIFIED",
+          "SOURCE_RESOLUTION": "VERIFIED",
+          "SYNTHESIS_PROVENANCE": "VERIFIED"
+        },
+        "entity_status": {
+          "E-101": "PRESENT",
+          "E-102": "PRESENT",
+          "E-103": "PRESENT",
+          "E-104": "PRESENT",
+          "E-105": "PRESENT",
+          "persona:CA": "VERIFIED",
+          "persona:CF": "VERIFIED",
+          "persona:FL": "ABSTAINED",
+          "persona:MC": "VERIFIED",
+          "persona:RO": "VERIFIED",
+          "persona:synthesis": "REQUIRES_HUMAN_REVIEW"
+        },
+        "first_failure": "persona:FL",
+        "id": "abstain",
+        "label": {
+          "en": "Abstain — insufficient evidence",
+          "zh": "弃权——证据不足"
+        },
+        "note": {
+          "en": "Source first_warning ABSTENTION (FL abstains rather than assert).",
+          "zh": "源 first_warning 为 ABSTENTION(FL 弃权而非主张)。"
+        }
+      },
+      {
+        "affected_downstream": [],
+        "dimension_status": {
+          "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+          "CLAIM_EVIDENCE_BINDING": "VERIFIED",
+          "HUMAN_APPROVAL": "NOT_PRESENT",
+          "LEGAL_FAIRNESS_REVIEW": "REQUIRES_HUMAN_REVIEW",
+          "PERSONA_OUTPUT_INTEGRITY": "VERIFIED",
+          "SOURCE_RESOLUTION": "VERIFIED",
+          "SYNTHESIS_PROVENANCE": "VERIFIED"
+        },
+        "entity_status": {
+          "E-101": "PRESENT",
+          "E-102": "PRESENT",
+          "E-103": "PRESENT",
+          "E-104": "PRESENT",
+          "E-105": "PRESENT",
+          "persona:CA": "VERIFIED",
+          "persona:CF": "VERIFIED",
+          "persona:FL": "VERIFIED",
+          "persona:MC": "VERIFIED",
+          "persona:RO": "VERIFIED",
+          "persona:synthesis": "REQUIRES_HUMAN_REVIEW"
+        },
+        "first_failure": null,
+        "id": "consensus_with_evidence",
+        "label": {
+          "en": "Consensus with evidence",
+          "zh": "有证据的共识"
+        },
+        "note": {
+          "en": "All perspectives grounded; analytical correctness still NOT evaluated; human approval NOT present.",
+          "zh": "所有视角均有依据;分析正确性仍不评估;人工批准不存在。"
+        }
+      },
+      {
+        "affected_downstream": [
+          "persona:synthesis"
+        ],
+        "dimension_status": {
+          "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+          "CLAIM_EVIDENCE_BINDING": "WARNING",
+          "HUMAN_APPROVAL": "NOT_PRESENT",
+          "LEGAL_FAIRNESS_REVIEW": "REQUIRES_HUMAN_REVIEW",
+          "PERSONA_OUTPUT_INTEGRITY": "VERIFIED",
+          "SOURCE_RESOLUTION": "VERIFIED",
+          "SYNTHESIS_PROVENANCE": "VERIFIED"
+        },
+        "entity_status": {
+          "E-101": "PRESENT",
+          "E-102": "PRESENT",
+          "E-103": "PRESENT",
+          "E-104": "PRESENT",
+          "E-105": "PRESENT",
+          "persona:CA": "WARNING",
+          "persona:CF": "VERIFIED",
+          "persona:FL": "VERIFIED",
+          "persona:MC": "VERIFIED",
+          "persona:RO": "WARNING",
+          "persona:synthesis": "REQUIRES_HUMAN_REVIEW"
+        },
+        "first_failure": "persona:RO",
+        "id": "contradictory_evidence",
+        "label": {
+          "en": "Contradictory evidence",
+          "zh": "矛盾证据"
+        },
+        "note": {
+          "en": "Source first_warning CONTRADICTORY_EVIDENCE (a claim cites evidence that opposes it).",
+          "zh": "源 first_warning 为 CONTRADICTORY_EVIDENCE(主张引用了与之相反的证据)。"
+        }
+      },
+      {
+        "affected_downstream": [],
+        "dimension_status": {
+          "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+          "CLAIM_EVIDENCE_BINDING": "VERIFIED",
+          "HUMAN_APPROVAL": "NOT_PRESENT",
+          "LEGAL_FAIRNESS_REVIEW": "REQUIRES_HUMAN_REVIEW",
+          "PERSONA_OUTPUT_INTEGRITY": "VERIFIED",
+          "SOURCE_RESOLUTION": "VERIFIED",
+          "SYNTHESIS_PROVENANCE": "VERIFIED"
+        },
+        "entity_status": {
+          "E-101": "PRESENT",
+          "E-102": "PRESENT",
+          "E-103": "PRESENT",
+          "E-104": "PRESENT",
+          "E-105": "PRESENT",
+          "persona:CA": "VERIFIED",
+          "persona:CF": "VERIFIED",
+          "persona:FL": "VERIFIED",
+          "persona:MC": "VERIFIED",
+          "persona:RO": "WARNING",
+          "persona:synthesis": "REQUIRES_HUMAN_REVIEW"
+        },
+        "first_failure": "persona:RO",
+        "id": "disagreement",
+        "label": {
+          "en": "Disagreement",
+          "zh": "分歧"
+        },
+        "note": {
+          "en": "Source first_warning MAJORITY_AGREEMENT — descriptive only, not a correctness verdict.",
+          "zh": "源 first_warning 为 MAJORITY_AGREEMENT——仅为描述,不是正确性裁决。"
+        }
+      },
+      {
+        "affected_downstream": [
+          "persona:synthesis"
+        ],
+        "dimension_status": {
+          "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+          "CLAIM_EVIDENCE_BINDING": "WARNING",
+          "HUMAN_APPROVAL": "NOT_PRESENT",
+          "LEGAL_FAIRNESS_REVIEW": "REQUIRES_HUMAN_REVIEW",
+          "PERSONA_OUTPUT_INTEGRITY": "VERIFIED",
+          "SOURCE_RESOLUTION": "VERIFIED",
+          "SYNTHESIS_PROVENANCE": "VERIFIED"
+        },
+        "entity_status": {
+          "E-101": "PRESENT",
+          "E-102": "PRESENT",
+          "E-103": "PRESENT",
+          "E-104": "PRESENT",
+          "E-105": "PRESENT",
+          "persona:CA": "WARNING",
+          "persona:CF": "WARNING",
+          "persona:FL": "VERIFIED",
+          "persona:MC": "WARNING",
+          "persona:RO": "WARNING",
+          "persona:synthesis": "REQUIRES_HUMAN_REVIEW"
+        },
+        "first_failure": "CLAIM_EVIDENCE_BINDING",
+        "id": "majority_weak_evidence",
+        "label": {
+          "en": "Majority but weak evidence",
+          "zh": "多数但证据弱"
+        },
+        "note": {
+          "en": "Source first_warning CLAIM_EVIDENCE_BINDING — a majority resting on weak binding, not correctness.",
+          "zh": "源 first_warning 为 CLAIM_EVIDENCE_BINDING——多数建立在弱绑定之上,而非正确性。"
+        }
+      },
+      {
+        "affected_downstream": [
+          "persona:synthesis"
+        ],
+        "dimension_status": {
+          "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+          "CLAIM_EVIDENCE_BINDING": "WARNING",
+          "HUMAN_APPROVAL": "NOT_PRESENT",
+          "LEGAL_FAIRNESS_REVIEW": "REQUIRES_HUMAN_REVIEW",
+          "PERSONA_OUTPUT_INTEGRITY": "VERIFIED",
+          "SOURCE_RESOLUTION": "VERIFIED",
+          "SYNTHESIS_PROVENANCE": "VERIFIED"
+        },
+        "entity_status": {
+          "E-101": "PRESENT",
+          "E-102": "PRESENT",
+          "E-103": "PRESENT",
+          "E-104": "PRESENT",
+          "E-105": "PRESENT",
+          "persona:CA": "VERIFIED",
+          "persona:CF": "VERIFIED",
+          "persona:FL": "VERIFIED",
+          "persona:MC": "UNSUPPORTED",
+          "persona:RO": "VERIFIED",
+          "persona:synthesis": "REQUIRES_HUMAN_REVIEW"
+        },
+        "first_failure": "persona:MC",
+        "id": "unsupported_claim",
+        "label": {
+          "en": "Unsupported claim",
+          "zh": "无证据主张"
+        },
+        "note": {
+          "en": "Source first_warning UNSUPPORTED_CLAIMS (MC asserts with no evidence).",
+          "zh": "源 first_warning 为 UNSUPPORTED_CLAIMS(MC 无证据主张)。"
+        }
+      }
+    ],
+    "steps": [
+      {
+        "focus_entities": [
+          "persona:CA",
+          "persona:CF",
+          "persona:FL",
+          "persona:MC",
+          "persona:RO"
+        ],
+        "id": "intro",
+        "index": 0,
+        "kind": "intro",
+        "narration": {
+          "en": "Five analytical perspectives read the same shared evidence.",
+          "zh": "五个分析视角读取同一份共享证据。"
+        },
+        "reveal_upto_sequence": null,
+        "scenario_ref": "consensus_with_evidence"
+      },
+      {
+        "focus_entities": [
+          "E-101",
+          "E-102",
+          "E-103",
+          "E-104",
+          "E-105"
+        ],
+        "id": "ground",
+        "index": 1,
+        "kind": "reveal",
+        "narration": {
+          "en": "Each perspective binds its claim to specific evidence.",
+          "zh": "每个视角把它的主张绑定到具体证据。"
+        },
+        "reveal_upto_sequence": null,
+        "scenario_ref": "consensus_with_evidence"
+      },
+      {
+        "focus_entities": [
+          "persona:MC"
+        ],
+        "id": "flag",
+        "index": 2,
+        "kind": "cascade",
+        "narration": {
+          "en": "An unsupported claim is flagged, not silently averaged in.",
+          "zh": "无证据的主张被标记出来,而不是被悄悄平均进去。"
+        },
+        "reveal_upto_sequence": null,
+        "scenario_ref": "unsupported_claim"
+      },
+      {
+        "focus_entities": [
+          "persona:synthesis"
+        ],
+        "id": "synthesis",
+        "index": 3,
+        "kind": "synthesis",
+        "narration": {
+          "en": "Synthesis records which evidence grounded it; majority is descriptive only.",
+          "zh": "综合会记录支撑它的证据;多数仅为描述性。"
+        },
+        "reveal_upto_sequence": null,
+        "scenario_ref": "consensus_with_evidence"
+      },
+      {
+        "focus_entities": [
+          "persona:synthesis"
+        ],
+        "id": "human_gate",
+        "index": 4,
+        "kind": "human_gate",
+        "narration": {
+          "en": "Analytical correctness is NOT evaluated and human approval is NOT present — a person must review.",
+          "zh": "分析正确性不评估,人工批准也不存在——必须由人复核。"
+        },
+        "reveal_upto_sequence": null,
+        "scenario_ref": null
+      }
+    ],
+    "story_id": "persona-deliberation",
+    "story_version": "shadow-guided-story-v1",
+    "teaches": {
+      "does_not_prove": {
+        "en": "Majority agreement is descriptive metadata; it does not set analytical correctness, and human approval is not present.",
+        "zh": "多数一致只是描述性元数据;它不设定分析正确性,且人工批准并不存在。"
+      },
+      "proves": {
+        "en": "Each perspective's claim is bound to shared source evidence, or is flagged unsupported / abstained.",
+        "zh": "每个视角的主张都绑定到共享的源证据,或被标记为无支撑 / 弃权。"
+      }
+    },
+    "title": {
+      "en": "Persona deliberation → evidence-grounded synthesis",
+      "zh": "视角审议 → 以证据为基础的综合"
+    },
+    "trust_dimensions": [
+      "ANALYTICAL_CORRECTNESS",
+      "CLAIM_EVIDENCE_BINDING",
+      "HUMAN_APPROVAL",
+      "LEGAL_FAIRNESS_REVIEW",
+      "PERSONA_OUTPUT_INTEGRITY",
+      "SOURCE_RESOLUTION",
+      "SYNTHESIS_PROVENANCE"
+    ],
+    "vocabulary_version": "shadow-semantic-vocabulary/1"
+  },
+  "render": {
+    "status_encoding": "shape+icon+label (never colour alone)",
+    "status_table": {
+      "VERIFIED": {
+        "text_en": "VERIFIED",
+        "text_zh": "已验证",
+        "shape": "icosahedron",
+        "icon": "check",
+        "severity": "pass"
+      },
+      "FAILED": {
+        "text_en": "FAILED",
+        "text_zh": "失败",
+        "shape": "octahedron",
+        "icon": "alert",
+        "severity": "fail"
+      },
+      "PRESENT": {
+        "text_en": "PRESENT",
+        "text_zh": "存在",
+        "shape": "disc",
+        "icon": "dot",
+        "severity": "neutral"
+      },
+      "NOT_PRESENT": {
+        "text_en": "NOT PRESENT",
+        "text_zh": "不存在",
+        "shape": "ring",
+        "icon": "empty",
+        "severity": "neutral"
+      },
+      "NOT_CHECKED": {
+        "text_en": "NOT CHECKED",
+        "text_zh": "未检查",
+        "shape": "box",
+        "icon": "question",
+        "severity": "neutral"
+      },
+      "NOT_EVALUATED": {
+        "text_en": "NOT EVALUATED",
+        "text_zh": "不评估",
+        "shape": "box",
+        "icon": "minus",
+        "severity": "info"
+      },
+      "WARNING": {
+        "text_en": "WARNING",
+        "text_zh": "警告",
+        "shape": "tetrahedron",
+        "icon": "warn",
+        "severity": "warn"
+      },
+      "UNSUPPORTED": {
+        "text_en": "UNSUPPORTED",
+        "text_zh": "无支撑",
+        "shape": "box",
+        "icon": "block",
+        "severity": "warn"
+      },
+      "MALFORMED": {
+        "text_en": "MALFORMED",
+        "text_zh": "格式错误",
+        "shape": "octahedron",
+        "icon": "alert",
+        "severity": "fail"
+      },
+      "ABSTAINED": {
+        "text_en": "ABSTAINED",
+        "text_zh": "弃权",
+        "shape": "ring",
+        "icon": "pause",
+        "severity": "abstain"
+      },
+      "REQUIRES_HUMAN_REVIEW": {
+        "text_en": "REQUIRES HUMAN REVIEW",
+        "text_zh": "需人工复核",
+        "shape": "pill",
+        "icon": "person",
+        "severity": "warn"
+      },
+      "AFFECTED_DOWNSTREAM": {
+        "text_en": "AFFECTED DOWNSTREAM",
+        "text_zh": "受下游影响",
+        "shape": "box",
+        "icon": "dash",
+        "severity": "fail"
+      },
+      "FIRST_FAILURE": {
+        "text_en": "FIRST FAILURE",
+        "text_zh": "首个失败",
+        "shape": "octahedron",
+        "icon": "alert",
+        "severity": "fail"
+      }
+    },
+    "layout_per_step": [
+      {
+        "step": "intro",
+        "layout_intent": "radial"
+      },
+      {
+        "step": "ground",
+        "layout_intent": "dag"
+      },
+      {
+        "step": "flag",
+        "layout_intent": "dag"
+      },
+      {
+        "step": "synthesis",
+        "layout_intent": "radial"
+      },
+      {
+        "step": "human_gate",
+        "layout_intent": "radial"
+      }
+    ],
+    "camera": "orbit",
+    "positions": "advisory-hints-only",
+    "node_shape_by_status": true
+  }
+}

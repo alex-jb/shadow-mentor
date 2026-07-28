@@ -1,0 +1,9 @@
+task_id,task,measures,correct_answer_source,notes
+T1,locate the first failed sequence in the audit chain,completion_time;accuracy;wrong_selection,scenario.first_failure,use tamper_seq_3
+T2,identify all downstream affected events,accuracy;error_rate,scenario.affected_downstream,3 downstream in banking tamper
+T3,identify the original source of a claim,accuracy;backtracking,entity provenance chain,banking source node
+T4,distinguish integrity from correctness,accuracy;trust_calibration,ANALYTICAL_CORRECTNESS=NOT_EVALUATED,key comprehension check
+T5,identify which agent/tool created a claim,accuracy,entity agent/tool field,coding profile
+T6,locate contradictory evidence,completion_time;accuracy,persona contradictory_evidence scenario,persona story
+T7,identify an abstention,accuracy,persona abstain scenario,persona story
+T8,reset and replay a story,completion_time;error_rate,deterministic reset,recovery check

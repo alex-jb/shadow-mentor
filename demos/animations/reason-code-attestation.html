@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'" />
+<title>Shadow — reason-code dictionary hash → attestation binding</title>
+<style>
+  :root{--bg:#0b0d10;--panel:#14181e;--bd:#232830;--text:#e6e6e6;--dim:#8a92a0;--ok:#4ade80;--bad:#ef4444;--warn:#fbbf24;--accent:#60a5fa;--mono:ui-monospace,Menlo,Consolas,monospace}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+  .wrap{max-width:1120px;margin:0 auto;padding:18px 14px}
+  h1{font-size:17px;margin:0 0 4px} p.sub{color:var(--dim);font-size:13px;margin:0 0 12px}
+  .bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+  button,select{font:inherit;cursor:pointer;border-radius:7px;border:1px solid var(--bd);background:var(--panel);color:var(--text);padding:5px 10px}
+  button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  button[aria-pressed="true"]{background:var(--accent);color:#0b0d10;border-color:var(--accent)}
+  .cap{background:#0e1420;border:1px solid var(--bd);border-radius:8px;padding:8px 10px;font-size:13px;margin-bottom:10px;min-height:20px}
+  .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}}
+  .col{background:var(--panel);border:1px solid var(--bd);border-radius:10px;padding:10px}
+  .col h2{font-size:13px;margin:0 0 8px;color:var(--dim)}
+  .rc{border:1px solid var(--bd);border-radius:7px;padding:6px 8px;margin-bottom:6px;cursor:pointer}
+  .rc.sel{border-color:var(--accent);background:#172232} .rc.bad{border-color:var(--bad)}
+  .rc .id{font-family:var(--mono);font-weight:600} .rc .def{color:var(--dim);font-size:12px}
+  dl.a{display:grid;grid-template-columns:130px 1fr;gap:3px 8px;margin:0;font-size:12px}
+  dl.a dt{color:var(--dim)} dl.a dd{margin:0;font-family:var(--mono);word-break:break-all}
+  .bind{margin:10px 0}
+  .bind .row{display:grid;grid-template-columns:150px 60px 1fr;align-items:center;gap:6px;font-size:12px;margin-bottom:4px}
+  .bind svg{width:60px;height:14px}
+  table.m{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+  table.m th,table.m td{text-align:left;padding:5px 7px;border-bottom:1px solid var(--bd)}
+  td.st{font-family:var(--mono);white-space:nowrap}
+  .s.ok{color:var(--ok)}.s.bad{color:var(--bad)}.s.warn{color:var(--warn)}.s.dim{color:var(--dim)}
+  tr.firstfail{background:#241417}
+  .badge{font-size:10px;font-family:var(--mono);border:1px solid;border-radius:4px;padding:0 4px;margin-left:6px}
+  .badge.first{color:var(--bad);border-color:var(--bad)} .badge.down{color:var(--warn);border-color:var(--warn)}
+  .note{color:var(--dim);font-size:11px;margin-top:10px}
+  #drawer{position:fixed;inset:auto 0 0 0;max-height:60vh;overflow:auto;background:var(--panel);border-top:1px solid var(--accent);padding:14px;display:none}
+  #drawer.open{display:block} #drawer pre{font-family:var(--mono);font-size:12px;white-space:pre-wrap;word-break:break-all}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body data-reduce="false">
+<div class="wrap">
+  <h1 id="t-title">Reason-code dictionary hash → attestation binding</h1>
+  <p class="sub" id="t-sub">Can an auditor verify the reason shown today is the same versioned definition bound to the original decision? A matching hash proves the reason text wasn't swapped — <b>not</b> that the reason is adequate, fair, legal, or analytically correct.</p>
+  <div class="bar">
+    <button id="play" data-i="play">▶ Play</button>
+    <button id="prev" data-i="prev">◀ Prev</button>
+    <button id="next" data-i="next">Next ▶</button>
+    <button id="restart" data-i="restart">↻ Restart</button>
+    <label class="sr" for="scn" id="t-scnl">Scenario</label>
+    <select id="scn" aria-labelledby="t-scnl"></select>
+    <button id="reduce" aria-pressed="false" data-i="reduce">Reduced motion</button>
+    <button id="opendict" data-i="opendict">Open dictionary</button>
+    <button id="openatt" data-i="openatt">Open attestation</button>
+    <button id="openver" data-i="openver">Verification details</button>
+    <button id="copy" data-i="copy">Copy explanation</button>
+    <button id="lang-en" aria-pressed="true">EN</button>
+    <button id="lang-zh" aria-pressed="false">中文</button>
+  </div>
+  <div class="cap" id="cap" role="status" aria-live="polite"></div>
+  <div class="grid">
+    <div class="col"><h2 id="t-dict">Versioned reason-code dictionary</h2><div id="dict"></div><div id="dictmeta" class="note"></div></div>
+    <div class="col"><h2 id="t-dec">Decision + selected reason codes</h2><div id="dec"></div></div>
+    <div class="col"><h2 id="t-att">Signed attestation</h2><dl class="a" id="att"></dl></div>
+  </div>
+  <div class="bind"><h2 id="t-bind" style="font-size:13px;color:var(--dim);margin:12px 0 6px">Bindings</h2><div id="binds"></div></div>
+  <table class="m"><thead><tr><th id="t-check">check</th><th id="t-status">status</th></tr></thead><tbody id="mbody"></tbody></table>
+  <p class="note" id="t-note">Self-contained · offline · no third-party code · DEMONSTRATION FIXTURE — not bank policy. Independent statuses stay independent; a valid binding is never TRUSTED or COMPLIANT.</p>
+</div>
+<div id="drawer" role="dialog" aria-modal="false" aria-label="details"><button id="closedraw" style="float:right">✕ <span id="t-close">Close</span></button><pre id="drawpre"></pre></div>
+<script>
+"use strict";
+const FIX = {"fixture_note":"DEMONSTRATION FIXTURE — not production bank policy or regulatory language.","dictionary_id":"shadow-reason-codes","dictionary_version":"v3","canonicalization_version":"shadow-canon/1","dictionary_hash":"40fa8b04065616ef61f0725d13b548452e035a789e16acb36fdb3ab7a0479aba","reason_codes":{"RC-017":{"title_en":"High revolving utilization","title_zh":"循环额度使用率过高","definition_en":"Revolving utilization exceeded the configured policy threshold.","definition_zh":"循环额度使用率超过所配置的政策阈值。"},"RC-021":{"title_en":"Insufficient verified income evidence","title_zh":"已核验收入证据不足","definition_en":"Required income evidence was absent or could not be resolved.","definition_zh":"所需收入证据缺失或无法解析。"},"RC-031":{"title_en":"Recent severe delinquency","title_zh":"近期严重逾期","definition_en":"The configured lookback period contains a qualifying delinquency event.","definition_zh":"所配置的回溯期内存在符合条件的逾期事件。"}},"decision":{"sequence":42,"selected_reason_codes":["RC-017","RC-021"]},"evidence_references":{"RC-017":["B0L1","B0L2"],"RC-021":["B0L0"]},"attestation":{"dictionary_id":"shadow-reason-codes","dictionary_version":"v3","dictionary_hash":"40fa8b04065616ef61f0725d13b548452e035a789e16acb36fdb3ab7a0479aba","selected_reason_codes":["RC-017","RC-021"],"evidence_references":{"RC-017":["B0L1","B0L2"],"RC-021":["B0L0"]},"decision_sequence":42,"signer_fingerprint":"727d29d3204231f7"},"signer_fingerprint":"727d29d3204231f7","checks":["DICTIONARY_PRESENT","DICTIONARY_HASH","DICTIONARY_VERSION","REASON_CODE_EXISTS","REASON_CODE_BOUND","EVIDENCE_REFERENCES","ATTESTATION_SIGNATURE","RECORD_INTEGRITY","POLICY_ADEQUACY","ANALYTICAL_CORRECTNESS","LEGAL_FAIRNESS_REVIEW"],"tamper_scenarios":{"pristine":{"label_en":"Pristine","label_zh":"原始"},"dictionary_modified":{"label_en":"Dictionary text modified","label_zh":"字典文本被修改","target":"RC-017","field":"definition_en","new":"Revolving utilization was fine, actually — approve.","first_failure":"DICTIONARY_HASH"},"reason_replaced":{"label_en":"Reason code replaced","label_zh":"理由代码被替换","from":"RC-017","to":"RC-009","first_failure":"REASON_CODE_EXISTS"},"evidence_removed":{"label_en":"Evidence reference removed","label_zh":"证据引用被移除","code":"RC-017","first_failure":"EVIDENCE_REFERENCES"},"version_changed":{"label_en":"Dictionary version changed","label_zh":"字典版本被更换","new_version":"v4","first_failure":"DICTIONARY_VERSION"}}}; /*__END_FIX__*/;
+const I18N = {
+  en:{ title:"Reason-code dictionary hash → attestation binding", sub:"Can an auditor verify the reason shown today is the same versioned definition bound to the original decision? A matching hash proves the reason text wasn't swapped — not that the reason is adequate, fair, legal, or analytically correct.",
+    play:["▶ Play","⏸ Pause"], prev:"◀ Prev", next:"Next ▶", restart:"↻ Restart", reduce:"Reduced motion", opendict:"Open dictionary", openatt:"Open attestation", openver:"Verification details", copy:"Copy explanation", close:"Close",
+    dict:"Versioned reason-code dictionary", dec:"Decision + selected reason codes", att:"Signed attestation", bind:"Bindings", check:"check", status:"status", note:"Self-contained · offline · no third-party code · DEMONSTRATION FIXTURE — not bank policy. Independent statuses stay independent; a valid binding is never TRUSTED or COMPLIANT.",
+    seq:"decision sequence", ver:"dictionary version", hash:"dictionary hash", signer:"signer fingerprint (cross-check independently)", selected:"selected reason codes", evidence:"evidence references",
+    steps:["Dictionary v3 is authored.","Dictionary is canonicalized (sorted bytes).","SHA-256 of the canonical bytes = the dictionary hash.","The decision selects RC-017 and RC-021.","Each selected code points to supporting evidence IDs.","The attestation records dictionary id/version/hash, selected codes, evidence refs, decision sequence, and the signer fingerprint.","An independent verifier loads the dictionary.","The verifier recomputes the SHA-256.","The verifier checks each selected code exists in the dictionary.","The verifier checks the evidence references resolve.","Pristine: hash matches, codes are bound, evidence resolves — integrity verified. Adequacy / correctness / fairness are NOT evaluated."],
+    tampCap:{ dictionary_modified:"Someone changed RC-017's definition AFTER the attestation was signed. The signature over the original attestation is still valid, but the recomputed dictionary hash no longer matches — the swap is caught.", reason_replaced:"The displayed decision now cites RC-009, which is not in the dictionary and not bound by the attestation. It does not silently pass as a human-readable label.", evidence_removed:"RC-017's required evidence reference was removed. Evidence resolution fails independently — the dictionary hash may still match.", version_changed:"The dictionary version was changed to v4. Version binding fails even though a similarly-named code exists — a new definition set requires a new version and hash." } },
+  zh:{ title:"理由代码字典哈希 → attestation 绑定", sub:"审计员能否验证今天显示的理由,就是当初绑定到原始决策的那个确定版本定义?哈希一致只证明理由文字没被替换——不证明理由充分、公平、合法或分析正确。",
+    play:["▶ 播放","⏸ 暂停"], prev:"◀ 上一步", next:"下一步 ▶", restart:"↻ 重来", reduce:"减弱动效", opendict:"打开字典", openatt:"打开 attestation", openver:"验证细节", copy:"复制说明", close:"关闭",
+    dict:"版本化理由代码字典", dec:"决策 + 所选理由代码", att:"已签名 attestation", bind:"绑定", check:"检查项", status:"状态", note:"自足 · 离线 · 无第三方代码 · 演示测试数据——非银行政策。各状态相互独立;绑定有效绝不等于 TRUSTED 或 COMPLIANT。",
+    seq:"决策序号", ver:"字典版本", hash:"字典哈希", signer:"签名者指纹(请独立核对)", selected:"所选理由代码", evidence:"证据引用",
+    steps:["编写字典 v3。","字典被规范化(排序字节)。","规范化字节的 SHA-256 = 字典哈希。","决策选择 RC-017 与 RC-021。","每个所选代码指向支撑证据 ID。","attestation 记录字典 id/版本/哈希、所选代码、证据引用、决策序号和签名者指纹。","独立验证器加载字典。","验证器重算 SHA-256。","验证器检查每个所选代码在字典中存在。","验证器检查证据引用可解析。","原始:哈希一致、代码已绑定、证据可解析——完整性已验证。充分性/正确性/公平性不评估。"],
+    tampCap:{ dictionary_modified:"有人在 attestation 签名之后改了 RC-017 的定义。对原始 attestation 的签名仍然有效,但重算的字典哈希不再一致——替换被抓到。", reason_replaced:"显示的决策现在引用 RC-009,它不在字典中,也未被 attestation 绑定。它不会作为可读标签被静默放行。", evidence_removed:"RC-017 的必需证据引用被移除。证据解析独立失败——字典哈希可能仍一致。", version_changed:"字典版本被改为 v4。即使存在名字相似的代码,版本绑定也失败——新的定义集需要新的版本和哈希。" } },
+};
+const STATUS_TXT = { VERIFIED:{en:"VERIFIED",zh:"已验证"}, FAILED:{en:"FAILED",zh:"失败"}, NOT_PRESENT:{en:"NOT PRESENT",zh:"不存在"}, NOT_CHECKED:{en:"NOT CHECKED",zh:"未检查"}, NOT_EVALUATED:{en:"NOT EVALUATED",zh:"不评估"}, UNSUPPORTED:{en:"UNSUPPORTED",zh:"不支持"} };
+const CHECK_LABEL = { DICTIONARY_PRESENT:{en:"Dictionary present",zh:"字典存在"}, DICTIONARY_HASH:{en:"Dictionary hash",zh:"字典哈希"}, DICTIONARY_VERSION:{en:"Dictionary version",zh:"字典版本"}, REASON_CODE_EXISTS:{en:"Reason code exists",zh:"理由代码存在"}, REASON_CODE_BOUND:{en:"Reason code bound to attestation",zh:"理由代码已绑定 attestation"}, EVIDENCE_REFERENCES:{en:"Evidence references",zh:"证据引用"}, ATTESTATION_SIGNATURE:{en:"Attestation signature",zh:"attestation 签名"}, RECORD_INTEGRITY:{en:"Record integrity",zh:"记录完整性"}, POLICY_ADEQUACY:{en:"Policy adequacy",zh:"政策充分性"}, ANALYTICAL_CORRECTNESS:{en:"Analytical correctness",zh:"分析正确性"}, LEGAL_FAIRNESS_REVIEW:{en:"Legal / fairness review",zh:"法律 / 公平性审查"} };
+
+let LANG="en", STEP=0, SCEN="pristine", playing=false, timer=null;
+const T=()=>I18N[LANG], esc=(s)=>String(s??"").replace(/[&<>"']/g,(c)=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+// canonicalize + sha256 (WebCrypto) — the SAME rule the Node builder used
+function canonicalize(v){ if(v===null||typeof v!=="object")return JSON.stringify(v); if(Array.isArray(v))return "["+v.map(canonicalize).join(",")+"]"; return "{"+Object.keys(v).sort().map(k=>JSON.stringify(k)+":"+canonicalize(v[k])).join(",")+"}"; }
+async function sha256Hex(str){ const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(str)); return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""); }
+
+// build the working (possibly tampered) view + recompute the independent checks
+async function computeState(){
+  const sc = FIX.tamper_scenarios[SCEN];
+  const dict = JSON.parse(JSON.stringify(FIX.reason_codes));
+  let displayVersion = FIX.dictionary_version;
+  let displaySelected = FIX.decision.selected_reason_codes.slice();
+  let displayEvidence = JSON.parse(JSON.stringify(FIX.evidence_references));
+  if(SCEN==="dictionary_modified") dict[sc.target][sc.field]=sc.new;
+  if(SCEN==="reason_replaced") displaySelected=displaySelected.map(c=>c===sc.from?sc.to:c);
+  if(SCEN==="evidence_removed") delete displayEvidence[sc.code];
+  if(SCEN==="version_changed") displayVersion=sc.new_version;
+
+  const recomputed = await sha256Hex(canonicalize(dict));
+  const att = FIX.attestation;
+  const st = {};
+  st.DICTIONARY_PRESENT = Object.keys(dict).length ? "VERIFIED" : "NOT_PRESENT";
+  st.DICTIONARY_HASH = recomputed===att.dictionary_hash ? "VERIFIED" : "FAILED";
+  st.DICTIONARY_VERSION = displayVersion===att.dictionary_version ? "VERIFIED" : "FAILED";
+  st.REASON_CODE_EXISTS = displaySelected.every(c=>dict[c]) ? "VERIFIED" : "FAILED";
+  st.REASON_CODE_BOUND = displaySelected.every(c=>att.selected_reason_codes.includes(c)) ? "VERIFIED" : "FAILED";
+  st.EVIDENCE_REFERENCES = displaySelected.every(c=>(displayEvidence[c]||[]).length) ? "VERIFIED" : "FAILED";
+  st.ATTESTATION_SIGNATURE = "VERIFIED";   // signature over the ORIGINAL attestation is independent; tampering the DISPLAY doesn't invalidate it — that's the lesson
+  st.RECORD_INTEGRITY = st.DICTIONARY_HASH==="VERIFIED" && st.REASON_CODE_BOUND==="VERIFIED" && st.EVIDENCE_REFERENCES==="VERIFIED" && st.DICTIONARY_VERSION==="VERIFIED" ? "VERIFIED":"FAILED";
+  // honest: never inferred
+  st.POLICY_ADEQUACY="NOT_EVALUATED"; st.ANALYTICAL_CORRECTNESS="NOT_EVALUATED"; st.LEGAL_FAIRNESS_REVIEW="NOT_EVALUATED";
+  const firstFail = FIX.checks.find(c=>st[c]==="FAILED") || null;
+  return { dict, displayVersion, displaySelected, displayEvidence, recomputed, att, st, firstFail, expectedFirst: sc.first_failure||null };
+}
+window.__computeState = computeState;   // exposed for the Node/browser test
+
+// binding line svg: solid green = bound/match, dashed red = broken
+const line=(ok)=>`<svg viewBox="0 0 60 14"><line x1="2" y1="7" x2="58" y2="7" stroke="${ok?"#4ade80":"#ef4444"}" stroke-width="2" ${ok?"":'stroke-dasharray="5 4"'}/></svg>`;
+
+async function render(){
+  const S = await computeState();
+  // dictionary column
+  document.getElementById("dict").innerHTML = Object.entries(S.dict).map(([id,rc])=>{
+    const sel = S.displaySelected.includes(id), bad = SCEN==="dictionary_modified" && id===FIX.tamper_scenarios.dictionary_modified.target;
+    return `<div class="rc ${sel?"sel":""} ${bad?"bad":""}" tabindex="0" data-rc="${id}"><div class="id">${esc(id)} — ${esc(LANG==="zh"?rc.title_zh:rc.title_en)}</div><div class="def">${esc(LANG==="zh"?rc.definition_zh:rc.definition_en)}</div></div>`;
+  }).join("");
+  document.getElementById("dictmeta").textContent = `${T().ver}: ${S.displayVersion} · SHA-256: ${S.recomputed.slice(0,16)}…`;
+  // decision column
+  document.getElementById("dec").innerHTML = `<div class="note">${T().seq}: ${FIX.decision.sequence}</div>` + S.displaySelected.map(c=>{
+    const exists=S.dict[c], bound=S.att.selected_reason_codes.includes(c);
+    return `<div class="rc ${exists&&bound?"":"bad"}"><span class="id">${esc(c)}</span> ${exists?"":`<span class="s bad">${LANG==="zh"?"字典中不存在":"not in dictionary"}</span>`} ${bound?"":`<span class="s bad">${LANG==="zh"?"未绑定":"not bound"}</span>`}<div class="def">${LANG==="zh"?"证据":"evidence"}: ${esc((S.displayEvidence[c]||[]).join(", ")||"—")}</div></div>`;
+  }).join("");
+  // attestation column
+  const a=S.att;
+  document.getElementById("att").innerHTML =
+    `<dt>dictionary_id</dt><dd>${esc(a.dictionary_id)}</dd><dt>${T().ver}</dt><dd>${esc(a.dictionary_version)}</dd>`+
+    `<dt>${T().hash}</dt><dd>${esc(a.dictionary_hash.slice(0,24))}…</dd><dt>${T().selected}</dt><dd>${esc(a.selected_reason_codes.join(", "))}</dd>`+
+    `<dt>${T().evidence}</dt><dd>${esc(Object.entries(a.evidence_references).map(([k,v])=>k+":"+v.join("/")).join("  "))}</dd>`+
+    `<dt>${T().seq}</dt><dd>${a.decision_sequence}</dd><dt>${T().signer}</dt><dd>${esc(a.signer_fingerprint)}</dd>`;
+  // bindings
+  document.getElementById("binds").innerHTML = [
+    ["dictionary_hash → att.dictionary_hash", S.st.DICTIONARY_HASH==="VERIFIED" && S.st.DICTIONARY_VERSION==="VERIFIED"],
+    ["reason_code_id → att.selected_reason_codes", S.st.REASON_CODE_BOUND==="VERIFIED" && S.st.REASON_CODE_EXISTS==="VERIFIED"],
+    ["evidence_id → att.evidence_references", S.st.EVIDENCE_REFERENCES==="VERIFIED"],
+  ].map(([lab,ok])=>`<div class="row"><span class="k">${esc(lab.split(" → ")[0])}</span>${line(ok)}<span>${esc("att."+lab.split(" → ")[1].split(".")[1])} <b class="s ${ok?"ok":"bad"}">${ok?(LANG==="zh"?"绑定":"bound"):(LANG==="zh"?"断开":"broken")}</b></span></div>`).join("");
+  // matrix
+  const mb=document.getElementById("mbody"); mb.innerHTML="";
+  FIX.checks.forEach(c=>{
+    const s=S.st[c], cls=s==="VERIFIED"?"ok":s==="FAILED"?"bad":s==="NOT_EVALUATED"?"dim":"warn";
+    const first=c===S.firstFail, down=s==="FAILED"&&!first;
+    const tr=document.createElement("tr"); if(first)tr.className="firstfail";
+    tr.innerHTML=`<td>${esc(CHECK_LABEL[c][LANG])}${first?`<span class="badge first">${LANG==="zh"?"首个失败":"FIRST FAILED"}</span>`:down?`<span class="badge down">${LANG==="zh"?"下游":"DOWNSTREAM"}</span>`:""}</td><td class="st s ${cls}">${esc(STATUS_TXT[s][LANG])}</td>`;
+    mb.appendChild(tr);
+  });
+  // caption
+  const cap = SCEN==="pristine" ? T().steps[Math.min(STEP,T().steps.length-1)] : (T().tampCap[SCEN]||"");
+  document.getElementById("cap").textContent = cap;
+}
+
+function applyLang(){
+  const t=T(); document.documentElement.lang=LANG==="zh"?"zh-CN":"en";
+  document.getElementById("t-title").textContent=t.title;
+  document.getElementById("t-sub").innerHTML=esc(t.sub).replace(/(not that the reason is adequate|不证明理由充分)/,"<b>$1</b>");
+  document.getElementById("play").textContent=t.play[playing?1:0];
+  for(const id of ["prev","next","restart","reduce","opendict","openatt","openver","copy"]) document.getElementById(id).textContent=t[id];
+  document.getElementById("t-close").textContent=t.close;
+  document.getElementById("t-dict").textContent=t.dict; document.getElementById("t-dec").textContent=t.dec; document.getElementById("t-att").textContent=t.att;
+  document.getElementById("t-bind").textContent=t.bind; document.getElementById("t-check").textContent=t.check; document.getElementById("t-status").textContent=t.status; document.getElementById("t-note").textContent=t.note;
+  const sel=document.getElementById("scn"); sel.innerHTML=Object.entries(FIX.tamper_scenarios).map(([k,v])=>`<option value="${k}" ${k===SCEN?"selected":""}>${esc(LANG==="zh"?v.label_zh:v.label_en)}</option>`).join("");
+  document.getElementById("lang-en").setAttribute("aria-pressed",String(LANG==="en"));
+  document.getElementById("lang-zh").setAttribute("aria-pressed",String(LANG==="zh"));
+  render();
+}
+function stop(){ playing=false; if(timer){clearInterval(timer);timer=null;} document.getElementById("play").textContent=T().play[0]; }
+function play(){ if(SCEN!=="pristine"){SCEN="pristine";document.getElementById("scn").value="pristine";} playing=true; document.getElementById("play").textContent=T().play[1];
+  timer=setInterval(()=>{ STEP++; if(STEP>=T().steps.length){STEP=T().steps.length-1;stop();} render(); }, document.body.dataset.reduce==="true"?1:1400); }
+document.getElementById("play").onclick=()=>{ playing?stop():play(); };
+document.getElementById("prev").onclick=()=>{ stop(); STEP=Math.max(0,STEP-1); render(); };
+document.getElementById("next").onclick=()=>{ stop(); STEP=Math.min(T().steps.length-1,STEP+1); render(); };
+document.getElementById("restart").onclick=()=>{ stop(); STEP=0; SCEN="pristine"; document.getElementById("scn").value="pristine"; render(); };
+document.getElementById("scn").onchange=(e)=>{ stop(); SCEN=e.target.value; render(); };
+document.getElementById("reduce").onclick=(e)=>{ const on=document.body.dataset.reduce!=="true"; document.body.dataset.reduce=String(on); e.target.setAttribute("aria-pressed",String(on)); };
+const drawer=document.getElementById("drawer");
+const openDraw=(obj)=>{ document.getElementById("drawpre").textContent=JSON.stringify(obj,null,2); drawer.classList.add("open"); };
+document.getElementById("opendict").onclick=()=>openDraw(FIX.reason_codes);
+document.getElementById("openatt").onclick=()=>openDraw(FIX.attestation);
+document.getElementById("openver").onclick=async()=>openDraw((await computeState()).st);
+document.getElementById("closedraw").onclick=()=>drawer.classList.remove("open");
+document.getElementById("copy").onclick=async()=>{ try{ await navigator.clipboard.writeText(document.getElementById("cap").textContent);}catch(e){} };
+document.getElementById("lang-en").onclick=()=>{ LANG="en"; applyLang(); };
+document.getElementById("lang-zh").onclick=()=>{ LANG="zh"; applyLang(); };
+document.addEventListener("keydown",(e)=>{
+  if(e.key===" "){e.preventDefault(); playing?stop():play();}
+  else if(e.key==="ArrowRight") document.getElementById("next").click();
+  else if(e.key==="ArrowLeft") document.getElementById("prev").click();
+  else if(e.key==="r"||e.key==="R") document.getElementById("restart").click();
+  else if(e.key==="Escape") drawer.classList.remove("open");
+  else if("1234".includes(e.key)){ const keys=Object.keys(FIX.tamper_scenarios); const idx=+e.key; if(keys[idx]){SCEN=keys[idx];document.getElementById("scn").value=SCEN;stop();render();} }
+});
+document.getElementById("dict").addEventListener("click",(e)=>{ const el=e.target.closest("[data-rc]"); if(el)openDraw(FIX.reason_codes[el.dataset.rc]); });
+applyLang();
+window.__ready=true;
+</script>
+</body>
+</html>

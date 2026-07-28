@@ -1,0 +1,260 @@
+{
+  "scene_version": "shadow-3d-scene-v1",
+  "profile_id": "data-science-v1",
+  "profile_version": "1.0",
+  "bundle_id": "data-science-v1-fixture",
+  "bundle_hash": "eeda79ca71312a686d7806a98c9d79cdd0f5a11ca3607a91fab8568b9eaa5432",
+  "status_mode": "FIXTURE",
+  "view_mode": "audit",
+  "layout_mode": "arc",
+  "layout_seed": 20260721,
+  "nodes": [
+    {
+      "id": "data-science-v1:n0:dataset",
+      "type": "dataset",
+      "sequence": 0,
+      "timestamp": null,
+      "status": "VERIFIED",
+      "claim_ids": [],
+      "evidence_ids": [],
+      "source_ids": [
+        "data-science-v1:src0"
+      ],
+      "agent": "model-risk",
+      "tool": null,
+      "model": null,
+      "label_short": "Training set",
+      "label_full": "Training set (seq 0, dataset)",
+      "accessibility": "dataset at sequence 0: Training set, status VERIFIED",
+      "label_priority": "P2",
+      "focus_state": false,
+      "selected_state": false,
+      "expanded_state": false,
+      "layout_hint": {
+        "ring": 0.9,
+        "angle_deg": -60,
+        "height": -0.35,
+        "column": 0
+      },
+      "evidence_ref": "data-science-v1:src0"
+    },
+    {
+      "id": "data-science-v1:n1:feature",
+      "type": "feature",
+      "sequence": 1,
+      "timestamp": null,
+      "status": "VERIFIED",
+      "claim_ids": [],
+      "evidence_ids": [
+        "data-science-v1:ev1"
+      ],
+      "source_ids": [],
+      "agent": "model-risk",
+      "tool": null,
+      "model": null,
+      "label_short": "Feature: PSI drift",
+      "label_full": "Feature: PSI drift (seq 1, feature)",
+      "accessibility": "feature at sequence 1: Feature: PSI drift, status VERIFIED",
+      "label_priority": "P2",
+      "focus_state": false,
+      "selected_state": false,
+      "expanded_state": false,
+      "layout_hint": {
+        "ring": 0.9,
+        "angle_deg": -40,
+        "height": -0.35,
+        "column": 1
+      },
+      "evidence_ref": null
+    },
+    {
+      "id": "data-science-v1:n2:model",
+      "type": "model",
+      "sequence": 2,
+      "timestamp": null,
+      "status": "VERIFIED",
+      "claim_ids": [],
+      "evidence_ids": [],
+      "source_ids": [],
+      "agent": "model-risk",
+      "tool": null,
+      "model": "GBM",
+      "label_short": "Model: GBM",
+      "label_full": "Model: GBM (seq 2, model)",
+      "accessibility": "model at sequence 2: Model: GBM, status VERIFIED",
+      "label_priority": "P2",
+      "focus_state": false,
+      "selected_state": false,
+      "expanded_state": false,
+      "layout_hint": {
+        "ring": 0.9,
+        "angle_deg": -20,
+        "height": -0.35,
+        "column": 2
+      },
+      "evidence_ref": null
+    },
+    {
+      "id": "data-science-v1:n3:metric",
+      "type": "metric",
+      "sequence": 3,
+      "timestamp": null,
+      "status": "VERIFIED",
+      "claim_ids": [],
+      "evidence_ids": [],
+      "source_ids": [],
+      "agent": "model-risk",
+      "tool": null,
+      "model": null,
+      "label_short": "AUC 0.86",
+      "label_full": "AUC 0.86 (seq 3, metric)",
+      "accessibility": "metric at sequence 3: AUC 0.86, status VERIFIED",
+      "label_priority": "P2",
+      "focus_state": false,
+      "selected_state": false,
+      "expanded_state": false,
+      "layout_hint": {
+        "ring": 0.9,
+        "angle_deg": 0,
+        "height": -0.35,
+        "column": 3
+      },
+      "evidence_ref": null
+    },
+    {
+      "id": "data-science-v1:n4:experiment",
+      "type": "experiment",
+      "sequence": 4,
+      "timestamp": null,
+      "status": "VERIFIED",
+      "claim_ids": [],
+      "evidence_ids": [],
+      "source_ids": [],
+      "agent": "model-risk",
+      "tool": null,
+      "model": null,
+      "label_short": "Experiment run",
+      "label_full": "Experiment run (seq 4, experiment)",
+      "accessibility": "experiment at sequence 4: Experiment run, status VERIFIED",
+      "label_priority": "P1",
+      "focus_state": false,
+      "selected_state": false,
+      "expanded_state": false,
+      "layout_hint": {
+        "ring": 0.9,
+        "angle_deg": 20,
+        "height": -0.35,
+        "column": 4
+      },
+      "evidence_ref": null
+    },
+    {
+      "id": "data-science-v1:n5:signature",
+      "type": "signature",
+      "sequence": 5,
+      "timestamp": null,
+      "status": "VERIFIED",
+      "claim_ids": [],
+      "evidence_ids": [],
+      "source_ids": [],
+      "agent": "model-risk",
+      "tool": null,
+      "model": null,
+      "label_short": "Ed25519 seal",
+      "label_full": "Ed25519 seal (seq 5, signature)",
+      "accessibility": "signature at sequence 5: Ed25519 seal, status VERIFIED",
+      "label_priority": "P1",
+      "focus_state": false,
+      "selected_state": false,
+      "expanded_state": false,
+      "layout_hint": {
+        "ring": 0.9,
+        "angle_deg": 40,
+        "height": -0.35,
+        "column": 5
+      },
+      "evidence_ref": null
+    },
+    {
+      "id": "data-science-v1:n6:audit_record",
+      "type": "audit_record",
+      "sequence": 6,
+      "timestamp": null,
+      "status": "VERIFIED",
+      "claim_ids": [],
+      "evidence_ids": [],
+      "source_ids": [],
+      "agent": "model-risk",
+      "tool": null,
+      "model": null,
+      "label_short": "Audit record",
+      "label_full": "Audit record (seq 6, audit_record)",
+      "accessibility": "audit_record at sequence 6: Audit record, status VERIFIED",
+      "label_priority": "P0",
+      "focus_state": false,
+      "selected_state": false,
+      "expanded_state": false,
+      "layout_hint": {
+        "ring": 0.9,
+        "angle_deg": 60,
+        "height": -0.35,
+        "column": 6
+      },
+      "evidence_ref": null
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "type": "DERIVED_FROM",
+      "from": "data-science-v1:n1:feature",
+      "to": "data-science-v1:n0:dataset",
+      "direction": "backward"
+    },
+    {
+      "id": "e2",
+      "type": "DERIVED_FROM",
+      "from": "data-science-v1:n2:model",
+      "to": "data-science-v1:n1:feature",
+      "direction": "backward"
+    },
+    {
+      "id": "e3",
+      "type": "DERIVED_FROM",
+      "from": "data-science-v1:n3:metric",
+      "to": "data-science-v1:n2:model",
+      "direction": "backward"
+    },
+    {
+      "id": "e4",
+      "type": "DERIVED_FROM",
+      "from": "data-science-v1:n4:experiment",
+      "to": "data-science-v1:n3:metric",
+      "direction": "backward"
+    },
+    {
+      "id": "e5",
+      "type": "SEALED_BY",
+      "from": "data-science-v1:n5:signature",
+      "to": "data-science-v1:n4:experiment",
+      "direction": "backward"
+    },
+    {
+      "id": "e6",
+      "type": "DERIVED_FROM",
+      "from": "data-science-v1:n6:audit_record",
+      "to": "data-science-v1:n5:signature",
+      "direction": "backward"
+    }
+  ],
+  "tamper": null,
+  "verification": {
+    "record_integrity": "VERIFIED",
+    "signature": "VERIFIED",
+    "hash_chain": "VERIFIED",
+    "profile": "VERIFIED",
+    "source_resolution": "NOT_PRESENT",
+    "external_anchor": "NOT_PRESENT",
+    "analytical_correctness": "NOT_EVALUATED"
+  }
+}

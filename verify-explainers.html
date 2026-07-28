@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; frame-src 'self'; base-uri 'none'; form-action 'none'; connect-src 'none'" />
+<title>Shadow Verify + How Shadow Works (non-frozen companion)</title>
+<style>
+  :root{--bg:#0b0d10;--panel:#14181e;--bd:#232830;--text:#e6e6e6;--dim:#8a92a0;--ok:#4ade80;--warn:#fbbf24;--accent:#60a5fa;--mono:ui-monospace,Menlo,Consolas,monospace}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+  a.skip{position:absolute;left:-999px} a.skip:focus{left:8px;top:8px;background:var(--accent);color:#0b0d10;padding:6px 10px;border-radius:6px;z-index:20}
+  .wrap{max-width:1040px;margin:0 auto;padding:18px 16px}
+  header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
+  h1{font-size:18px;margin:0} .badge{font-size:11px;font-family:var(--mono);color:var(--warn);border:1px solid var(--warn);border-radius:5px;padding:1px 6px}
+  button{font:inherit;cursor:pointer;border-radius:7px;border:1px solid var(--bd);background:var(--panel);color:var(--text);padding:6px 12px}
+  button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px} button[aria-pressed="true"]{background:var(--accent);color:#0b0d10;border-color:var(--accent)}
+  .tabs{display:flex;gap:8px;margin:14px 0} .tab[aria-selected="true"]{border-color:var(--accent);background:#172232}
+  section[hidden]{display:none}
+  .cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px} @media(max-width:820px){.cards{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:12px}
+  .card img{width:100%;border:1px solid var(--bd);border-radius:8px;aspect-ratio:16/9;object-fit:cover;object-position:top left;margin:6px 0}
+  .card h3{font-size:14px;margin:0} .card .q{font-size:13px} .card .a{font-size:13px;color:var(--dim);margin:2px 0}
+  .pd{font-size:12px;margin:6px 0} .pd .proves{color:var(--ok)} .pd .not{color:var(--warn)}
+  .frameWrap{position:relative;width:100%;aspect-ratio:16/10;background:#0e1420;border:1px solid var(--bd);border-radius:8px;overflow:hidden;margin-top:8px;display:none}
+  .frameWrap.open{display:block} .frameWrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .verifyWrap{position:relative;width:100%;height:78vh;border:1px solid var(--bd);border-radius:10px;overflow:hidden}
+  .verifyWrap iframe{width:100%;height:100%;border:0}
+  .foot{margin-top:14px;color:var(--dim);font-size:12px;border-top:1px solid var(--bd);padding-top:10px}
+</style>
+</head>
+<body>
+<a class="skip" href="#main" id="t-skip">Skip to content</a>
+<div class="wrap">
+  <header><div><h1 id="t-title">Shadow Verify</h1> <span class="badge">NON-FROZEN COMPANION · FIXTURE</span></div>
+    <div><button id="lang-en" aria-pressed="true">EN</button><button id="lang-zh" aria-pressed="false">中文</button></div></header>
+  <div class="tabs" role="tablist">
+    <button class="tab" id="tab-verify" role="tab" aria-selected="true" aria-controls="p-verify" data-i="verify">Verify evidence</button>
+    <button class="tab" id="tab-how" role="tab" aria-selected="false" aria-controls="p-how" data-i="how">How Shadow works</button>
+  </div>
+  <main id="main">
+    <section id="p-verify" role="tabpanel" aria-labelledby="tab-verify">
+      <p class="a" id="t-vnote">The real offline verifier — VERIFY EVIDENCE and VERIFY THE VERIFIER — embedded read-only. The frozen Wednesday package is not modified.</p>
+      <div class="verifyWrap"><iframe id="vframe" title="Shadow offline verifier" loading="lazy" sandbox="allow-scripts allow-downloads" src="verify.html"></iframe></div>
+    </section>
+    <section id="p-how" role="tabpanel" aria-labelledby="tab-how" hidden>
+      <div class="cards" id="cards"></div>
+      <div class="frameWrap" id="fw" role="dialog" aria-label="interactive explainer"><button id="closefw" style="position:absolute;z-index:2;right:8px;top:8px">✕</button></div>
+    </section>
+  </main>
+  <p class="foot" id="t-foot">All content runs locally using deterministic fixtures. External requests: 0 · no analytics · no telemetry · no model API · no upload. Frozen verifier package unmodified; production integration remains separate.</p>
+</div>
+<script>
+"use strict";
+const CARDS=[
+ { id:"audit-chain", path:"apps/shadow-lens/explainers/audit-chain.html", poster:"demos/posters/audit-chain.png",
+   en:{h:"1 · Record and seal", q:"Was the record changed after it was sealed?", a:"Hash-chained + Ed25519-signed provenance; tamper breaks the chain downstream.", proves:"The record matches the sealed evidence.", not:"The analytical conclusion is correct."},
+   zh:{h:"1 · 记录与封存", q:"记录封存后是否被修改?", a:"哈希链 + Ed25519 签名溯源;篡改会向下游破坏链。", proves:"记录与封存证据一致。", not:"分析结论一定正确。"} },
+ { id:"reason-code", path:"demos/animations/reason-code-attestation.html", poster:"demos/posters/reason-code.png",
+   en:{h:"2 · Bind reasons and evidence", q:"Is the reason the version bound to the attestation?", a:"Reasons bind to a hashed, versioned dictionary; post-hoc text swaps are caught.", proves:"The reason text/version is the bound + signed one.", not:"The reason is adequate, fair, legal or correct."},
+   zh:{h:"2 · 绑定理由与证据", q:"理由是否为绑定到 attestation 的版本?", a:"理由绑定到哈希化的版本字典;事后改文字会被抓到。", proves:"理由文字/版本就是被绑定并签名的。", not:"理由充分、公平、合法或正确。"} },
+ { id:"persona-deliberation", path:"demos/animations/persona-deliberation.html", poster:"demos/posters/persona-deliberation.png",
+   en:{h:"3 · Preserve deliberation provenance", q:"How are perspectives combined without voting as truth?", a:"Dissent, unsupported claims and abstention are preserved; synthesis traces to evidence.", proves:"Synthesis traces to evidence; majority is descriptive.", not:"Majority proves correctness, or any conclusion is correct."},
+   zh:{h:"3 · 保留审议来源", q:"视角如何综合而不把投票当真相?", a:"保留分歧、无证据主张与弃权;综合可溯源到证据。", proves:"综合可溯源到证据;多数仅描述性。", not:"多数证明正确,或任何结论一定正确。"} },
+];
+const I18N={ en:{title:"Shadow Verify",verify:"Verify evidence",how:"How Shadow works",skip:"Skip to content",open:"Open interactive explainer",proves:"WHAT THIS PROVES",not:"WHAT THIS DOES NOT PROVE",vnote:"The real offline verifier — VERIFY EVIDENCE and VERIFY THE VERIFIER — embedded read-only. The frozen Wednesday package is not modified.",foot:"All content runs locally using deterministic fixtures. External requests: 0 · no analytics · no telemetry · no model API · no upload. Frozen verifier package unmodified; production integration remains separate."},
+  zh:{title:"Shadow 验证器",verify:"验证证据",how:"SHADOW 如何工作",skip:"跳到内容",open:"打开交互解释动画",proves:"能证明什么",not:"不能证明什么",vnote:"真实离线验证器——验证证据与验证验证器——只读内嵌。冻结的 Wednesday 包不被修改。",foot:"所有内容使用确定性测试数据在本地运行。外部请求:0 · 无分析 · 无遥测 · 无模型 API · 不上传。冻结验证器包未改;生产集成保持独立。"} };
+let LANG="en"; const T=()=>I18N[LANG], esc=(s)=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let fwOpener=null;
+function renderCards(){ document.getElementById("cards").innerHTML=CARDS.map(c=>{const t=c[LANG];
+  return `<div class="card"><h3>${esc(t.h)}</h3><div class="q">${esc(t.q)}</div><img src="${esc(c.poster)}" alt="${esc(t.h)} preview" loading="lazy"/><div class="a">${esc(t.a)}</div>
+    <div class="pd"><div class="proves">${esc(T().proves)}: ${esc(t.proves)}</div><div class="not">${esc(T().not)}: ${esc(t.not)}</div></div>
+    <button class="openbtn" data-p="${esc(c.path)}" data-t="${esc(t.h)}">${esc(T().open)}</button></div>`; }).join(""); }
+function openFrame(path,title,btn){ fwOpener=btn; const fw=document.getElementById("fw"); [...fw.querySelectorAll("iframe")].forEach(f=>f.remove());
+  const f=document.createElement("iframe"); f.title=title; f.loading="lazy"; f.setAttribute("sandbox","allow-scripts"); f.src=path; fw.appendChild(f); fw.classList.add("open"); document.getElementById("closefw").focus(); }
+function closeFrame(){ const fw=document.getElementById("fw"); [...fw.querySelectorAll("iframe")].forEach(f=>f.remove()); fw.classList.remove("open"); if(fwOpener)fwOpener.focus(); }
+function tab(which){ const v=which==="verify"; document.getElementById("tab-verify").setAttribute("aria-selected",String(v)); document.getElementById("tab-how").setAttribute("aria-selected",String(!v)); document.getElementById("p-verify").hidden=!v; document.getElementById("p-how").hidden=v; if(v)closeFrame(); }
+function applyLang(){ document.documentElement.lang=LANG==="zh"?"zh-CN":"en"; const t=T();
+  document.getElementById("t-title").textContent=t.title; document.getElementById("t-skip").textContent=t.skip; document.getElementById("t-vnote").textContent=t.vnote; document.getElementById("t-foot").textContent=t.foot;
+  document.getElementById("tab-verify").textContent=t.verify; document.getElementById("tab-how").textContent=t.how;
+  document.getElementById("lang-en").setAttribute("aria-pressed",String(LANG==="en")); document.getElementById("lang-zh").setAttribute("aria-pressed",String(LANG==="zh")); renderCards(); }
+document.getElementById("tab-verify").onclick=()=>tab("verify"); document.getElementById("tab-how").onclick=()=>tab("how");
+document.getElementById("cards").addEventListener("click",e=>{const b=e.target.closest(".openbtn"); if(b)openFrame(b.dataset.p,b.dataset.t,b);});
+document.getElementById("closefw").onclick=closeFrame;
+document.addEventListener("keydown",e=>{ if(e.key==="Escape")closeFrame(); });
+document.getElementById("lang-en").onclick=()=>{LANG="en";applyLang();}; document.getElementById("lang-zh").onclick=()=>{LANG="zh";applyLang();};
+applyLang(); window.__ready=true;
+</script>
+</body>
+</html>

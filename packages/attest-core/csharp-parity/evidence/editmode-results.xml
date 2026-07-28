@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="4" result="Passed" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-07-22 16:19:57Z" end-time="2026-07-22 16:19:58Z" duration="0.0146997">
+  <test-suite type="TestSuite" id="1000" name="csharp-parity-proj" fullname="csharp-parity-proj" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-07-22 16:19:57Z" end-time="2026-07-22 16:19:58Z" duration="0.014700" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1006" name="ShadowAttest.Parity.Tests.dll" fullname="/private/tmp/claude-501/-Users-alexji-Desktop-vibex/cfb502a3-1a5c-4f60-a390-d756b56a18f1/scratchpad/csharp-parity-proj/Library/ScriptAssemblies/ShadowAttest.Parity.Tests.dll" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-07-22 16:19:57Z" end-time="2026-07-22 16:19:58Z" duration="0.012937" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="61670" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1007" name="ShadowAttest" fullname="ShadowAttest" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-07-22 16:19:57Z" end-time="2026-07-22 16:19:58Z" duration="0.012734" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1008" name="Parity" fullname="ShadowAttest.Parity" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-07-22 16:19:57Z" end-time="2026-07-22 16:19:58Z" duration="0.012634" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1009" name="Tests" fullname="ShadowAttest.Parity.Tests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-07-22 16:19:57Z" end-time="2026-07-22 16:19:58Z" duration="0.012514" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1001" name="CanonicalGoldenVectorTests" fullname="ShadowAttest.Parity.Tests.CanonicalGoldenVectorTests" classname="ShadowAttest.Parity.Tests.CanonicalGoldenVectorTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-07-22 16:19:57Z" end-time="2026-07-22 16:19:58Z" duration="0.012130" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1002" name="CSharpCanonicalTextParity" fullname="ShadowAttest.Parity.Tests.CanonicalGoldenVectorTests.CSharpCanonicalTextParity" methodname="CSharpCanonicalTextParity" classname="ShadowAttest.Parity.Tests.CanonicalGoldenVectorTests" runstate="Runnable" seed="1111227421" result="Passed" start-time="2026-07-22 16:19:57Z" end-time="2026-07-22 16:19:58Z" duration="0.006403" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1004" name="CSharpDigestParity" fullname="ShadowAttest.Parity.Tests.CanonicalGoldenVectorTests.CSharpDigestParity" methodname="CSharpDigestParity" classname="ShadowAttest.Parity.Tests.CanonicalGoldenVectorTests" runstate="Runnable" seed="979205192" result="Passed" start-time="2026-07-22 16:19:58Z" end-time="2026-07-22 16:19:58Z" duration="0.000913" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1003" name="CSharpUtf8ByteParity" fullname="ShadowAttest.Parity.Tests.CanonicalGoldenVectorTests.CSharpUtf8ByteParity" methodname="CSharpUtf8ByteParity" classname="ShadowAttest.Parity.Tests.CanonicalGoldenVectorTests" runstate="Runnable" seed="1243082928" result="Passed" start-time="2026-07-22 16:19:58Z" end-time="2026-07-22 16:19:58Z" duration="0.000353" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1005" name="CSharpV2HmacParity" fullname="ShadowAttest.Parity.Tests.CanonicalGoldenVectorTests.CSharpV2HmacParity" methodname="CSharpV2HmacParity" classname="ShadowAttest.Parity.Tests.CanonicalGoldenVectorTests" runstate="Runnable" seed="889129839" result="Passed" start-time="2026-07-22 16:19:58Z" end-time="2026-07-22 16:19:58Z" duration="0.000539" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: /private/tmp/claude-501/-Users-alexji-Desktop-vibex/cfb502a3-1a5c-4f60-a390-d756b56a18f1/scratchpad/csharp-parity-proj/results.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

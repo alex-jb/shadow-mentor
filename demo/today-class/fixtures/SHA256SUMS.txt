@@ -1,0 +1,3 @@
+73ad3f39338eae883f1da5bde93060ac99aee46b339be309d6acb8891f9bb72a  pristine-banking-bundle.json
+615880173e6f27953adc38043600b53d5d32610a99cfa9fd744e95ac2ffb3304  tampered-banking-bundle.json
+8850ac98eb104ad095a87bea9254796ef19a65a8a2ee5fd7081f8e0cacb7465f  reference-2026-public-key.pem

@@ -1,0 +1,8 @@
+{
+  "name": "ShadowLens.InputV5.Runtime",
+  "rootNamespace": "ShadowLens.InputV5.Runtime",
+  "references": ["ShadowLens", "Unity.InputSystem"],
+  "includePlatforms": [],
+  "allowUnsafeCode": false,
+  "autoReferenced": true
+}

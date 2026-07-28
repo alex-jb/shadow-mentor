@@ -15,6 +15,7 @@ import * as THREE from "three";
 import { makeCardFace, makeText, disposeMesh, billboardInView } from "./labels.js";
 import { verifyWorking, runTamperCycle, annotate, clonePristine } from "./verify.js";
 import { DEMO_BUNDLE, DEMO_PUBLIC_KEY_PEM } from "./demo-data.js";
+import { anchorPanel, viewRelativeFallback } from "./annotation-anchor.js";
 
 const DEG = Math.PI / 180;
 const smooth = (k) => k * k * (3 - 2 * k);
@@ -65,6 +66,10 @@ export function createAuditRoom({ C, bundle = DEMO_BUNDLE } = {}) {
   let filterType = null;
   let showTrust = false;
   const _tmp = new THREE.Vector3();
+  // Reusable scratch vectors for the per-frame proximity loop — avoids ~48 Vector3 allocations/frame
+  // (P0 fix from the 2026-07 deep-audit: was camPos.clone() + a new Vector3 per card, every frame).
+  const _camPos = new THREE.Vector3();
+  const _cardPos = new THREE.Vector3();
 
   // ── tween scheduler (frame-driven, pausable — no setTimeout) ──
   function tween(delayMs, durMs, fn, done) {
@@ -106,6 +111,10 @@ export function createAuditRoom({ C, bundle = DEMO_BUNDLE } = {}) {
       new THREE.PlaneGeometry(C.CARD_W, C.CARD_H),
       new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }),
     );
+    // P0 (2026-07 deep-audit): non-rendered — the renderer skips visible=false, saving one draw call per
+    // card (two under SBS), while Raycaster ignores .visible so pointer/controller selection is unchanged.
+    // Proven in test/audit-room-hit-proxy-raycast.test.js against the shipped three revision.
+    hit.visible = false;
     cg.add(hit);
 
     // arc placement (principle 2: depth via arc + scale, never Z-stacking).
@@ -318,32 +327,64 @@ export function createAuditRoom({ C, bundle = DEMO_BUNDLE } = {}) {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
-  // ── selection + inspector (Phase 5.2) ──
+  // ── selection + inspector (Phase 5.2) + Flow-inspired anchored annotation (V11) ──
   let inspector = null;
+  let trackingLost = false;
+  function setInspectorTrackingLost(v) { trackingLost = !!v; }
   function clearInspector() {
     if (inspector) { group.remove(inspector); inspector.traverse((o) => disposeMesh(o)); inspector = null; }
   }
-  function buildInspector(evt) {
+  // `card` carries .evt + .group (world-positioned on the arc). The panel now ANCHORS beside the
+  // selected card with a leader line to its boundary, instead of docking at a fixed world point.
+  function buildInspector(card) {
     clearInspector();
     inspector = new THREE.Group();
-    const w = 1.7, rows = inspectorRows(evt);
-    const body = makeText(rows, {
-      size: C.FONT_SIZE_INSPECTOR, worldWidth: w - 0.14, align: "left", color: C.INK.text, mono: true, weight: 500,
+    // V11 readability: bigger title + body so the panel reads as the second visual layer after the
+    // selected card (no tiny terminal aesthetic for primary content). Bounded rows only — the full
+    // payload/signature stays in the 2D verifier.
+    const w = 2.5;
+    const ev = card.evt;
+    const title = makeText(`${ev.event_type}  ·  #${ev.seq}`, {
+      size: 0.085, worldWidth: w - 0.18, align: "left", color: C.INK.text, mono: true, weight: 700,
     });
-    const h = Math.max(0.7, body.userData.worldH + 0.16);
-    const frame = edgeLoop(w, h, 0.05, new THREE.Color(C.INK.text).getHex(), 0.5);
-    body.position.set(0, 0, 0.002);
-    inspector.add(frame); inspector.add(body);
-    // dock the inspector beside the arc, camera-facing
-    inspector.position.set(2.4, C.ARC_Y + 0.2, 0.6);
+    const body = makeText(inspectorRows(ev), {
+      size: 0.052, worldWidth: w - 0.18, align: "left", color: C.INK.textDim, mono: true, weight: 500,
+    });
+    const pad = 0.12, gap = 0.07, tH = title.userData.worldH, bH = body.userData.worldH;
+    const h = Math.max(0.8, tH + bH + pad * 2 + gap);
+    const frame = edgeLoop(w, h, 0.06, new THREE.Color(C.INK.text).getHex(), 0.8);
+    title.position.set(0, h / 2 - pad - tH / 2, 0.002);
+    body.position.set(0, h / 2 - pad - tH - gap - bH / 2, 0.002);
+    inspector.add(frame); inspector.add(title); inspector.add(body);
+
+    const cardPos = card.group.getWorldPosition(_cardPos);
+    const panel = { halfW: w / 2, halfH: h / 2 };
+    const view = { minX: -3.2, maxX: 3.2, minY: C.ARC_Y - 1.7, maxY: C.ARC_Y + 2.2 };
+    const spec = trackingLost
+      ? viewRelativeFallback({ panel, view }) // Tracking Lost → stable view-relative, no leader line
+      : anchorPanel({
+          card: { x: cardPos.x, y: cardPos.y, z: cardPos.z, halfW: C.CARD_W / 2, halfH: C.CARD_H / 2 },
+          panel, view, arcCenterX: 0,
+        });
+    inspector.position.set(spec.position.x, spec.position.y, spec.position.z);
+    // leader line: card boundary → panel edge. Distinct from the cold-grey evidence CONNECTORS —
+    // brighter white, an ELBOW (not a straight diagonal that could read as a chain link), and a small
+    // endpoint dot at the card. Omitted in the tracking-lost fallback (no world anchor to point at).
+    if (spec.leaderStart && spec.leaderEnd) {
+      const L = (p) => new THREE.Vector3(p.x - spec.position.x, p.y - spec.position.y, p.z - spec.position.z);
+      const a = L(spec.leaderStart), b = L(spec.leaderEnd);
+      const elbow = new THREE.Vector3(a.x, b.y, (a.z + b.z) / 2); // vertical from card, then horizontal to panel
+      const mat = new THREE.LineBasicMaterial({ color: new THREE.Color(C.INK.lensPulse).getHex(), transparent: true, opacity: 0.9, toneMapped: false });
+      inspector.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([a, elbow, b]), mat));
+      const dot = new THREE.Mesh(new THREE.CircleGeometry(0.03, 12), new THREE.MeshBasicMaterial({ color: new THREE.Color(C.INK.lensPulse).getHex(), transparent: true, opacity: 0.95, toneMapped: false }));
+      dot.position.copy(a); inspector.add(dot);
+    }
     group.add(inspector);
   }
   function inspectorRows(ev) {
     const short = (h) => (h ? h.slice(0, 12) : "—");
     const lines = [
-      `type       ${ev.event_type}`,
       `actor      ${ev.actor}`,
-      `seq        ${ev.seq}`,
       `ts         ${ev.ts_utc}`,
       `payload    ${short(ev.payload_hash)}…`,
       `prev_hash  ${short(ev.prev_hash)}…`,
@@ -351,14 +392,14 @@ export function createAuditRoom({ C, bundle = DEMO_BUNDLE } = {}) {
     const t = ev.extensions?.tool;
     if (ev.event_type === "tool_call" && t) lines.push(`tool       ${t}`);
     if (ev.event_type === "review_annotation") lines.push(`note       ${ev.extensions?.review?.note ?? ""}`);
-    lines.push("", "› open full payload in 2D inspector"); // Phase 5.3: never render full payload in-scene
+    lines.push("", "› OPEN 2D AUDIT for exact payload + signature");
     return lines.join("\n");
   }
   function select(seq) {
     selectedSeq = seq;
     const card = cards.find((c) => c.seq === seq);
     if (!card) return;
-    buildInspector(card.evt);
+    buildInspector(card);
     // brief focus pulse
     card.pulse = true;
     tween(0, 600, () => {}, () => { card.pulse = false; });
@@ -420,12 +461,12 @@ export function createAuditRoom({ C, bundle = DEMO_BUNDLE } = {}) {
       placeCaption(camera);
     }
 
-    const camPos = camera.getWorldPosition(_tmp).clone();
+    const camPos = camera.getWorldPosition(_camPos);       // reused scratch — no per-frame alloc
     const t = performance.now() * 0.001;
     for (const card of cards) {
       // billboard detail + face toward camera is not needed (cards face arc
       // centre); but proximity disclosure IS per-camera-distance.
-      const d = card.group.getWorldPosition(new THREE.Vector3()).distanceTo(camPos);
+      const d = card.group.getWorldPosition(_cardPos).distanceTo(camPos);  // reused scratch — no per-card alloc
       card.targetDetail = d <= C.PROXIMITY_THRESHOLD && card.status !== "broken" ? 1 : 0;
       const rate = dt / (C.FADE_MS / 1000);
       card.curDetail += Math.sign(card.targetDetail - card.curDetail) * rate;
@@ -455,6 +496,17 @@ export function createAuditRoom({ C, bundle = DEMO_BUNDLE } = {}) {
           card.edgeMat.color.lerp(new THREE.Color(C.INK.text), 0.1);
         }
         card.edgeMat.opacity = op;
+      }
+
+      // V11 selected-record emphasis — multi-channel (scale + edge brightness + de-emphasis of the
+      // rest). Never turns a neutral intact card into verification green; first-failure/broken cards
+      // keep their own colour. Hover (pulse) stays distinct from selection.
+      const isSel = selectedSeq != null && card.seq === selectedSeq;
+      const eScale = card.baseScale * (isSel ? 1.15 : 1.0);
+      card.group.scale.setScalar(card.group.scale.x + (eScale - card.group.scale.x) * Math.min(1, dt * 12));
+      if (selectedSeq != null && card.status === "intact" && !(activeLens || filterType)) {
+        if (isSel) { card.edgeMat.color.lerp(new THREE.Color(C.INK.lensPulse), 0.2); card.edgeMat.opacity = 1.0; }
+        else card.edgeMat.opacity = Math.min(card.edgeMat.opacity, 0.28);
       }
     }
 

@@ -1,0 +1,23 @@
+{
+  "tool": "playwright",
+  "chromium": "149.0.7827.55",
+  "screenshots": [
+    "current-arc.png",
+    "layered-dag.png",
+    "timeline.png",
+    "hybrid.png",
+    "tamper-propagation.png",
+    "claim-to-source.png",
+    "zh-CN-layout.png",
+    "hybrid-2d-fallback.png"
+  ],
+  "videos": [
+    "layout-comparison.webm"
+  ],
+  "console_errors": [],
+  "external_requests": [],
+  "overflow": {
+    "arc": 0,
+    "zh": 0
+  }
+}

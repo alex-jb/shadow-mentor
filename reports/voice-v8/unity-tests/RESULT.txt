@@ -1,0 +1,3 @@
+Unity 6000.0.23f1 EditMode: ShadowVoiceIntegrationEditTests 9/9 + ShadowVoiceEditTests 7/7 = 16/16, 0 CS errors.
+V8 base voice candidate: com.shadowlens.voice.base, 24.67 MB, ARM64/IL2CPP, TTS-ONLY (no INTERNET/mic/camera).
+XREAL+voice candidate: build method gated behind SHADOW_XREAL_SDK; fails honestly without the SDK (NOT built).

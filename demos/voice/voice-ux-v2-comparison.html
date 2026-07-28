@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; media-src 'self'; connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<title>Shadow Voice UX V2 — comparison (fixture / desktop say)</title>
+<style>
+  :root { --bg:#0b0d10; --panel:#14181e; --border:#232830; --ink:#e7ebf0; --mut:#9aa4b2; --mono:ui-monospace,Menlo,monospace; }
+  html,body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif; overflow-x:hidden; }
+  header { display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:14px 18px; border-bottom:1px solid var(--border); }
+  h1 { font-size:16px; margin:0; }
+  .prov { font:12px var(--mono); color:#fbbf24; border:1px solid #3a3320; background:#1c1a10; padding:2px 8px; border-radius:999px; }
+  .sp { flex:1; }
+  button { background:#172232; color:var(--ink); border:1px solid var(--border); border-radius:8px; padding:7px 11px; font-size:13px; cursor:pointer; }
+  button[aria-pressed="true"] { outline:2px solid #60a5fa; }
+  main { padding:16px 18px; max-width:1100px; }
+  .note { color:var(--mut); font-size:13px; margin:0 0 14px; }
+  table { width:100%; border-collapse:collapse; }
+  th,td { text-align:left; padding:9px 10px; border-bottom:1px solid var(--border); vertical-align:top; font-size:14px; }
+  th { color:var(--mut); font-size:12px; text-transform:uppercase; letter-spacing:.05em; }
+  td.dur { font:13px var(--mono); }
+  .win { color:#4ade80; font:12px var(--mono); }
+  .script { font-size:13px; color:var(--ink); } .meta { font:12px var(--mono); color:var(--mut); }
+  audio { width:220px; height:34px; }
+  .card { background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:12px 14px; margin-bottom:14px; overflow-x:auto; }
+  footer { padding:8px 18px 20px; color:var(--mut); font-size:12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1 id="t-title">Shadow Voice UX V2 — comparison</h1>
+  <span class="prov">FIXTURE · DESKTOP macOS say · NOT Beam Pro</span>
+  <span class="sp"></span>
+  <button id="lang-en" aria-pressed="true">EN</button>
+  <button id="lang-zh" aria-pressed="false">中文</button>
+</header>
+<main>
+  <p class="note" id="t-note">No autoplay. Audio is desktop macOS <code>say</code> (offline fixture), never Beam Pro. V2 restructures WHAT is said (evidence-first, no ID/Markdown reading), not just pitch. Durations are measured.</p>
+  <div class="card">
+    <table>
+      <thead><tr><th id="h-name">Sample</th><th id="h-audio">Audio</th><th id="h-dur">Duration</th><th id="h-script">Spoken script</th><th id="h-src">Semantic source</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+  <div class="card" id="summary"></div>
+</main>
+<footer id="t-foot">Self-contained · same-origin only · no external runtime · fixture audio. Naturalness is not claimed here — that needs a listener study.</footer>
+
+<script>
+"use strict";
+let LANG = "en";
+const I18N = {
+  en: { title: "Shadow Voice UX V2 — comparison", note: "No autoplay. Audio is desktop macOS say (offline fixture), never Beam Pro. V2 restructures WHAT is said (evidence-first, no ID/Markdown reading), not just pitch. Durations are measured.", name: "Sample", audio: "Audio", dur: "Duration", script: "Spoken script", src: "Semantic source", foot: "Self-contained · same-origin only · no external runtime · fixture audio. Naturalness is not claimed here — that needs a listener study." },
+  zh: { title: "Shadow Voice UX V2 — 对比", note: "无自动播放。音频为桌面 macOS say(离线测试),非 Beam Pro。V2 重构的是「说什么」(证据优先、不读 ID/Markdown),而非仅改音色。时长为实测。", name: "样本", audio: "音频", dur: "时长", script: "口语脚本", src: "语义来源", foot: "自足 · 仅同源 · 无外部运行时 · 测试音频。此处不宣称自然度——需听感研究。" },
+};
+const $ = (id) => document.getElementById(id);
+const setText = (el, s) => { if (el) el.textContent = s; };
+function applyLang() {
+  const t = I18N[LANG];
+  document.documentElement.lang = LANG === "zh" ? "zh-CN" : "en";
+  setText($("t-title"), t.title); setText($("t-note"), t.note); setText($("t-foot"), t.foot);
+  setText($("h-name"), t.name); setText($("h-audio"), t.audio); setText($("h-dur"), t.dur); setText($("h-script"), t.script); setText($("h-src"), t.src);
+  $("lang-en").setAttribute("aria-pressed", String(LANG === "en"));
+  $("lang-zh").setAttribute("aria-pressed", String(LANG === "zh"));
+}
+$("lang-en").addEventListener("click", () => { LANG = "en"; applyLang(); });
+$("lang-zh").addEventListener("click", () => { LANG = "zh"; applyLang(); });
+
+fetch("../../media/voice-v7/manifest.json").then((r) => r.json()).then((manifest) => {
+  const rows = $("rows");
+  for (const m of manifest) {
+    const tr = document.createElement("tr");
+    const c1 = document.createElement("td"); setText(c1, m.name); c1.className = "meta";
+    const c2 = document.createElement("td"); const a = document.createElement("audio"); a.controls = true; a.preload = "none"; a.src = "../../media/voice-v7/" + m.file; c2.append(a);
+    const c3 = document.createElement("td"); c3.className = "dur"; setText(c3, (m.durationSec != null ? m.durationSec.toFixed(1) + "s" : "?"));
+    const c4 = document.createElement("td"); c4.className = "script"; setText(c4, m.script || "");
+    const c5 = document.createElement("td"); c5.className = "meta"; setText(c5, m.semantic_source + " · " + m.voice);
+    tr.append(c1, c2, c3, c4, c5); rows.append(tr);
+  }
+  // summary: current vs v2 duration deltas
+  const byName = Object.fromEntries(manifest.map((m) => [m.name, m]));
+  const deltas = [];
+  for (const [cur, v2] of [["en-current", "en-v2"], ["zh-current", "zh-v2"]]) {
+    if (byName[cur] && byName[v2] && byName[cur].durationSec && byName[v2].durationSec) {
+      const pct = Math.round((1 - byName[v2].durationSec / byName[cur].durationSec) * 100);
+      deltas.push(`${cur} ${byName[cur].durationSec.toFixed(1)}s → ${v2} ${byName[v2].durationSec.toFixed(1)}s (−${pct}% shorter)`);
+    }
+  }
+  const s = $("summary");
+  const h = document.createElement("div"); h.className = "win"; setText(h, deltas.join("   ·   "));
+  s.append(h);
+  window.__ready = true;
+}).catch((e) => { $("summary").textContent = "load error: " + e.message; window.__ready = true; });
+applyLang();
+</script>
+</body>
+</html>

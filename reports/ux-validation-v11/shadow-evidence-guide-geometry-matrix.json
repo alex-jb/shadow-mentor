@@ -1,0 +1,94 @@
+{
+  "baseline": "3c5e9ba",
+  "scope": "UX-14 — evidence guide internal label + sequence collision (rail)",
+  "method": "real TextMesh + node-quad renderer bounds projected through the d7feb01/01864b4 capture-rig model",
+  "before": {
+    "topLabelY": 0.16,
+    "nodeY": 0.0,
+    "seqY": -0.16,
+    "actionY": -0.36,
+    "collisions": [
+      "FIRST/dep top label (world bottom -1.944) overlapped its node (world top -1.935) by 0.009",
+      "action legend (world top -2.340) ran under the current #n index (world bottom -2.365) by 0.025",
+      "current #n at 0.040 had a 0.248 line box reaching down into the action row"
+    ],
+    "evidence": "media/spatial-ux-v11/audit-workspace/first-failure__en__DesktopDark.png"
+  },
+  "after": {
+    "regionOriginY": -1.98,
+    "note": "region origin UNCHANGED at -1.98; only the local stack moved",
+    "topLabelY": 0.42,
+    "nodeCenterY": 0.1736,
+    "seqY": 0.0636,
+    "actionY": -0.2194,
+    "stepSpacing": 0.62,
+    "seqCurrentSize": 0.04,
+    "seqOtherSize": 0.028,
+    "topLabelSize": 0.022,
+    "nodeCurrentScale": 0.15,
+    "nodeOtherScale": 0.09,
+    "minRowGap": 0.035,
+    "worldTop": -1.56,
+    "worldActionBottom": -2.336,
+    "viewportSafeBottomApprox": -2.521,
+    "centreColumnBottomApprox": -1.228
+  },
+  "verticalStack": "each row is separated from the next by its own line box + MinRowGap: topLabel -> (box+gap) -> node -> (halfNode+gap) -> seq -> (box+gap) -> action",
+  "horizontal": {
+    "stepSpacing": 0.62,
+    "maxSteps": 6,
+    "rightmostNodeWorldX": 0.7,
+    "safeEdge": 4.1,
+    "fits": true
+  },
+  "matrix": {
+    "profiles": [
+      "DesktopDark",
+      "BrowserDark",
+      "ProjectorPresentation",
+      "XrealOstBright",
+      "AccessibilityHighContrast"
+    ],
+    "languages": [
+      "en",
+      "zh-CN"
+    ],
+    "states": [
+      "normal-4",
+      "first-failure-mid",
+      "first-failure-first",
+      "first-failure-last",
+      "source-missing-no-failure",
+      "one-step",
+      "two-step",
+      "three-step",
+      "max-steps"
+    ],
+    "stepCounts": [
+      1,
+      2,
+      3,
+      4,
+      6
+    ],
+    "combinations": 90,
+    "assertions": [
+      "guide stays in the viewport",
+      "no two guide elements overlap (node/index/top-label/action)",
+      "each index and top label is closest to its own node; order preserved",
+      "every step count renders one node + one index per step",
+      "guide does not overlap any other region",
+      "evidence numbering/order + prior d664873/d7feb01/01864b4/3c5e9ba contracts unchanged"
+    ],
+    "result": "6/6 guide geometry tests pass"
+  },
+  "outOfScope": {
+    "UX-08": "the band above the rail was borrowed for vertical room; the issue stays open",
+    "UX-07": "preserved from 3c5e9ba",
+    "UX-02_UX-03": "preserved from d7feb01",
+    "UX-04": "preserved from 01864b4",
+    "UX-01_UX-05_UX-09": "preserved from d664873",
+    "UX-12": "not touched",
+    "UX-06_UX-15": "not touched"
+  }
+}

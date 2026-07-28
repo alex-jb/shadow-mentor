@@ -1,0 +1,2 @@
+{ "categories": ["welcome","short-answer","evidence-citation","source-quote","verification-success","verification-failure","limitation","reason-code-mismatch","persona-disagreement","abstention","tracking-lost","camera-unavailable","ocr-result","reset","bilingual-switch"],
+  "note": "Each category maps to a planner call (story/scenario/level/locale). See tools/generate-voice-samples.mjs for the rendered subset." }

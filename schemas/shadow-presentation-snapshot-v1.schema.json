@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shadow-mentor/schemas/shadow-presentation-snapshot-v1.schema.json",
+  "title": "shadow-presentation-snapshot/v1",
+  "description": "A DERIVED VIEW over a Shadow evidence bundle — never canonical evidence. It carries bounded display labels, claim records, and scene-element bindings for a presentation surface (Unity / Three.js / 2D / a future Flow adapter). Presentation code MUST NOT use this to change canonical evidence, signatures, source bindings, reason-code bindings, trust posture, human approval, first-failure or downstream-impact results. Statuses reference shadow-semantic-status-v1. Treat instances as untrusted (caps + closed enums + text-safe).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "snapshot_id", "evidence_bundle_id", "evidence_bundle_hash", "adapter_version", "semantic_hash", "derived_view", "claims", "scene_elements", "verification_summary", "governance_summary"],
+  "properties": {
+    "schema_version": { "const": "shadow-presentation-snapshot/v1" },
+    "snapshot_id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9._:-]+$" },
+    "derived_view": { "const": true },
+    "evidence_bundle_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "evidence_bundle_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "generated_at": { "type": "string", "maxLength": 40, "description": "NON-AUTHORITATIVE metadata; excluded from semantic_hash" },
+    "adapter_version": { "type": "string", "minLength": 1, "maxLength": 40 },
+    "semantic_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$", "description": "SHA-256 over the canonicalized analytical content (claims + scene_elements + summaries), excluding non-authoritative metadata" },
+    "story": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "story_id": { "type": "string", "maxLength": 128 },
+        "acts": {
+          "type": "array", "maxItems": 64,
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["act_id", "steps"],
+            "properties": {
+              "act_id": { "type": "string", "maxLength": 128 },
+              "label": { "type": "string", "maxLength": 200 },
+              "steps": {
+                "type": "array", "maxItems": 256,
+                "items": {
+                  "type": "object", "additionalProperties": false,
+                  "required": ["step_id"],
+                  "properties": {
+                    "step_id": { "type": "string", "maxLength": 128 },
+                    "label": { "type": "string", "maxLength": 200 },
+                    "label_zh": { "type": "string", "maxLength": 200 },
+                    "scene_element_refs": { "type": "array", "maxItems": 256, "items": { "type": "string", "maxLength": 128 } },
+                    "camera_hint": { "$ref": "#/$defs/cameraHint" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "claims": {
+      "type": "array", "maxItems": 1024,
+      "items": { "$ref": "#/$defs/claim" }
+    },
+    "scene_elements": {
+      "type": "array", "maxItems": 4096,
+      "items": { "$ref": "#/$defs/sceneElement" }
+    },
+    "verification_summary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["overall"],
+      "properties": {
+        "overall": { "$ref": "#/$defs/status" },
+        "first_failure_claim_ref": { "type": ["string", "null"], "maxLength": 128 },
+        "downstream_affected_count": { "type": "integer", "minimum": 0 },
+        "external_anchor": { "$ref": "#/$defs/status" }
+      }
+    },
+    "governance_summary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["human_review", "approval"],
+      "properties": {
+        "human_review": { "$ref": "#/$defs/status" },
+        "approval": { "$ref": "#/$defs/status" },
+        "trust_posture": { "type": "string", "enum": ["SELF_SIGNED", "TIME_ANCHORED_STRUCTURAL", "TIME_ANCHORED"] }
+      }
+    }
+  },
+  "$defs": {
+    "status": {
+      "type": "string",
+      "description": "canonical status token (subset of shadow-semantic-status-v1)",
+      "enum": ["VERIFIED", "FAILED", "WARNING", "NOT_EVALUATED", "NOT_CHECKED", "NOT_PRESENT", "UNSUPPORTED", "FIRST_FAILURE", "AFFECTED_DOWNSTREAM", "REQUIRES_HUMAN_REVIEW", "HUMAN_REVIEW_RECORDED", "APPROVAL_NOT_PRESENT", "APPROVAL_PRESENT", "ABSTAINED", "PRESENT"]
+    },
+    "cameraHint": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "position": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 },
+        "target": { "type": "array", "items": { "type": "number" }, "minItems": 3, "maxItems": 3 }
+      }
+    },
+    "claim": {
+      "type": "object", "additionalProperties": false,
+      "required": ["claim_id", "claim_text", "evaluation_state", "human_review_state", "approval_state"],
+      "properties": {
+        "claim_id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9._:-]+$" },
+        "claim_text": { "type": "string", "minLength": 1, "maxLength": 600 },
+        "claim_text_zh": { "type": "string", "maxLength": 600 },
+        "value": { "type": ["number", "string", "null"] },
+        "unit": { "type": ["string", "null"], "maxLength": 40 },
+        "source_ref": { "type": ["string", "null"], "maxLength": 128 },
+        "evidence_ref": { "type": ["string", "null"], "maxLength": 128 },
+        "transform_ref": { "type": ["string", "null"], "maxLength": 128 },
+        "data_commitment": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" },
+        "evaluation_state": { "$ref": "#/$defs/status" },
+        "human_review_state": { "$ref": "#/$defs/status" },
+        "approval_state": { "$ref": "#/$defs/status" },
+        "attestation_ref": { "type": ["string", "null"], "maxLength": 128 }
+      }
+    },
+    "sceneElement": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scene_element_id", "visual_role"],
+      "properties": {
+        "scene_element_id": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9._:-]+$" },
+        "claim_refs": { "type": "array", "maxItems": 256, "items": { "type": "string", "maxLength": 128 } },
+        "visual_role": { "type": "string", "enum": ["record", "claim_marker", "connector", "axis_label", "annotation", "legend", "trust_capsule", "context"] },
+        "encoding": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "x": { "$ref": "#/$defs/encodingSpec" },
+            "y": { "$ref": "#/$defs/encodingSpec" },
+            "z": { "$ref": "#/$defs/encodingSpec" },
+            "size": { "$ref": "#/$defs/encodingSpec" },
+            "color": { "$ref": "#/$defs/encodingSpec" },
+            "shape": { "$ref": "#/$defs/encodingSpec" }
+          }
+        },
+        "missing_data_behavior": { "type": "string", "enum": ["explicit_unknown", "omit", "placeholder"] },
+        "not_evaluated_behavior": { "type": "string", "enum": ["explicit_not_evaluated", "neutral"] }
+      }
+    },
+    "encodingSpec": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "field": { "type": "string", "maxLength": 128 },
+        "axis": { "type": "string", "enum": ["sequence", "time", "value", "category", "status"] }
+      }
+    }
+  }
+}

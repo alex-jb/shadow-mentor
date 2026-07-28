@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Strict CSP: no external anything. Self-contained, independently distributable. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<title>Shadow attestation verifier — v2 CANDIDATE</title>
+<style>
+  body { font: 14px/1.5 ui-monospace, Menlo, monospace; margin: 2rem; color: #111; background: #fafafa; }
+  h1 { font-size: 1.1rem; } .ok { color: #0a7a2f; } .bad { color: #b00020; } .legacy { color: #8a6d00; }
+  pre { background: #fff; border: 1px solid #ddd; padding: 1rem; overflow-x: auto; }
+  .pill { display: inline-block; padding: .05rem .4rem; border-radius: 4px; font-size: .8rem; }
+  .pill.v1 { background: #fff3cd; color: #8a6d00; } .pill.v2 { background: #d4edda; color: #0a7a2f; }
+</style>
+</head>
+<body>
+<h1>Shadow attestation verifier — <span class="pill v2">v2 CANDIDATE</span></h1>
+<p>Independent, offline verifier for <code>aex-attestation/v2</code> (and legacy <code>v1</code>). No network, no dependencies.
+Supported wire versions: <strong id="wires"></strong>.</p>
+<pre id="out">running self-test…</pre>
+
+<script>
+"use strict";
+// ── shared canonicalize (byte-identical to packages/attest-core/attestation.js) ──
+function canonicalize(value) {
+  if (value === null || typeof value !== "object") return JSON.stringify(value);
+  if (Array.isArray(value)) return "[" + value.map(canonicalize).join(",") + "]";
+  const keys = Object.keys(value).sort();
+  return "{" + keys.map(k => JSON.stringify(k) + ":" + canonicalize(value[k])).join(",") + "}";
+}
+const enc = new TextEncoder();
+async function sha256Hex(bytes){ const d=await crypto.subtle.digest("SHA-256", bytes); return [...new Uint8Array(d)].map(b=>b.toString(16).padStart(2,"0")).join(""); }
+function hexToBytes(h){ const o=new Uint8Array(h.length/2); for(let i=0;i<o.length;i++)o[i]=parseInt(h.substr(i*2,2),16); return o; }
+function b64ToBytes(s){ const bin=atob(s); const o=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++)o[i]=bin.charCodeAt(i); return o; }
+function timingEqHex(a,b){ if(typeof a!=="string"||typeof b!=="string"||a.length!==b.length)return false; let d=0; for(let i=0;i<a.length;i++)d|=a.charCodeAt(i)^b.charCodeAt(i); return d===0; }
+
+// ── v2 strict schema (mirror of attestation-v2.js) ──
+const V2_DOMAIN="shadow-attestation", V2_VERSION="aex-attestation/v2";
+const V2_KNOWN=new Set(["dictionary_hash","citation_registry_sha256","proxy_schema_sha256","original_content_hash","policy_invariance_score_sha256","adverse_action_notice_sha256","sampling_seed_commitment_sha256","evidence_partition_scheme_sha256","heterogeneity_commitment_sha256","claim_type_sha256","bian_coverage_sha256","eticas_taxonomy_sha256","sive_fixture_set_sha256","calibration_ranking_split_sha256"]);
+const PROTO=new Set(["__proto__","prototype","constructor"]);
+const HEX64=/^[0-9a-f]{64}$/, PRINTABLE=/^[\x20-\x7e]+$/;
+const RFC3339=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
+class V2Err extends Error { constructor(m,c){ super(m); this.code=c; } }
+function assertHash(v,f){ if(typeof v!=="string"||!HEX64.test(v)) throw new V2Err(f+" must be lowercase 64-hex","ERR_V2_BAD_HASH"); return v; }
+function assertPrev(v){ if(v===null)return null; if(v==="")throw new V2Err("previous_hash empty","ERR_V2_BAD_PREVIOUS_HASH"); return assertHash(v,"previous_hash"); }
+function assertTs(v){ if(typeof v!=="string"||!RFC3339.test(v))throw new V2Err("completed_at_utc not RFC3339","ERR_V2_BAD_TIMESTAMP"); const ms=Date.parse(v); if(Number.isNaN(ms))throw new V2Err("bad date","ERR_V2_BAD_TIMESTAMP"); return new Date(ms).toISOString(); }
+function assertIdent(v,f){ if(typeof v!=="string"||v.length===0||v.length>200||!PRINTABLE.test(v))throw new V2Err(f+" must be printable ASCII ≤200","ERR_V2_BAD_IDENT"); return v; }
+function assertBindings(b){ if(b==null)return {}; if(typeof b!=="object"||Array.isArray(b))throw new V2Err("bindings must be object","ERR_V2_BAD_BINDINGS"); const o={}; for(const k of Object.keys(b)){ if(PROTO.has(k))throw new V2Err("proto key","ERR_V2_BAD_BINDINGS"); if(!V2_KNOWN.has(k))throw new V2Err("unknown binding "+k,"ERR_V2_UNKNOWN_BINDING"); const val=b[k]; if(val===null)throw new V2Err("null binding","ERR_V2_NULL_BINDING"); if(val==="")throw new V2Err("empty binding","ERR_V2_EMPTY_BINDING"); o[k]=assertHash(val,"bindings."+k); } return o; }
+function assertAlg(m){ if(m!=="hmac-sha256"&&m!=="ed25519")throw new V2Err("bad algorithm","ERR_V2_BAD_ALGORITHM"); return m; }
+function buildV2Envelope(a){
+  return { domain:V2_DOMAIN, wire_version:V2_VERSION, algorithm:assertAlg(a.algorithm),
+    request_commitment:assertHash(a.request_commitment,"request_commitment"),
+    output_commitment:assertHash(a.output_commitment,"output_commitment"),
+    model_id:assertIdent(a.model_id,"model_id"), completed_at_utc:assertTs(a.completed_at_utc),
+    previous_hash:assertPrev(a.previous_hash===undefined?null:a.previous_hash),
+    key_id:assertIdent(a.key_id,"key_id"), bindings:assertBindings(a.bindings) };
+}
+
+async function verifyV2(att, keys){
+  if(!att||typeof att!=="object") return { ok:false, wire:null, reason:"malformed" };
+  if(att.version!==V2_VERSION) return { ok:false, wire:att.version, reason:"not a v2 attestation" };
+  if(att.domain!==V2_DOMAIN) return { ok:false, wire:V2_VERSION, reason:"bad domain" };
+  let env; try { env=buildV2Envelope({ algorithm:att.algorithm??att.mode, request_commitment:att.request_commitment, output_commitment:att.output_commitment, model_id:att.model_id, completed_at_utc:att.completed_at_utc, previous_hash:att.previous_hash, key_id:att.key_id, bindings:att.bindings }); }
+  catch(e){ return { ok:false, wire:V2_VERSION, reason:"schema: "+e.code, failClosed:true }; }
+  const bytes=enc.encode(canonicalize(env));
+  if(env.algorithm==="hmac-sha256"){
+    const key=await crypto.subtle.importKey("raw", enc.encode(keys.secret||""), {name:"HMAC",hash:"SHA-256"}, false, ["sign"]);
+    const mac=await crypto.subtle.sign("HMAC", key, bytes);
+    const expected=[...new Uint8Array(mac)].map(b=>b.toString(16).padStart(2,"0")).join("");
+    return timingEqHex(expected, att.signature) ? { ok:true, wire:V2_VERSION, bindings:Object.keys(env.bindings) } : { ok:false, wire:V2_VERSION, reason:"hmac mismatch" };
+  } else {
+    if(!keys.publicKeySpkiDerB64) return { ok:false, wire:V2_VERSION, reason:"no public key" };
+    const key=await crypto.subtle.importKey("spki", b64ToBytes(keys.publicKeySpkiDerB64), {name:"Ed25519"}, false, ["verify"]);
+    let ok=false; try { ok=await crypto.subtle.verify({name:"Ed25519"}, key, b64ToBytes(att.signature), bytes); } catch { ok=false; }
+    return ok ? { ok:true, wire:V2_VERSION, bindings:Object.keys(env.bindings) } : { ok:false, wire:V2_VERSION, reason:"ed25519 mismatch" };
+  }
+}
+
+// ── v1 legacy verify (reconstruct the delimiter-joined payload; label LEGACY) ──
+async function verifyV1(att, keys){
+  const parts=[att.version, att.mode, att.request_commitment, att.output_commitment, att.model_id, att.completed_at_utc, att.previous_hash||"", att.key_id];
+  const BIND=["dictionary_hash","citation_registry_sha256","proxy_schema_sha256","original_content_hash","policy_invariance_score_sha256","adverse_action_notice_sha256","sampling_seed_commitment_sha256","evidence_partition_scheme_sha256","heterogeneity_commitment_sha256","claim_type_sha256","bian_coverage_sha256","eticas_taxonomy_sha256","sive_fixture_set_sha256","calibration_ranking_split_sha256"];
+  for(const b of BIND){ if(att[b]) parts.push(att[b]); }
+  const bytes=enc.encode(parts.join("|"));
+  const key=await crypto.subtle.importKey("raw", enc.encode(keys.secret||""), {name:"HMAC",hash:"SHA-256"}, false, ["sign"]);
+  const mac=await crypto.subtle.sign("HMAC", key, bytes);
+  const expected=[...new Uint8Array(mac)].map(b=>b.toString(16).padStart(2,"0")).join("");
+  return timingEqHex(expected, att.signature) ? { ok:true, wire:"aex-attestation/v1", label:"LEGACY_AMBIGUOUS_ENVELOPE" } : { ok:false, wire:"aex-attestation/v1", reason:"v1 hmac mismatch" };
+}
+
+// ── explicit dispatch: route by version, never route malformed v2 into v1 ──
+async function verifyAny(att, keys){
+  if(!att||typeof att!=="object") return { ok:false, wire:null, reason:"malformed" };
+  if(att.version===V2_VERSION) return verifyV2(att, keys);
+  if(att.version==="aex-attestation/v1"||att.version===undefined) return verifyV1(att, keys);
+  return { ok:false, wire:att.version, reason:"unknown wire version" };
+}
+
+const SUPPORTED_WIRES=["aex-attestation/v1 (legacy)","aex-attestation/v2"];
+document.getElementById("wires").textContent=SUPPORTED_WIRES.join(", ");
+
+// ── embedded real fixtures ──
+const FX = {
+  "hmac_secret": "browser-fixture-hmac-secret",
+  "ed25519_public_spki_der_b64": "MCowBQYDK2VwAyEAhwBptq/P8C2g/siZ42GCj3SBqlioBRo9dlUnkhK2LT0=",
+  "valid_v2_hmac": {
+    "version": "aex-attestation/v2",
+    "domain": "shadow-attestation",
+    "algorithm": "hmac-sha256",
+    "mode": "hmac-sha256",
+    "request_commitment": "1111111111111111111111111111111111111111111111111111111111111111",
+    "output_commitment": "2222222222222222222222222222222222222222222222222222222222222222",
+    "model_id": "claude-opus-4-8",
+    "completed_at_utc": "2026-01-02T03:04:05.000Z",
+    "previous_hash": null,
+    "key_id": "shadow-2026-q1",
+    "bindings": {
+      "dictionary_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "signature": "99bae2fba0d0d31ca72042483dbe113eea0417c4f5171c6bac8bbd3eea2358fb"
+  },
+  "valid_v2_multi_binding": {
+    "version": "aex-attestation/v2",
+    "domain": "shadow-attestation",
+    "algorithm": "hmac-sha256",
+    "mode": "hmac-sha256",
+    "request_commitment": "1111111111111111111111111111111111111111111111111111111111111111",
+    "output_commitment": "2222222222222222222222222222222222222222222222222222222222222222",
+    "model_id": "claude-opus-4-8",
+    "completed_at_utc": "2026-01-02T03:04:05.000Z",
+    "previous_hash": null,
+    "key_id": "shadow-2026-q1",
+    "bindings": {
+      "dictionary_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "citation_registry_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "adverse_action_notice_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "signature": "3b2ca56e250cf06973c8f0e9bb75883a87ded98df6cb797162cd8075e830c6a3"
+  },
+  "valid_v2_ed25519": {
+    "version": "aex-attestation/v2",
+    "domain": "shadow-attestation",
+    "algorithm": "ed25519",
+    "mode": "ed25519",
+    "request_commitment": "1111111111111111111111111111111111111111111111111111111111111111",
+    "output_commitment": "2222222222222222222222222222222222222222222222222222222222222222",
+    "model_id": "claude-opus-4-8",
+    "completed_at_utc": "2026-01-02T03:04:05.000Z",
+    "previous_hash": null,
+    "key_id": "shadow-2026-q1",
+    "bindings": {
+      "dictionary_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "signature": "VaJjZU1ZIMm4G0Tls++2Xq2mJT0GgZb3q8BWyNRPVks3wzLH6pHkwY+Jfa90an6ZIp8UuPVMakd12zs61omsAA=="
+  },
+  "valid_v1_legacy": {
+    "version": "aex-attestation/v1",
+    "mode": "hmac-sha256",
+    "request_commitment": "5041bf1f713df204784353e82f6a4a535931cb64f1f4b4a5aeaffcb720918b22",
+    "output_commitment": "9a51a7767c3d6fbab05a874b052aa49174a280702a278208810f9cd1a9ef3afa",
+    "model_id": "claude",
+    "completed_at_utc": "2026-01-02T03:04:05Z",
+    "previous_hash": null,
+    "key_id": "k",
+    "signature": "bc5e76137a87cde3653113baa613f4fe1ee74779647b4dfd821b809c75ff3ea7"
+  }
+};
+
+async function runSelfTest(){
+  const K = { secret: FX.hmac_secret, publicKeySpkiDerB64: FX.ed25519_public_spki_der_b64 };
+  const results=[];
+  const rec=(name, pass, detail)=>results.push({ name, pass, detail });
+  const clone=o=>JSON.parse(JSON.stringify(o));
+
+  // valid cases
+  rec("valid v2 HMAC accepted", (await verifyV2(FX.valid_v2_hmac, K)).ok===true);
+  rec("valid v2 multi-binding accepted", (await verifyV2(FX.valid_v2_multi_binding, K)).ok===true);
+  rec("valid v2 Ed25519 accepted", (await verifyV2(FX.valid_v2_ed25519, K)).ok===true);
+  { const r=await verifyAny(FX.valid_v1_legacy, K); rec("valid v1 accepted + labeled legacy", r.ok===true && r.label==="LEGACY_AMBIGUOUS_ENVELOPE", r.label); }
+
+  // mutation cases derived from the valid v2 HMAC proof — all must FAIL
+  { const m=clone(FX.valid_v2_hmac); m.bindings={ citation_registry_sha256: m.bindings.dictionary_hash }; rec("binding relabel rejected", (await verifyV2(m,K)).ok===false); }
+  { const m=clone(FX.valid_v2_hmac); m.model_id="claude-opus-4-8|x"; rec("delimiter-boundary mutation rejected", (await verifyV2(m,K)).ok===false); }
+  { const m=clone(FX.valid_v2_hmac); m.bindings={}; rec("removed binding rejected", (await verifyV2(m,K)).ok===false); }
+  { const m=clone(FX.valid_v2_hmac); m.bindings={ ...m.bindings, not_a_real_binding:"a".repeat(64) }; const r=await verifyV2(m,K); rec("added unknown binding fails closed", r.ok===false && r.failClosed===true, r.reason); }
+  { const m=clone(FX.valid_v2_hmac); m.version="aex-attestation/v3"; const r=await verifyAny(m,K); rec("altered wire version rejected (not routed to v1)", r.ok===false && r.reason==="unknown wire version", r.reason); }
+  { const m=clone(FX.valid_v2_hmac); m.domain="evil"; rec("altered domain rejected", (await verifyV2(m,K)).ok===false); }
+  { const m=clone(FX.valid_v2_hmac); m.algorithm="ed25519"; m.mode="ed25519"; rec("altered algorithm rejected", (await verifyV2(m,K)).ok===false); }
+  { const m=clone(FX.valid_v2_hmac); m.bindings={ dictionary_hash:"" }; const r=await verifyV2(m,K); rec("empty-string binding fails closed (schema)", r.ok===false && r.failClosed===true, r.reason); }
+  { const m=clone(FX.valid_v2_hmac); m.request_commitment="ABC"; const r=await verifyV2(m,K); rec("malformed v2 (bad hash) fails closed, never routed to v1", r.ok===false && r.failClosed===true, r.reason); }
+  { const m=clone(FX.valid_v2_hmac); m.previous_hash=""; const r=await verifyV2(m,K); rec("previous_hash empty-string fails closed", r.ok===false && r.failClosed===true, r.reason); }
+
+  const passed=results.filter(r=>r.pass).length, total=results.length;
+  const lines=results.map(r=>`${r.pass?"PASS":"FAIL"}  ${r.name}${r.detail?"  ("+r.detail+")":""}`);
+  const summary=`SELFTEST ${passed}/${total} passed`;
+  document.getElementById("out").textContent=summary+"\n\n"+lines.join("\n");
+  document.getElementById("out").className = passed===total ? "ok" : "bad";
+  document.title = passed===total ? `PASS ${passed}/${total}` : `FAIL ${passed}/${total}`;
+  console.log("SELFTEST_RESULT " + JSON.stringify({ passed, total, allPass: passed===total, supported: SUPPORTED_WIRES, results }));
+}
+runSelfTest().catch(e=>{ document.getElementById("out").textContent="SELFTEST CRASHED: "+e.message; console.error("SELFTEST_CRASH", e); document.title="CRASH"; });
+</script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "_comment": "XSS injection regression payload for demo/xreal.html renderDescriptor. Browser-verified 2026-07: with the textContent fix, every field renders as LITERAL TEXT (pwned=0; no img/script/svg parsed). Load demo/xreal.html and call renderDescriptor(<this>) — the page must show these strings verbatim and execute nothing.",
+  "descriptor_version": 1, "response_mode": "test", "verdict": "supports",
+  "personas": [{
+    "display_name": "<img src=x onerror=window.__pwned=1>EVIL",
+    "accent_color": "red", "verdict": "supports",
+    "rationale": "<script>window.__pwned=2</script>ok",
+    "position": { "x": 0, "y": 0, "z": 0 }
+  }],
+  "context_nodes": [{
+    "anchor": "a</span><b>",
+    "label": "<svg onload=window.__pwned=3>lbl",
+    "value": "</span><img src=x onerror=window.__pwned=4>val"
+  }]
+}

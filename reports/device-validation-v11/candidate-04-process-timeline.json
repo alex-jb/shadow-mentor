@@ -1,0 +1,22 @@
+{
+  "log": "~/Desktop/beam-pro-v11-test/candidate-04-glasses-launch.txt",
+  "pid_map": {
+    "24440": "MyGlasses / Nebula manager (NRService, myGlasses tag)",
+    "31828": "com.xreal.evapro.nebula:space (Nebula's OWN Unity XR space)",
+    "31505": "com.shadowlens.xrealvoice (Shadow Lens)"
+  },
+  "attribution_correction": "The successful [XREALXRLoader] Init End / Start End / NRGlasses RUN / start GlassesDisplay lines are emitted by PID 31828 (Nebula's space), NOT by Shadow (31505). Shadow's own XR loader did NOT start.",
+  "timeline": [
+    {"ts": "13:22:31.479", "pid": 31505, "pkg": "com.shadowlens.xrealvoice", "activity": "NRXRActivity", "event": "onCreate", "interpretation": "Shadow NRXRActivity created (candidate-04 launcher fix works)", "confidence": "high"},
+    {"ts": "13:22:31.481", "pid": 31505, "pkg": "com.shadowlens.xrealvoice", "activity": "NRXRActivity", "event": "displayId=0, isNrealDisplay=false", "interpretation": "Shadow is on the PHONE display (0), not the glasses", "confidence": "high"},
+    {"ts": "13:22:31.481", "pid": 31505, "pkg": "com.shadowlens.xrealvoice", "activity": "NRXRActivity", "event": "onCreate: isEntryApp=false, multiResumeMode=false, mainActivity=UnityPlayerActivity", "interpretation": "DECISIVE — Shadow is NOT the MR entry app; it was launched directly, not routed by MyGlasses", "confidence": "high", "blocking": true},
+    {"ts": "13:22:31.555", "pid": 31505, "pkg": "com.shadowlens.xrealvoice", "activity": "UnityPlayerActivity", "event": "onResume, multiResumeMode:false", "interpretation": "Shadow's Unity player runs on the phone display", "confidence": "high"},
+    {"ts": "13:22:43.729", "pid": 24440, "pkg": "myGlasses", "event": "onDisplayAdded displayId=19 (HDMI, XREAL One Pro 1920x1080; _equalsPidVid: Nreal glasses glassType=6)", "interpretation": "glasses hardware + external display recognized (hardware path OK)", "confidence": "high"},
+    {"ts": "13:22:44.252", "pid": 24440, "pkg": "myGlasses/LaunchManager", "event": "onDisplayAdded: component not found on display:19", "interpretation": "MyGlasses has no MR component to place on the glasses display", "confidence": "high", "blocking": true},
+    {"ts": "13:22:46.413", "pid": 24440, "pkg": "myGlasses", "event": "mrPkgName is empty, display remove, go launcher → goLauncher", "interpretation": "PRIMARY FAILURE — MyGlasses never got mrPkgName set to Shadow's package, so it falls back to its own launcher", "confidence": "high", "blocking": true},
+    {"ts": "13:23:17.5xx", "pid": 3103, "pkg": "com.xreal.evapro.nebula", "activity": "LaunchSpaceAcrivity", "event": "Nebula owns the resumed UI in the glasses", "interpretation": "Nebula fallback launcher took control — matches 'glasses stayed in Nebula OS'", "confidence": "high"}
+  ],
+  "primary_classification": "MR_PACKAGE_HANDOFF_MISSING",
+  "secondary": "NEBULA_FALLBACK_LAUNCHER_TAKES_CONTROL",
+  "not_yet": "XR_ORIGIN_OR_CAMERA_MISSING (Shadow's own XR loader never started; do not fix XR Origin yet)"
+}

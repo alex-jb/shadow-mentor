@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://shadow-mentor/schemas/shadow-spoken-utterance-v1.schema.json",
+  "title": "shadow-spoken-utterance-v1",
+  "description": "Provider-independent spoken-language plan produced by the Shadow speech planner from canonical story/evidence state. Carries WHAT to say + prosody INTENT per segment; it contains NO provider SSML and NO executable markup. Provider adapters (Android TTS, cloud, fixture) render SSML/audio from validated segments. Treat every string as untrusted.",
+  "type": "object",
+  "required": ["contract_version", "utterance_id", "locale", "role", "intent", "spoken_segments", "prosody_profile", "interruptibility", "priority", "confirmation_required", "fixture_live_device_status"],
+  "additionalProperties": false,
+  "properties": {
+    "contract_version": { "const": "shadow-spoken-utterance-v1" },
+    "utterance_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9:_-]{0,63}$" },
+    "locale": { "enum": ["en-US", "zh-CN"] },
+    "role": { "enum": ["SYSTEM_NARRATOR", "EVIDENCE_READER", "PERSPECTIVE", "SAFETY", "HELP"] },
+    "intent": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{1,47}$" },
+    "semantic_source_ids": { "type": "array", "maxItems": 64, "items": { "type": "string", "maxLength": 64 } },
+    "original_text": { "type": "string", "maxLength": 2000 },
+    "spoken_segments": {
+      "type": "array", "minItems": 1, "maxItems": 24,
+      "items": {
+        "type": "object",
+        "required": ["segment_id", "text", "semantic_role"],
+        "additionalProperties": false,
+        "properties": {
+          "segment_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9:_-]{0,63}$" },
+          "text": { "type": "string", "minLength": 1, "maxLength": 400 },
+          "semantic_role": { "enum": ["result", "source", "limitation", "detail", "label", "quote", "prompt", "warning"] },
+          "source_reference": { "type": ["string", "null"], "maxLength": 64 },
+          "emphasis": { "enum": ["none", "mild", "moderate"] },
+          "pause_before_ms": { "type": "integer", "minimum": 0, "maximum": 2000 },
+          "pause_after_ms": { "type": "integer", "minimum": 0, "maximum": 2000 },
+          "rate_multiplier": { "type": "number", "minimum": 0.7, "maximum": 1.2 },
+          "pitch_offset": { "type": "number", "minimum": -3, "maximum": 3 },
+          "volume_multiplier": { "type": "number", "minimum": 0.5, "maximum": 1.2 },
+          "pronunciation_tokens": { "type": "array", "maxItems": 32, "items": { "type": "string", "maxLength": 64 } },
+          "can_interrupt_after": { "type": "boolean" },
+          "accessibility_text": { "type": ["string", "null"], "maxLength": 400 },
+          "is_verbatim_quote": { "type": "boolean" }
+        }
+      }
+    },
+    "prosody_profile": { "enum": ["SYSTEM_NEUTRAL", "EVIDENCE_READER", "VERIFICATION_SUCCESS", "VERIFICATION_FAILURE", "LIMITATION", "PERSPECTIVE", "ACCESSIBILITY_CLEAR"] },
+    "interruptibility": { "enum": ["INTERRUPTIBLE", "INTERRUPTIBLE_AFTER_SEGMENT", "NON_INTERRUPTIBLE"] },
+    "priority": { "enum": ["P0", "P1", "P2", "P3", "P4"] },
+    "confirmation_required": { "type": "boolean" },
+    "fixture_live_device_status": { "enum": ["FIXTURE", "LIVE", "DEVICE"] },
+    "limitations": { "type": "array", "maxItems": 8, "items": { "type": "string", "maxLength": 200 } }
+  }
+}

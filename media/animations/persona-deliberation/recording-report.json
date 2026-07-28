@@ -1,0 +1,20 @@
+{
+  "tool": "playwright",
+  "chromium": "149.0.7827.55",
+  "viewports": {
+    "1280x720": 0,
+    "1440x900": 0,
+    "390x844": 0
+  },
+  "console_errors": [],
+  "external_requests": [],
+  "csp_violations": [],
+  "first_warn": {
+    "consensus_with_evidence": null,
+    "disagreement": "Majority agreement",
+    "unsupported_claim": "Unsupported claims",
+    "contradictory_evidence": "Contradictory evidence",
+    "abstain": "Abstention",
+    "majority_weak_evidence": "Claim-evidence binding"
+  }
+}

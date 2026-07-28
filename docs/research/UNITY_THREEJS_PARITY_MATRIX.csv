@@ -1,0 +1,16 @@
+semantic,authoritative,unity_source_today,threejs_source_today,contract_source_target,parity_rule
+node_count,yes,ShadowAuditChainData.Chain,scene.js node build,shadow-3d-scene-v1 nodes[],identical
+node_ids,yes,derived,derived,scene nodes[].id,identical
+sequence_order,yes,ShadowAuditChainData seq,constants ordering,scene nodes[].sequence,identical
+node_status,yes,ShadowDesignTokens,constants STATUS,scene nodes[].status,identical
+tamper_failed_sequence,yes,ShadowAuditChainData.BrokenAtSeq (DUP),constants MUTATE_SEQ (DUP),scene tamper.failed_sequence,identical
+downstream_sequences,yes,implicit,implicit,scene tamper.downstream_sequences,identical
+edge_relationships,yes,SpatialLayout,scene edges,scene edges[],identical
+verification_six_checks,yes,run-loan-council,verify matrix,scene verification,identical
+analytical_correctness,yes,label,label,scene verification.analytical_correctness=NOT_EVALUATED,identical
+source_ids,yes,narrative,demo-data,scene nodes[].source_ids,identical
+claim_ids,yes,narrative,demo-data,scene nodes[].claim_ids,identical
+selected_focused_node,yes,stage state,app FOCUS,scene nodes[].focus/selected,identical
+label_priority,yes,none,none,scene nodes[].label_priority,identical
+report_hash,yes,graphSha256,n/a,deterministic scene serialization,identical
+node_positions,no,layout,layout,scene layout_hint (advisory),may differ per device

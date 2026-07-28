@@ -1,0 +1,2 @@
+asset_path,atlas_count,atlas_dimensions,glyph_count,fallback_chain,en_coverage,zh_hans_coverage,est_mem,note
+(none in Assets),0,n/a,0,n/a,n/a,n/a,0,no committed TMP_FontAsset; font is TMP default / runtime-assigned — see Unity code audit for CJK handling

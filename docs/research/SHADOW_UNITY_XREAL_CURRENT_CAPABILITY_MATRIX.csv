@@ -1,0 +1,18 @@
+capability,one_base,one_plus_eye,beam_pro_host,supported,official_source,accessed,shadow_flag,notes
+TRACKING_3DOF,yes,yes,tested_host,supported,https://docs.xreal.com/XREALDevices/Compatibility,2026-07-21,TRACKING_3DOF,X1 chip rotation-only on base One/One Pro
+TRACKING_6DOF,no,yes,tested_host,supported_only_with_eye,https://docs.xreal.com/Release%20Note/XREAL%20SDK%203.1.0,2026-07-21,TRACKING_6DOF,SDK 3.1 + firmware; monocular SLAM; never inferred from model
+RGB_CAMERA,no,yes,tested_host,supported_only_with_eye,https://docs.xreal.com/Camera/Access%20RGB%20Camera,2026-07-21,RGB_CAMERA_AVAILABLE,Eye accessory only; base One has no camera
+FIRST_PERSON_VIEW,no,yes,tested_host,supported_only_with_eye,https://docs.xreal.com/XREALDevices/Compatibility,2026-07-21,FIRST_PERSON_VIEW_AVAILABLE,claimed only after a real non-black frame
+CONTROLLER_3DOF,yes,yes,phone_controller,supported_3dof_only,https://docs.xreal.com/XREALDevices/Compatibility,2026-07-21,CONTROLLER_3DOF,3DoF phone controller; no positional controller input
+PLANE_TRACKING,no,no,na,NOT_supported,https://docs.xreal.com/XREALDevices/Compatibility,2026-07-21,PLANE_TRACKING_AVAILABLE,Air 2 Ultra only; cleared unconditionally
+IMAGE_TRACKING,no,no,na,NOT_supported,https://docs.xreal.com/XREALDevices/Compatibility,2026-07-21,IMAGE_TRACKING_AVAILABLE,Air 2 Ultra only; cleared unconditionally
+HAND_TRACKING,no,no,na,NOT_supported,https://docs.xreal.com/XREALDevices/Compatibility,2026-07-21,HAND_TRACKING_AVAILABLE,Air 2 Ultra only; SDK 3.1 hand fixes apply to Ultra not One
+DEPTH_MESH,no,no,na,NOT_supported,https://docs.xreal.com/XREALDevices/Compatibility,2026-07-21,DEPTH_MESH_AVAILABLE,Air 2 Ultra only; cleared unconditionally
+SPATIAL_ANCHOR,no,no,na,NOT_supported,https://docs.xreal.com/XREALDevices/Compatibility,2026-07-21,SPATIAL_ANCHOR_AVAILABLE,no persistent world anchors; session-relative placement only
+EMULATOR_TESTING,editor,editor,na,supported_dev_only,https://docs.xreal.com/Tools/Emulator,2026-07-21,EMULATOR_ACTIVE,XR Device Simulator in Editor; never counts as device-validated
+BEAM_PRO_HOST,na,na,tested_host,supported_host,https://docs.xreal.com/Release%20Note/XREAL%20SDK%203.1.0,2026-07-21,PLATFORM_BEAM_PRO,tested host with Samsung S25; requires MyGlasses 1.11.0 + firmware
+CAMERA_PERMISSION_RAW,unknown,unknown,unknown,official_unclear_fail_closed,https://docs.xreal.com/Camera/Access%20RGB%20Camera,2026-07-21,,only RECORD_AUDIO + FOREGROUND_SERVICE_MEDIA_PROJECTION documented for recording
+UNITY_IL2CPP_ARM64,na,na,na,mandatory,https://docs.unity3d.com/6000.0/Documentation/Manual/class-PlayerSettingsAndroid.html,2026-07-21,,ARM64 selectable only under IL2CPP
+UNITY_WORLDSPACE_UI,na,na,na,ugui_only_on_6.0,https://docs.unity3d.com/6000.0/Documentation/Manual/UI-system-compare.html,2026-07-21,,UI Toolkit world-space lands 6.2; use uGUI world-space now
+UNITY_EDITOR_PROFILING,na,na,na,not_representative,https://docs.unity3d.com/6000.0/Documentation/Manual/profiling-collect-data-introduction.html,2026-07-21,,measure Development Build on device
+THREEJS_RENDERER,na,na,na,webgl_default,https://threejs.org/manual/en/webgpurenderer.html,2026-07-21,,WebGPURenderer experimental; keep WebGLRenderer; vendored copy is r160

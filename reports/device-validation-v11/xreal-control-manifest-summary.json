@@ -1,0 +1,185 @@
+{
+  "label": "xreal-sdk31-hello-mr-control",
+  "package": "com.shadowlens.xrealcontrol",
+  "versionCode": "1",
+  "versionName": "3.1.0-control",
+  "minSdk": "29",
+  "targetSdk": "34",
+  "applicationLabel": "@0x7f060005",
+  "applicationMeta": {
+    "unity.splash-mode": "0",
+    "unity.splash-enable": "true",
+    "unity.launch-fullscreen": "true",
+    "unity.render-outside-safearea": "true",
+    "notch.config": "portrait|landscape",
+    "unity.auto-report-fully-drawn": "true",
+    "unity.auto-set-game-state": "true",
+    "unity.strip-engine-code": "true",
+    "nr_features": "multiResume",
+    "nreal_sdk": "true",
+    "com.nreal.supportDevices": "1|XrealLight|2|XrealAir",
+    "autoLog": "0"
+  },
+  "launcherActivities": [
+    "ai.nreal.activitylife.NRXRActivity"
+  ],
+  "activities": [
+    {
+      "name": "ai.nreal.activitylife.NRFakeActivity",
+      "exported": "(unset)",
+      "launchMode": "2",
+      "taskAffinity": "(unset)",
+      "screenOrientation": "8",
+      "meta": {},
+      "intentFilters": []
+    },
+    {
+      "name": "ai.nreal.activitylife.NRShadowActivity",
+      "exported": "(unset)",
+      "launchMode": "2",
+      "taskAffinity": "(unset)",
+      "screenOrientation": "8",
+      "meta": {},
+      "intentFilters": []
+    },
+    {
+      "name": "ai.nreal.activitylife.NRXRActivity",
+      "exported": "true",
+      "launchMode": "2",
+      "taskAffinity": "xreal.unity",
+      "screenOrientation": "1",
+      "meta": {},
+      "intentFilters": [
+        {
+          "actions": [
+            "android.intent.action.MAIN"
+          ],
+          "categories": [
+            "android.intent.category.DEFAULT",
+            "android.intent.category.LAUNCHER",
+            "android.intent.category.LEANBACK_LAUNCHER"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ai.nreal.activitylife.UnityPlayerActivity",
+      "exported": "true",
+      "launchMode": "2",
+      "taskAffinity": "xreal.unity",
+      "screenOrientation": "1",
+      "meta": {
+        "unityplayer.UnityActivity": "true"
+      },
+      "intentFilters": []
+    },
+    {
+      "name": "com.unity3d.player.UnityPlayerActivity",
+      "exported": "true",
+      "launchMode": "2",
+      "taskAffinity": "(unset)",
+      "screenOrientation": "13",
+      "meta": {
+        "unityplayer.UnityActivity": "true",
+        "WindowManagerPreference:FreeformWindowSize": "@0x7f060002",
+        "WindowManagerPreference:FreeformWindowOrientation": "@0x7f060000",
+        "notch_support": "true"
+      },
+      "intentFilters": []
+    }
+  ],
+  "activityAliases": [],
+  "services": [
+    {
+      "name": "ai.nreal.sdk.MediaProjectionService",
+      "exported": "true"
+    }
+  ],
+  "providers": [
+    {
+      "name": "com.xreal.evapro.autologcat.AutoLogProvider",
+      "authorities": "com.shadowlens.xrealcontrol.auto_log",
+      "exported": "false"
+    },
+    {
+      "name": "com.xreal.glassesdisplayplugevent.provider.GlassesInitProvider",
+      "authorities": "com.shadowlens.xrealcontrol.glassesdisplayplugevent.provider",
+      "exported": "false"
+    }
+  ],
+  "queries": [
+    {
+      "kind": "intent"
+    }
+  ],
+  "usesPermissions": [
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.ACTIVITY_EMBEDDING",
+    "android.permission.FOREGROUND_SERVICE",
+    "android.permission.HIGH_SAMPLING_RATE_SENSORS",
+    "android.permission.INTERNET",
+    "android.permission.READ_EXTERNAL_STORAGE",
+    "android.permission.REORDER_TASKS",
+    "android.permission.SYSTEM_ALERT_WINDOW",
+    "android.permission.VIBRATE",
+    "android.permission.WRITE_EXTERNAL_STORAGE",
+    "android.permission.WRITE_EXTERNAL_STORAGE"
+  ],
+  "usesFeatures": [
+    {
+      "name": "android.hardware.camera",
+      "required": "false"
+    },
+    {
+      "name": "android.hardware.camera.autofocus",
+      "required": "false"
+    },
+    {
+      "name": "android.hardware.camera.front",
+      "required": "false"
+    },
+    {
+      "name": "android.hardware.sensor.accelerometer",
+      "required": "false"
+    },
+    {
+      "name": "android.hardware.touchscreen",
+      "required": "false"
+    },
+    {
+      "name": "android.hardware.touchscreen.multitouch",
+      "required": "false"
+    },
+    {
+      "name": "android.hardware.touchscreen.multitouch.distinct",
+      "required": "false"
+    },
+    {
+      "name": "glEs:0x00030000",
+      "required": "(unset)"
+    }
+  ],
+  "usesNativeLibraries": [
+    {
+      "name": "libnr_api.xreal.so",
+      "required": "false"
+    }
+  ],
+  "abis": [
+    "arm64-v8a"
+  ],
+  "nativeLibraryCount": 75,
+  "xrealNativeLibraries": [
+    "libXREALXRPlugin.so",
+    "libnr_libusb.so",
+    "libnr_loader.so"
+  ],
+  "apk": {
+    "fileName": "xreal-sdk31-hello-mr-control.apk",
+    "bytes": 128489344,
+    "sha256": "0d629d75bd03ffce8212f5afd30351c615822f48b7274c3c8ed5a30895312734"
+  },
+  "badgingLaunchable": [
+    "ai.nreal.activitylife.NRXRActivity"
+  ]
+}

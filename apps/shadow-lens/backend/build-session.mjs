@@ -6,6 +6,7 @@
 // the private key; clients never hold it). Reuses attest-core (no reimplementation).
 import { createSession, appendEvent, sealSession, verifyBundle } from "../../../packages/attest-core/session.js";
 import { CONTRACT_VERSION, validateShadowLensSession } from "../contracts/validate.mjs";
+import { deriveReviewState } from "../../../lib/reviewer-interaction.js";
 
 /**
  * @param {object} input
@@ -39,9 +40,15 @@ export function buildShadowLensSession(input) {
     extensions: { source_map_hash: analysisResult?.source_map_hash } });
   appendEvent(s, { event_type: "model_output", actor: "model",
     payload: { findings_count: analysisResult?.source_bound_count ?? 0, model_id: analysisResult?.model_id, prompt_hash: analysisResult?.prompt_hash } });
-  if (reviewers && reviewers.length) {
+  // Derive the reviewer state fail-closed from the reviewers array (FINDING-C1).
+  // Ignore any caller-supplied reviewer_interaction when reviewers are present;
+  // the array is the authoritative evidence and must drive the aggregate.
+  const reviewState = reviewers && reviewers.length
+    ? deriveReviewState(reviewers)
+    : (reviewer_interaction ? { status: reviewer_interaction.decision ?? "pending", reviewer_interaction, conflict_evidence: [] } : null);
+  if (reviewState && reviewState.status !== "pending") {
     appendEvent(s, { event_type: "human_approval", actor: "user",
-      payload: { approved: true, ...(reviewer_interaction ? { reviewer_interaction } : {}) } });
+      payload: { approved: reviewState.status === "approved", ...(reviewState.reviewer_interaction ? { reviewer_interaction: reviewState.reviewer_interaction } : {}) } });
   }
   const bundle = sealSession(s);
   const verified = verifyBundle(bundle, { publicKey: publicKeyPem });
@@ -77,7 +84,7 @@ export function buildShadowLensSession(input) {
       external_anchor: "none",
       source_coverage_pct: analysisResult?.source_coverage_pct ?? null,
       analysis_confidence: null,
-      human_review: reviewers && reviewers.length ? "approved" : "pending",
+      human_review: reviewState ? reviewState.status : "pending",
       data_freshness_sec: null,
     },
   };

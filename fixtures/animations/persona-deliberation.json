@@ -1,0 +1,538 @@
+{
+  "story_version": "shadow-explainer-story/1",
+  "fixture_status": "FIXTURE",
+  "fixture_note": "DEMONSTRATION FIXTURE — configured analytical perspectives, not human experts; not bank policy.",
+  "shared_evidence": {
+    "E-101": {
+      "en": "High revolving utilization",
+      "zh": "循环额度使用率高",
+      "quote": "revolving utilization 78% (policy pref ≤ 30%)"
+    },
+    "E-102": {
+      "en": "Verified income documentation",
+      "zh": "已核验收入文件",
+      "quote": "income verified via 2y W-2 + paystubs"
+    },
+    "E-103": {
+      "en": "Recent delinquency record",
+      "zh": "近期逾期记录",
+      "quote": "30-day delinquency 4 months ago"
+    },
+    "E-104": {
+      "en": "Long-standing customer relationship",
+      "zh": "长期客户关系",
+      "quote": "11-year relationship, prior loans repaid"
+    },
+    "E-105": {
+      "en": "Policy exception criteria",
+      "zh": "政策例外条件",
+      "quote": "exception §4.3 requires a compensating factor"
+    }
+  },
+  "personas": {
+    "CF": {
+      "en": "Credit Fundamentals",
+      "zh": "信贷基本面"
+    },
+    "RO": {
+      "en": "Risk Officer",
+      "zh": "风险官"
+    },
+    "FL": {
+      "en": "Fair Lending Compliance",
+      "zh": "公平放贷合规"
+    },
+    "CA": {
+      "en": "Customer Advocate",
+      "zh": "客户倡导"
+    },
+    "MC": {
+      "en": "Macro Contrarian",
+      "zh": "宏观逆向"
+    }
+  },
+  "checks": [
+    "SHARED_SOURCE_EVIDENCE",
+    "SOURCE_RESOLUTION",
+    "PERSONA_OUTPUT_INTEGRITY",
+    "CLAIM_EVIDENCE_BINDING",
+    "UNSUPPORTED_CLAIMS",
+    "CONTRADICTORY_EVIDENCE",
+    "ABSTENTION",
+    "SYNTHESIS_PROVENANCE",
+    "MAJORITY_AGREEMENT",
+    "ANALYTICAL_CORRECTNESS",
+    "LEGAL_FAIRNESS_REVIEW",
+    "HUMAN_APPROVAL"
+  ],
+  "scenarios": {
+    "consensus_with_evidence": {
+      "label_en": "Consensus with evidence",
+      "label_zh": "有证据的共识",
+      "first_warning": null,
+      "outputs": [
+        {
+          "perspective_id": "CF",
+          "claim_id": "CF-util-high",
+          "stance": "CAUTION",
+          "stance_strength": 0.7,
+          "supporting_evidence_ids": [
+            "E-101"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "RO",
+          "claim_id": "RO-delinquency-risk",
+          "stance": "CAUTION",
+          "stance_strength": 0.75,
+          "supporting_evidence_ids": [
+            "E-103"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "FL",
+          "claim_id": "FL-no-disparate-driver",
+          "stance": "NEUTRAL",
+          "stance_strength": 0.6,
+          "supporting_evidence_ids": [
+            "E-105"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "CA",
+          "claim_id": "CA-relationship-mitigant",
+          "stance": "SUPPORT",
+          "stance_strength": 0.5,
+          "supporting_evidence_ids": [
+            "E-104"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "MC",
+          "claim_id": "MC-macro-buffer",
+          "stance": "CAUTION",
+          "stance_strength": 0.55,
+          "supporting_evidence_ids": [
+            "E-102"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        }
+      ]
+    },
+    "disagreement": {
+      "label_en": "Disagreement",
+      "label_zh": "分歧",
+      "first_warning": "MAJORITY_AGREEMENT",
+      "outputs": [
+        {
+          "perspective_id": "CF",
+          "claim_id": "CF-util-high",
+          "stance": "CAUTION",
+          "stance_strength": 0.7,
+          "supporting_evidence_ids": [
+            "E-101"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "RO",
+          "claim_id": "RO-delinquency-risk",
+          "stance": "OPPOSE",
+          "stance_strength": 0.75,
+          "supporting_evidence_ids": [
+            "E-104"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "FL",
+          "claim_id": "FL-no-disparate-driver",
+          "stance": "NEUTRAL",
+          "stance_strength": 0.6,
+          "supporting_evidence_ids": [
+            "E-105"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "CA",
+          "claim_id": "CA-relationship-mitigant",
+          "stance": "SUPPORT",
+          "stance_strength": 0.8,
+          "supporting_evidence_ids": [
+            "E-104"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "MC",
+          "claim_id": "MC-macro-buffer",
+          "stance": "CAUTION",
+          "stance_strength": 0.55,
+          "supporting_evidence_ids": [
+            "E-102"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        }
+      ]
+    },
+    "unsupported_claim": {
+      "label_en": "Unsupported claim",
+      "label_zh": "无证据主张",
+      "first_warning": "UNSUPPORTED_CLAIMS",
+      "outputs": [
+        {
+          "perspective_id": "CF",
+          "claim_id": "CF-util-high",
+          "stance": "CAUTION",
+          "stance_strength": 0.7,
+          "supporting_evidence_ids": [
+            "E-101"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "RO",
+          "claim_id": "RO-delinquency-risk",
+          "stance": "CAUTION",
+          "stance_strength": 0.75,
+          "supporting_evidence_ids": [
+            "E-103"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "FL",
+          "claim_id": "FL-no-disparate-driver",
+          "stance": "NEUTRAL",
+          "stance_strength": 0.6,
+          "supporting_evidence_ids": [
+            "E-105"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "CA",
+          "claim_id": "CA-relationship-mitigant",
+          "stance": "SUPPORT",
+          "stance_strength": 0.5,
+          "supporting_evidence_ids": [
+            "E-104"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "MC",
+          "claim_id": "MC-approve-anyway",
+          "stance": "SUPPORT",
+          "stance_strength": 0.55,
+          "supporting_evidence_ids": [],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [
+            "MC-approve-anyway"
+          ],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        }
+      ]
+    },
+    "contradictory_evidence": {
+      "label_en": "Contradictory evidence",
+      "label_zh": "矛盾证据",
+      "first_warning": "CONTRADICTORY_EVIDENCE",
+      "outputs": [
+        {
+          "perspective_id": "CF",
+          "claim_id": "CF-util-high",
+          "stance": "CAUTION",
+          "stance_strength": 0.7,
+          "supporting_evidence_ids": [
+            "E-101"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "RO",
+          "claim_id": "RO-delinquency-risk",
+          "stance": "CAUTION",
+          "stance_strength": 0.75,
+          "supporting_evidence_ids": [
+            "E-103"
+          ],
+          "contradictory_evidence_ids": [
+            "E-104"
+          ],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "FL",
+          "claim_id": "FL-no-disparate-driver",
+          "stance": "NEUTRAL",
+          "stance_strength": 0.6,
+          "supporting_evidence_ids": [
+            "E-105"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "CA",
+          "claim_id": "CA-relationship-mitigant",
+          "stance": "SUPPORT",
+          "stance_strength": 0.5,
+          "supporting_evidence_ids": [
+            "E-104"
+          ],
+          "contradictory_evidence_ids": [
+            "E-103"
+          ],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "MC",
+          "claim_id": "MC-macro-buffer",
+          "stance": "CAUTION",
+          "stance_strength": 0.55,
+          "supporting_evidence_ids": [
+            "E-102"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        }
+      ]
+    },
+    "abstain": {
+      "label_en": "Abstain — insufficient evidence",
+      "label_zh": "弃权——证据不足",
+      "first_warning": "ABSTENTION",
+      "outputs": [
+        {
+          "perspective_id": "CF",
+          "claim_id": "CF-util-high",
+          "stance": "CAUTION",
+          "stance_strength": 0.7,
+          "supporting_evidence_ids": [
+            "E-101"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "RO",
+          "claim_id": "RO-delinquency-risk",
+          "stance": "CAUTION",
+          "stance_strength": 0.75,
+          "supporting_evidence_ids": [
+            "E-103"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "FL",
+          "claim_id": "FL-no-disparate-driver",
+          "stance": "NEUTRAL",
+          "stance_strength": 0.6,
+          "supporting_evidence_ids": [],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": "Insufficient verified evidence to assess disparate impact.",
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "CA",
+          "claim_id": "CA-relationship-mitigant",
+          "stance": "SUPPORT",
+          "stance_strength": 0.5,
+          "supporting_evidence_ids": [
+            "E-104"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "MC",
+          "claim_id": "MC-macro-buffer",
+          "stance": "CAUTION",
+          "stance_strength": 0.55,
+          "supporting_evidence_ids": [
+            "E-102"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        }
+      ]
+    },
+    "majority_weak_evidence": {
+      "label_en": "Majority but weak evidence",
+      "label_zh": "多数但证据弱",
+      "first_warning": "CLAIM_EVIDENCE_BINDING",
+      "outputs": [
+        {
+          "perspective_id": "CF",
+          "claim_id": "CF-util-high",
+          "stance": "SUPPORT",
+          "stance_strength": 0.7,
+          "supporting_evidence_ids": [
+            "E-104"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": true
+        },
+        {
+          "perspective_id": "RO",
+          "claim_id": "RO-delinquency-risk",
+          "stance": "SUPPORT",
+          "stance_strength": 0.75,
+          "supporting_evidence_ids": [
+            "E-104"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": true
+        },
+        {
+          "perspective_id": "FL",
+          "claim_id": "FL-no-disparate-driver",
+          "stance": "NEUTRAL",
+          "stance_strength": 0.6,
+          "supporting_evidence_ids": [
+            "E-105"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": false
+        },
+        {
+          "perspective_id": "CA",
+          "claim_id": "CA-relationship-mitigant",
+          "stance": "SUPPORT",
+          "stance_strength": 0.5,
+          "supporting_evidence_ids": [
+            "E-104"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": true
+        },
+        {
+          "perspective_id": "MC",
+          "claim_id": "MC-macro-buffer",
+          "stance": "SUPPORT",
+          "stance_strength": 0.55,
+          "supporting_evidence_ids": [
+            "E-104"
+          ],
+          "contradictory_evidence_ids": [],
+          "unsupported_claim_ids": [],
+          "abstain_reason": null,
+          "source_resolution_status": "RESOLVED",
+          "weak_evidence": true
+        }
+      ]
+    }
+  },
+  "accessibility_descriptions": {
+    "majority": "Majority agreement is descriptive metadata only; it does not set analytical correctness.",
+    "human": "Human approval is not present; regulated outcomes require human review."
+  }
+}

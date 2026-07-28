@@ -1,0 +1,110 @@
+{
+  "fixture_note": "DEMONSTRATION FIXTURE — not production bank policy or regulatory language.",
+  "dictionary_id": "shadow-reason-codes",
+  "dictionary_version": "v3",
+  "canonicalization_version": "shadow-canon/1",
+  "dictionary_hash": "40fa8b04065616ef61f0725d13b548452e035a789e16acb36fdb3ab7a0479aba",
+  "reason_codes": {
+    "RC-017": {
+      "title_en": "High revolving utilization",
+      "title_zh": "循环额度使用率过高",
+      "definition_en": "Revolving utilization exceeded the configured policy threshold.",
+      "definition_zh": "循环额度使用率超过所配置的政策阈值。"
+    },
+    "RC-021": {
+      "title_en": "Insufficient verified income evidence",
+      "title_zh": "已核验收入证据不足",
+      "definition_en": "Required income evidence was absent or could not be resolved.",
+      "definition_zh": "所需收入证据缺失或无法解析。"
+    },
+    "RC-031": {
+      "title_en": "Recent severe delinquency",
+      "title_zh": "近期严重逾期",
+      "definition_en": "The configured lookback period contains a qualifying delinquency event.",
+      "definition_zh": "所配置的回溯期内存在符合条件的逾期事件。"
+    }
+  },
+  "decision": {
+    "sequence": 42,
+    "selected_reason_codes": [
+      "RC-017",
+      "RC-021"
+    ]
+  },
+  "evidence_references": {
+    "RC-017": [
+      "B0L1",
+      "B0L2"
+    ],
+    "RC-021": [
+      "B0L0"
+    ]
+  },
+  "attestation": {
+    "dictionary_id": "shadow-reason-codes",
+    "dictionary_version": "v3",
+    "dictionary_hash": "40fa8b04065616ef61f0725d13b548452e035a789e16acb36fdb3ab7a0479aba",
+    "selected_reason_codes": [
+      "RC-017",
+      "RC-021"
+    ],
+    "evidence_references": {
+      "RC-017": [
+        "B0L1",
+        "B0L2"
+      ],
+      "RC-021": [
+        "B0L0"
+      ]
+    },
+    "decision_sequence": 42,
+    "signer_fingerprint": "727d29d3204231f7"
+  },
+  "signer_fingerprint": "727d29d3204231f7",
+  "checks": [
+    "DICTIONARY_PRESENT",
+    "DICTIONARY_HASH",
+    "DICTIONARY_VERSION",
+    "REASON_CODE_EXISTS",
+    "REASON_CODE_BOUND",
+    "EVIDENCE_REFERENCES",
+    "ATTESTATION_SIGNATURE",
+    "RECORD_INTEGRITY",
+    "POLICY_ADEQUACY",
+    "ANALYTICAL_CORRECTNESS",
+    "LEGAL_FAIRNESS_REVIEW"
+  ],
+  "tamper_scenarios": {
+    "pristine": {
+      "label_en": "Pristine",
+      "label_zh": "原始"
+    },
+    "dictionary_modified": {
+      "label_en": "Dictionary text modified",
+      "label_zh": "字典文本被修改",
+      "target": "RC-017",
+      "field": "definition_en",
+      "new": "Revolving utilization was fine, actually — approve.",
+      "first_failure": "DICTIONARY_HASH"
+    },
+    "reason_replaced": {
+      "label_en": "Reason code replaced",
+      "label_zh": "理由代码被替换",
+      "from": "RC-017",
+      "to": "RC-009",
+      "first_failure": "REASON_CODE_EXISTS"
+    },
+    "evidence_removed": {
+      "label_en": "Evidence reference removed",
+      "label_zh": "证据引用被移除",
+      "code": "RC-017",
+      "first_failure": "EVIDENCE_REFERENCES"
+    },
+    "version_changed": {
+      "label_en": "Dictionary version changed",
+      "label_zh": "字典版本被更换",
+      "new_version": "v4",
+      "first_failure": "DICTIONARY_VERSION"
+    }
+  }
+}

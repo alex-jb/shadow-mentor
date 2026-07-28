@@ -1,0 +1,8 @@
+environment,dimming,content_state,readable,score_1_5,focus_within_1s,firstfail_within_1s,rag_distinct,review_approval_distinct,chinese_readable,secondary_gray_readable,ghosting,notes
+dark room,low,overview,,,,,,,,,,NOT_TESTED
+dark room,medium,first-failure,,,,,,,,,,NOT_TESTED
+normal room,medium,overview,,,,,,,,,,NOT_TESTED
+bright office,high,first-failure,,,,,,,,,,NOT_TESTED
+patterned bg,medium,downstream-affected,,,,,,,,,,NOT_TESTED
+normal room,medium,chinese-overview,,,,,,,,,,NOT_TESTED
+normal room,medium,chinese-first-failure,,,,,,,,,,NOT_TESTED

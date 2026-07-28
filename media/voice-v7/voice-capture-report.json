@@ -1,0 +1,17 @@
+{
+  "tool": "playwright",
+  "chromium": "149.0.7827.55",
+  "viewports": {
+    "1280x900": 0,
+    "390x844": 0
+  },
+  "console_errors": [],
+  "external_requests": [],
+  "csp_violations": [],
+  "checks": {
+    "audio_elements": 8,
+    "no_autoplay": true,
+    "rows": 8,
+    "summary": "en-current 40.3s → en-v2 10.5s (−74% shorter)   ·   zh-current 55.2s → zh-v2 12.9s (−77% shorter)"
+  }
+}

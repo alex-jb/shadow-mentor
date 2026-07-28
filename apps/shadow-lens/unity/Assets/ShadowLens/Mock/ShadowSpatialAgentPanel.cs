@@ -239,7 +239,20 @@ namespace ShadowLens.Mock
             if (_input) _input.interactable = enabled;
             if (_askButton) _askButton.interactable = enabled;
         }
-        void ClearCitations() { if (_citations) foreach (Transform t in _citations) Destroy(t.gameObject); }
+        // Re-parent each chip out of the citation host BEFORE the (deferred) Destroy so childCount
+        // — and therefore CitationCount — is 0 in the SAME frame the profile switch happens. With a
+        // plain Destroy the count stayed 1 until end-of-frame, so a same-frame reader (or a profile
+        // switch immediately followed by a read) saw stale cross-profile citations (UX-06).
+        void ClearCitations()
+        {
+            if (!_citations) return;
+            for (int i = _citations.childCount - 1; i >= 0; i--)
+            {
+                var t = _citations.GetChild(i);
+                t.SetParent(null, false);
+                Destroy(t.gameObject);
+            }
+        }
         void UpdatePlaceholder()
         {
             if (_placeholder == null) return;

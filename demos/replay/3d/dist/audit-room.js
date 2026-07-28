@@ -1,5 +1,5 @@
 (() => {
-  // ../../../node_modules/three/build/three.module.js
+  // ../shadow-mentor/node_modules/three/build/three.module.js
   var REVISION = "160";
   var MOUSE = { LEFT: 0, MIDDLE: 1, RIGHT: 2, ROTATE: 0, DOLLY: 1, PAN: 2 };
   var TOUCH = { ROTATE: 0, PAN: 1, DOLLY_PAN: 2, DOLLY_ROTATE: 3 };
@@ -19829,6 +19829,53 @@
       return this;
     }
   };
+  var CircleGeometry = class _CircleGeometry extends BufferGeometry {
+    constructor(radius = 1, segments = 32, thetaStart = 0, thetaLength = Math.PI * 2) {
+      super();
+      this.type = "CircleGeometry";
+      this.parameters = {
+        radius,
+        segments,
+        thetaStart,
+        thetaLength
+      };
+      segments = Math.max(3, segments);
+      const indices = [];
+      const vertices = [];
+      const normals = [];
+      const uvs = [];
+      const vertex2 = new Vector3();
+      const uv = new Vector2();
+      vertices.push(0, 0, 0);
+      normals.push(0, 0, 1);
+      uvs.push(0.5, 0.5);
+      for (let s = 0, i = 3; s <= segments; s++, i += 3) {
+        const segment = thetaStart + s / segments * thetaLength;
+        vertex2.x = radius * Math.cos(segment);
+        vertex2.y = radius * Math.sin(segment);
+        vertices.push(vertex2.x, vertex2.y, vertex2.z);
+        normals.push(0, 0, 1);
+        uv.x = (vertices[i] / radius + 1) / 2;
+        uv.y = (vertices[i + 1] / radius + 1) / 2;
+        uvs.push(uv.x, uv.y);
+      }
+      for (let i = 1; i <= segments; i++) {
+        indices.push(i, i + 1, 0);
+      }
+      this.setIndex(indices);
+      this.setAttribute("position", new Float32BufferAttribute(vertices, 3));
+      this.setAttribute("normal", new Float32BufferAttribute(normals, 3));
+      this.setAttribute("uv", new Float32BufferAttribute(uvs, 2));
+    }
+    copy(source) {
+      super.copy(source);
+      this.parameters = Object.assign({}, source.parameters);
+      return this;
+    }
+    static fromJSON(data) {
+      return new _CircleGeometry(data.radius, data.segments, data.thetaStart, data.thetaLength);
+    }
+  };
   var Shape = class extends Path {
     constructor(points) {
       super(points);
@@ -22283,7 +22330,7 @@
     }
   }
 
-  // ../../../node_modules/three/examples/jsm/controls/OrbitControls.js
+  // ../shadow-mentor/node_modules/three/examples/jsm/controls/OrbitControls.js
   var _changeEvent = { type: "change" };
   var _startEvent = { type: "start" };
   var _endEvent = { type: "end" };
@@ -22997,16 +23044,16 @@
     }
   };
 
-  // constants.js
+  // demos/replay/3d/constants.js
   var STATUS = Object.freeze({
     intact: "#E8E8E8",
-    // trustworthy, verified
+    // resting/verified SURFACE — neutral paper (profile override, not status green)
     error: "#FFB020",
     // a lens/quality flag (amber) — not a chain break
     tampered: "#FF4A4A",
     // the mutated event / broken links (red)
     healed: "#3DDC97"
-    // transient reset-replay colour (green)
+    // transient verify/reset PULSE (green = verification EVENT cue)
   });
   var INK = Object.freeze({
     body: "#000000",
@@ -23128,7 +23175,41 @@
   }
   var C = buildConstants("laptop");
 
-  // labels.js
+  // demos/replay/3d/flat-fit.js
+  var DEG = Math.PI / 180;
+  function visibleHalfWidth(distance, fovVDeg, aspect2) {
+    const halfH = distance * Math.tan(fovVDeg * DEG / 2);
+    return halfH * aspect2;
+  }
+  function visibleHalfHeight(distance, fovVDeg) {
+    return distance * Math.tan(fovVDeg * DEG / 2);
+  }
+  function fitDistance({ width, height }, { aspect: aspect2, fovVDeg, fill = 0.78, fillV = 0.4 }) {
+    const tanV = Math.tan(fovVDeg * DEG / 2);
+    const dW = width / (fill * 2 * tanV * aspect2);
+    const dH = height / (fillV * 2 * tanV);
+    return Math.max(dW, dH);
+  }
+  function flatCameraFrame(rail, view) {
+    const width = rail.maxX - rail.minX;
+    const height = rail.maxY - rail.minY;
+    let d = fitDistance({ width, height }, view);
+    const minD = view.minDistance ?? 2.2, maxD = view.maxDistance ?? 40;
+    d = Math.min(maxD, Math.max(minD, d));
+    const cameraZ = rail.frontZ + d;
+    const occWidth = width / (2 * visibleHalfWidth(d, view.fovVDeg, view.aspect));
+    const occHeight = height / (2 * visibleHalfHeight(d, view.fovVDeg));
+    return {
+      distance: d,
+      cameraZ,
+      occupiesWidthFraction: occWidth,
+      occupiesHeightFraction: occHeight,
+      centerX: (rail.minX + rail.maxX) / 2,
+      centerY: (rail.minY + rail.maxY) / 2
+    };
+  }
+
+  // demos/replay/3d/labels.js
   var PX_PER_UNIT = 900;
   var SANS = '-apple-system, "SF Pro Display", "Segoe UI", "PingFang SC", system-ui, sans-serif';
   var MONO = '"SF Mono", "JetBrains Mono", "Cascadia Code", ui-monospace, Menlo, monospace';
@@ -23260,7 +23341,7 @@
     obj.quaternion.copy(camera2.quaternion);
   }
 
-  // ../verify-browser.js
+  // demos/replay/verify-browser.js
   function canonicalize(value) {
     if (value === null || typeof value !== "object") return JSON.stringify(value);
     if (Array.isArray(value)) return "[" + value.map(canonicalize).join(",") + "]";
@@ -23405,7 +23486,7 @@
   }
   var _internal = { canonicalize, canonicalBytes, sha256Hex, signedShape };
 
-  // ../tamper.js
+  // demos/replay/tamper.js
   function clonePristine(bundle) {
     return JSON.parse(JSON.stringify(bundle));
   }
@@ -23451,7 +23532,7 @@
     return { tamperedSeq, verify, caption };
   }
 
-  // demo-data.js
+  // demos/replay/3d/demo-data.js
   var DEMO_BUNDLE = {
     "bundle_version": 1,
     "spec_version": "shadow-evidence/v1",
@@ -23668,7 +23749,7 @@
     { "n": 8, "name": "trust badges", "cam": { "frame": "badges" }, "action": "trust" }
   ];
 
-  // verify.js
+  // demos/replay/3d/verify.js
   var { canonicalBytes: canonicalBytes2, sha256Hex: sha256Hex2, signedShape: signedShape2 } = _internal;
   var REVIEWER_KEY_ID = "reviewer-local-demo";
   function hexToBytes2(hex) {
@@ -23746,8 +23827,36 @@ ${b64}
     return ev;
   }
 
-  // scene.js
-  var DEG = Math.PI / 180;
+  // demos/replay/3d/annotation-anchor.js
+  function chooseAnnotationSide(cardX, arcCenterX = 0) {
+    return cardX < arcCenterX ? "upper-right" : "upper-left";
+  }
+  function anchorPanel({ card, panel, view, arcCenterX = 0, gap = 0.18 }) {
+    const side = chooseAnnotationSide(card.x, arcCenterX);
+    const dir = side === "upper-right" ? 1 : -1;
+    let px2 = card.x + dir * (card.halfW + gap + panel.halfW);
+    px2 = Math.max(view.minX + panel.halfW, Math.min(view.maxX - panel.halfW, px2));
+    const minPy = card.y + card.halfH + gap + panel.halfH;
+    let py2 = Math.min(minPy, view.maxY - panel.halfH);
+    py2 = Math.max(py2, minPy);
+    const pz2 = card.z;
+    const leaderStart = { x: card.x + dir * card.halfW, y: card.y + card.halfH * 0.4, z: card.z + 0.01 };
+    const leaderEnd = { x: px2 - dir * panel.halfW, y: py2 - panel.halfH, z: pz2 + 0.01 };
+    const overlaps = py2 - panel.halfH < card.y + card.halfH && Math.abs(px2 - card.x) < panel.halfW + card.halfW;
+    return { side, position: { x: px2, y: py2, z: pz2 }, leaderStart, leaderEnd, overlaps };
+  }
+  function viewRelativeFallback({ panel, view }) {
+    return {
+      side: "view-fixed",
+      position: { x: view.maxX - panel.halfW - 0.1, y: view.maxY - panel.halfH - 0.1, z: 0.6 },
+      leaderStart: null,
+      leaderEnd: null,
+      overlaps: false
+    };
+  }
+
+  // demos/replay/3d/scene.js
+  var DEG2 = Math.PI / 180;
   var smooth = (k) => k * k * (3 - 2 * k);
   var clamp01 = (x) => x < 0 ? 0 : x > 1 ? 1 : x;
   var LENS = {
@@ -23792,6 +23901,8 @@ ${b64}
     let filterType = null;
     let showTrust = false;
     const _tmp = new Vector3();
+    const _camPos = new Vector3();
+    const _cardPos = new Vector3();
     function tween(delayMs, durMs, fn, done) {
       anims.push({ t: -delayMs / 1e3, dur: durMs / 1e3, fn, done, started: false });
     }
@@ -23835,9 +23946,10 @@ ${summary}`, {
         new PlaneGeometry(C3.CARD_W, C3.CARD_H),
         new MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
       );
+      hit.visible = false;
       cg.add(hit);
       const t = total > 1 ? i / (total - 1) : 0.5;
-      const ang = (t - 0.5) * C3.ARC_SPREAD_DEG * DEG * C3.ARC_CURVATURE;
+      const ang = (t - 0.5) * C3.ARC_SPREAD_DEG * DEG2 * C3.ARC_CURVATURE;
       const R = C3.ARC_RADIUS;
       cg.position.set(Math.sin(ang) * R, C3.ARC_Y, -Math.cos(ang) * R);
       cg.lookAt(0, C3.ARC_Y, C3.CAMERA_POS[2]);
@@ -24057,6 +24169,10 @@ IMPACT  ${obj.impact}`;
       setTimeout(() => URL.revokeObjectURL(url), 1e3);
     }
     let inspector = null;
+    let trackingLost = false;
+    function setInspectorTrackingLost(v) {
+      trackingLost = !!v;
+    }
     function clearInspector() {
       if (inspector) {
         group.remove(inspector);
@@ -24064,32 +24180,61 @@ IMPACT  ${obj.impact}`;
         inspector = null;
       }
     }
-    function buildInspector(evt) {
+    function buildInspector(card) {
       clearInspector();
       inspector = new Group();
-      const w = 1.7, rows = inspectorRows(evt);
-      const body = makeText(rows, {
-        size: C3.FONT_SIZE_INSPECTOR,
-        worldWidth: w - 0.14,
+      const w = 2.5;
+      const ev = card.evt;
+      const title = makeText(`${ev.event_type}  \xB7  #${ev.seq}`, {
+        size: 0.085,
+        worldWidth: w - 0.18,
         align: "left",
         color: C3.INK.text,
         mono: true,
+        weight: 700
+      });
+      const body = makeText(inspectorRows(ev), {
+        size: 0.052,
+        worldWidth: w - 0.18,
+        align: "left",
+        color: C3.INK.textDim,
+        mono: true,
         weight: 500
       });
-      const h = Math.max(0.7, body.userData.worldH + 0.16);
-      const frame2 = edgeLoop(w, h, 0.05, new Color(C3.INK.text).getHex(), 0.5);
-      body.position.set(0, 0, 2e-3);
+      const pad = 0.12, gap = 0.07, tH = title.userData.worldH, bH = body.userData.worldH;
+      const h = Math.max(0.8, tH + bH + pad * 2 + gap);
+      const frame2 = edgeLoop(w, h, 0.06, new Color(C3.INK.text).getHex(), 0.8);
+      title.position.set(0, h / 2 - pad - tH / 2, 2e-3);
+      body.position.set(0, h / 2 - pad - tH - gap - bH / 2, 2e-3);
       inspector.add(frame2);
+      inspector.add(title);
       inspector.add(body);
-      inspector.position.set(2.4, C3.ARC_Y + 0.2, 0.6);
+      const cardPos = card.group.getWorldPosition(_cardPos);
+      const panel = { halfW: w / 2, halfH: h / 2 };
+      const view = { minX: -3.2, maxX: 3.2, minY: C3.ARC_Y - 1.7, maxY: C3.ARC_Y + 2.2 };
+      const spec = trackingLost ? viewRelativeFallback({ panel, view }) : anchorPanel({
+        card: { x: cardPos.x, y: cardPos.y, z: cardPos.z, halfW: C3.CARD_W / 2, halfH: C3.CARD_H / 2 },
+        panel,
+        view,
+        arcCenterX: 0
+      });
+      inspector.position.set(spec.position.x, spec.position.y, spec.position.z);
+      if (spec.leaderStart && spec.leaderEnd) {
+        const L = (p) => new Vector3(p.x - spec.position.x, p.y - spec.position.y, p.z - spec.position.z);
+        const a = L(spec.leaderStart), b = L(spec.leaderEnd);
+        const elbow = new Vector3(a.x, b.y, (a.z + b.z) / 2);
+        const mat = new LineBasicMaterial({ color: new Color(C3.INK.lensPulse).getHex(), transparent: true, opacity: 0.9, toneMapped: false });
+        inspector.add(new Line(new BufferGeometry().setFromPoints([a, elbow, b]), mat));
+        const dot = new Mesh(new CircleGeometry(0.03, 12), new MeshBasicMaterial({ color: new Color(C3.INK.lensPulse).getHex(), transparent: true, opacity: 0.95, toneMapped: false }));
+        dot.position.copy(a);
+        inspector.add(dot);
+      }
       group.add(inspector);
     }
     function inspectorRows(ev) {
       const short = (h) => h ? h.slice(0, 12) : "\u2014";
       const lines = [
-        `type       ${ev.event_type}`,
         `actor      ${ev.actor}`,
-        `seq        ${ev.seq}`,
         `ts         ${ev.ts_utc}`,
         `payload    ${short(ev.payload_hash)}\u2026`,
         `prev_hash  ${short(ev.prev_hash)}\u2026`
@@ -24097,14 +24242,14 @@ IMPACT  ${obj.impact}`;
       const t = ev.extensions?.tool;
       if (ev.event_type === "tool_call" && t) lines.push(`tool       ${t}`);
       if (ev.event_type === "review_annotation") lines.push(`note       ${ev.extensions?.review?.note ?? ""}`);
-      lines.push("", "\u203A open full payload in 2D inspector");
+      lines.push("", "\u203A OPEN 2D AUDIT for exact payload + signature");
       return lines.join("\n");
     }
     function select(seq) {
       selectedSeq = seq;
       const card = cards.find((c) => c.seq === seq);
       if (!card) return;
-      buildInspector(card.evt);
+      buildInspector(card);
       card.pulse = true;
       tween(0, 600, () => {
       }, () => {
@@ -24171,10 +24316,10 @@ IMPACT  ${obj.impact}`;
         }
         placeCaption(camera2);
       }
-      const camPos = camera2.getWorldPosition(_tmp).clone();
+      const camPos = camera2.getWorldPosition(_camPos);
       const t = performance.now() * 1e-3;
       for (const card of cards) {
-        const d = card.group.getWorldPosition(new Vector3()).distanceTo(camPos);
+        const d = card.group.getWorldPosition(_cardPos).distanceTo(camPos);
         card.targetDetail = d <= C3.PROXIMITY_THRESHOLD && card.status !== "broken" ? 1 : 0;
         const rate = dt / (C3.FADE_MS / 1e3);
         card.curDetail += Math.sign(card.targetDetail - card.curDetail) * rate;
@@ -24199,6 +24344,15 @@ IMPACT  ${obj.impact}`;
             card.edgeMat.color.lerp(new Color(C3.INK.text), 0.1);
           }
           card.edgeMat.opacity = op;
+        }
+        const isSel = selectedSeq != null && card.seq === selectedSeq;
+        const eScale = card.baseScale * (isSel ? 1.15 : 1);
+        card.group.scale.setScalar(card.group.scale.x + (eScale - card.group.scale.x) * Math.min(1, dt * 12));
+        if (selectedSeq != null && card.status === "intact" && !(activeLens || filterType)) {
+          if (isSel) {
+            card.edgeMat.color.lerp(new Color(C3.INK.lensPulse), 0.2);
+            card.edgeMat.opacity = 1;
+          } else card.edgeMat.opacity = Math.min(card.edgeMat.opacity, 0.28);
         }
       }
       if (trustGroup) {
@@ -24246,7 +24400,7 @@ IMPACT  ${obj.impact}`;
     };
   }
 
-  // stereo.js
+  // demos/replay/3d/stereo.js
   var LS_EYE_SEP = "shadow.auditroom.eyeSep";
   var LS_CONVERGENCE = "shadow.auditroom.convergence";
   function createStereo({ renderer: renderer2, scene: scene2, camera: camera2, C: C3 }) {
@@ -24342,7 +24496,7 @@ IMPACT  ${obj.impact}`;
     };
   }
 
-  // voice.js
+  // demos/replay/3d/voice.js
   var INTENTS = Object.freeze([
     "FOCUS_EVENT",
     "FILTER_BY_TYPE",
@@ -24478,7 +24632,7 @@ IMPACT  ${obj.impact}`;
     } };
   }
 
-  // beats.js
+  // demos/replay/3d/beats.js
   var smooth2 = (k) => k * k * (3 - 2 * k);
   function createBeats({ camera: camera2, controls: controls2, room: room2, C: C3 }) {
     let active = null;
@@ -24569,7 +24723,7 @@ IMPACT  ${obj.impact}`;
     } };
   }
 
-  // ../../../node_modules/three/examples/jsm/webxr/XRButton.js
+  // ../shadow-mentor/node_modules/three/examples/jsm/webxr/XRButton.js
   var XRButton = class {
     static createButton(renderer2, sessionInit = {}) {
       const button = document.createElement("button");
@@ -24689,7 +24843,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../../../node_modules/three/examples/jsm/utils/BufferGeometryUtils.js
+  // ../shadow-mentor/node_modules/three/examples/jsm/utils/BufferGeometryUtils.js
   function toTrianglesDrawMode(geometry, drawMode) {
     if (drawMode === TrianglesDrawMode) {
       console.warn("THREE.BufferGeometryUtils.toTrianglesDrawMode(): Geometry already defined as triangles.");
@@ -24745,7 +24899,7 @@ IMPACT  ${obj.impact}`;
     }
   }
 
-  // ../../../node_modules/three/examples/jsm/loaders/GLTFLoader.js
+  // ../shadow-mentor/node_modules/three/examples/jsm/loaders/GLTFLoader.js
   var GLTFLoader = class extends Loader {
     constructor(manager) {
       super(manager);
@@ -27196,7 +27350,7 @@ IMPACT  ${obj.impact}`;
     });
   }
 
-  // ../../../node_modules/three/examples/jsm/libs/motion-controllers.module.js
+  // ../shadow-mentor/node_modules/three/examples/jsm/libs/motion-controllers.module.js
   var Constants = {
     Handedness: Object.freeze({
       NONE: "none",
@@ -27487,7 +27641,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../../../node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js
+  // ../shadow-mentor/node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js
   var DEFAULT_PROFILES_PATH = "https://cdn.jsdelivr.net/npm/@webxr-input-profiles/assets@1.0/dist/profiles";
   var DEFAULT_PROFILE = "generic-trigger";
   var XRControllerModel = class extends Object3D {
@@ -27642,7 +27796,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../../../node_modules/three/examples/jsm/webxr/XRHandPrimitiveModel.js
+  // ../shadow-mentor/node_modules/three/examples/jsm/webxr/XRHandPrimitiveModel.js
   var _matrix = new Matrix4();
   var _vector = new Vector3();
   var XRHandPrimitiveModel = class {
@@ -27709,7 +27863,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../../../node_modules/three/examples/jsm/webxr/XRHandMeshModel.js
+  // ../shadow-mentor/node_modules/three/examples/jsm/webxr/XRHandMeshModel.js
   var DEFAULT_HAND_PROFILE_PATH = "https://cdn.jsdelivr.net/npm/@webxr-input-profiles/assets@1.0/dist/profiles/generic-hand/";
   var XRHandMeshModel = class {
     constructor(handModel, controller, path, handedness, loader = null) {
@@ -27781,7 +27935,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../../../node_modules/three/examples/jsm/webxr/XRHandModelFactory.js
+  // ../shadow-mentor/node_modules/three/examples/jsm/webxr/XRHandModelFactory.js
   var XRHandModel = class extends Object3D {
     constructor(controller) {
       super();
@@ -27828,7 +27982,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // webxr.js
+  // demos/replay/3d/webxr.js
   function createWebXR({ renderer: renderer2, scene: scene2, camera: camera2, room: room2, C: C3, mountButton }) {
     renderer2.xr.enabled = true;
     let savedBg;
@@ -27954,7 +28108,7 @@ IMPACT  ${obj.impact}`;
     } };
   }
 
-  // preflight.js
+  // demos/replay/3d/preflight.js
   function initPreflight({ renderer: renderer2, mount = document.body, appCommit = "" }) {
     const panel = document.createElement("div");
     panel.id = "xr-preflight";
@@ -28081,7 +28235,7 @@ IMPACT  ${obj.impact}`;
     return { updatePose, state, render };
   }
 
-  // gamepad.js
+  // demos/replay/3d/gamepad.js
   function createGamepad({ dispatch: dispatch2, nextBeat, prevBeat, gotoBeat, voice: voice2 }) {
     const prev2 = {};
     let talking = false;
@@ -28128,7 +28282,7 @@ IMPACT  ${obj.impact}`;
     } };
   }
 
-  // app.js
+  // demos/replay/3d/app.js
   var params = new URLSearchParams(location.search);
   var preset = params.get("xreal") === "1" ? "xreal" : "laptop";
   var C2 = buildConstants(preset);
@@ -28189,6 +28343,44 @@ IMPACT  ${obj.impact}`;
     hudRef.status = next;
   }
   var hudRef = { status: statusText };
+  var trustHeader = new Group();
+  scene.add(trustHeader);
+  var trustLines = { integrity: null, posture: null, correctness: null };
+  var HEADER_Y = C2.ARC_Y - C2.CARD_H * 1.9;
+  var HEADER_Z = -C2.ARC_RADIUS + 1;
+  function trustLine(text, color, row) {
+    const m = makeText(text, { size: 0.1, worldWidth: 2.4, align: "left", color, mono: true, weight: 600 });
+    m.position.set(-1.7, HEADER_Y - row * 0.19, HEADER_Z);
+    return m;
+  }
+  function setTrustHeader(ok, posture) {
+    for (const k of Object.keys(trustLines)) if (trustLines[k]) {
+      trustLines[k].geometry.dispose();
+      trustLines[k].material.map?.dispose?.();
+      trustHeader.remove(trustLines[k]);
+    }
+    trustLines.integrity = trustLine(`INTEGRITY     ${ok ? "VERIFIED" : "FAILED"}`, ok ? C2.STATUS.healed : C2.STATUS.tampered, 0);
+    trustLines.posture = trustLine(`TRUST         ${(posture || "SELF_SIGNED").split(" ")[0]}`, C2.STATUS.error, 1);
+    trustLines.correctness = trustLine("CORRECTNESS   NOT EVALUATED", C2.INK.textDim, 2);
+    for (const k of Object.keys(trustLines)) trustHeader.add(trustLines[k]);
+  }
+  setTrustHeader(true, "SELF_SIGNED");
+  var _zh = params.get("lang") === "zh";
+  var firstHint = makeText(
+    _zh ? "\u9009\u62E9\u4E00\u6761\u8BB0\u5F55\u4EE5\u67E5\u770B\u8BE6\u60C5\u3002   \u6309 ? \u67E5\u770B\u63A7\u5236\u8BF4\u660E\u3002" : "Select a record to inspect it.    Press ? for controls.",
+    { size: 0.1, worldWidth: 5.5, align: "center", color: C2.INK.text, mono: true, weight: 500 }
+  );
+  firstHint.position.set(0, C2.ARC_Y + C2.CARD_H * 2.4, HEADER_Z);
+  scene.add(firstHint);
+  function dismissHint() {
+    if (firstHint) {
+      firstHint.geometry.dispose();
+      firstHint.material.map?.dispose?.();
+      scene.remove(firstHint);
+      firstHint = null;
+    }
+  }
+  setTimeout(dismissHint, 12e3);
   var micDot = new Mesh(
     new RingGeometry(0.03, 0.05, 24),
     new MeshBasicMaterial({ color: 16730698, transparent: true, opacity: 0, toneMapped: false })
@@ -28216,8 +28408,7 @@ IMPACT  ${obj.impact}`;
   var webxr = null;
   var preflight = null;
   stereo.onChange(({ mode, eyeSep }) => {
-    const es = `eye ${(eyeSep * 1e3).toFixed(0)}mm`;
-    setStatus(`${lastVerdict}   \xB7   ${mode.toUpperCase()}   \xB7   ${es}`, lastVerdictColor);
+    setStatus(`${mode.toUpperCase()} \xB7 eye ${(eyeSep * 1e3).toFixed(0)}mm \xB7 open ../verify.html for exact detail`, C2.INK.textDim);
   });
   var lastVerdict = "verifying\u2026";
   var lastVerdictColor = C2.INK.textDim;
@@ -28230,8 +28421,9 @@ IMPACT  ${obj.impact}`;
       lastVerdict = `verify FAILED \xB7 ${v.error.reason}${v.error.seq != null ? " @ seq " + v.error.seq : ""}`;
       lastVerdictColor = C2.STATUS.tampered;
     }
+    setTrustHeader(v.ok, v.trustLevel);
     const st = stereo.getState();
-    setStatus(`${lastVerdict}   \xB7   ${st.mode.toUpperCase()}   \xB7   eye ${(st.eyeSep * 1e3).toFixed(0)}mm`, lastVerdictColor);
+    setStatus(`${st.mode.toUpperCase()} \xB7 eye ${(st.eyeSep * 1e3).toFixed(0)}mm \xB7 open ../verify.html for exact detail`, C2.INK.textDim);
   }
   async function dispatch(intent) {
     switch (intent.intent) {
@@ -28324,7 +28516,7 @@ IMPACT  ${obj.impact}`;
           } });
           renderer.setAnimationLoop(xrLoop);
         }
-        if (!preflight) preflight = initPreflight({ renderer, appCommit: "3670ef2" });
+        if (!preflight) preflight = initPreflight({ renderer, appCommit: "1503760" });
       } catch (e) {
         fatal("WebXR unavailable: " + e.message);
       }
@@ -28461,7 +28653,10 @@ IMPACT  ${obj.impact}`;
   }
   renderer.domElement.addEventListener("click", (ev) => {
     const seq = pick(ev);
-    if (seq != null) dispatch({ intent: "FOCUS_EVENT", seq });
+    if (seq != null) {
+      dismissHint();
+      dispatch({ intent: "FOCUS_EVENT", seq });
+    }
   });
   function armWatchdog() {
     const handler = (msg) => {
@@ -28480,11 +28675,39 @@ IMPACT  ${obj.impact}`;
     addEventListener("unhandledrejection", (e) => handler(e.reason?.message || e.reason));
   }
   if (presenter) armWatchdog();
+  var _fitV = new Vector3();
+  var flatFrame = null;
+  function fitFlat() {
+    if (preset === "xreal" || renderer.xr.isPresenting || !room.cards || !room.cards.length) return;
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity, frontZ = -Infinity, sumZ = 0;
+    const hw = C2.CARD_W / 2, hh = C2.CARD_H / 2;
+    for (const c of room.cards) {
+      const p = c.group.getWorldPosition(_fitV);
+      minX = Math.min(minX, p.x - hw);
+      maxX = Math.max(maxX, p.x + hw);
+      minY = Math.min(minY, p.y - hh);
+      maxY = Math.max(maxY, p.y + hh);
+      frontZ = Math.max(frontZ, p.z);
+      sumZ += p.z;
+    }
+    const centerZ = sumZ / room.cards.length;
+    const f = flatCameraFrame(
+      { minX, maxX, minY: minY - 0.5, maxY: maxY + 0.7, frontZ, centerZ },
+      { aspect: innerWidth / innerHeight, fovVDeg: C2.CAMERA_FOV, fill: 0.8, fillV: 0.5, minDistance: 2.4, maxDistance: 16 }
+    );
+    flatFrame = f;
+    camera.position.set(f.centerX, f.centerY, f.cameraZ);
+    controls.target.set(f.centerX, f.centerY, centerZ);
+    controls.update();
+    if (typeof window !== "undefined") window.__flatFrame = f;
+  }
   addEventListener("resize", () => {
     camera.aspect = innerWidth / innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(innerWidth, innerHeight);
+    fitFlat();
   });
+  setTimeout(fitFlat, 60);
   var fpsLast = performance.now();
   var fpsFrames = 0;
   var fpsEl = { text: "" };

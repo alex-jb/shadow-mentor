@@ -1,0 +1,44 @@
+{
+  "_comment": "aex-attestation/v2 GOLDEN VECTORS. Any runtime (Node/browser/C#) MUST reproduce canonical_text byte-for-byte, its utf8_hex, and sha256_hex. Regenerate ONLY via scripts/gen-v2-golden.mjs with an intentional format change + version bump.",
+  "wire_version": "aex-attestation/v2",
+  "envelope_input": {
+    "algorithm": "hmac-sha256",
+    "requestCommitment": "1111111111111111111111111111111111111111111111111111111111111111",
+    "outputCommitment": "2222222222222222222222222222222222222222222222222222222222222222",
+    "modelId": "claude-opus-4-8",
+    "completedAtUtc": "2026-01-02T03:04:05Z",
+    "previousHash": null,
+    "keyId": "shadow-prod-2026-q1",
+    "bindings": {
+      "dictionary_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "citation_registry_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  },
+  "envelope": {
+    "domain": "shadow-attestation",
+    "wire_version": "aex-attestation/v2",
+    "algorithm": "hmac-sha256",
+    "request_commitment": "1111111111111111111111111111111111111111111111111111111111111111",
+    "output_commitment": "2222222222222222222222222222222222222222222222222222222222222222",
+    "model_id": "claude-opus-4-8",
+    "completed_at_utc": "2026-01-02T03:04:05.000Z",
+    "previous_hash": null,
+    "key_id": "shadow-prod-2026-q1",
+    "bindings": {
+      "dictionary_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "citation_registry_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  },
+  "canonical_text": "{\"algorithm\":\"hmac-sha256\",\"bindings\":{\"citation_registry_sha256\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"dictionary_hash\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"},\"completed_at_utc\":\"2026-01-02T03:04:05.000Z\",\"domain\":\"shadow-attestation\",\"key_id\":\"shadow-prod-2026-q1\",\"model_id\":\"claude-opus-4-8\",\"output_commitment\":\"2222222222222222222222222222222222222222222222222222222222222222\",\"previous_hash\":null,\"request_commitment\":\"1111111111111111111111111111111111111111111111111111111111111111\",\"wire_version\":\"aex-attestation/v2\"}",
+  "utf8_hex": "7b22616c676f726974686d223a22686d61632d736861323536222c2262696e64696e6773223a7b226369746174696f6e5f72656769737472795f736861323536223a2262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262222c2264696374696f6e6172795f68617368223a2261616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161227d2c22636f6d706c657465645f61745f757463223a22323032362d30312d30325430333a30343a30352e3030305a222c22646f6d61696e223a22736861646f772d6174746573746174696f6e222c226b65795f6964223a22736861646f772d70726f642d323032362d7131222c226d6f64656c5f6964223a22636c617564652d6f7075732d342d38222c226f75747075745f636f6d6d69746d656e74223a2232323232323232323232323232323232323232323232323232323232323232323232323232323232323232323232323232323232323232323232323232323232222c2270726576696f75735f68617368223a6e756c6c2c22726571756573745f636f6d6d69746d656e74223a2231313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131313131222c22776972655f76657273696f6e223a226165782d6174746573746174696f6e2f7632227d",
+  "sha256_hex": "65963b695099b75607e35c555335c70a66adad3d1a5cb3d3a117644e0e113707",
+  "hmac_sha256": {
+    "secret": "golden-vector-secret-not-a-real-key",
+    "signature_hex": "39040441f4ef44476f37998ae3848c199ac9e6fc8b37e36e3e76197de564d004"
+  },
+  "ed25519": {
+    "private_key_pem": "-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEIA4QVKBkWLq5Kh1Lnj8dLqfrpmASTVSNQtk1qZrjhRcm\n-----END PRIVATE KEY-----\n",
+    "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAybwSpYCvt9eX/86H5iOWVCgvLmXXIdp3Epg5PY+c2tg=\n-----END PUBLIC KEY-----\n",
+    "signature_base64": "xAVptk8pqKQfwNOImqP64t/xDlMYZ/EOzlL/3NObev3kDfqEht7qpclvSQehHMG8YwVss3VcYPCON6WqnFZXDQ=="
+  }
+}

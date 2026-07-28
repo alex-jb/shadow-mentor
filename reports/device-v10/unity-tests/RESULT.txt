@@ -1,0 +1,4 @@
+XR loader configured (XREALXRLoader -> Android, InitOnStart; Standalone none).
+V10 core candidate BUILT: com.shadowlens.xrealvoice v0.10-xreal-core, 128 MB, minSdk 29, camera OFF, sha256 9efadf0a...
+Clean EditMode (no SDK): 29/29, 0 CS errors -> base builds without SDK.
+V9 candidate NOT overwritten. Stable APK unchanged.

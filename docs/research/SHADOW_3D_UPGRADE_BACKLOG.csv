@@ -1,0 +1,12 @@
+work_item,phase,current_status,priority,dependency,expected_artifact,acceptance_test,risk_if_skipped
+Adopt shadow-3d-scene-v1 as single source,Phase2,CONTRACT-HOST-TESTED,P2,contract,Unity+Three.js read the scene,parity test node/seq/status/tamper identical,semantics drift between engines
+Unity adapter reads the scene contract,Phase2,NOT IMPLEMENTED,P2,contract,ShadowSceneAdapter.cs,PlayMode builds arc from fixture,Unity keeps duplicated ShadowAuditChainData
+Three.js adapter reads the scene contract,Phase2,PROTOTYPE,P2,contract,replay/3d consumes scene,replay renders from fixture,demo constants.js stays duplicated
+Cross-engine parity test,Phase2,NOT IMPLEMENTED,P2,both adapters,parity.test.js,ids/seq/status/tamper/report-hash identical,no guarantee both tell same story
+Interaction state machine (hover!=select!=approve),Phase2,SPEC,P2,XRI,ShadowInteraction.cs,dwell never approves; explicit click confirms,accidental approval on head focus
+Audit Arc V2 focus+context in Unity,Phase2,PROTOTYPE(threejs),P2,scene+state machine,Unity arc v2,select highlights neighbours no scene rotation,3D unreadable at scale
+Label manager P0-P3 + billboard + bilingual,Phase2,SPEC,P2,tokens,ShadowLabelManager.cs,labels not all-on; zh no clip; min angular,label overlap; unreadable
+Hybrid 2D-table + focused-3D at scale,Phase2,PROTOTYPE,P2,scene,hybrid mode,50-100 node fixture usable,3D collapses past 20 nodes
+Fix stale XR/SR26-2 overclaim copy,Phase1,FLAGGED,P1,guardrails,copy edits,no unsupported 6DoF/Tier-3 claims,procurement/credibility risk
+Scale fixtures 20/50/100,Phase2,NOT IMPLEMENTED,P3,contract,synthetic scenes,schema valid at scale,cannot test scalability
+User study (arc vs v2 vs 2D vs hybrid),Phase3,NOT STARTED,RESEARCH,prototypes,preregistered study,time/accuracy/wrong-click measured,UX claims unvalidated

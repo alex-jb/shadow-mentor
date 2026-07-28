@@ -1,0 +1,22 @@
+# XREAL Android native libraries (AAR + .so)
+
+- Runtime/Plugins/Android/nractivitylife_6-release.aar
+- Runtime/Plugins/Android/nr_dual_agent_tracking.aar
+- Runtime/Plugins/Android/nractivitylife-release.aar
+- Runtime/Plugins/Android/Log-Control-1.2.aar
+- Runtime/Plugins/Android/xreal-auto-log-1.2.aar
+- Runtime/Plugins/Android/nr_common.aar
+- Runtime/Plugins/Android/nr_loader.aar
+- Runtime/Plugins/Android/GlassesDisplayPlugEvent-2.4.2.aar
+- Runtime/Plugins/Android/nr_hand_tracking.aar
+- Runtime/Plugins/Android/nr_image_tracking.aar
+- Runtime/Plugins/Android/nr_spatial_anchor.aar
+- Runtime/Plugins/Android/nr_api.aar
+- Runtime/Plugins/Android/nr_meshing.aar
+- Runtime/Scripts/Android/Camera Features/Plugins/Android/nrunityandroidpermission-release.aar
+- Samples~/MarkerTracking/Plugins/Android/libnr_image_tracking.so
+- Samples~/MarkerTracking/Plugins/Android/libnr_aiimgtrack_algo.so
+- Runtime/Plugins/Android/arm64-v8a/libXREALNativeSessionManager.so
+- Runtime/Plugins/Android/arm64-v8a/libVulkanSupport.so
+- Runtime/Plugins/Android/arm64-v8a/libXREALXRPlugin.so
+- Runtime/Scripts/Android/Camera Features/Plugins/Android/arm64/libmedia_codec.so

@@ -57,12 +57,17 @@ test("attest-core export surface is frozen + versioned (drift must be intentiona
     "sealAndAnchor", "sealPartialBundle", "sealSession", "submitRekorEntry", "trustLevelRank",
     "validateCmsCertChain", "verifyAttestation", "verifyBundle", "verifyCmsSignature",
     "verifyInclusionProof", "verifyRekorAnchor", "verifyRekorSet", "verifyRfc3161Anchor",
+    // aex-attestation/v2 named-envelope surface (2.3.0) — see docs/security/ATTESTATION_ENVELOPE_V2.md
+    "ATTESTATION_V2_VERSION", "V2_DOMAIN", "V2_KNOWN_BINDINGS", "PREFERRED_WIRE_VERSION",
+    "AttestationV2Error", "buildV2Envelope", "v2SigningBytes", "v2SigningText", "v2CanonicalDigest",
+    "buildAttestationV2", "verifyAttestationV2", "verifyAttestationAny", "signAttestation",
+    "verifyV1", "verifyV2", "assertSecureSecret", "isProductionEnv", "DEV_DEFAULT_SECRET",
   ].sort();
   assert.deepEqual(Object.keys(AttestCore).sort(), EXPECTED_EXPORTS,
     "attest-core export surface changed — update EXPECTED_EXPORTS AND bump the package version");
   const pkg = JSON.parse(readFileSync(PKG_PATH, "utf8"));
-  assert.equal(pkg.version, "2.2.0",
-    "sealAndAnchor + Source-Map v1.1 landed after 2.1.0 was published — package is 2.2.0 (pending npm publish)");
+  assert.equal(pkg.version, "2.3.0",
+    "aex-attestation/v2 named-envelope API added after 2.2.0 — package is 2.3.0 (pending npm publish)");
 });
 
 

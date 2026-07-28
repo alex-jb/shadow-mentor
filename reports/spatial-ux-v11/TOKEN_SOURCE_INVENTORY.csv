@@ -1,0 +1,10 @@
+semantic_key,source_file,current_color,icon,shape,text_en,text_zh,meaning,surface,authoritative_source,migration_action
+VERIFIED,design/shadow-spatial-tokens.json,#4ade80,check,icosahedron,VERIFIED,已验证,integrity verified,canonical,canonical,none
+VERIFIED,ShadowDesignTokens.cs,#2FD19A,check,icosahedron,VERIFIED,已验证,integrity verified,Unity,canonical,hue-parity asserted (green)
+VERIFIED,constants.js(intact),#E8E8E8,check,card,verified,已验证,verified,Three.js,canonical,INTENTIONAL DEVIATION (gray on black) — documented conflict
+APPROVAL_PRESENT,design/shadow-spatial-tokens.json,#3b82f6,stamp-signed,pill,APPROVAL PRESENT,已审批,human approval,canonical,canonical,NOT verification green
+approve,demo/xreal.html,#3B82F6,check-stamp,pill,APPROVE,批准,business approval,Ambient Council,canonical,FIXED (was #2BA560 green)
+SCANNING,design/shadow-spatial-tokens.json,#fbbf24,scan,tetrahedron,SCANNING FOR POSITION,定位扫描中,scanning,canonical,canonical,distinct from LIMITED
+healed,constants.js,#3DDC97,none,card,healed,已复原,transient reset,Three.js,canonical,ALLOWED transient (not persistent verification)
+FIRST_FAILURE,design/shadow-spatial-tokens.json,#ef4444,broken-seal-first,octahedron,FIRST FAILURE,首个失败,first verification failure,canonical,canonical,distinct from downstream
+DOWNSTREAM_AFFECTED,design/shadow-spatial-tokens.json,#8a92a0,chain-arrow-dashed,box,AFFECTED DOWNSTREAM,受影响的后续,downstream of a failure,canonical,canonical,neutral+dashed (not an independent failure)

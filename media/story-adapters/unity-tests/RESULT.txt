@@ -1,0 +1,6 @@
+Unity Editor version:    6000.0.23f1 (1c4764c07fb4)
+Unity 6000.0.23f1 batch-mode -nographics
+EditMode  ShadowGuidedStory*: total=11 passed=11 failed=0
+PlayMode  ShadowGuidedStory*: total=3  passed=3  failed=0
+Compiled clean: ShadowLens.dll + ShadowLens.Tests.dll + ShadowLens.Tests.PlayMode.dll (0 CS errors)
+Stable APK NOT rebuilt; NOT device-validated.

@@ -1,0 +1,81 @@
+{
+  "baseline": "01864b4",
+  "scope": "UX-07 — first failure is not the visual focus (Audit Workspace only)",
+  "method": "rendered TextMesh character sizes + presence of the named non-typographic signals, projected through the d7feb01/01864b4 capture-rig model. Proves the design contract is applied, not aesthetic quality.",
+  "roles": [
+    "PrimaryAuditConclusion",
+    "SecondaryAuditContext",
+    "SupportingEvidence",
+    "SystemContext"
+  ],
+  "hierarchyMetric": "the primary conclusion's rendered character size divided by the largest competing label's size, required >= MinConclusionDominanceRatio, PLUS the accent rule and padding signals",
+  "signals": {
+    "typography": "conclusion is the single largest label; both titles step down to ContextTitleSize while a failure is on screen",
+    "accentRule": "a failure-red bar under the conclusion (border/surface, not colour alone)",
+    "padding": "ConclusionPadAbove/Below separate it from the field rows"
+  },
+  "before": {
+    "conclusionSize": 0.03,
+    "largestTitleSize": 0.052,
+    "note": "'◆ FIRST FAILURE' at 0.030 was smaller than two 0.052 titles; the word appeared 4x at 4 sizes across 3 regions; the eye landed on the story title"
+  },
+  "after": {
+    "conclusionSize": 0.046,
+    "contextTitleSize": 0.04,
+    "titleSizeNoFailure": 0.052,
+    "conclusionOverLargestCompetitor": 1.769,
+    "conclusionOverContextTitle": 1.15,
+    "minDominanceRatio": 1.12,
+    "padAbove": 0.055,
+    "padBelow": 0.045,
+    "ruleHeight": 0.014,
+    "ruleWidth": 1.05,
+    "ruleGap": 0.02
+  },
+  "matrix": {
+    "profiles": [
+      "DesktopDark",
+      "BrowserDark",
+      "ProjectorPresentation",
+      "XrealOstBright",
+      "AccessibilityHighContrast"
+    ],
+    "languages": [
+      "en",
+      "zh-CN"
+    ],
+    "failureStates": [
+      "first-failure",
+      "first-failure+downstream",
+      "first-failure+human-review",
+      "first-failure+approval-absent",
+      "first-failure+source-missing",
+      "first-failure+tracking-degraded"
+    ],
+    "calmStates": [
+      "normal-verified",
+      "unknown",
+      "source-missing-no-failure",
+      "scanning",
+      "recovering"
+    ],
+    "combinations": 110,
+    "assertions": [
+      "first-failure state applies the primary role (size + rule)",
+      "calm states apply NO failure emphasis and keep both titles at full size",
+      "conclusion uses >= 2 non-colour signals and clears the dominance ratio",
+      "supporting context stays visible and subordinate; nothing hidden",
+      "conclusion stays in region, no wrap/truncation/overlap/clipping",
+      "hierarchy survives colour removal; d664873/d7feb01/01864b4 invariants unchanged; Chinese carries the same roles"
+    ],
+    "result": "6/6 hierarchy tests pass"
+  },
+  "outOfScope": {
+    "UX-12": "NOT resolved — only the Audit Workspace changed; Room Flat colour grammar untouched",
+    "UX-08": "open",
+    "UX-14": "open",
+    "UX-01_UX-05_UX-09": "preserved from d664873",
+    "UX-02_UX-03": "preserved from d7feb01",
+    "UX-04": "preserved from 01864b4"
+  }
+}

@@ -24,6 +24,30 @@ export {
   computeAttestationHash,
 } from "./attestation-chain.js";
 
+// aex-attestation/v2 — unambiguous named-envelope signing (see docs/security/ATTESTATION_ENVELOPE_V2.md).
+// signAttestation() is the PREFERRED entry for new code; buildAttestation() (v1) is kept byte-for-byte
+// for back-compat. Distinct from schema_version 2.0.0 (packaging) — this is the wire format version.
+export {
+  ATTESTATION_V2_VERSION,
+  V2_DOMAIN,
+  V2_KNOWN_BINDINGS,
+  PREFERRED_WIRE_VERSION,
+  AttestationV2Error,
+  buildV2Envelope,
+  v2SigningBytes,
+  v2SigningText,
+  v2CanonicalDigest,
+  buildAttestationV2,
+  verifyAttestationV2,
+  verifyAttestationAny,
+  signAttestation,
+  verifyV1,
+  verifyV2,
+  assertSecureSecret,
+  isProductionEnv,
+  DEV_DEFAULT_SECRET,
+} from "./attestation-v2.js";
+
 // v3 M1.2: streaming evidence bundle API + crash-recovery.
 export {
   EVENT_TYPES,

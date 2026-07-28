@@ -1,0 +1,366 @@
+{
+  "story_version": "shadow-guided-story-v1",
+  "story_id": "banking-deep",
+  "provenance_mode": "FIXTURE",
+  "fixture_note": "PRODUCT-QUALITY FIXTURE — sanitized, deterministic, no private data.",
+  "title": {
+    "en": "Banking loan council — deep audit",
+    "zh": "银行贷款 council——深度审计"
+  },
+  "teaches": {
+    "proves": {
+      "en": "The recommendation is bound to two source pages + verified ratios, sealed and logged.",
+      "zh": "推荐结果绑定到两页来源 + 已核验比率,已封签并记录。"
+    },
+    "does_not_prove": {
+      "en": "An intact chain does not prove the lending decision was correct, adequate, or fair — a person must review.",
+      "zh": "完整的链不证明放贷决策正确、充分或公平——必须由人复核。"
+    }
+  },
+  "trust_dimensions": [
+    "RECORD_INTEGRITY",
+    "DIGITAL_SIGNATURE",
+    "HASH_CHAIN",
+    "SOURCE_RESOLUTION",
+    "CLAIM_EVIDENCE_BINDING",
+    "POLICY_ADEQUACY",
+    "ANALYTICAL_CORRECTNESS",
+    "LEGAL_FAIRNESS_REVIEW",
+    "HUMAN_APPROVAL"
+  ],
+  "entities": [
+    {
+      "id": "banking-deep:n0:source",
+      "kind": "source",
+      "sequence": 0,
+      "label": {
+        "en": "Loan application p1",
+        "zh": "贷款申请第1页"
+      },
+      "a11y": {
+        "en": "source seq 0: Loan application p1",
+        "zh": "序号 0 的source:贷款申请第1页"
+      }
+    },
+    {
+      "id": "banking-deep:n1:source",
+      "kind": "source",
+      "sequence": 1,
+      "label": {
+        "en": "Loan application p2",
+        "zh": "贷款申请第2页"
+      },
+      "a11y": {
+        "en": "source seq 1: Loan application p2",
+        "zh": "序号 1 的source:贷款申请第2页"
+      }
+    },
+    {
+      "id": "banking-deep:n2:snapshot",
+      "kind": "snapshot",
+      "sequence": 2,
+      "label": {
+        "en": "Intake snapshot",
+        "zh": "受理快照"
+      },
+      "a11y": {
+        "en": "snapshot seq 2: Intake snapshot",
+        "zh": "序号 2 的snapshot:受理快照"
+      }
+    },
+    {
+      "id": "banking-deep:n3:evidence",
+      "kind": "evidence",
+      "sequence": 3,
+      "label": {
+        "en": "DTI / FICO / income",
+        "zh": "DTI / FICO / 收入"
+      },
+      "a11y": {
+        "en": "evidence seq 3: DTI / FICO / income",
+        "zh": "序号 3 的evidence:DTI / FICO / 收入"
+      }
+    },
+    {
+      "id": "banking-deep:n4:claim",
+      "kind": "claim",
+      "sequence": 4,
+      "label": {
+        "en": "Council claim: elevated risk",
+        "zh": "council 声明:风险偏高"
+      },
+      "a11y": {
+        "en": "claim seq 4: Council claim: elevated risk",
+        "zh": "序号 4 的claim:council 声明:风险偏高"
+      }
+    },
+    {
+      "id": "banking-deep:n5:recommendation",
+      "kind": "recommendation",
+      "sequence": 5,
+      "label": {
+        "en": "REVIEW (not auto-decline)",
+        "zh": "REVIEW(非自动拒绝)"
+      },
+      "a11y": {
+        "en": "recommendation seq 5: REVIEW (not auto-decline)",
+        "zh": "序号 5 的recommendation:REVIEW(非自动拒绝)"
+      }
+    },
+    {
+      "id": "banking-deep:n6:signature",
+      "kind": "signature",
+      "sequence": 6,
+      "label": {
+        "en": "Ed25519 seal",
+        "zh": "Ed25519 封签"
+      },
+      "a11y": {
+        "en": "signature seq 6: Ed25519 seal",
+        "zh": "序号 6 的signature:Ed25519 封签"
+      }
+    },
+    {
+      "id": "banking-deep:n7:audit_record",
+      "kind": "audit_record",
+      "sequence": 7,
+      "label": {
+        "en": "Audit record",
+        "zh": "审计记录"
+      },
+      "a11y": {
+        "en": "audit_record seq 7: Audit record",
+        "zh": "序号 7 的audit_record:审计记录"
+      }
+    }
+  ],
+  "relations": [
+    {
+      "id": "e1",
+      "type": "DERIVED_FROM",
+      "from": "banking-deep:n1:source",
+      "to": "banking-deep:n0:source"
+    },
+    {
+      "id": "e2",
+      "type": "DERIVED_FROM",
+      "from": "banking-deep:n2:snapshot",
+      "to": "banking-deep:n1:source"
+    },
+    {
+      "id": "e3",
+      "type": "DERIVED_FROM",
+      "from": "banking-deep:n3:evidence",
+      "to": "banking-deep:n2:snapshot"
+    },
+    {
+      "id": "e4",
+      "type": "DERIVED_FROM",
+      "from": "banking-deep:n4:claim",
+      "to": "banking-deep:n3:evidence"
+    },
+    {
+      "id": "e5",
+      "type": "DERIVED_FROM",
+      "from": "banking-deep:n5:recommendation",
+      "to": "banking-deep:n4:claim"
+    },
+    {
+      "id": "e6",
+      "type": "SEALED_BY",
+      "from": "banking-deep:n6:signature",
+      "to": "banking-deep:n5:recommendation"
+    },
+    {
+      "id": "e7",
+      "type": "DERIVED_FROM",
+      "from": "banking-deep:n7:audit_record",
+      "to": "banking-deep:n6:signature"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "pristine",
+      "label": {
+        "en": "Pristine",
+        "zh": "原始"
+      },
+      "entity_status": {
+        "banking-deep:n0:source": "VERIFIED",
+        "banking-deep:n1:source": "VERIFIED",
+        "banking-deep:n2:snapshot": "VERIFIED",
+        "banking-deep:n3:evidence": "VERIFIED",
+        "banking-deep:n4:claim": "VERIFIED",
+        "banking-deep:n5:recommendation": "VERIFIED",
+        "banking-deep:n6:signature": "VERIFIED",
+        "banking-deep:n7:audit_record": "VERIFIED"
+      },
+      "dimension_status": {
+        "RECORD_INTEGRITY": "VERIFIED",
+        "DIGITAL_SIGNATURE": "VERIFIED",
+        "HASH_CHAIN": "VERIFIED",
+        "SOURCE_RESOLUTION": "VERIFIED",
+        "CLAIM_EVIDENCE_BINDING": "VERIFIED",
+        "POLICY_ADEQUACY": "NOT_EVALUATED",
+        "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+        "LEGAL_FAIRNESS_REVIEW": "REQUIRES_HUMAN_REVIEW",
+        "HUMAN_APPROVAL": "NOT_PRESENT"
+      },
+      "first_failure": null,
+      "affected_downstream": [],
+      "note": {
+        "en": "All checks pass; analytical correctness NOT evaluated; human review still required.",
+        "zh": "全部检查通过;分析正确性不评估;仍需人工复核。"
+      }
+    },
+    {
+      "id": "tampered",
+      "label": {
+        "en": "Tampered",
+        "zh": "被篡改"
+      },
+      "entity_status": {
+        "banking-deep:n0:source": "VERIFIED",
+        "banking-deep:n1:source": "VERIFIED",
+        "banking-deep:n2:snapshot": "VERIFIED",
+        "banking-deep:n3:evidence": "VERIFIED",
+        "banking-deep:n4:claim": "FIRST_FAILURE",
+        "banking-deep:n5:recommendation": "AFFECTED_DOWNSTREAM",
+        "banking-deep:n6:signature": "AFFECTED_DOWNSTREAM",
+        "banking-deep:n7:audit_record": "AFFECTED_DOWNSTREAM"
+      },
+      "dimension_status": {
+        "RECORD_INTEGRITY": "FAILED",
+        "DIGITAL_SIGNATURE": "FAILED",
+        "HASH_CHAIN": "FAILED",
+        "SOURCE_RESOLUTION": "VERIFIED",
+        "CLAIM_EVIDENCE_BINDING": "FAILED",
+        "POLICY_ADEQUACY": "NOT_EVALUATED",
+        "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+        "LEGAL_FAIRNESS_REVIEW": "REQUIRES_HUMAN_REVIEW",
+        "HUMAN_APPROVAL": "NOT_PRESENT"
+      },
+      "first_failure": "banking-deep:n4:claim",
+      "affected_downstream": [
+        "banking-deep:n5:recommendation",
+        "banking-deep:n6:signature",
+        "banking-deep:n7:audit_record"
+      ],
+      "note": {
+        "en": "First failure at sequence 4; downstream frozen.",
+        "zh": "序号 4 首个失败;下游冻结。"
+      }
+    },
+    {
+      "id": "missing_evidence",
+      "label": {
+        "en": "Missing income evidence",
+        "zh": "缺失收入证据"
+      },
+      "entity_status": {
+        "banking-deep:n0:source": "VERIFIED",
+        "banking-deep:n1:source": "VERIFIED",
+        "banking-deep:n2:snapshot": "VERIFIED",
+        "banking-deep:n3:evidence": "NOT_PRESENT",
+        "banking-deep:n4:claim": "UNSUPPORTED",
+        "banking-deep:n5:recommendation": "VERIFIED",
+        "banking-deep:n6:signature": "VERIFIED",
+        "banking-deep:n7:audit_record": "VERIFIED"
+      },
+      "dimension_status": {
+        "RECORD_INTEGRITY": "VERIFIED",
+        "DIGITAL_SIGNATURE": "VERIFIED",
+        "HASH_CHAIN": "VERIFIED",
+        "SOURCE_RESOLUTION": "VERIFIED",
+        "CLAIM_EVIDENCE_BINDING": "WARNING",
+        "POLICY_ADEQUACY": "NOT_EVALUATED",
+        "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+        "LEGAL_FAIRNESS_REVIEW": "REQUIRES_HUMAN_REVIEW",
+        "HUMAN_APPROVAL": "NOT_PRESENT"
+      },
+      "first_failure": "banking-deep:n4:claim",
+      "affected_downstream": [
+        "banking-deep:n5:recommendation"
+      ],
+      "note": {
+        "en": "The claim cites income evidence that is not present → UNSUPPORTED, requires human review.",
+        "zh": "该声明引用了不存在的收入证据 → 无支撑,需人工复核。"
+      }
+    }
+  ],
+  "steps": [
+    {
+      "id": "intro",
+      "index": 0,
+      "kind": "intro",
+      "scenario_ref": "pristine",
+      "narration": {
+        "en": "A loan package seals into a signed provenance chain.",
+        "zh": "一份贷款材料封存进一条签名溯源链。"
+      },
+      "focus_entities": [],
+      "reveal_upto_sequence": 0,
+      "layout_intent": "timeline"
+    },
+    {
+      "id": "reveal",
+      "index": 1,
+      "kind": "reveal",
+      "scenario_ref": "pristine",
+      "narration": {
+        "en": "Two application pages → snapshot → verified ratios → council claim → REVIEW → seal → audit.",
+        "zh": "两页申请 → 快照 → 已核验比率 → council 声明 → REVIEW → 封签 → 审计。"
+      },
+      "focus_entities": [
+        "banking-deep:n0:source",
+        "banking-deep:n1:source",
+        "banking-deep:n2:snapshot",
+        "banking-deep:n3:evidence",
+        "banking-deep:n4:claim",
+        "banking-deep:n5:recommendation",
+        "banking-deep:n6:signature",
+        "banking-deep:n7:audit_record"
+      ],
+      "reveal_upto_sequence": 7,
+      "layout_intent": "timeline"
+    },
+    {
+      "id": "tamper",
+      "index": 2,
+      "kind": "tamper",
+      "scenario_ref": "tampered",
+      "narration": {
+        "en": "Edit the council claim and its verification fails first; the recommendation, seal and audit freeze.",
+        "zh": "篡改 council 声明,它最先验证失败;推荐、封签与审计随之冻结。"
+      },
+      "focus_entities": [
+        "banking-deep:n4:claim"
+      ],
+      "layout_intent": "timeline"
+    },
+    {
+      "id": "limit",
+      "index": 3,
+      "kind": "abstain",
+      "scenario_ref": "missing_evidence",
+      "narration": {
+        "en": "Missing income evidence leaves the claim UNSUPPORTED — flagged, not silently approved.",
+        "zh": "缺失收入证据使该声明无支撑——被标记而非悄悄批准。"
+      },
+      "focus_entities": [],
+      "layout_intent": "dag"
+    },
+    {
+      "id": "human",
+      "index": 4,
+      "kind": "human_gate",
+      "scenario_ref": null,
+      "narration": {
+        "en": "Policy adequacy + analytical correctness NOT evaluated; fair-lending review + human approval required.",
+        "zh": "政策充分性 + 分析正确性不评估;需公平放贷复核 + 人工批准。"
+      },
+      "focus_entities": [],
+      "layout_intent": "timeline"
+    }
+  ]
+}

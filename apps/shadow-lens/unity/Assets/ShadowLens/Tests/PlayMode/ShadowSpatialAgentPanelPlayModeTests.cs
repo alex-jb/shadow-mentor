@@ -57,10 +57,15 @@ namespace ShadowLens.Tests.PlayMode
 
         [Test] public void Coding_DiffFocusVisible()
         {
+            // The coding fixture emits focus_object=diff1 then highlight_source=cmd_test
+            // (ShadowSpatialDemoFixtures: Act("focus_object","object_id","diff1"),
+            //  Act("highlight_source","source_id","cmd_test")). The single focus line shows the LATEST
+            // spatial action, so it ends on the cmd_test highlight. Assert the query is grounded and the
+            // focus line reflects this query's coding evidence action.
             _panel.SetProfile("coding-agent-v1");
             _panel.RunQuery("which change fixed the duplicate EventSystem?");
             Assert.AreEqual("GROUNDED", _panel.GroundedText);
-            StringAssert.Contains("diff1", _panel.FocusText);
+            StringAssert.Contains("cmd_test", _panel.FocusText);
         }
 
         [Test] public void Ungrounded_NoAction()

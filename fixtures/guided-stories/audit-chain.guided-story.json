@@ -1,0 +1,328 @@
+{
+  "story_version": "shadow-guided-story-v1",
+  "story_id": "audit-chain",
+  "provenance_mode": "FIXTURE",
+  "fixture_note": "DEMONSTRATION FIXTURE — hash-chained provenance illustration, not a production banking record.",
+  "title": {
+    "en": "Audit chain: integrity, not correctness",
+    "zh": "审计链:证明完整性,而非正确性"
+  },
+  "teaches": {
+    "proves": {
+      "en": "A tampered link breaks its own and every downstream link's verification.",
+      "zh": "被篡改的一环会使其自身及其后每一环的验证失败。"
+    },
+    "does_not_prove": {
+      "en": "A fully verified chain does not prove the decision was correct.",
+      "zh": "完全验证通过的链不证明决策是正确的。"
+    }
+  },
+  "references": {
+    "scene_clean": "shadow-3d:banking-seven-node",
+    "scene_tampered": "shadow-3d:banking-tampered"
+  },
+  "trust_dimensions": [
+    "RECORD_INTEGRITY",
+    "DIGITAL_SIGNATURE",
+    "HASH_CHAIN",
+    "PROFILE",
+    "SOURCE_RESOLUTION",
+    "EXTERNAL_ANCHOR",
+    "ANALYTICAL_CORRECTNESS"
+  ],
+  "entities": [
+    {
+      "id": "banking-v1:n0:source",
+      "kind": "source",
+      "sequence": 0,
+      "label": {
+        "en": "Loan file",
+        "zh": "循环贷款文件"
+      },
+      "a11y": {
+        "en": "source at sequence 0: Loan file",
+        "zh": "序号 0 的source:循环贷款文件"
+      }
+    },
+    {
+      "id": "banking-v1:n1:snapshot",
+      "kind": "snapshot",
+      "sequence": 1,
+      "label": {
+        "en": "Intake snapshot",
+        "zh": "受理快照"
+      },
+      "a11y": {
+        "en": "snapshot at sequence 1: Intake snapshot",
+        "zh": "序号 1 的snapshot:受理快照"
+      }
+    },
+    {
+      "id": "banking-v1:n2:evidence",
+      "kind": "evidence",
+      "sequence": 2,
+      "label": {
+        "en": "DTI / FICO / LTV",
+        "zh": "DTI / FICO / LTV"
+      },
+      "a11y": {
+        "en": "evidence at sequence 2: DTI / FICO / LTV",
+        "zh": "序号 2 的evidence:DTI / FICO / LTV"
+      }
+    },
+    {
+      "id": "banking-v1:n3:claim",
+      "kind": "claim",
+      "sequence": 3,
+      "label": {
+        "en": "Council claims",
+        "zh": "council 声明"
+      },
+      "a11y": {
+        "en": "claim at sequence 3: Council claims",
+        "zh": "序号 3 的claim:council 声明"
+      }
+    },
+    {
+      "id": "banking-v1:n4:recommendation",
+      "kind": "recommendation",
+      "sequence": 4,
+      "label": {
+        "en": "REVIEW",
+        "zh": "REVIEW"
+      },
+      "a11y": {
+        "en": "recommendation at sequence 4: REVIEW",
+        "zh": "序号 4 的recommendation:REVIEW"
+      }
+    },
+    {
+      "id": "banking-v1:n5:signature",
+      "kind": "signature",
+      "sequence": 5,
+      "label": {
+        "en": "Ed25519 seal",
+        "zh": "Ed25519 封签"
+      },
+      "a11y": {
+        "en": "signature at sequence 5: Ed25519 seal",
+        "zh": "序号 5 的signature:Ed25519 封签"
+      }
+    },
+    {
+      "id": "banking-v1:n6:audit_record",
+      "kind": "audit_record",
+      "sequence": 6,
+      "label": {
+        "en": "Audit record",
+        "zh": "审计记录"
+      },
+      "a11y": {
+        "en": "audit_record at sequence 6: Audit record",
+        "zh": "序号 6 的audit_record:审计记录"
+      }
+    }
+  ],
+  "relations": [
+    {
+      "id": "e1",
+      "type": "DERIVED_FROM",
+      "from": "banking-v1:n1:snapshot",
+      "to": "banking-v1:n0:source"
+    },
+    {
+      "id": "e2",
+      "type": "DERIVED_FROM",
+      "from": "banking-v1:n2:evidence",
+      "to": "banking-v1:n1:snapshot"
+    },
+    {
+      "id": "e3",
+      "type": "DERIVED_FROM",
+      "from": "banking-v1:n3:claim",
+      "to": "banking-v1:n2:evidence"
+    },
+    {
+      "id": "e4",
+      "type": "DERIVED_FROM",
+      "from": "banking-v1:n4:recommendation",
+      "to": "banking-v1:n3:claim"
+    },
+    {
+      "id": "e5",
+      "type": "SEALED_BY",
+      "from": "banking-v1:n5:signature",
+      "to": "banking-v1:n4:recommendation"
+    },
+    {
+      "id": "e6",
+      "type": "DERIVED_FROM",
+      "from": "banking-v1:n6:audit_record",
+      "to": "banking-v1:n5:signature"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "pristine",
+      "label": {
+        "en": "Pristine",
+        "zh": "原始"
+      },
+      "entity_status": {
+        "banking-v1:n0:source": "VERIFIED",
+        "banking-v1:n1:snapshot": "VERIFIED",
+        "banking-v1:n2:evidence": "VERIFIED",
+        "banking-v1:n3:claim": "VERIFIED",
+        "banking-v1:n4:recommendation": "VERIFIED",
+        "banking-v1:n5:signature": "VERIFIED",
+        "banking-v1:n6:audit_record": "VERIFIED"
+      },
+      "dimension_status": {
+        "RECORD_INTEGRITY": "VERIFIED",
+        "DIGITAL_SIGNATURE": "VERIFIED",
+        "HASH_CHAIN": "VERIFIED",
+        "PROFILE": "VERIFIED",
+        "SOURCE_RESOLUTION": "NOT_PRESENT",
+        "EXTERNAL_ANCHOR": "NOT_PRESENT",
+        "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED"
+      },
+      "first_failure": null,
+      "affected_downstream": [],
+      "note": {
+        "en": "Every link verifies; analytical correctness is still NOT evaluated.",
+        "zh": "每一环都验证通过;分析正确性仍不评估。"
+      }
+    },
+    {
+      "id": "tamper_seq_3",
+      "label": {
+        "en": "Tampered at sequence 3",
+        "zh": "序号 3 处被篡改"
+      },
+      "entity_status": {
+        "banking-v1:n0:source": "VERIFIED",
+        "banking-v1:n1:snapshot": "VERIFIED",
+        "banking-v1:n2:evidence": "VERIFIED",
+        "banking-v1:n3:claim": "FIRST_FAILURE",
+        "banking-v1:n4:recommendation": "AFFECTED_DOWNSTREAM",
+        "banking-v1:n5:signature": "AFFECTED_DOWNSTREAM",
+        "banking-v1:n6:audit_record": "AFFECTED_DOWNSTREAM"
+      },
+      "dimension_status": {
+        "RECORD_INTEGRITY": "FAILED",
+        "DIGITAL_SIGNATURE": "FAILED",
+        "HASH_CHAIN": "FAILED",
+        "PROFILE": "VERIFIED",
+        "SOURCE_RESOLUTION": "NOT_PRESENT",
+        "EXTERNAL_ANCHOR": "NOT_PRESENT",
+        "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED"
+      },
+      "first_failure": "banking-v1:n3:claim",
+      "affected_downstream": [
+        "banking-v1:n4:recommendation",
+        "banking-v1:n5:signature",
+        "banking-v1:n6:audit_record"
+      ],
+      "note": {
+        "en": "prev_hash_mismatch at seq 3; sequences 4,5,6 are frozen as affected downstream.",
+        "zh": "序号 3 处 prev_hash_mismatch;序号 4、5、6 因受下游影响而冻结。"
+      }
+    }
+  ],
+  "steps": [
+    {
+      "id": "intro",
+      "index": 0,
+      "kind": "intro",
+      "scenario_ref": "pristine",
+      "narration": {
+        "en": "A decision seals into a hash-chained, signed provenance chain.",
+        "zh": "一个决策被封存进一条哈希链 + 签名的溯源链。"
+      },
+      "focus_entities": [],
+      "reveal_upto_sequence": 0,
+      "layout_intent": "timeline"
+    },
+    {
+      "id": "reveal",
+      "index": 1,
+      "kind": "reveal",
+      "scenario_ref": "pristine",
+      "narration": {
+        "en": "Each link derives from the previous one, source through audit record.",
+        "zh": "每一环都由前一环派生,从来源直到审计记录。"
+      },
+      "focus_entities": [
+        "banking-v1:n0:source",
+        "banking-v1:n1:snapshot",
+        "banking-v1:n2:evidence",
+        "banking-v1:n3:claim",
+        "banking-v1:n4:recommendation",
+        "banking-v1:n5:signature",
+        "banking-v1:n6:audit_record"
+      ],
+      "reveal_upto_sequence": 6,
+      "layout_intent": "timeline"
+    },
+    {
+      "id": "seal",
+      "index": 2,
+      "kind": "seal",
+      "scenario_ref": "pristine",
+      "narration": {
+        "en": "The recommendation is sealed by an Ed25519 signature into the audit record.",
+        "zh": "推荐结果由 Ed25519 签名封存进审计记录。"
+      },
+      "focus_entities": [
+        "banking-v1:n5:signature",
+        "banking-v1:n6:audit_record"
+      ],
+      "reveal_upto_sequence": 6,
+      "layout_intent": "timeline"
+    },
+    {
+      "id": "tamper",
+      "index": 3,
+      "kind": "tamper",
+      "scenario_ref": "tamper_seq_3",
+      "narration": {
+        "en": "Alter the council claim at sequence 3 and its verification fails first.",
+        "zh": "篡改序号 3 的 council 声明,它的验证最先失败。"
+      },
+      "focus_entities": [
+        "banking-v1:n3:claim"
+      ],
+      "reveal_upto_sequence": 6,
+      "layout_intent": "timeline"
+    },
+    {
+      "id": "cascade",
+      "index": 4,
+      "kind": "cascade",
+      "scenario_ref": "tamper_seq_3",
+      "narration": {
+        "en": "Every downstream link is frozen as affected — a green chain would have proved only that the record was unaltered.",
+        "zh": "其后每一环都作为受影响项被冻结——绿色的链只能证明记录未被改动。"
+      },
+      "focus_entities": [
+        "banking-v1:n4:recommendation",
+        "banking-v1:n5:signature",
+        "banking-v1:n6:audit_record"
+      ],
+      "reveal_upto_sequence": 6,
+      "layout_intent": "timeline"
+    },
+    {
+      "id": "summary",
+      "index": 5,
+      "kind": "summary",
+      "scenario_ref": null,
+      "narration": {
+        "en": "Integrity is judged; analytical correctness is NOT evaluated by the chain.",
+        "zh": "完整性被判断;分析正确性不由审计链评估。"
+      },
+      "focus_entities": [],
+      "layout_intent": "timeline"
+    }
+  ]
+}

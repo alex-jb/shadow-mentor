@@ -1,0 +1,14 @@
+{
+  "log": "~/Desktop/beam-pro-v11-test/candidate-03-glasses-launch-03.txt",
+  "package": "com.shadowlens.xrealvoice", "pid": 28893,
+  "events": [
+    {"ts": "12:40:36.621", "line": "GlassesInitProvider.onCreate → GlassesInitSetting init successful", "subsystem": "XREAL glasses provider", "interpretation": "the injected GlassesInitProvider ran OK (candidate-03 MR registration works)", "confidence": "high", "blocking": false},
+    {"ts": "12:40:37.230", "line": "UnityEngine.XR.Management.XRGeneralSettings:Awake()", "subsystem": "XR Management", "interpretation": "XR Management initialized", "confidence": "high", "blocking": false},
+    {"ts": "12:40:37.283", "line": "[XREALXRLoader] Init / Initialize() / XRManagerSettings:InitializeLoaderSync()", "subsystem": "XREALXRLoader", "interpretation": "the XREAL loader IS assigned + began initialization", "confidence": "high", "blocking": false},
+    {"ts": "12:40:37.285", "line": "[XREALXRLoader] XREALPackageVersion: 3.1.0 ; GetPluginVersion: 3.0.20251121", "subsystem": "XREALXRLoader", "interpretation": "XREAL native plugin present + version read", "confidence": "high", "blocking": false},
+    {"ts": "12:40:37.287", "line": "E Unity: Unable to start XREAL XR Plugin. Failed to get XREAL Settings.", "subsystem": "XREALXRLoader.Initialize", "interpretation": "ROOT CAUSE — XREALSettings ScriptableObject not embedded in the player; GetSettings() returned null; XR plugin init aborted", "confidence": "high", "blocking": true},
+    {"ts": "post", "line": "no XRDisplaySubsystem running; no SIGSEGV/FATAL/AndroidRuntime crash", "subsystem": "XR display", "interpretation": "no XR display subsystem became active → glasses stayed in Nebula OS; app remained alive (PID 28893, UnityPlayerActivity topResumed)", "confidence": "high", "blocking": true}
+  ],
+  "primary_category": "XR_LOADER_NOT_INITIALIZED",
+  "root_cause": "XREALSettings config object not registered under key com.unity.xr.management.xrealsettings in EditorBuildSettings → XRBuildHelper<XREALSettings> embedded no settings → runtime XREALSettings.GetSettings() == null → 'Unable to start XREAL XR Plugin. Failed to get XREAL Settings.'"
+}

@@ -1,0 +1,26 @@
+{
+  "tool": "playwright",
+  "chromium": "149.0.7827.55",
+  "three_revision": "160",
+  "console_errors": [],
+  "external_requests": [],
+  "csp_violations": [],
+  "measurements": {
+    "continuous": {
+      "frames": 181,
+      "draws": 181,
+      "dpr": 1
+    },
+    "reduced_motion_idle": {
+      "frames": 181,
+      "draws": 0,
+      "dpr": 1
+    },
+    "reduced_motion_step_draws": 1,
+    "memory": {
+      "before_mb": 9.18,
+      "after_mb": 9.31,
+      "growth_mb": 0.13
+    }
+  }
+}

@@ -1,0 +1,13 @@
+object_class,count,geometry_type,material_type,transparent,shared_or_per_node,raycastable,disposed_on_rebuild,file_line,note
+card_edge,12,BufferGeometry(line loop),LineBasicMaterial,yes(opacity 0.85),per-node,no,NO(layout leak),scene.js:51-52,one per card
+card_face,12,PlaneGeometry,MeshBasicMaterial(CanvasTexture),yes(depthWrite:false),per-node,no,NO(layout leak),scene.js:92 labels.js:33,reused via repaint() on status change
+card_detail,12,PlaneGeometry,MeshBasicMaterial(CanvasTexture),yes(depthWrite:false),per-node,no,NO(layout leak),scene.js:100,recreated on layout
+card_hit,12,PlaneGeometry,MeshBasicMaterial(opacity:0),yes,per-node,YES,NO(layout leak),scene.js:106-107,invisible raycast target
+connector,11,BufferGeometry(2pt line),LineBasicMaterial,yes(opacity 0.55),per-link,no,YES,scene.js:150-152,disposed on rebuild
+trust_badge_label,3,PlaneGeometry,MeshBasicMaterial(CanvasTexture),yes,per-node,no,NO(leak),scene.js:163,remove without dispose
+hud_status,1,PlaneGeometry,MeshBasicMaterial(CanvasTexture),yes,singleton,no,YES,app.js:84,disposed on swap
+mic_dot,1,RingGeometry,MeshBasicMaterial,yes(opacity 0),singleton,no,n/a,app.js:94-95,
+caption,1,PlaneGeometry,MeshBasicMaterial(CanvasTexture),yes,on-demand,no,YES,scene.js:189-200,disposed on swap
+inspector,3,PlaneGeometry,MeshBasicMaterial(CanvasTexture),yes,on-demand,no,YES,scene.js:326-340,traverse+dispose
+vignette(xr),1,RingGeometry,MeshBasicMaterial,yes(opacity 0 depthTest:false),singleton,no,n/a,webxr.js:127-128,renderOrder 999
+controller_ray(xr),2,BufferGeometry,LineBasicMaterial,no,per-controller,no,n/a,webxr.js:75,XR only

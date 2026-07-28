@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="13" result="Passed" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.0185191">
+  <test-suite type="TestSuite" id="1000" name="unity" fullname="unity" runstate="Runnable" testcasecount="105" result="Passed" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.018519" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1122" name="ShadowLens.Tests.dll" fullname="/Users/alexji/Desktop/AI-Projects/shadow-mentor-story-adapters/apps/shadow-lens/unity/Library/ScriptAssemblies/ShadowLens.Tests.dll" runstate="Runnable" testcasecount="85" result="Passed" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.016279" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="36380" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1123" name="ShadowLens" fullname="ShadowLens" runstate="Runnable" testcasecount="85" result="Passed" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.015890" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1124" name="Tests" fullname="ShadowLens.Tests" runstate="Runnable" testcasecount="85" result="Passed" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.014233" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1055" name="ShadowVoiceIntegrationEditTests" fullname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests" classname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.012738" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1058" name="AppPause_DiscardsObsoleteNarration" fullname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests.AppPause_DiscardsObsoleteNarration" methodname="AppPause_DiscardsObsoleteNarration" classname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests" runstate="Runnable" seed="1349101725" result="Passed" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.004583" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1060" name="DeviceValidationPending_NeverSpeaksAsValidated" fullname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests.DeviceValidationPending_NeverSpeaksAsValidated" methodname="DeviceValidationPending_NeverSpeaksAsValidated" classname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests" runstate="Runnable" seed="1625493895" result="Passed" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.001323" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1064" name="Environment_PanelHasNoValidatedClaim_AndNamesMissingVoice" fullname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests.Environment_PanelHasNoValidatedClaim_AndNamesMissingVoice" methodname="Environment_PanelHasNoValidatedClaim_AndNamesMissingVoice" classname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests" runstate="Runnable" seed="37536968" result="Passed" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.000585" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1059" name="LanguageChanged_CancelsOldLocaleUtterances" fullname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests.LanguageChanged_CancelsOldLocaleUtterances" methodname="LanguageChanged_CancelsOldLocaleUtterances" classname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests" runstate="Runnable" seed="1732731729" result="Passed" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.000931" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1063" name="Modes_TtsOnlyNeedsNoMic_VoiceCommandsGateMicBehindExplicitOptIn" fullname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests.Modes_TtsOnlyNeedsNoMic_VoiceCommandsGateMicBehindExplicitOptIn" methodname="Modes_TtsOnlyNeedsNoMic_VoiceCommandsGateMicBehindExplicitOptIn" classname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests" runstate="Runnable" seed="1510915429" result="Passed" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.000090" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1062" name="Presets_TuneEnAndZhSeparately_BeamProStaysUnmeasured" fullname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests.Presets_TuneEnAndZhSeparately_BeamProStaysUnmeasured" methodname="Presets_TuneEnAndZhSeparately_BeamProStaysUnmeasured" classname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests" runstate="Runnable" seed="1559435572" result="Passed" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.000655" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1061" name="Reset_ClearsSpeech_AndReturnsToBanking" fullname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests.Reset_ClearsSpeech_AndReturnsToBanking" methodname="Reset_ClearsSpeech_AndReturnsToBanking" classname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests" runstate="Runnable" seed="1003048940" result="Passed" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.000102" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1057" name="TrackingLimited_IsP1_DoesNotInterruptAVerbatimQuote" fullname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests.TrackingLimited_IsP1_DoesNotInterruptAVerbatimQuote" methodname="TrackingLimited_IsP1_DoesNotInterruptAVerbatimQuote" classname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests" runstate="Runnable" seed="1979083846" result="Passed" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.000133" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1056" name="TrackingLost_InterruptsP3Narration_WithAP0Warning_StoryPreserved" fullname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests.TrackingLost_InterruptsP3Narration_WithAP0Warning_StoryPreserved" methodname="TrackingLost_InterruptsP3Narration_WithAP0Warning_StoryPreserved" classname="ShadowLens.Tests.ShadowVoiceIntegrationEditTests" runstate="Runnable" seed="1015171292" result="Passed" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.000310" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1074" name="ShadowXrealMappingEditTests" fullname="ShadowLens.Tests.ShadowXrealMappingEditTests" classname="ShadowLens.Tests.ShadowXrealMappingEditTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.000598" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1078" name="FullEvidence_ProducesA6DofSession" fullname="ShadowLens.Tests.ShadowXrealMappingEditTests.FullEvidence_ProducesA6DofSession" methodname="FullEvidence_ProducesA6DofSession" classname="ShadowLens.Tests.ShadowXrealMappingEditTests" runstate="Runnable" seed="395252873" result="Passed" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.000155" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1077" name="ReportedSixDof_AloneDoesNotProduceA6DofSession" fullname="ShadowLens.Tests.ShadowXrealMappingEditTests.ReportedSixDof_AloneDoesNotProduceA6DofSession" methodname="ReportedSixDof_AloneDoesNotProduceA6DofSession" classname="ShadowLens.Tests.ShadowXrealMappingEditTests" runstate="Runnable" seed="1900548511" result="Passed" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.000039" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1075" name="TrackingType_MapsToCoreMode" fullname="ShadowLens.Tests.ShadowXrealMappingEditTests.TrackingType_MapsToCoreMode" methodname="TrackingType_MapsToCoreMode" classname="ShadowLens.Tests.ShadowXrealMappingEditTests" runstate="Runnable" seed="187071944" result="Passed" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.000051" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1076" name="TrackingType_UnknownBeforeLoaderStart" fullname="ShadowLens.Tests.ShadowXrealMappingEditTests.TrackingType_UnknownBeforeLoaderStart" methodname="TrackingType_UnknownBeforeLoaderStart" classname="ShadowLens.Tests.ShadowXrealMappingEditTests" runstate="Runnable" seed="2087233687" result="Passed" start-time="2026-07-22 05:08:01Z" end-time="2026-07-22 05:08:01Z" duration="0.000037" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: /private/tmp/claude-501/-Users-alexji-Desktop-vibex/cfb502a3-1a5c-4f60-a390-d756b56a18f1/scratchpad/em-v9.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

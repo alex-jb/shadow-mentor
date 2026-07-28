@@ -5,7 +5,8 @@
     "com.unity.xr.interaction.toolkit": "3.0.3",
     "com.unity.xr.management": "4.4.1",
     "com.unity.modules.unitywebrequest": "1.0.0",
-    "com.unity.modules.androidjni": "1.0.0"
+    "com.unity.modules.androidjni": "1.0.0",
+    "com.unity.modules.imageconversion": "1.0.0"
   },
-  "//": "XREAL SDK 3.1.0 (com.xreal.xr) is imported from the tarball per docs/UNITY_XREAL_BUILD_RUNBOOK.md — NOT committed (licensing). Pin exact versions here on import."
+  "//": "XREAL SDK 3.1.0 (com.xreal.xr) is imported from the tarball per docs/UNITY_XREAL_BUILD_RUNBOOK.md \u2014 NOT committed (licensing). Pin exact versions here on import."
 }

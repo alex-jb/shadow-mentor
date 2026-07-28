@@ -1,0 +1,338 @@
+{
+  "story_version": "shadow-guided-story-v1",
+  "story_id": "data-science-deep",
+  "provenance_mode": "FIXTURE",
+  "fixture_note": "PRODUCT-QUALITY FIXTURE — sanitized, deterministic, no private data.",
+  "title": {
+    "en": "Data-science model lineage — deep audit",
+    "zh": "数据科学模型血缘——深度审计"
+  },
+  "teaches": {
+    "proves": {
+      "en": "The metric derives from a named model, feature set, and training set, sealed and logged.",
+      "zh": "指标由具名模型、特征集与训练集派生,已封签并记录。"
+    },
+    "does_not_prove": {
+      "en": "A sealed lineage does not prove the model is unbiased, well-calibrated, or fit to deploy — validation is human work.",
+      "zh": "封签的血缘不证明模型无偏、校准良好或适合部署——验证是人的工作。"
+    }
+  },
+  "trust_dimensions": [
+    "RECORD_INTEGRITY",
+    "DIGITAL_SIGNATURE",
+    "HASH_CHAIN",
+    "SOURCE_RESOLUTION",
+    "SYNTHESIS_PROVENANCE",
+    "ANALYTICAL_CORRECTNESS",
+    "LEGAL_FAIRNESS_REVIEW",
+    "HUMAN_APPROVAL"
+  ],
+  "entities": [
+    {
+      "id": "data-science-deep:n0:dataset",
+      "kind": "dataset",
+      "sequence": 0,
+      "label": {
+        "en": "Training set v3",
+        "zh": "训练集 v3"
+      },
+      "a11y": {
+        "en": "dataset seq 0: Training set v3",
+        "zh": "序号 0 的dataset:训练集 v3"
+      }
+    },
+    {
+      "id": "data-science-deep:n1:feature",
+      "kind": "feature",
+      "sequence": 1,
+      "label": {
+        "en": "Feature: PSI drift",
+        "zh": "特征:PSI 漂移"
+      },
+      "a11y": {
+        "en": "feature seq 1: Feature: PSI drift",
+        "zh": "序号 1 的feature:特征:PSI 漂移"
+      }
+    },
+    {
+      "id": "data-science-deep:n2:model",
+      "kind": "model",
+      "sequence": 2,
+      "label": {
+        "en": "Model: GBM",
+        "zh": "模型:GBM"
+      },
+      "a11y": {
+        "en": "model seq 2: Model: GBM",
+        "zh": "序号 2 的model:模型:GBM"
+      }
+    },
+    {
+      "id": "data-science-deep:n3:metric",
+      "kind": "metric",
+      "sequence": 3,
+      "label": {
+        "en": "AUC 0.86 / KS 0.41",
+        "zh": "AUC 0.86 / KS 0.41"
+      },
+      "a11y": {
+        "en": "metric seq 3: AUC 0.86 / KS 0.41",
+        "zh": "序号 3 的metric:AUC 0.86 / KS 0.41"
+      }
+    },
+    {
+      "id": "data-science-deep:n4:experiment",
+      "kind": "experiment",
+      "sequence": 4,
+      "label": {
+        "en": "Experiment run 24",
+        "zh": "实验运行 24"
+      },
+      "a11y": {
+        "en": "experiment seq 4: Experiment run 24",
+        "zh": "序号 4 的experiment:实验运行 24"
+      }
+    },
+    {
+      "id": "data-science-deep:n5:signature",
+      "kind": "signature",
+      "sequence": 5,
+      "label": {
+        "en": "Ed25519 seal",
+        "zh": "Ed25519 封签"
+      },
+      "a11y": {
+        "en": "signature seq 5: Ed25519 seal",
+        "zh": "序号 5 的signature:Ed25519 封签"
+      }
+    },
+    {
+      "id": "data-science-deep:n6:audit_record",
+      "kind": "audit_record",
+      "sequence": 6,
+      "label": {
+        "en": "Audit record",
+        "zh": "审计记录"
+      },
+      "a11y": {
+        "en": "audit_record seq 6: Audit record",
+        "zh": "序号 6 的audit_record:审计记录"
+      }
+    }
+  ],
+  "relations": [
+    {
+      "id": "e1",
+      "type": "DERIVED_FROM",
+      "from": "data-science-deep:n1:feature",
+      "to": "data-science-deep:n0:dataset"
+    },
+    {
+      "id": "e2",
+      "type": "DERIVED_FROM",
+      "from": "data-science-deep:n2:model",
+      "to": "data-science-deep:n1:feature"
+    },
+    {
+      "id": "e3",
+      "type": "DERIVED_FROM",
+      "from": "data-science-deep:n3:metric",
+      "to": "data-science-deep:n2:model"
+    },
+    {
+      "id": "e4",
+      "type": "DERIVED_FROM",
+      "from": "data-science-deep:n4:experiment",
+      "to": "data-science-deep:n3:metric"
+    },
+    {
+      "id": "e5",
+      "type": "SEALED_BY",
+      "from": "data-science-deep:n5:signature",
+      "to": "data-science-deep:n4:experiment"
+    },
+    {
+      "id": "e6",
+      "type": "DERIVED_FROM",
+      "from": "data-science-deep:n6:audit_record",
+      "to": "data-science-deep:n5:signature"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "pristine",
+      "label": {
+        "en": "Pristine",
+        "zh": "原始"
+      },
+      "entity_status": {
+        "data-science-deep:n0:dataset": "VERIFIED",
+        "data-science-deep:n1:feature": "VERIFIED",
+        "data-science-deep:n2:model": "VERIFIED",
+        "data-science-deep:n3:metric": "VERIFIED",
+        "data-science-deep:n4:experiment": "VERIFIED",
+        "data-science-deep:n5:signature": "VERIFIED",
+        "data-science-deep:n6:audit_record": "VERIFIED"
+      },
+      "dimension_status": {
+        "RECORD_INTEGRITY": "VERIFIED",
+        "DIGITAL_SIGNATURE": "VERIFIED",
+        "HASH_CHAIN": "VERIFIED",
+        "SOURCE_RESOLUTION": "VERIFIED",
+        "SYNTHESIS_PROVENANCE": "VERIFIED",
+        "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+        "LEGAL_FAIRNESS_REVIEW": "REQUIRES_HUMAN_REVIEW",
+        "HUMAN_APPROVAL": "NOT_PRESENT"
+      },
+      "first_failure": null,
+      "affected_downstream": [],
+      "note": {
+        "en": "All checks pass; analytical correctness NOT evaluated; human review still required.",
+        "zh": "全部检查通过;分析正确性不评估;仍需人工复核。"
+      }
+    },
+    {
+      "id": "tampered",
+      "label": {
+        "en": "Tampered",
+        "zh": "被篡改"
+      },
+      "entity_status": {
+        "data-science-deep:n0:dataset": "VERIFIED",
+        "data-science-deep:n1:feature": "VERIFIED",
+        "data-science-deep:n2:model": "FIRST_FAILURE",
+        "data-science-deep:n3:metric": "AFFECTED_DOWNSTREAM",
+        "data-science-deep:n4:experiment": "AFFECTED_DOWNSTREAM",
+        "data-science-deep:n5:signature": "AFFECTED_DOWNSTREAM",
+        "data-science-deep:n6:audit_record": "AFFECTED_DOWNSTREAM"
+      },
+      "dimension_status": {
+        "RECORD_INTEGRITY": "FAILED",
+        "DIGITAL_SIGNATURE": "FAILED",
+        "HASH_CHAIN": "FAILED",
+        "SOURCE_RESOLUTION": "VERIFIED",
+        "SYNTHESIS_PROVENANCE": "FAILED",
+        "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+        "LEGAL_FAIRNESS_REVIEW": "REQUIRES_HUMAN_REVIEW",
+        "HUMAN_APPROVAL": "NOT_PRESENT"
+      },
+      "first_failure": "data-science-deep:n2:model",
+      "affected_downstream": [
+        "data-science-deep:n3:metric",
+        "data-science-deep:n4:experiment",
+        "data-science-deep:n5:signature",
+        "data-science-deep:n6:audit_record"
+      ],
+      "note": {
+        "en": "First failure at sequence 2; downstream frozen.",
+        "zh": "序号 2 首个失败;下游冻结。"
+      }
+    },
+    {
+      "id": "feature_drift",
+      "label": {
+        "en": "Feature drift warning",
+        "zh": "特征漂移警告"
+      },
+      "entity_status": {
+        "data-science-deep:n0:dataset": "VERIFIED",
+        "data-science-deep:n1:feature": "WARNING",
+        "data-science-deep:n2:model": "VERIFIED",
+        "data-science-deep:n3:metric": "VERIFIED",
+        "data-science-deep:n4:experiment": "VERIFIED",
+        "data-science-deep:n5:signature": "VERIFIED",
+        "data-science-deep:n6:audit_record": "VERIFIED"
+      },
+      "dimension_status": {
+        "RECORD_INTEGRITY": "VERIFIED",
+        "DIGITAL_SIGNATURE": "VERIFIED",
+        "HASH_CHAIN": "VERIFIED",
+        "SOURCE_RESOLUTION": "VERIFIED",
+        "SYNTHESIS_PROVENANCE": "WARNING",
+        "ANALYTICAL_CORRECTNESS": "NOT_EVALUATED",
+        "LEGAL_FAIRNESS_REVIEW": "REQUIRES_HUMAN_REVIEW",
+        "HUMAN_APPROVAL": "NOT_PRESENT"
+      },
+      "first_failure": "data-science-deep:n1:feature",
+      "affected_downstream": [],
+      "note": {
+        "en": "PSI drift on the feature is surfaced as a WARNING requiring validation, not a hard failure.",
+        "zh": "特征的 PSI 漂移作为需验证的 WARNING 呈现,而非硬失败。"
+      }
+    }
+  ],
+  "steps": [
+    {
+      "id": "intro",
+      "index": 0,
+      "kind": "intro",
+      "scenario_ref": "pristine",
+      "narration": {
+        "en": "A model run seals into a signed lineage chain.",
+        "zh": "一次模型运行封存进签名血缘链。"
+      },
+      "focus_entities": [],
+      "reveal_upto_sequence": 0,
+      "layout_intent": "timeline"
+    },
+    {
+      "id": "reveal",
+      "index": 1,
+      "kind": "reveal",
+      "scenario_ref": "pristine",
+      "narration": {
+        "en": "Training set → feature → model → metric → experiment → seal → audit.",
+        "zh": "训练集 → 特征 → 模型 → 指标 → 实验 → 封签 → 审计。"
+      },
+      "focus_entities": [
+        "data-science-deep:n0:dataset",
+        "data-science-deep:n1:feature",
+        "data-science-deep:n2:model",
+        "data-science-deep:n3:metric",
+        "data-science-deep:n4:experiment",
+        "data-science-deep:n5:signature",
+        "data-science-deep:n6:audit_record"
+      ],
+      "reveal_upto_sequence": 6,
+      "layout_intent": "timeline"
+    },
+    {
+      "id": "tamper",
+      "index": 2,
+      "kind": "tamper",
+      "scenario_ref": "tampered",
+      "narration": {
+        "en": "Swap the model artifact and lineage verification fails first; downstream freezes.",
+        "zh": "替换模型工件,血缘验证最先失败;下游冻结。"
+      },
+      "focus_entities": [
+        "data-science-deep:n2:model"
+      ],
+      "layout_intent": "timeline"
+    },
+    {
+      "id": "limit",
+      "index": 3,
+      "kind": "abstain",
+      "scenario_ref": "feature_drift",
+      "narration": {
+        "en": "A drift warning on the feature is a WARNING, not a failure — flagged for validation.",
+        "zh": "特征上的漂移警告是 WARNING 而非失败——标记待验证。"
+      },
+      "focus_entities": [],
+      "layout_intent": "dag"
+    },
+    {
+      "id": "human",
+      "index": 4,
+      "kind": "human_gate",
+      "scenario_ref": null,
+      "narration": {
+        "en": "Analytical correctness NOT evaluated; validation split + fairness review + human sign-off required.",
+        "zh": "分析正确性不评估;需验证划分 + 公平性复核 + 人工签署。"
+      },
+      "focus_entities": [],
+      "layout_intent": "timeline"
+    }
+  ]
+}

@@ -23,4 +23,7 @@ jobs:
           artifactsPath: unity-test-results-${{ matrix.testMode }}
       - uses: actions/upload-artifact@v4
         if: always()
-        with: { name: unity-${{ matrix.testMode }}-results, path: unity-test-results-${{ matrix.testMode }}, if-no-files-found: ignore }
+        with:
+          name: "unity-${{ matrix.testMode }}-results"
+          path: "unity-test-results-${{ matrix.testMode }}"
+          if-no-files-found: ignore

@@ -1,0 +1,465 @@
+{
+  "baseline": "e14e264",
+  "harness": "apps/shadow-lens/unity/Assets/ShadowLens/Tests/PlayMode/ShadowAuditWorkspaceCaptureHarness.cs",
+  "entry": "SHADOW_CAPTURE=1 + Unity -runTests -testPlatform PlayMode",
+  "resolution": [
+    1600,
+    1000
+  ],
+  "cameraPosition": [
+    0,
+    0.1,
+    -7.2
+  ],
+  "fieldOfView": 40,
+  "profiles": [
+    "DesktopDark",
+    "XrealOstBright",
+    "AccessibilityHighContrast"
+  ],
+  "languages": [
+    "en",
+    "zh-CN"
+  ],
+  "byteDeterministic": false,
+  "byteDeterminismNote": "re-running at the same commit regenerated all 39 PNGs with different bytes (dynamic OS font atlas); visually equivalent. Not usable as a byte-comparison regression gate.",
+  "contactSheets": [
+    "01-layout-evolution.png",
+    "02-first-failure-profiles.png",
+    "04-review-vs-approval.png",
+    "05-first-failure-vs-downstream.png",
+    "06-tracking-states.png",
+    "07-english-vs-chinese.png"
+  ],
+  "preservedSets": [
+    "BEFORE-overlap",
+    "INTERMEDIATE-partial"
+  ],
+  "notCapturedWithExistingFixtures": [
+    "source-present",
+    "loading",
+    "error",
+    "empty-or-unavailable",
+    "reset-default",
+    "tracking-unknown-literal"
+  ],
+  "auditRoomFlatCaptureCommitted": false,
+  "captures": [
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/approval-not-present__en__DesktopDark.png",
+      "state": "approval-not-present",
+      "language": "en",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/approval-present__en__AccessibilityHighContrast.png",
+      "state": "approval-present",
+      "language": "en",
+      "profile": "AccessibilityHighContrast",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/approval-present__en__DesktopDark.png",
+      "state": "approval-present",
+      "language": "en",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/approval-present__en__XrealOstBright.png",
+      "state": "approval-present",
+      "language": "en",
+      "profile": "XrealOstBright",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/approval-present__zh-CN__DesktopDark.png",
+      "state": "approval-present",
+      "language": "zh-CN",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/current-focus__en__DesktopDark.png",
+      "state": "current-focus",
+      "language": "en",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/downstream-affected__en__AccessibilityHighContrast.png",
+      "state": "downstream-affected",
+      "language": "en",
+      "profile": "AccessibilityHighContrast",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/downstream-affected__en__DesktopDark.png",
+      "state": "downstream-affected",
+      "language": "en",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/downstream-affected__en__XrealOstBright.png",
+      "state": "downstream-affected",
+      "language": "en",
+      "profile": "XrealOstBright",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/downstream-affected__zh-CN__DesktopDark.png",
+      "state": "downstream-affected",
+      "language": "zh-CN",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/first-failure__en__AccessibilityHighContrast.png",
+      "state": "first-failure",
+      "language": "en",
+      "profile": "AccessibilityHighContrast",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/first-failure__en__DesktopDark.png",
+      "state": "first-failure",
+      "language": "en",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/first-failure__en__XrealOstBright.png",
+      "state": "first-failure",
+      "language": "en",
+      "profile": "XrealOstBright",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/first-failure__zh-CN__DesktopDark.png",
+      "state": "first-failure",
+      "language": "zh-CN",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/human-review-recorded__en__DesktopDark.png",
+      "state": "human-review-recorded",
+      "language": "en",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/human-review-required__en__DesktopDark.png",
+      "state": "human-review-required",
+      "language": "en",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/overview__en__AccessibilityHighContrast.png",
+      "state": "overview",
+      "language": "en",
+      "profile": "AccessibilityHighContrast",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/overview__en__DesktopDark.png",
+      "state": "overview",
+      "language": "en",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/overview__en__XrealOstBright.png",
+      "state": "overview",
+      "language": "en",
+      "profile": "XrealOstBright",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/overview__zh-CN__DesktopDark.png",
+      "state": "overview",
+      "language": "zh-CN",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/source-card__en__DesktopDark.png",
+      "state": "source-card",
+      "language": "en",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/tracking-limited__en__DesktopDark.png",
+      "state": "tracking-limited",
+      "language": "en",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/tracking-lost__en__AccessibilityHighContrast.png",
+      "state": "tracking-lost",
+      "language": "en",
+      "profile": "AccessibilityHighContrast",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/tracking-lost__en__DesktopDark.png",
+      "state": "tracking-lost",
+      "language": "en",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/tracking-lost__en__XrealOstBright.png",
+      "state": "tracking-lost",
+      "language": "en",
+      "profile": "XrealOstBright",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/tracking-lost__zh-CN__DesktopDark.png",
+      "state": "tracking-lost",
+      "language": "zh-CN",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/tracking-recovering__en__DesktopDark.png",
+      "state": "tracking-recovering",
+      "language": "en",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/tracking-scanning__en__AccessibilityHighContrast.png",
+      "state": "tracking-scanning",
+      "language": "en",
+      "profile": "AccessibilityHighContrast",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/tracking-scanning__en__DesktopDark.png",
+      "state": "tracking-scanning",
+      "language": "en",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/tracking-scanning__en__XrealOstBright.png",
+      "state": "tracking-scanning",
+      "language": "en",
+      "profile": "XrealOstBright",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/tracking-scanning__zh-CN__DesktopDark.png",
+      "state": "tracking-scanning",
+      "language": "zh-CN",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    },
+    {
+      "file": "media/spatial-ux-v11/audit-workspace/trust-strip__en__DesktopDark.png",
+      "state": "trust-strip",
+      "language": "en",
+      "profile": "DesktopDark",
+      "labels": [
+        "EDITOR_SIMULATION_ONLY",
+        "NOT_BEAM_PRO_EVIDENCE",
+        "NOT_OST_EVIDENCE",
+        "NOT_PHYSICAL_XR_VALIDATION"
+      ],
+      "device_validated": false
+    }
+  ]
+}

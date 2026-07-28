@@ -1,0 +1,41 @@
+{
+  "_comment": "Shadow audit-room Three.js runtime inventory (demos/replay/3d/). Static-analysis derived (read-only), evidence-backed. Single static DEMO_BUNDLE (12 events) — no multi-story switching exists; the rebuild path is annotate->layout().",
+  "root": "demos/replay/3d/",
+  "geometry_count": 64,
+  "material_count": 64,
+  "transparent_objects": 64,
+  "labels": "canvas-textured PlaneGeometry meshes (CanvasTexture @ PX_PER_UNIT=900); NOT sprites/troika/CSS2D; card faces reused via repaint(), all other makeText labels recreated per update; CJK font in fallback stack (PingFang SC) but demo content is ASCII",
+  "raycast_targets": 12,
+  "approx_object_count": 88,
+  "approx_object_count_xr": 108,
+  "draw_calls_estimate": "75-90 flat; 150-180 SBS (scene rendered twice L/R); no instancing/merging",
+  "render_on_demand": false,
+  "disposal_present": true,
+  "disposal_complete": false,
+  "story_switch_rebuilds": true,
+  "experimental_toggles": [
+    {"name": "mode(flat/sbs/webxr)", "default": "flat"},
+    {"name": "webxr", "default": "off"},
+    {"name": "sbs_stereo", "default": "off"},
+    {"name": "xreal_preset", "default": "laptop"},
+    {"name": "presenter", "default": "off"},
+    {"name": "webxr_optional_features(hand-tracking/layers/floors)", "default": "off-unless-granted"},
+    {"name": "voice_push_to_talk", "default": "off"}
+  ],
+  "leak_risk": "medium",
+  "leak_sites": ["scene.js:213-214 layout() card teardown (remove without dispose)", "scene.js:163 buildTrustBadges (remove without dispose)"],
+  "per_frame_alloc": "scene.js:428 new THREE.Vector3() per card per frame (GC churn, minor)",
+  "evidence_index": {
+    "geometry_per_node": ["scene.js:51", "scene.js:106", "scene.js:150", "labels.js:32"],
+    "materials_per_node": ["scene.js:52", "scene.js:107", "scene.js:151", "labels.js:33"],
+    "transparency_stacking": ["scene.js:92", "scene.js:100", "scene.js:107", "labels.js:34"],
+    "labels_canvas_planes": ["labels.js:1-39", "labels.js:144-149"],
+    "label_reuse_repaint": ["labels.js:135", "scene.js:236"],
+    "raycast_scoped": ["scene.js:471"],
+    "render_loop_continuous": ["app.js:313-318", "app.js:319-330"],
+    "sbs_double_render": ["stereo.js:80", "stereo.js:84"],
+    "disposal_helper": ["labels.js:144-149"],
+    "leak_paths": ["scene.js:213-214", "scene.js:163", "scene.js:402"],
+    "server_contract_no_three": ["lib/spatial-render.js", "api/spatial-render.js"]
+  }
+}

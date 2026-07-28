@@ -1,0 +1,4 @@
+provider,offline,ssml,streaming,synth_to_file,en_quality,zh_quality,privacy,license,cost,android_compat,notes,source,accessed
+Android system TextToSpeech,yes,partial (engine-dependent),no (speak stream only),yes (synthesizeToFile),varies by engine,varies by engine,on-device,OS,free,native,baseline offline path; installed engine+voice varies per device — detect at runtime,https://developer.android.com/reference/android/speech/tts/TextToSpeech,2026-07-21
+macOS say (desktop fixture only),yes,partial ([[rate]] [[slnc]]),no,yes (aiff),good,fair (Eddy/Ting-Ting),on-device,OS,free,n/a (desktop),USED ONLY to generate desktop FIXTURE comparison audio; never Beam Pro,https://ss64.com/mac/say.html,2026-07-21
+Optional cloud neural TTS,no,yes,yes,yes,high,high,SENDS TEXT off-device,vendor,paid,via REST,disabled by default; explicit opt-in; no evidence sent without permission; no keys committed,n/a,2026-07-21
