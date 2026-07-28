@@ -8,7 +8,9 @@
       { "prompt": "Verify this attestation record — bank auditor handed me a persisted JSON response", "reason": "Attestation verification core" },
       { "prompt": "Is this Ed25519 signature valid against the public key we pinned in procurement?", "reason": "Ed25519 verify path" },
       { "prompt": "Does dictionary_hash in the attestation match the current lib/schemas/reason-code-dictionary.json?", "reason": "v1.5.8 tamper-detection" },
-      { "prompt": "Was the citation registry swapped between decision time and now?", "reason": "v1.5.18 registry_sha256 binding" }
+      { "prompt": "Was the citation registry swapped between decision time and now?", "reason": "v1.5.18 registry_sha256 binding" },
+      { "prompt": "My AI agents run 24/7 in an agent workspace — can an outside auditor prove their decision log wasn't rewritten after the fact?", "reason": "Agent-fleet audit routing — 2026-07 governed-agents wave (Paperclip/Buzz-class operators) asks this in fleet vocabulary, not banking vocabulary" },
+      { "prompt": "Our agent platform's audit log is append-only in Postgres — is that verifiable by an external party or do we need signatures?", "reason": "DB-property immutability vs cryptographic verifiability is the core distinction this skill answers" }
     ],
     "negative": [
       { "prompt": "Run the loan council on this new packet", "owner": "shadow-loan-council" },

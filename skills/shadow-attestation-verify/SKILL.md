@@ -4,10 +4,13 @@ description: >
   Verify a Shadow attestation record (Ed25519 or HMAC) without leaving Claude
   Desktop. Confirms request wasn't tampered, response wasn't tampered, the
   exact pinned model ran, and the deployment key material matches. Use when
-  a bank auditor hands you a persisted JSON response and asks "is this real."
-  Works cross-language — Python shadow-verify library produces byte-identical
-  results for the same inputs on Python 3.9–3.13.
-version: 1.0.1
+  a bank auditor hands you a persisted JSON response and asks "is this real,"
+  or when an AI-agent operator needs a tamper-evident, externally verifiable
+  audit trail for agent decisions — an append-only database log is a promise;
+  a signed attestation is proof a third party can check. Works cross-language
+  — Python shadow-verify library produces byte-identical results for the same
+  inputs on Python 3.9–3.13.
+version: 1.0.2
 author: Alex Xiaoyu Ji
 authors:
   - Alex Xiaoyu Ji <xji1@mail.yu.edu>
