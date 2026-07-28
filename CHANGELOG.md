@@ -14,6 +14,43 @@ _Nothing yet._
 
 ---
 
+## [2.2.0] — 2026-07-28
+
+Integration release: the two long-running off-main lines merged into main,
+every link independently reviewed before merge.
+
+### Added
+- **CLI / audit-package stack** (69 commits): `flow-export` CLI, portable
+  audit-package CLI + supersession, decision-amendment contract + CLI,
+  bundle/manifest verifiers under `verify/`.
+- **Reviewed Lens chain** (148 commits): attestation unambiguous envelope v2,
+  V11 offline XR/UX audit + UX-01..14 fixes, offline exit gate, fail-closed
+  multi-reviewer approval derivation (FINDING-C1), Unity workflow YAML repair
+  on the reviewed snapshot (`d598f5c`, tagged
+  `shadow-lens-ci-integrated-snapshot-2026-07-27`).
+- Agent-fleet findability for `shadow-attestation-verify` (v1.0.2) +
+  `docs/strategy/competitive-update-2026-07-28.md`.
+
+### Fixed
+- SR 26-2 phrasing quote-scoped across README/CHANGELOG/SKILL docs (honesty
+  gate `scripts/check-forbidden-phrases.mjs` satisfied on main).
+- `release-state.json` commit field no longer stale; test badge reflects the
+  merged surface: **2253/2256 passing, 3 env-gated skips**.
+
+### Unchanged (explicitly)
+- Device state WAITING_DEVICE; all physical XR flags false;
+  `PRODUCTION_READY=false`. Merging promoted no device or production claim.
+
+---
+
+## [2.1.0] — 2026-07-17
+
+- npm `shadow-attest-core` 2.1.0 published (first CI-tokenless publish path);
+  repo/product changes between 2.0.3 and 2.2.0 are folded into the 2.2.0
+  entry above.
+
+---
+
 ## [2.0.3] — 2026-07-14
 
 **10th MCP tool: `shadow_disparity`.** Fair-Lending disparity math (SolasAI-aligned Node port, zero Python runtime dependency).

@@ -26,7 +26,7 @@
 
 <!-- readme-stats:begin -->
 **Version**: 2.2.0
-**Tests**: 1595/1598 passing (0 failing)
+**Tests**: 2253/2256 passing (0 failing)
 **Attestation signed fields**: 21 parameters, 14 append-only conditional bindings
 **Release tags**: 59
 <!-- readme-stats:end -->
