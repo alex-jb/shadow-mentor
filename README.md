@@ -98,6 +98,24 @@ Verify a bundle three different ways:
 
 Payloads are content-addressed and stored separately from event records, so a GDPR erasure request nulls the `payload_ref` without invalidating the chain (`payload_hash` stays; the store empties).
 
+## Skills catalog — install any voice in one command
+
+Nine skills on [skills.sh](https://www.skills.sh) (cross-agent: Claude Code, Codex, Cursor, Copilot, …). Every skill ships `evals.json` routing triggers + regulatory-string expectations, CI-pinned.
+
+```
+npx skills add alex-jb/shadow-mentor/skills/shadow-loan-council          # full 5-6 voice council, signed attestation
+npx skills add alex-jb/shadow-mentor/skills/shadow-attestation-verify   # verify a persisted attestation (Ed25519/HMAC)
+npx skills add alex-jb/shadow-mentor/skills/shadow-compliance-officer
+npx skills add alex-jb/shadow-mentor/skills/shadow-risk-officer
+npx skills add alex-jb/shadow-mentor/skills/shadow-customer-advocate
+npx skills add alex-jb/shadow-mentor/skills/shadow-macro-contrarian
+npx skills add alex-jb/shadow-mentor/skills/shadow-aml-kyc-investigator # opt-in 6th voice (BSA/OFAC/CIP/CDD)
+npx skills add alex-jb/shadow-mentor/skills/shadow-ds-govern            # 5-voice ML-artifact governance council
+npx skills add alex-jb/shadow-mentor/skills/shadow-size-position        # FinPos position sizing (direction from upstream Judge)
+```
+
+Details: [skills/README.md](skills/README.md).
+
 ## Architecture
 
 Two layers. See [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) for details.

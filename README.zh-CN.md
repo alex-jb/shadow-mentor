@@ -42,6 +42,10 @@
 
 **test surface**: 1093 → **1227**(+134 tests 全绿)。**aex-attestation/v1 append-only 签名字段**: 8 → **13**。**GitHub Releases**: 11 → **22**。
 
+## Skills 目录 — 一条命令安装任意 voice
+
+9 个 skill 上架 [skills.sh](https://www.skills.sh)(跨 agent:Claude Code、Codex、Cursor、Copilot…),每个都带 `evals.json` 路由触发词 + 监管字符串断言,CI 钉住。安装命令与完整列表见英文 README 的 Skills catalog 一节及 [skills/README.md](skills/README.md)。
+
 ## 监管姿势(2026 H2)
 
 2026 年的两次监管转向改变了 Shadow 的定位框架。**弃用旧 SR 11-7 合规措辞**,新的姿势是:
