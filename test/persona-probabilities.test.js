@@ -119,3 +119,34 @@ test("MARGIN_SCALES drift guard: scales are calibration-only tuning surface", ()
     assert.ok(Number.isFinite(v) && v > 0, k);
   }
 });
+
+test("AML/KYC voice (opt-in 6th) carries probabilities with argmax === verdict", () => {
+  const base = { applicant_id: "aml-1", credit_score: 760, debt_to_income: 0.28,
+    loan_to_value: 0.6, loan_amount: 100000, sector: "technology" };
+  const cases = [
+    [{ aml_flags: ["sanctions_hit"] }, "block"],
+    [{ aml_flags: ["structuring_pattern"] }, "escalate"],
+    [{ kyc_status: "current" }, "approve"],
+  ];
+  for (const [extra, expected] of cases) {
+    const res = runLoanCouncil({ ...base, ...extra });
+    const aml = res.voices.find((v) => /AML/i.test(v.voice));
+    assert.ok(aml?.probabilities, "AML voice must carry probabilities");
+    assert.equal(aml.verdict, expected);
+    assert.equal(argmax(aml.probabilities), aml.verdict);
+    const { approve, escalate, block } = aml.probabilities;
+    assert.ok(Math.abs(approve + escalate + block - 1) < 1e-9);
+  }
+});
+
+test("AML escalation sharpens with finding count, never flips class", () => {
+  const base = { applicant_id: "aml-2", credit_score: 760, debt_to_income: 0.28,
+    loan_to_value: 0.6, loan_amount: 100000, sector: "technology" };
+  const one = runLoanCouncil({ ...base, aml_flags: ["structuring_pattern"] });
+  const two = runLoanCouncil({ ...base, aml_flags: ["structuring_pattern", "pep_match"] });
+  const p1 = one.voices.find((v) => /AML/i.test(v.voice)).probabilities;
+  const p2 = two.voices.find((v) => /AML/i.test(v.voice)).probabilities;
+  assert.ok(p2.escalate > p1.escalate, `${p2.escalate} > ${p1.escalate}`);
+  assert.equal(argmax(p1), "escalate");
+  assert.equal(argmax(p2), "escalate");
+});
