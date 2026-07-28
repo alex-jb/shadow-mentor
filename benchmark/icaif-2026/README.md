@@ -49,7 +49,19 @@ Distribution matches realistic mid-tier bank flow shape. Every code emitted
 was covered by the signed reason-code dictionary
 (`reason_code_dictionary_check.ok === true` on all 200 rows).
 
-## Known schema gap the paper must address
+## Known schema gap — CLOSED 2026-07-28
+
+> Resolved by `lib/persona-probabilities.js`: every voice now emits
+> `probabilities: { approve, escalate, block }` derived deterministically from
+> the same rule margins that drive its verdict (argmax(p) === verdict by
+> construction, pinned by `test/persona-probabilities.test.js`). The legacy
+> `confidence` constants are untouched for back-compat. Re-run
+> `scripts/icaif-batch-eval.mjs` to regenerate decision rows carrying
+> per-class probabilities; the Brier/REL-RES-UNC decomposition in §5.3 can now
+> be computed from real outputs. Original gap statement kept below for
+> provenance.
+
+## Original gap statement (historical)
 
 `confidence` values in the current runLoanCouncil output are per-persona
 constants (0.82 / 0.78 / 0.91 / 0.74 / 0.69). The paper Section 3.2 claims
