@@ -1,0 +1,161 @@
+{
+  "generated_from_rows": 2400,
+  "bins": 10,
+  "classes": [
+    "approve",
+    "escalate",
+    "block"
+  ],
+  "personas": {
+    "Credit Fundamentals": {
+      "n_forecasts": 2400,
+      "multiclass_brier": 0.202338,
+      "per_class": {
+        "approve": {
+          "brier": 0.090047,
+          "rel": 0.065133,
+          "res": 0.205068,
+          "unc": 0.230979,
+          "binning_residual": -0.000997,
+          "base_rate": 0.637917
+        },
+        "escalate": {
+          "brier": 0.079826,
+          "rel": 0.055612,
+          "res": 0.14406,
+          "unc": 0.167822,
+          "binning_residual": 0.000453,
+          "base_rate": 0.213333
+        },
+        "block": {
+          "brier": 0.032465,
+          "rel": 0.031935,
+          "res": 0.126623,
+          "unc": 0.126623,
+          "binning_residual": 0.00053,
+          "base_rate": 0.14875
+        }
+      }
+    },
+    "Risk Officer": {
+      "n_forecasts": 2400,
+      "multiclass_brier": 0.45782,
+      "per_class": {
+        "approve": {
+          "brier": 0.172081,
+          "rel": 0.009522,
+          "res": 0.066033,
+          "unc": 0.230979,
+          "binning_residual": -0.002388,
+          "base_rate": 0.637917
+        },
+        "escalate": {
+          "brier": 0.17434,
+          "rel": 0.016723,
+          "res": 0.008513,
+          "unc": 0.167822,
+          "binning_residual": -0.001692,
+          "base_rate": 0.213333
+        },
+        "block": {
+          "brier": 0.111398,
+          "rel": 0.013821,
+          "res": 0.026835,
+          "unc": 0.126623,
+          "binning_residual": -0.002211,
+          "base_rate": 0.14875
+        }
+      }
+    },
+    "Fair Lending Compliance": {
+      "n_forecasts": 2400,
+      "multiclass_brier": 0.576304,
+      "per_class": {
+        "approve": {
+          "brier": 0.274023,
+          "rel": 0.054372,
+          "res": 0.011328,
+          "unc": 0.230979,
+          "binning_residual": 0,
+          "base_rate": 0.637917
+        },
+        "escalate": {
+          "brier": 0.187797,
+          "rel": 0.019975,
+          "res": 0,
+          "unc": 0.167822,
+          "binning_residual": 0,
+          "base_rate": 0.213333
+        },
+        "block": {
+          "brier": 0.114483,
+          "rel": 0.008032,
+          "res": 0.020172,
+          "unc": 0.126623,
+          "binning_residual": 0,
+          "base_rate": 0.14875
+        }
+      }
+    },
+    "Customer Advocate": {
+      "n_forecasts": 2400,
+      "multiclass_brier": 0.622671,
+      "per_class": {
+        "approve": {
+          "brier": 0.295537,
+          "rel": 0.064558,
+          "res": 0,
+          "unc": 0.230979,
+          "binning_residual": 0,
+          "base_rate": 0.637917
+        },
+        "escalate": {
+          "brier": 0.187797,
+          "rel": 0.019975,
+          "res": 0,
+          "unc": 0.167822,
+          "binning_residual": 0,
+          "base_rate": 0.213333
+        },
+        "block": {
+          "brier": 0.139336,
+          "rel": 0.012713,
+          "res": 0,
+          "unc": 0.126623,
+          "binning_residual": 0,
+          "base_rate": 0.14875
+        }
+      }
+    },
+    "Macro Contrarian": {
+      "n_forecasts": 2400,
+      "multiclass_brier": 0.476207,
+      "per_class": {
+        "approve": {
+          "brier": 0.200544,
+          "rel": 0.024838,
+          "res": 0.055273,
+          "unc": 0.230979,
+          "binning_residual": 0,
+          "base_rate": 0.637917
+        },
+        "escalate": {
+          "brier": 0.138142,
+          "rel": 0.00731,
+          "res": 0.03699,
+          "unc": 0.167822,
+          "binning_residual": 0,
+          "base_rate": 0.213333
+        },
+        "block": {
+          "brier": 0.137521,
+          "rel": 0.01176,
+          "res": 0,
+          "unc": 0.126623,
+          "binning_residual": -0.000863,
+          "base_rate": 0.14875
+        }
+      }
+    }
+  }
+}

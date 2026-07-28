@@ -210,6 +210,7 @@ function main() {
         voice: v.voice,
         verdict: v.verdict,
         confidence: v.confidence,
+        probabilities: v.probabilities ?? null,
         aa_codes: (v.adverse_action_codes || []).map(a => typeof a === "string" ? a : a.code),
       })),
       confidence_weighted_verdict: decision.confidence_weighted_verdict ?? null,
