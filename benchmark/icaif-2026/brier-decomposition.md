@@ -22,3 +22,24 @@ Deterministic pipeline (no LLM): persona probabilities derive from rule margins 
 |  |  |  | block | 0.137521 | 0.01176 | 0 | 0.126623 | 0.14875 |
 
 `binning_residual` per class lives in brier-decomposition.json (within-bin variance; standard).
+
+## Reproduction
+
+```
+commit: dcc712e8edf640d3d01c76aa440565a9ecb1913d
+dataset: synthetic loans from scripts/icaif-batch-eval.mjs generator (committed jsonl)
+seeds: 20260710, 20260711, 20260712, 20260713, 20260714, 20260715, 20260716, 20260717, 20260718, 20260719, 20260720, 20260721
+n per seed: 200 (2,400 total)
+probability method: lib/persona-probabilities.js — deterministic rule-margin logistic; argmax(p) === verdict by construction; no LLM
+commands:
+  for s in <seeds>; do node scripts/icaif-batch-eval.mjs --n 200 --seed $s --out benchmark/icaif-2026; done
+  BENCH_COMMIT=$(git rev-parse HEAD) node scripts/icaif-brier-decomposition.mjs
+```
+
+## Limitations (stated up front, not buried)
+
+- Synthetic loan generator, not production traffic; base rates are generator artifacts.
+- Probabilities are rule-margin transforms, not learned forecasts; REL/RES reflect the margin geometry.
+- gold_verdict is the generator's label, not a bank adjudication.
+- Dissent personas (Advocate/Contrarian/Fair-Lending) are BY DESIGN weak ground-truth forecasters; their high Brier is the division-of-labor story, not a defect — and is reported, not filtered.
+- CI95 is a deterministic-seed bootstrap (1,000 resamples) over decisions; seeds are fixed, so run-to-run variance is zero by construction.

@@ -10,6 +10,11 @@
     "Credit Fundamentals": {
       "n_forecasts": 2400,
       "multiclass_brier": 0.202338,
+      "multiclass_brier_ci95": {
+        "lo": 0.197021,
+        "hi": 0.208229,
+        "iters": 1000
+      },
       "per_class": {
         "approve": {
           "brier": 0.090047,
@@ -40,6 +45,11 @@
     "Risk Officer": {
       "n_forecasts": 2400,
       "multiclass_brier": 0.45782,
+      "multiclass_brier_ci95": {
+        "lo": 0.43605,
+        "hi": 0.479114,
+        "iters": 1000
+      },
       "per_class": {
         "approve": {
           "brier": 0.172081,
@@ -70,6 +80,11 @@
     "Fair Lending Compliance": {
       "n_forecasts": 2400,
       "multiclass_brier": 0.576304,
+      "multiclass_brier_ci95": {
+        "lo": 0.544984,
+        "hi": 0.609194,
+        "iters": 1000
+      },
       "per_class": {
         "approve": {
           "brier": 0.274023,
@@ -100,6 +115,11 @@
     "Customer Advocate": {
       "n_forecasts": 2400,
       "multiclass_brier": 0.622671,
+      "multiclass_brier_ci95": {
+        "lo": 0.589504,
+        "hi": 0.653127,
+        "iters": 1000
+      },
       "per_class": {
         "approve": {
           "brier": 0.295537,
@@ -130,6 +150,11 @@
     "Macro Contrarian": {
       "n_forecasts": 2400,
       "multiclass_brier": 0.476207,
+      "multiclass_brier_ci95": {
+        "lo": 0.446314,
+        "hi": 0.505387,
+        "iters": 1000
+      },
       "per_class": {
         "approve": {
           "brier": 0.200544,

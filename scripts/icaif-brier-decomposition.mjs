@@ -70,6 +70,25 @@ function murphy(forecasts, cls) {
   };
 }
 
+function bootstrapCI(fs, iters = 1000, alpha = 0.05) {
+  // Deterministic bootstrap (LCG seeded by n) — CI for the multiclass Brier.
+  let seed = fs.length * 2654435761 % 2 ** 31;
+  const rand = () => (seed = (seed * 48271) % 2147483647) / 2147483647;
+  const stat = (sample) => sample.reduce((acc, f) =>
+    acc + CLASSES.reduce((a, c) => a + (f.p[c] - (f.final === c ? 1 : 0)) ** 2, 0), 0) / sample.length;
+  const vals = [];
+  for (let i = 0; i < iters; i++) {
+    const sample = Array.from({ length: fs.length }, () => fs[Math.floor(rand() * fs.length)]);
+    vals.push(stat(sample));
+  }
+  vals.sort((a, b) => a - b);
+  return {
+    lo: +vals[Math.floor((alpha / 2) * iters)].toFixed(6),
+    hi: +vals[Math.floor((1 - alpha / 2) * iters)].toFixed(6),
+    iters,
+  };
+}
+
 const out = { generated_from_rows: rows, bins: BINS, classes: CLASSES, personas: {} };
 for (const [voice, fs] of Object.entries(perVoice)) {
   const multiBrier = fs.reduce((acc, f) =>
@@ -77,6 +96,7 @@ for (const [voice, fs] of Object.entries(perVoice)) {
   out.personas[voice] = {
     n_forecasts: fs.length,
     multiclass_brier: +multiBrier.toFixed(6),
+    multiclass_brier_ci95: bootstrapCI(fs),
     per_class: Object.fromEntries(CLASSES.map((c) => [c, murphy(fs, c)])),
   };
 }
@@ -98,6 +118,30 @@ for (const [voice, s] of Object.entries(out.personas)) {
     md.push(`| ${i === 0 ? voice : ""} | ${i === 0 ? s.n_forecasts : ""} | ${i === 0 ? s.multiclass_brier : ""} | ${c} | ${m.brier} | ${m.rel} | ${m.res} | ${m.unc} | ${m.base_rate} |`);
   });
 }
-md.push("", "`binning_residual` per class lives in brier-decomposition.json (within-bin variance; standard).", "");
+md.push(
+  "",
+  "`binning_residual` per class lives in brier-decomposition.json (within-bin variance; standard).",
+  "",
+  "## Reproduction",
+  "",
+  "```",
+  `commit: ${process.env.BENCH_COMMIT ?? "(run scripts/gen-release-state.mjs or git rev-parse HEAD)"}`,
+  "dataset: synthetic loans from scripts/icaif-batch-eval.mjs generator (committed jsonl)",
+  `seeds: ${readdirSync(DIR).filter((x) => /^decisions-/.test(x)).map((x) => x.match(/\d+/)[0]).join(", ")}`,
+  "n per seed: 200 (2,400 total)",
+  "probability method: lib/persona-probabilities.js — deterministic rule-margin logistic; argmax(p) === verdict by construction; no LLM",
+  "commands:",
+  "  for s in <seeds>; do node scripts/icaif-batch-eval.mjs --n 200 --seed $s --out benchmark/icaif-2026; done",
+  "  BENCH_COMMIT=$(git rev-parse HEAD) node scripts/icaif-brier-decomposition.mjs",
+  "```",
+  "",
+  "## Limitations (stated up front, not buried)",
+  "",
+  "- Synthetic loan generator, not production traffic; base rates are generator artifacts.",
+  "- Probabilities are rule-margin transforms, not learned forecasts; REL/RES reflect the margin geometry.",
+  "- gold_verdict is the generator's label, not a bank adjudication.",
+  "- Dissent personas (Advocate/Contrarian/Fair-Lending) are BY DESIGN weak ground-truth forecasters; their high Brier is the division-of-labor story, not a defect — and is reported, not filtered.",
+  "- CI95 is a deterministic-seed bootstrap (1,000 resamples) over decisions; seeds are fixed, so run-to-run variance is zero by construction.",
+  "");
 writeFileSync(join(DIR, "brier-decomposition.md"), md.join("\n"));
 console.log(JSON.stringify({ rows, personas: Object.keys(out.personas).length, out: `${DIR}/brier-decomposition.{json,md}` }));
