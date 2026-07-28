@@ -1,0 +1,26 @@
+name: shadow-lens-unity-editmode
+# Runs the PURE spatial-geometry EditMode tests (SpatialLayoutTests) in the Unity Test
+# Runner. Not run on the dev host (no Unity/dotnet). Needs a UNITY_LICENSE secret
+# (Alex-provided) — the geometry itself has no UnityEngine dependency, so these are fast,
+# headset-free unit tests of the math that could be wrong.
+on:
+  workflow_dispatch:
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        testMode: [editmode, playmode]   # editmode = pure geometry; playmode = mock e2e flow
+    steps:
+      - uses: actions/checkout@v4
+      - uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          projectPath: apps/shadow-lens/unity
+          testMode: ${{ matrix.testMode }}
+          artifactsPath: unity-test-results-${{ matrix.testMode }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: unity-${{ matrix.testMode }}-results, path: unity-test-results-${{ matrix.testMode }}, if-no-files-found: ignore }

@@ -1,0 +1,8 @@
+{
+  "name": "ShadowLens.SpatialAgent",
+  "rootNamespace": "ShadowLens.SpatialAgent",
+  "references": [],
+  "includePlatforms": [],
+  "allowUnsafeCode": false,
+  "autoReferenced": true
+}

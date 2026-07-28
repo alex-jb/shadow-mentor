@@ -1,0 +1,31 @@
+1
+00:00:00,000 --> 00:00:12,000
+Shadow Verify — fully local, no network, no upload.
+
+2
+00:00:12,000 --> 00:00:30,000
+Valid bundle: record integrity, signature, hash chain, profile all VERIFIED.
+
+3
+00:00:30,000 --> 00:00:41,000
+Analytical correctness is NOT judged — a signature proves integrity, not correctness.
+
+4
+00:00:41,000 --> 00:00:52,000
+Limitations: what verification does and does not prove.
+
+5
+00:00:52,000 --> 00:01:07,000
+Tampered bundle FAILS at the exact sequence; downstream flagged; no false green.
+
+6
+00:01:07,000 --> 00:01:23,000
+Verify the verifier: FIXTURE-signed manifest — assets match, but INDEPENDENT COMPARISON NOT PERFORMED.
+
+7
+00:01:23,000 --> 00:01:37,000
+Tampered manifest: ASSET MISMATCH with expected/actual hashes — no generic trusted badge.
+
+8
+00:01:37,000 --> 00:01:53,000
+Simplified Chinese: same evidence values, localized UI only.

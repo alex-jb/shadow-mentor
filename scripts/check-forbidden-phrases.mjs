@@ -79,6 +79,18 @@ const FORBIDDEN = [
     pattern: /\bcertified\s+(?:compliance|SOC[\s-]?2)\b/i,
     note: 'Do not claim certification without an audit report. Say "SOC 2 readiness assessment" until an audit is complete.',
   },
+  {
+    pattern: /\bcompile[\s-]?ready\b/i,
+    note: 'Do not claim "compile-ready" for un-compiled Unity/Android source. Use the four-state vocabulary: SOURCE AUTHORED / BUILD CONFIGURED / NOT COMPILED / DEVICE VALIDATION PENDING. Only CI or a local toolchain may promote to COMPILED.',
+  },
+  {
+    pattern: /\bcompiles?\s+(?:clean(?:ly)?|fine|successfully|without\s+error)\b/i,
+    note: 'Do not assert a successful compile that was never run. Say NOT COMPILED until CI or a local toolchain produces an artifact.',
+  },
+  {
+    pattern: /能编译(?!通过的|器)/,
+    note: '不要对未编译的 Unity/Android 源码声称「能编译」。用四态：SOURCE AUTHORED / BUILD CONFIGURED / NOT COMPILED / DEVICE VALIDATION PENDING。只有 CI 或本地工具链产出 artifact 才能标 COMPILED。',
+  },
 ];
 
 const EXCLUDE_PREFIXES = [

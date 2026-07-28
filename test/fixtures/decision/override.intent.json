@@ -1,0 +1,14 @@
+{
+  "intent_schema": "shadow-decision-intent/1",
+  "decision_type": "DECISION_OVERRIDDEN",
+  "actor": { "actor_id": "fixture:reviewer-1", "display_name": "Fixture Reviewer One", "role": "reviewer" },
+  "target": { "type": "council_decision" },
+  "content": {
+    "reason_code": "POLICY_EXCEPTION",
+    "reason_text": "Fixture override: restructured 30-year term brings DTI to 0.35, under the policy ceiling.",
+    "previous_disposition": "REVIEW",
+    "new_disposition": "APPROVE_WITH_CONDITIONS"
+  },
+  "policy": { "review_required": true, "approval_required": true, "separation_of_duties": "enforced" },
+  "decided_at_utc": "2026-07-22T02:00:00.000Z"
+}

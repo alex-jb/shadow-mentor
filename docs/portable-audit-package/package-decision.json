@@ -1,0 +1,24 @@
+{
+  "record": "shadow-portable-audit-package-discovery/package-decision",
+  "discovery_date": "2026-07-24",
+  "inspected_line": { "repository": "shadow-mentor", "branch": "feat/shadow-flow-export-cli", "commit": "213ebe66063d5417c021988f0afcb466513f189d" },
+  "options": [
+    { "id": "A", "name": "extend flow-export CLI", "verdict": "rejected", "reason": "violates the CLI's own frozen single-artifact contract (FORBIDDEN_KEYS bans signature/approval/trust keys); breaks the Web runner's allowlisted-commit compatibility posture" },
+    { "id": "B", "name": "separate package CLI composing existing producers", "verdict": "SELECTED", "reason": "zero duplication (reuses flow-export producer, existing sealed bundles, verifyBundle, verify-manifest signing primitives); clean authority boundaries; repo one-thin-CLI-per-job convention; deterministic and testable like the flow-export CLI; composes into Web runner and future desktop shells" },
+    { "id": "C", "name": "extend runOneShot", "verdict": "rejected", "reason": "Lens session lineage (shadow-lens-session/1.0, not shadow-flow-export/1.0), HTTP surface, writes no files by design, live mode needs ANTHROPIC_API_KEY, ephemeral demo signing" },
+    { "id": "D", "name": "package mode on the verifier", "verdict": "rejected", "reason": "conflates producer and verifier; the verification boundary's independence is the design's core asset; verifier may later READ packages, never produce them" },
+    { "id": "E", "name": "standalone packaging library + thin CLIs", "verdict": "deferred", "reason": "manifest primitives already exist in verify/verify-manifest.mjs; extract packages/package-core only when a second in-process consumer (desktop/Tauri, Web build) exists" }
+  ],
+  "architecture_decision": "SEPARATE_PORTABLE_PACKAGE_CLI_RECOMMENDED",
+  "package_contract": {
+    "manifest_version": "shadow-portable-audit-package/1.0",
+    "signed": "canonical manifest (shadow-canon/1) minus signature; Ed25519",
+    "members_bound_via": "assets[]{path, sha256, role, schema_version}",
+    "new_manifest_fields": ["package_id (content-derived)", "case_id", "bindings.evidence_session_id", "key_provenance (fixture|operator|production)", "full-length public-key fingerprint", "caller-supplied built_at", "supersedes (for new versions)"],
+    "member_roles": ["presentation (shadow-flow-export/1.0, unchanged)", "evidence (shadow-evidence/v1, accepted not re-sealed)", "attestation (aex-attestation/v1, optional)", "verification-derived (reproducible, never evidence)", "provenance (runtime manifest)", "public-key"],
+    "consumer_rules": ["two-way completeness (reject missing AND unlisted members)", "re-derive verification; disagreement is a display state", "honest absence preserved (no synthesized first-failure/downstream/approval/trust)", "no physical capability claims", "HMAC-mode members rejected"]
+  },
+  "next_increment": "package CLI in fixture mode per NEXT_IMPLEMENTATION_INCREMENT.md; no Web changes; no existing-contract changes",
+  "task_result": "SHADOW_PORTABLE_AUDIT_PACKAGE_DISCOVERY_PASSED",
+  "non_claims": ["no production-security claim", "no business-correctness claim", "no Flow vendor import claim", "no native Shadow Lens claim", "no physical XR claim"]
+}

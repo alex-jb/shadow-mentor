@@ -66,7 +66,7 @@ describe("PERSONA_PROMPTS structural invariants (benchmark score guards)", () =>
 
   const PERSONA_ANCHORS = {
     compliance: /Policy/,
-    quant: /SR 11-7/,
+    quant: /SR 26-2/,   // current model-risk guidance (superseded SR 11-7, Fed 2026-04); SR 11-7 kept only as legacy alias
     engineer: /Fair Lending/,
     trader: /regime/,
     advisor: /Reg BI/,

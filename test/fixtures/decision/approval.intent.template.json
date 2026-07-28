@@ -1,0 +1,24 @@
+{
+  "intent_schema": "shadow-decision-intent/1",
+  "decision_type": "APPROVAL_GRANTED",
+  "actor": {
+    "actor_id": "fixture:approver-1",
+    "display_name": "Fixture Approver One",
+    "role": "approver"
+  },
+  "target": {
+    "type": "prior_decision",
+    "decision_id": "FILLED_BY_TEST"
+  },
+  "content": {
+    "reason_code": "COMPLIANCE_DIRECTIVE",
+    "reason_text": "Fixture approval: override conditions verified against the restructured term sheet.",
+    "approval_conditions": "Approval is conditional on the 30-year restructured term recorded in the override."
+  },
+  "policy": {
+    "review_required": true,
+    "approval_required": true,
+    "separation_of_duties": "enforced"
+  },
+  "decided_at_utc": "2026-07-22T03:00:00.000Z"
+}

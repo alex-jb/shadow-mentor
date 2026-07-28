@@ -1,0 +1,44 @@
+{
+  "bundle_version": 1,
+  "header": {
+    "session_id": "sess-acceptance-0001",
+    "agent": {
+      "name": "shadow-lens",
+      "version": "2.2.0"
+    },
+    "session_ended_at_utc": "2026-07-21T00:00:00Z",
+    "profile": "banking-v1"
+  },
+  "events": [
+    {
+      "seq": 0,
+      "prev_hash": "41d034fa4ada93657db8db0e01cc582a68ba2e18f1b1a17fb2bdaca913b91794",
+      "type": "case.opened",
+      "note": "MID-MARKET LOAN CASE #SL-2026-014",
+      "payload_ref": "unsigned-meta-0"
+    },
+    {
+      "seq": 1,
+      "prev_hash": "29087662656da515c69fc7b786a761df1438a7ce8fb70c1a4ef79b7c2914f697",
+      "type": "council.decided",
+      "recommendation": "REVIEW",
+      "dissent": 3,
+      "payload_ref": "unsigned-meta-1"
+    },
+    {
+      "seq": 2,
+      "prev_hash": "4734042eeae58aa416dccddfb17d391bb6b4d702261b787f3a93643635d1b138",
+      "type": "record.sealed",
+      "audit_reference": "hash-chain:demo",
+      "payload_ref": "unsigned-meta-2"
+    }
+  ],
+  "batch_root": "a62144bf379c1ed01469642217870b6a4e70976a0a38d46b58c6934aefd3c211",
+  "signatures": [
+    {
+      "algorithm": "ed25519",
+      "key_id": "fixture-release-2026",
+      "signature": "3EKiwF-l2s2gCv7iC1BoJHWmgXLRq8xR2CcyfL--hJ8N6z2Y1IOh6hdDgK5wZ_Yt5fCMWBiW79alRvrBZ0qoBw"
+    }
+  ]
+}

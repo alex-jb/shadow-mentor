@@ -1,54 +1,50 @@
 # Shadow
 
-> On-device AI council and audit chain that follows the analyst across desktop, smart glasses, and spatial AR. One engine, four device clients, five persona packs. For regulated banking workflows.
+> Independent evidence and decision audit layer for AI systems. Shadow signs, grounds, and adversarially checks what an AI agent (yours or a third party's) actually decided — Ed25519-signed, hash-chained evidence bundles with an offline verifier, for regulated workflows starting with banking/fintech.
 
 ## What it is
 
-Shadow watches the analyst's screen on-device (never uploaded by default), recognizes which document or terminal they are looking at, and surfaces three persona voices — Junior analyst (jargon translator), Senior / VP (what your boss cares about), Compliance (what NOT to share or send) — with an auditable hash chain so the bank can answer the OCC / EU AI Act question "why did your analyst make this decision."
+Shadow is not the agent. Shadow is the **evidence + audit layer around** an agent's decision. For a given decision it produces a signed, hash-chained bundle that records the claims made, the evidence each claim cites, the policies applied, the dissent, and the final recommendation — so an auditor can independently answer "why was this decided, and can I verify the record wasn't altered?"
+
+It proves **integrity** (the record wasn't tampered) and increasingly **grounding** (each claim is supported by a real, current source). It does NOT claim to prove content authenticity — a valid signature means "this is the record that was sealed," not "the underlying reasoning is correct." That boundary is stated honestly everywhere.
+
+## Positioning
+
+- Independent evidence and decision audit layer for AI systems.
+- Differentiator: audits **third-party / untrusted agent output**, not only its own deterministic rules. Microsoft's Agent Governance Toolkit (MIT, 2026-04) commoditized cryptographic agent identity; Shadow's moat is persona-level reason-code depth (Reg B / ECOA / SR 26-2 / GDPR Art. 22) and independent audit of *other* vendors' agents — the seat regulators and banks leave empty.
+- OSS-core; fintech-first.
 
 ## Architecture
 
-- 1 engine: council-runner + on-device LLM router (Phi-4-mini / Gemma 3 9B / Apple Foundation Model 3 Core Advanced) + Perception Layer (YOLO-World + SAM2 + Depth Anything V2) + WebCrypto SHA-256 hash chain
-- 4 device clients: Desktop overlay · Even G2 (monocular green HUD, no camera, customer-facing safe) · Brilliant Frame (color mini HUD, camera + local-only) · XReal Air 2 Ultra (6DoF spatial AR, JARVIS frame with 3 floating panels only the wearer sees)
-- 5 persona packs: Compliance ($1,800/seat/yr) · Quant / Data Scientist ($2,400) · Engineer ($1,500) · Trader ($2,400) · Wealth Advisor ($2,000)
-- Base engine $120K/yr per bank + persona seats. Mid-tier bank ACV ~$982K. 3-year SOM $4.9M ARR across 5 mid-tier banks.
+- **Deterministic 5-voice council** (`lib/run-loan-council.js`): rule-based verdicts (if/else), NOT LLM-decided. Per-voice numbers are FIXED persona priors ("stance strength"), not model probabilities.
+- **Attestation**: Ed25519 signatures + hash-chained bundles (`lib/attestation*.js`); offline single-file WebCrypto verifier (`verify.html`), zero network, CSP-safe.
+- **Audit primitives**: reason-code dictionary (AA01–AA06), disparity metrics (AIR / SMD, 4/5 rule), proxy detection (ECOA §701), un-hallucinable citation registry with sunset handling.
+- **Third-party ingestion**: `packages/adapter-otel` seals a vendor agent's OTel trace (structural today); semantic audit of ingested LLM/agent output is the active build.
+- **MCP server** (`mcp/server.js`): 11 tools — shadow_loan_council, shadow_loan_council_typed, shadow_risk_tools, shadow_recall, shadow_calibration, shadow_scenarios, shadow_traceability, shadow_verify_attestation, shadow_banking_profile, shadow_size_position, shadow_disparity.
 
-## Why now
+## Regulatory references (current)
 
-- EU AI Act Article 14 high-risk obligations start August 2026 — regulatory deadline driver for compliance-paranoid local-mode
-- Local LLMs cross usable threshold mid-2026 — Gemma 3 9B / Phi-4-mini / Apple Foundation Model 3 Core Advanced
-- Big 4 cut grad hires 6-29% YoY — surviving analysts need leverage faster
-- $1,097-$1,331 per-employee L&D budget in financial services — Shadow at $1,500-$2,400/seat/yr fits the line item
+- **SR 26-2 — Revised Guidance on Model Risk Management** (superseding SR 11-7; SR 11-7 retained as a legacy alias for search/migration/historical audit).
+- **EU AI Act Article 14 — human oversight** of high-risk AI (Regulation (EU) 2024/1689, in force).
+- **GDPR Article 22 — automated individual decision-making** — complementary to Art. 14, not a replacement.
+- **Schufa (ECJ C-634/21)** — automated credit-scoring interpretation, enforceable today.
+- **CFPB Circular 2026-03** — adverse-action reason-code specificity.
+- Honest scope: SR 26-2 currently scopes generative/agentic AI *out* of model-risk guidance pending a future study. Shadow fills that governance gap as an independent evidence layer; it does not claim regulation already mandates it.
 
-## Two modes
+## Honesty ladder
 
-- Cloud mode ($50/seat/mo): screen → Anthropic / OpenAI / GLM-5.2 → response. For non-confidential training data, public market signals, educational explanations.
-- Local mode ($1,500-$2,400/analyst/year per persona): screen → on-device Gemma 3 9B / Phi-4-mini / AFM 3 Core Advanced → response. No data leaves the laptop. Use for client PII, M&A docs, internal models, anything covered by Reg B / Reg BI / EU AI Act high-risk obligations.
-
-## Beachhead
-
-First-year analyst at a $5B-$50B AUM regional wealth-mgmt or boutique IB firm, in their first 90 days, on a firm-issued MacBook Pro, working with Excel + CRM + research portal. Mid-tier target firms in order: Raymond James, Edward Jones, Stifel, LPL Financial, Houlihan Lokey, Lazard MM, William Blair, Jefferies, Alvarez & Marsal, FTI, regional banks $5B-$50B AUM.
-
-## Shadow Agentic Capability Benchmark
-
-Public, deterministic structural evaluation inspired by HuggingFace's June 2026 "Is it agentic enough?" framework. 8 representative agentic decision tasks across the 5 persona packs. Scoring rubric: voice length compliance + follow-up question structure + expected regulatory-term coverage + latency under 10s. Aggregate score reproducible with `node benchmark/runner.js` against your own ANTHROPIC_API_KEY.
-
-Current aggregate: **87 ± 3 (n=6)** mixed across two rubric versions. Pre-BR (v0.3.3, 3-term coverage on compliance × LBO): runs 87/93/86 → 88.7 ± 3.1. Post-BR (v0.3.4, 5-term coverage with Loredana's BR thresholds FICO/DTI/LTV wired): runs 86/87/85 → 86.0 ± 1.0. Compliance × LBO cell dropped 100 → mean 90 after BR wiring; we file the variance honestly and do not tune persona prompts to recover the lost points. All raw run reports persisted under `/benchmark/history/` with split SUMMARY.md so reviewers can audit by rubric version.
+Capabilities are labeled source-authored → host-tested → unity-authored → device-pending → device-validated. XR (audit arc, head-directed focus) is a presentation layer, currently unity-authored / device-pending (Beam Pro). No eye-tracking, 6DoF-on-Mock, RGB, hand-tracking, or live-Flow claims. Any conformal/coverage work is research-grade pilot only (n<100), never "certified."
 
 ## Repository
 
 - Source: https://github.com/alex-jb/shadow-mentor
 - License: MIT
-- Live demo: https://shadow-mentor-q0lg7uwz4-alex-jbs-projects.vercel.app
-- Tests: 128/128 passing (Node --test framework, CI via GitHub Actions, 13 consecutive green commits)
-- Endpoints live: 8 — POST /api/deliberate (3-voice LLM, +verdict augment with loan body) · POST /api/loan-council (pure-compute 5-voice rule layer) · GET /api/recall · /api/calibration · /api/scenarios · /api/health · /api/badge · /api/version
-- MCP server: `node mcp/server.js` exposes 5 tools (shadow_loan_council / shadow_risk_tools / shadow_recall / shadow_calibration / shadow_scenarios) for Claude Desktop / Cursor / Zed native tool-use. Install via `mcp/README.md` claude_desktop_config snippet.
+- Verify a bundle offline: open `verify.html`, drag an evidence bundle in — no network, no dependencies.
+- Skills (agent-agnostic): `npx skills add alex-jb/shadow-mentor` (11 skills incl. shadow-attestation-verify, shadow-loan-council, shadow-compliance-officer …).
 
 ## Key documents
 
-- [/README.md](/README.md): full product overview
-- [/CHANGELOG.md](/CHANGELOG.md): execution velocity record for bank procurement due diligence
-- [/docs/shadow-product-proposal-v1.2.md](/docs/shadow-product-proposal-v1.2.md): 15-page canonical product proposal
-- [/docs/eu-ai-act-self-attestation-shadow.md](/docs/eu-ai-act-self-attestation-shadow.md): EU AI Act Article 14 self-attestation
-- [/docs/sales-30-target-banks.md](/docs/sales-30-target-banks.md): 30 mid-tier banks first cold-email round
-- [/benchmark/report-2026-06-18.json](/benchmark/report-2026-06-18.json): latest Shadow Agentic Score evidence
+- [/README.md](/README.md): full overview
+- [/product-facts.json](/product-facts.json): canonical product facts (source of truth for this file)
+- [/docs/CITATION_MAP.md](/docs/CITATION_MAP.md): <persona, regulation, test> map
+- [/CHANGELOG.md](/CHANGELOG.md): execution record

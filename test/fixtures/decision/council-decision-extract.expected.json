@@ -1,0 +1,40 @@
+{
+  "note": "Regression pin for the council-decision target byte source (discovery unknown #1). The extract is re-derived from the banking fixture presentation member; these bytes and this sha256 must never drift silently.",
+  "object_id": "council-decision:case-2026-Q3-0042",
+  "sha256": "98ac9675fede3e1dd28279235c944f64ad32abb0dbd00268e88edb356a9bdd35",
+  "extract": {
+    "schema_version": "shadow-council-decision-extract/1",
+    "case_id": "case-2026-Q3-0042",
+    "recommendation": "REVIEW",
+    "compliance_status": "clear",
+    "signed_result_status": "sealed-verified",
+    "mode_label": "FIXTURE MODEL",
+    "council": [
+      {
+        "voice": "Credit Fundamentals",
+        "stance": "approve-with-conditions",
+        "confidence": 0.72
+      },
+      {
+        "voice": "Customer Advocate",
+        "stance": "support-with-structure",
+        "confidence": 0.61
+      },
+      {
+        "voice": "Fair Lending Compliance",
+        "stance": "no-disparate-impact",
+        "confidence": 0.8
+      },
+      {
+        "voice": "Macro Contrarian",
+        "stance": "abstain",
+        "confidence": 0.5
+      },
+      {
+        "voice": "Risk Officer",
+        "stance": "caution",
+        "confidence": 0.68
+      }
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "manifest_version": "shadow-verify-manifest-v1",
+  "verifier_version": "2.2.0",
+  "commit_sha": "fixture-acceptance",
+  "built_at": "2026-07-21T00:00:00Z",
+  "canonicalization_version": "shadow-canon/1",
+  "supported_profiles": [
+    "banking-v1"
+  ],
+  "assets": [
+    {
+      "path": "verify.html",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "path": "verify/locales/en.json",
+      "sha256": "44a42af0331ede1cbe782e1486325421513fcaed3c997850de2eefa7e014e1ab"
+    },
+    {
+      "path": "verify/locales/zh-CN.json",
+      "sha256": "305a02065247864daaa177c3da0d86840ca805e4c8c0c317498315a317b949ad"
+    }
+  ],
+  "release_public_key_fingerprint": "727d29d3204231f7",
+  "signature": "N70clqp/Qex1GFVPk1Pbf3sQjcrtMVpbc/5frKhwIIgPyOOUS/+a+ZclXNbvkgwAqClonmYHih7U8FxpuxbnCw=="
+}

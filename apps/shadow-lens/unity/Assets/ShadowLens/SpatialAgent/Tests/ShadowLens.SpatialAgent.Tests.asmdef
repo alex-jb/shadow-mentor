@@ -1,0 +1,9 @@
+{
+  "name": "ShadowLens.SpatialAgent.Tests",
+  "rootNamespace": "ShadowLens.SpatialAgent.Tests",
+  "references": ["ShadowLens.SpatialAgent", "UnityEngine.TestRunner", "UnityEditor.TestRunner"],
+  "includePlatforms": ["Editor"],
+  "precompiledReferences": ["nunit.framework.dll"],
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+  "autoReferenced": false
+}

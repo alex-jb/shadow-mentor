@@ -1,0 +1,24 @@
+work_item,area,current_status,priority,demo_blocker,product_blocker,research_only,dependency,acceptance_test,source,recommended_action
+Browser demo videos + screenshots,media,BROWSER-RENDERED,P0,no,no,no,playwright+server,"non-zero webm/mp4 at 1280x720, 10 screenshots",this repo,DONE this branch
+Fix XREAL overclaim copy (6DoF/plane/anchor/hand/eye),copy,NOT DONE,P0,no,no,no,none,"no doc/comment claims One Pro native 6DoF or plane/anchor/hand/depth/eye",docs.xreal.com/XREALDevices/Compatibility,edit copy only (not frozen artifacts)
+Correct SR 26-2 Tier-3 exemption claim,copy,CONTRADICTION FLAGGED,P1,no,yes,no,find primary source,"claim removed or backed by official SR 26-2 text",federalreserve.gov/supervisionreg/srletters/SR2602.htm,soften copy; not modified during research pass
+Stable APK on Beam Pro + launch from MyGlasses,device,ANDROID-BUILT (mock),P1,no,yes,no,Beam Pro device,"app renders in glasses; overlay permission granted",docs.xreal.com/Getting Started with XREAL SDK,first device day
+Recenter + reset + Beam Pro 3DoF input,device,UNITY-AUTHORED,P1,no,yes,no,XREAL SDK 3.1,"recenter works; 3DoF controller click confirms; head hover never approves",docs.xreal.com/XREALDevices/Compatibility,first device day
+Text readability on One Pro,device,UNITY-AUTHORED,P1,no,yes,no,device,"x-height >= 0.2deg; interactive targets >= 1.5deg; content within central +/-20deg",arXiv 2604.27203,measure on device (Render Metrics)
+60/90 fps + drift/judder check,device,NOT_BEAM_PRO baseline only,P1,no,yes,no,device,">=72fps sustained 30min; MTP<20ms; no tearing/swim/judder",XREAL Render Metrics; vrarwiki MTP,measure on device
+True 6DoF ONLY with XREAL Eye,device,NOT IMPLEMENTED,P1,no,yes,no,XREAL Eye accessory,"6DoF only when Eye attached; 3DoF frozen-plane fallback otherwise",docs.xreal.com Support Devices (VISION=3DoF),buy Eye; do not claim native 6DoF
+Shared Shadow 3D Visualization Contract,architecture,NOT IMPLEMENTED,P2,no,yes,no,CEG v1.0,"same fixture -> semantically equal Unity + Three.js views; parity test green",repo CEG + demos/replay/3d,build on research/unity-threejs-spatial-ux-v2
+Interaction state machine (hover!=select!=approve),ux,UNITY-AUTHORED (partial),P2,no,yes,no,XRI,"9 states; dwell never approves; explicit click to confirm; cancel/back everywhere",Unity XRI docs,build next cycle
+Audit Arc V2 (focus+context + timeline + DAG + 2D fallback),ux,NOT IMPLEMENTED,P2,no,yes,no,3D contract,"scales to 20/50/100 nodes; tamper propagation visible; 2D table fallback",this research doc D5,build next cycle
+Label manager (billboard + min angular + P0-P3 + bilingual),ux,NOT IMPLEMENTED,P2,no,yes,no,3D contract,"labels not all-on; min angular size; EN+zh; occlusion fallback",Meta/Apple typography,build next cycle
+Unity<->Three.js parity tests,test,NOT IMPLEMENTED,P2,no,yes,no,3D contract,"node count/IDs/sequence/status/tamper-point/report-hash identical across engines",repo,build next cycle
+Real-dataset profiles (banking/ds/coding),data,SYNTHETIC FIXTURES,P3,no,yes,no,real artifacts,"each profile uses real domain artifact + evidence chain, not recolored layout",repo workspaces,replace fixtures
+KMS/HSM signing + manual key rotation,security,NOT IMPLEMENTED,P3,no,yes,no,cloud KMS,"private key off laptop; documented rotation; old-key verify window",docs.cloud.google.com/kms; NIST SP 800-57,production only
+SBOM (CycloneDX/SPDX),security,mcp-manifest partial,P3,no,yes,no,none,"SBOM meets NTIA minimum elements",ntia.gov sbom minimum elements,generate CycloneDX
+PII redaction + TTL deletion,security,evidence-partition partial,P3,no,yes,no,storage,"loan PII redacted/partitioned; provable TTL delete",NIST SP 800-122; GDPR,production only
+Reproducible build of verifier,security,NOT IMPLEMENTED,P3,no,yes,no,build pipeline,"auditor rebuilds verify.html and matches published hash",reproducible-builds.org,strengthens self-trust
+Independent verifier fingerprint distribution,security,FIXTURE only,P1,no,yes,no,production key,"production release-key fingerprint published via GitHub Release/npm independent channel",C2PA verify model,production release step
+Spatial forensic replay user study,research,NOT STARTED,RESEARCH,no,no,yes,prototype,"study measures time/accuracy/wrong-click vs 2D table; preregistered",Kraus 2022 CGF; arXiv 2606.04990,paper track (do not implement now)
+Conformal / abstain pilot,research,NOT IMPLEMENTED (labeled pilot),RESEARCH,no,no,yes,resolved-outcome data (n>=100),"research-grade coverage eval; never certified",ConU arXiv 2407.00499,defer; not this cycle
+Unity Recorder video capture,media,CAPTURE HARNESS READY,P1,no,no,no,com.unity.recorder + one click,"non-zero .mp4/.mov from Play Mode",Unity Recorder docs,Alex adds package + one click on this branch
+Unity mock demo screenshots,media,CAPTURE HARNESS READY,P1,no,no,no,Unity Editor,"11 named Game View screenshots at state boundaries",repo ShadowWednesdayCapture.cs,Alex one click: Shadow Lens > Capture Wednesday Demo Media

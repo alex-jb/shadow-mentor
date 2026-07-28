@@ -1,0 +1,79 @@
+{
+  "schema": "shadow-decision-state-machine-discovery/1",
+  "status": "discovery-only",
+  "axes": {
+    "integrity": {
+      "owner": "existing package verifier",
+      "note": "unchanged by this discovery; invalid packages are excluded from lifecycle derivation and listed separately",
+      "annotations": ["DECISION_PACKAGE_INVALID"]
+    },
+    "identity_authority": {
+      "owner": "decision amendment contract (annotations, not lifecycle states)",
+      "annotations": [
+        "DECISION_IDENTITY_DECLARED_NOT_VERIFIED",
+        "DECISION_IDENTITY_UNVERIFIED",
+        "DECISION_AUTHORITY_UNVERIFIED",
+        "SEPARATION_OF_DUTIES_NOT_ENFORCED"
+      ]
+    },
+    "lifecycle": {
+      "owner": "decision amendment contract",
+      "scope": "per decision target, derived from locally held integrity-valid amendments only",
+      "global_latest_claims": "forbidden"
+    }
+  },
+  "states": [
+    { "name": "UNREVIEWED", "initial": true, "effective_decision": "original" },
+    { "name": "REVIEW_REQUESTED", "effective_decision": "original" },
+    { "name": "REVIEW_COMPLETED_NO_CHANGE", "effective_decision": "original" },
+    { "name": "REVIEW_COMPLETED_OVERRIDE_PROPOSED", "effective_decision": "original" },
+    { "name": "OVERRIDE_PENDING_APPROVAL", "effective_decision": "original" },
+    { "name": "OVERRIDDEN", "effective_decision": "override_disposition" },
+    { "name": "APPROVED", "effective_decision": "original_ratified" },
+    { "name": "REJECTED", "effective_decision": "most_recent_non_rejected_or_original_with_HUMAN_DECISION_ABSENT" },
+    { "name": "SUPERSEDED", "node_level": true, "effective_decision": "n/a (per-node terminal)" },
+    { "name": "FORKED", "effective_decision": "none_derived", "display": "all_heads" }
+  ],
+  "transitions": [
+    { "from": "UNREVIEWED", "to": "REVIEW_REQUESTED", "via": "review request amendment" },
+    { "from": "UNREVIEWED", "to": "REVIEW_COMPLETED_NO_CHANGE", "via": "HUMAN_REVIEW_COMPLETED outcome=NO_CHANGE" },
+    { "from": "UNREVIEWED", "to": "REVIEW_COMPLETED_OVERRIDE_PROPOSED", "via": "HUMAN_REVIEW_COMPLETED outcome=OVERRIDE_PROPOSED" },
+    { "from": "REVIEW_REQUESTED", "to": "REVIEW_COMPLETED_NO_CHANGE", "via": "HUMAN_REVIEW_COMPLETED outcome=NO_CHANGE" },
+    { "from": "REVIEW_REQUESTED", "to": "REVIEW_COMPLETED_OVERRIDE_PROPOSED", "via": "HUMAN_REVIEW_COMPLETED outcome=OVERRIDE_PROPOSED" },
+    { "from": "REVIEW_COMPLETED_NO_CHANGE", "to": "REVIEW_REQUESTED", "via": "new review round" },
+    { "from": "REVIEW_COMPLETED_NO_CHANGE", "to": "APPROVED", "via": "APPROVAL_GRANTED approve-as-is" },
+    { "from": "REVIEW_COMPLETED_OVERRIDE_PROPOSED", "to": "OVERRIDE_PENDING_APPROVAL", "via": "DECISION_OVERRIDDEN with signed policy approval_required=true" },
+    { "from": "REVIEW_COMPLETED_OVERRIDE_PROPOSED", "to": "OVERRIDDEN", "via": "DECISION_OVERRIDDEN with signed policy approval_required=false" },
+    { "from": "REVIEW_COMPLETED_OVERRIDE_PROPOSED", "to": "REJECTED", "via": "DECISION_REJECTED targeting the proposal" },
+    { "from": "OVERRIDE_PENDING_APPROVAL", "to": "OVERRIDDEN", "via": "APPROVAL_GRANTED targeting the override" },
+    { "from": "OVERRIDE_PENDING_APPROVAL", "to": "REJECTED", "via": "DECISION_REJECTED targeting the override" },
+    { "from": "OVERRIDDEN", "to": "REVIEW_REQUESTED", "via": "new review round targeting the override" },
+    { "from": "OVERRIDDEN", "to": "REJECTED", "via": "superseding DECISION_REJECTED" },
+    { "from": "APPROVED", "to": "REVIEW_REQUESTED", "via": "superseding review round" },
+    { "from": "APPROVED", "to": "REJECTED", "via": "superseding DECISION_REJECTED" },
+    { "from": "REJECTED", "to": "REVIEW_REQUESTED", "via": "new branch review" },
+    { "from": "REJECTED", "to": "REVIEW_COMPLETED_OVERRIDE_PROPOSED", "via": "new branch review with proposal" },
+    { "from": "*", "to": "FORKED", "via": "second valid amendment observed with same predecessor" },
+    { "from": "FORKED", "to": "*", "via": "re-linearizing amendment referencing all fork heads as predecessors" }
+  ],
+  "rejected_transitions": [
+    { "attempt": "APPROVAL_GRANTED with no qualifying review and signed policy review_required=true", "failure": "UNSUPPORTED_TRANSITION" },
+    { "attempt": "DECISION_OVERRIDDEN without reason code and reason text", "failure": "REASON_MISSING" },
+    { "attempt": "approval or rejection of an object absent from the chain", "failure": "MISSING_DECISION_TARGET" },
+    { "attempt": "amendment with a decision_id already present", "failure": "DUPLICATE_DECISION" },
+    { "attempt": "amendment whose predecessor manifest hash matches no held package", "failure": "TARGET_PACKAGE_MISMATCH" },
+    { "attempt": "amendment binding a different case_id than its target", "failure": "CASE_MISMATCH" },
+    { "attempt": "timestamp-based tiebreak of conflicting decisions", "failure": "CONFLICTING_DECISION (surface both; never auto-resolve)" }
+  ],
+  "derivation": {
+    "input": "locally held integrity-valid decision amendments for one target",
+    "steps": [
+      "exclude amendments with binding failures",
+      "build predecessor graph over (predecessor package id, predecessor manifest sha256, prior decision id)",
+      "more than one head implies FORKED with no effective decision",
+      "single head: newest disposition-bearing node determines state",
+      "always qualify output as derived-from-local-set"
+    ],
+    "determinism": "same package set implies same state regardless of import order, wall clock, locale"
+  }
+}
