@@ -1,8 +1,9 @@
 // GET /api/calibration?persona=compliance
 // Standalone calibration-stats endpoint. The /api/recall endpoint embeds the
 // same stats, but bank model-risk reviewers asked for a dedicated URL they
-// can poll independently of session recall — to feed their SR 11-7
-// monitoring dashboards without paying the cost of fetching full session
+// can poll independently of session recall — to feed their model-risk
+// monitoring dashboards (SR 26-2-era ongoing-monitoring expectations; SR 11-7
+// was rescinded 2026-04-17) without paying the cost of fetching full session
 // histories every minute.
 
 import { buildMemoryBackend, describeMemoryBackend } from "../lib/memory-elastic.js";
