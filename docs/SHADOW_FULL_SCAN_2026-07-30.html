@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<title>Shadow — Full Scan & Productization Strategy</title>
+<style>
+  @page { margin: 16mm 15mm; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; color: #17212b; line-height: 1.48; font-size: 10.6pt; max-width: 820px; margin: 0 auto; }
+  h1 { font-size: 21pt; margin: 0 0 2px; letter-spacing: -.3px; }
+  .sub { color: #5b6b7a; font-size: 10pt; margin-bottom: 14px; }
+  h2 { font-size: 13pt; margin: 20px 0 6px; padding: 5px 10px; background: #0d2a3a; color: #eaf4fa; border-radius: 5px; }
+  h3 { font-size: 11pt; margin: 13px 0 3px; color: #0d2a3a; }
+  p { margin: 6px 0; }
+  ul { margin: 5px 0 5px 17px; padding: 0; } li { margin: 3px 0; }
+  .verdict { background: #f0f7f5; border: 1px solid #12a594; border-radius: 8px; padding: 12px 15px; margin: 10px 0; }
+  .crit { color: #b42318; font-weight: 650; }
+  .good { color: #12766a; font-weight: 650; }
+  .lbl { display:inline-block; font-size: 8pt; font-weight: 700; padding: 1px 6px; border-radius: 4px; vertical-align: middle; }
+  .c { background:#fde7e4; color:#b42318; } .h { background:#fef2d9; color:#a15c07; } .ok { background:#e3f5ee; color:#12766a; }
+  table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 9.6pt; }
+  th, td { border: 1px solid #d7e0e8; padding: 5px 8px; text-align: left; vertical-align: top; }
+  th { background: #eef4f8; }
+  .num { color:#12a594; font-weight:700; }
+  em { color: #b45309; font-style: normal; font-weight: 600; }
+  .foot { margin-top: 18px; padding-top: 8px; border-top: 1px solid #d7e0e8; color: #7b8896; font-size: 8.5pt; }
+  ol.act { margin: 6px 0 6px 20px; } ol.act li { margin: 5px 0; }
+</style></head>
+<body>
+
+<h1>Shadow — Full Scan &amp; Productization Strategy</h1>
+<div class="sub">4-lens audit (YC office-hours · code/security · web/GEO · market/GTM) · 2026-07-30</div>
+
+<div class="verdict">
+<b>Bottom line — Conditional GO, but reposition and re-time.</b> The engineering is real and the core crypto is sound, but two facts force a pivot: (1) <b>the crypto layer you led with is now a free Microsoft commodity</b> (Agent Governance Toolkit, Apr 2026) — it's table stakes, not the story; (2) <b>there is no 2026 hard mandate</b> — 2026 is the on-ramp, 2027 is the buying wave. The move: stop leading with cryptography, lead with <b>"the independent, open-source verifier for AI banking decisions,"</b> and spend 2026 on <b>design partners + discovery</b>, not more releases. The moat is not the hash-chain — it's <b>Lora's fair-lending domain logic + ECOA/Reg-B reason codes + OSS independence</b>. All four lenses converged on this.</div>
+
+<h2>1 · The hard truth (YC office-hours lens)</h2>
+<p><b>Today it's a vitamin, beautifully engineered.</b> Nobody at a bank is getting fired for lacking an Ed25519-signed council. The desperate person is a <em>fair-lending compliance officer at a mid-size / fintech lender who just put an AI in the underwriting loop and has a live exam or MRA</em> — and the trigger is "the examiner asked <em>‘walk me through how the AI decided’</em> and we spent two panicked weeks reconstructing it by hand."</p>
+<ul>
+<li><b>Status quo</b> isn't a log file — it's MRM binders + $400/hr law firms producing examiner packages 4×/year. You win by being <b>faster/cheaper than the law firm at the artifact the examiner accepts</b>, not by being "more provably correct."</li>
+<li><b>You've named no single desperate customer.</b> Everything is drafted/tagged/released — <b>zero paying design partners, zero discovery calls with a real compliance officer who isn't Lora.</b> You're shipping to an audience of yourself.</li>
+<li><b>Doing too much.</b> 6 personas + 11 MCP tools + XR glasses + 2 papers = a museum of competence, not a product. <b>The XR layer signals you don't know what the product is — keep it as a demo, never the pitch.</b></li>
+<li><b>Your real observation = Lora's proprietary fair-lending logic</b> (FICO&lt;700 hard block, BRD-vs-addenda governance). That's the seed a competitor can't clone from a blog post. You've done <b>deep research instead of deep discovery</b> — four arXiv-reading agents ≠ four phone calls with compliance officers.</li>
+</ul>
+<p><span class="crit">Biggest risk that kills this:</span> you keep building (where you're strong) instead of selling (untested), and it dies as a 1,600-test repo with zero customers while Microsoft/Trinitite eat the category. <b>You've never validated one bank will pay.</b></p>
+
+<h2>2 · Where the moat actually is (repositioning)</h2>
+<p>Ed25519 + SHA-256 hash-chain is <b>commoditized</b>: Microsoft open-sourced it (9,500 tests, compliance mapping); <b>Trinitite.ai</b> ships "signed, hash-chained, browser-re-verifiable" audit logs as closed SaaS; an IETF draft is standardizing the format. <b>No one, though, does all three of: OSS-core + crypto attestation + ECOA/Reg-B reason-code mapping for banking.</b> That intersection survives Microsoft because of:</p>
+<ul>
+<li><b>Independence (the killer angle).</b> Microsoft, Zest, Anthropic all attest <em>their own</em> systems — a conflict an examiner won't accept. Shadow is the non-conflicted third party a bank runs <em>against</em> a vendor's agent. Frame: <b>"Paperclip/Copilot/Claude logs it; Shadow proves it — independently."</b></li>
+<li><b>The moat moved UP from crypto to the regulatory-domain layer</b> — the ECOA/Reg-B/GDPR-Art-22 reason-code dictionary + persona reasoning + CITATION_MAP. None of the crypto players touch this.</li>
+<li><b>An OSS verifier a bank runs in its own CI/SIEM</b> — closed vendors (Zest, Trinitite) structurally won't ship a free verifier. That's distribution + independence proof at once.</li>
+</ul>
+<p><b>Retire entirely:</b> "lead with crypto," "SR 11-7 compliant," and "SR 26-2 Tier 3" (GenAI was carved out via <em>footnote 3</em>, not a tier taxonomy — that framing is wrong).</p>
+
+<h2>3 · Product &amp; website state (works — but invisible &amp; no door)</h2>
+<p><b>Correction to earlier belief:</b> <b>orshadow.com IS live</b> (same deployment as the Kimi workspace) — a polished, procurement-credible landing page. All 5 surfaces load, no 404s, no auth walls. The problem isn't quality, it's <b>reachability &amp; conversion</b>:</p>
+<ul>
+<li><span class="lbl c">#1</span> <b>Invisible to AI search.</b> The landing is 100% client-rendered — raw HTML is an empty shell; <b>ChatGPT/Perplexity/Claude crawlers see nothing.</b> No <code>llms.txt</code>, <code>robots.txt</code>, <code>sitemap.xml</code>, or JSON-LD. Ask any AI "how do I make AI decisions auditable for a bank" → Shadow is <b>never cited</b>. You're early to a hot, under-served category and publishing nothing indexable into it.</li>
+<li><span class="lbl h">#2</span> <b>No conversion path.</b> Every CTA loops back to demos — no pricing, no "book a demo," no contact, no signup. A convinced risk officer has nowhere to go. No downloadable security/architecture brief to forward internally.</li>
+<li><span class="lbl h">#3</span> <b>Two competing hubs</b> (orshadow.com/#/demo vs shadow-demo.vercel.app pointing at raw <code>*.vercel.app</code> + the ugly Kimi URL) + apex/www canonical split. Collapse to one branded domain.</li>
+</ul>
+
+<h2>4 · Code &amp; security (sound core, prototype deployment)</h2>
+<p><span class="good">Genuinely solid:</span> the v3 evidence-bundle verifier (<code>verifyBundle</code>) is cryptographically sound, offline-verifiable, and backed by <b>real adversarial tests</b> (edit/reorder/insert/truncate/wrong-key all covered as failing assertions). <b>Real test count ~1,679</b> (2.4× the "690" claim — you under-claim). FICO&lt;700 hard block correct. No SSRF. Honesty discipline above average. But as <em>deployed</em> it's not procurement-ready — four fixable issues:</p>
+<table>
+<tr><th>#</th><th>Issue</th><th>Why it matters</th></tr>
+<tr><td><span class="lbl c">C1</span></td><td>Paid LLM/OCR endpoints (<code>/api/deliberate</code>, <code>/scan-analyze</code>, <code>/loan-council-from-pdf</code>) are <b>unauthenticated, no rate limit</b></td><td>Denial-of-wallet — anyone can drain your Anthropic budget + DoS real analysts</td></tr>
+<tr><td><span class="lbl c">C2</span></td><td>Default signature mode is <b>HMAC, not Ed25519</b></td><td>HMAC is a shared secret (verifier can forge) — <b>directly contradicts the "Ed25519 / independently verifiable" headline</b>. A bank crypto reviewer catches it in minutes. One-line fix.</td></tr>
+<tr><td><span class="lbl c">C3</span></td><td><code>/api/verify-chain</code> does <b>zero signature verification</b></td><td>A fully forged chain returns "Chain intact." Overstates the guarantee.</td></tr>
+<tr><td><span class="lbl h">H1</span></td><td>Missing input <b>size caps</b> throughout + <code>X-Token-Claims</code> trusted without validation</td><td>CPU/memory DoS; forgeable authorization if the bank's gateway doesn't strip the header</td></tr>
+</table>
+<p><b>Honesty gap to fix now:</b> <code>index.html</code> still ships the <em>banned</em> hardware narrative ("XReal Air 2 Ultra," "JARVIS mode," "bone-conduction audio," "52,418 nodes") — the drift guard only scans <code>llms.txt</code> and misses the homepage. This is exactly the overclaim discipline you set for yourself.</p>
+
+<h2>5 · Productization roadmap</h2>
+<h3>Wedge &amp; first customer</h3>
+<p><b>Narrowest useful product:</b> an <b>independent verifier + reason-code attestation for ONE workflow — adverse-action on AI credit/underwriting decisions</b> (one council pass, one signed attestation, ECOA/Reg-B + GDPR-Art-22 reason-code mapping, re-verifiable in the customer's own CI). Not 6 personas, not AML, not XR.</p>
+<p><b>ICP, ranked for speed-to-revenue:</b> ① <b>EU-exposed fintech lenders</b> (GDPR Art. 22 / <em>Dun &amp; Bradstreet</em> C-203/22 is live pain <em>today</em>; fintechs buy faster, pilot on de-identified data, skip the 12-month bank TPRM) → ② <b>consultancies/agent-platform vendors as a channel</b> (embed the OSS verifier to close their bank engagements) → ③ mid-market banks (the prize, but 2027-paced) → ④ developers via OSS (champion-generation engine, not a buyer).</p>
+<h3>Business model &amp; pricing</h3>
+<p><b>Open-core (Langfuse template).</b> Free MIT core = council engine + attestation + verifier + public reason-code dictionary (the independence proof + champion magnet). Paid = audit-log retention/residency, SSO/RBAC, examiner-ready reporting, <b>counsel-signed dictionary binding</b>, <b>self-host-in-the-bank's-perimeter license</b> (removes the biggest TPRM objection), support SLA. Pricing: <b>$60–120k base + $1.5–2.4k/seat, ~$150–400k ACV</b>; avoid pure per-decision metering (banks want predictable budgets).</p>
+<h3>Solo-founder GTM</h3>
+<p>OSS + paper make you the <b>pre-contact front-runner</b>; the <b>champion + first reference logo</b> get you through the door. <b>SOC 2 is a fast-follow</b> — start it the day a champion's security questionnaire lands, not before ($45–70k, 6–12 mo). The <b>IEEE paper is champion ammunition + GEO fuel, not procurement currency</b> (a vendor-risk office doesn't score peer review). Recruit <b>3–5 skeptical design partners</b>, one measurable 60–90-day win, a <b>written paid-conversion date</b> up front.</p>
+<h3>12-month roadmap</h3>
+<table>
+<tr><th>Phase</th><th>Focus</th></tr>
+<tr><td>0 · 0–30d</td><td>Reposition to "independent OSS verifier for AI banking decisions"; publish Microsoft/Trinitite-vs-Shadow independence comparison + EU-first angle; kill crypto-lead + SR-11-7/Tier-3 language; stand up trust-center ("SOC 2 in progress")</td></tr>
+<tr><td>1 · 1–3mo</td><td>Narrow product to adverse-action verification; verifier runs in customer CI; auto-publish to MCP registries + skills.sh; paper → one-page champion artifact; outreach to 10–20 EU fintech lenders + 2–3 consultancies</td></tr>
+<tr><td>2 · 3–6mo</td><td>Land 3–5 design partners (free scoped pilots, de-identified data, written conversion trigger); start SOC 2 on first questionnaire; ship paid-layer skeleton</td></tr>
+<tr><td>3 · 6–9mo</td><td>Convert 1–2 to paid annual license; one consultancy channel deal; one nameable reference logo + case study; land the IEEE paper</td></tr>
+<tr><td>4 · 9–12mo</td><td>SOC 2 in flight, 2–3 reference logos, documented pilot→paid playbook, a mid-market bank in early 2027 procurement</td></tr>
+</table>
+<p><b>Keep / cut:</b> XR = <b>demo &amp; press sizzle only, never product roadmap</b> (every bank AR demo since 2014 died the day-30 utility test). Cut the 6-persona catalog / AML as standalone SKUs — expansion surface after the first workflow sells. <b>Proof-points that unlock procurement, in order: (1) reference logo &gt; (2) SOC 2 &gt; (3) the paper.</b></p>
+
+<h2>6 · The next 90 days (do these, in order)</h2>
+<ol class="act">
+<li><b>Reposition the narrative</b> to "independent OSS verifier for AI banking decisions" + publish the independence comparison + EU-first (Art. 22 / Dun &amp; Bradstreet). <i>Highest leverage, zero cost.</i></li>
+<li><b>Fix the 4 security/honesty issues</b> (hours–days): flip default to Ed25519 (C2), auth + rate-limit the paid endpoints (C1), make verify-chain sign-aware or relabel it (C3), add size caps (H1), and scrub the banned hardware claims from index.html.</li>
+<li><b>Make the site AI-readable + add a door:</b> SSR/static-render the pitch, ship llms.txt + robots.txt + sitemap + JSON-LD, add a "request early access" contact + a downloadable 1-page security brief, collapse to one branded hub.</li>
+<li><b>Narrow the product</b> to adverse-action verification; ship the customer-CI verifier; auto-publish to MCP registries + skills.sh.</li>
+<li><b>Start discovery, not building:</b> build the list of 10–20 EU-exposed fintech lenders + 2–3 consultancies; open 3–5 design-partner conversations. Use Lora to get into the first room. <b>Sell one concierge pilot by hand before writing the automated version.</b></li>
+<li><b>Land the IEEE paper</b> (authority/GEO), keep XR strictly as a demo, do <em>not</em> pay for SOC 2 yet.</li>
+</ol>
+
+<h2>7 · Kill-risks &amp; what to watch</h2>
+<ul>
+<li><b>Wave stays 2027 / internal-manual</b> — if by month 6 you can't find one fintech compliance owner with a budget + live pain, throttle to nights-and-weekends OSS, revisit Q1 2027.</li>
+<li><b>Microsoft/Anthropic extend free coverage into reason-codes</b> — watch their releases monthly; defense = independence (a platform can't grade its own homework).</li>
+<li><b>A funded closed competitor (Trinitite/Zest) adds the vertical</b> — defense = OSS + independence are structurally hard for closed model vendors to copy.</li>
+<li><b>Solo-founder procurement wall</b> — no SOC 2 + no logo = stuck at pilot; defense = written conversion dates up front.</li>
+<li><b>Category confusion</b> (observability vs governance vs fair-lending) — defense = ruthless single-workflow framing, never "AI governance platform."</li>
+</ul>
+
+<div class="foot">Synthesis of four independent audit lenses (YC office-hours critique · code+security scan · web/GEO audit · market/GTM deep-research), 2026-07-30. Load-bearing market/regulatory claims sourced in the underlying research (Fed SR 26-2 &amp; OCC 2026-13; EU Digital Omnibus deferral to 2027-12-02; Gartner AI-governance TAM ~$492M/2026; Microsoft Agent Governance Toolkit Apr 2026; Trinitite.ai; Anthropic Claude for FS). The one thing to internalize: crypto was the hook; <b>independence + banking-reason-code depth + OSS distribution is the moat — 2026 is for design partners, the money is 2027.</b></div>
+
+</body></html>

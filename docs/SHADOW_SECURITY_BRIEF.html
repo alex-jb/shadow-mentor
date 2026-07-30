@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<title>Shadow — Security & Architecture Brief</title>
+<style>
+  @page { margin: 16mm 16mm; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; color: #17212b; line-height: 1.48; font-size: 10.4pt; max-width: 800px; margin: 0 auto; }
+  h1 { font-size: 19pt; margin: 0 0 2px; }
+  .sub { color: #5b6b7a; font-size: 9.8pt; margin-bottom: 4px; }
+  .badge { display:inline-block; font-size:8pt; font-weight:700; color:#12766a; background:#e3f5ee; border:1px solid #b9e3d5; padding:1px 7px; border-radius:10px; margin-right:5px; }
+  h2 { font-size: 12pt; margin: 16px 0 5px; padding: 4px 9px; background: #0d2a3a; color: #eaf4fa; border-radius: 4px; }
+  p { margin: 5px 0; } ul { margin: 4px 0 4px 16px; padding: 0; } li { margin: 3px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 6px 0; font-size: 9.4pt; }
+  th, td { border: 1px solid #d7e0e8; padding: 4px 8px; text-align: left; vertical-align: top; }
+  th { background: #eef4f8; }
+  code { background: #eef2f6; padding: 0 4px; border-radius: 3px; font-size: 9pt; }
+  .g { color: #12766a; font-weight: 650; } .r { color: #b42318; font-weight: 650; }
+  .note { background: #f4f8fa; border-left: 3px solid #12a594; padding: 8px 12px; border-radius: 0 6px 6px 0; margin: 7px 0; }
+  .foot { margin-top: 16px; padding-top: 8px; border-top: 1px solid #d7e0e8; color: #7b8896; font-size: 8.5pt; }
+</style></head>
+<body>
+
+<h1>Shadow — Security &amp; Architecture Brief</h1>
+<div class="sub">Independent, open-source verifier for AI decisions in regulated workflows · for vendor-risk / model-risk review · v2.2.0 · 2026-07-30</div>
+<p><span class="badge">MIT / open-source</span><span class="badge">local-first</span><span class="badge">zero telemetry</span><span class="badge">offline-verifiable</span></p>
+
+<h2>1 · What Shadow is (and is not)</h2>
+<p>Shadow turns an AI/ML credit or compliance decision into a <b>signed, tamper-evident, reason-code-mapped evidence bundle</b> that a third party can verify offline — <b>independently of the model vendor</b>. It is the non-conflicted verifier an examiner needs; it is <b>not</b> the model, and it does not make or change the lending decision. The verdict layer is deterministic rules; the LLM personas write human-readable rationale only.</p>
+
+<h2>2 · Cryptographic model</h2>
+<table>
+<tr><th>Property</th><th>Mechanism</th></tr>
+<tr><td>Authenticity + non-repudiation</td><td><b>Ed25519</b> asymmetric signatures (RFC 8032). Only the private-key holder can sign; anyone with the public key can verify — so a bank verifies without being able to forge, and the vendor cannot silently swap the record. Ed25519 is the default whenever a signing key is configured.</td></tr>
+<tr><td>Integrity + ordering</td><td><b>SHA-256</b> hash-chain: each event binds the hash of the prior event (<code>previous_hash</code>) + its own payload hash. Editing, reordering, inserting, or truncating any event breaks a downstream link.</td></tr>
+<tr><td>Independent verification</td><td>A single self-contained <b>offline WebCrypto verifier</b> (<code>verify.html</code>) — no network, no dependencies, CSP-safe — re-checks every link + the signature against the public key. A CLI (<code>bin/shadow-verify.mjs</code>) and MCP tool do the same; run it in your own CI/SIEM.</td></tr>
+<tr><td>Canonicalization</td><td>JSON canonicalization (sorted keys) so signatures are stable across environments; semantic tamper (e.g. <code>1</code> vs <code>"1"</code>) is caught, byte-parity verified Node ↔ browser.</td></tr>
+</table>
+<div class="note"><b>What a green ✓ proves — precisely.</b> It proves <b>integrity</b>: this is the record that was sealed, unaltered. It does <b>not</b> assert content authenticity — that the agent's behaviour at capture time was benign, injection-free, or correct. Shadow states this boundary everywhere; it does not sell a clean bill of health it cannot give.</div>
+
+<h2>3 · Tamper coverage (adversarially tested)</h2>
+<table>
+<tr><th>Attack</th><th>Result</th></tr>
+<tr><td>Edit an event after seal</td><td class="g">✓ caught — payload hash mismatch</td></tr>
+<tr><td>Reorder / insert an event</td><td class="g">✓ caught — <code>prev_hash</code> mismatch at the exact seq</td></tr>
+<tr><td>Truncate the chain</td><td class="g">✓ caught — seq/link discontinuity</td></tr>
+<tr><td>Re-sign with a different key</td><td class="g">✓ caught — signature fails against the pinned public key</td></tr>
+</table>
+<p>Each is a failing assertion in the test suite (edit/reorder/insert/truncate/wrong-key). Full attack table: <code>docs/THREAT_MODEL.md</code> (seven classes).</p>
+
+<h2>4 · Data handling &amp; deployment</h2>
+<ul>
+<li><b>Local-first.</b> Verification runs on-device / in-browser; no evidence is uploaded to a Shadow-controlled host. It runs fully offline (pull the network cable).</li>
+<li><b>Zero telemetry.</b> Neither the library nor the CLI verifiers open an outbound socket to a Shadow host — verifiable by grepping the source.</li>
+<li><b>Self-host.</b> MIT core; run the verifier inside your own perimeter — evidence never leaves the bank's boundary.</li>
+<li><b>The public demo uses synthetic data only.</b> Production pilots run on your data, under NDA, in your environment.</li>
+</ul>
+
+<h2>5 · Regulatory mapping (the depth, not just the crypto)</h2>
+<ul>
+<li><b>Reg B / ECOA</b> — adverse-action reason codes (AA01–AA06) mapped per decision; a signed reason-code dictionary bound into the attestation (<code>dictionary_hash</code>) so a post-hoc swap breaks verification.</li>
+<li><b>GDPR Article 22 + Schufa (C-634/21) / Dun &amp; Bradstreet (C-203/22)</b> — automated-decision explainability, enforceable in the EU today.</li>
+<li><b>ECOA §701 protected-class proxy</b> detection; disparity metrics (AIR / SMD, 4/5 rule).</li>
+<li>Each <persona, regulation, test> triple is documented in <code>docs/CITATION_MAP.md</code>.</li>
+</ul>
+
+<h2>6 · Honest status &amp; roadmap</h2>
+<p><b>Pre-1.0. Not yet independently audited.</b> No production certification, no enterprise RBAC/SSO, no cloud isolation as shipped. The cryptographic core is sound and adversarially tested; deployment hardening (authn/rate-limit on paid endpoints, size caps) is in progress. <b>SOC 2 is a planned fast-follow, initiated on a design partner's first security questionnaire.</b> We label capabilities on an explicit ladder (source-authored → host-tested → device-validated) and never over-claim.</p>
+
+<div class="foot">
+Shadow · github.com/alex-jb/shadow-mentor (MIT) · verify any bundle offline with <code>verify.html</code> · this brief is safe to forward to model-risk / vendor-risk peers. Contact: {add your email} · Request a scoped pilot: bring one real denied application, see the exam-ready trace in 20 minutes.
+</div>
+
+</body></html>
