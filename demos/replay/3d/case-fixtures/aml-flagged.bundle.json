@@ -1,0 +1,91 @@
+{
+  "bundle_version": 1,
+  "spec_version": "shadow-evidence/v1",
+  "header": {
+    "session_id": "case-aml-flagged",
+    "session_started_at_utc": "2026-07-30T12:00:00.000Z",
+    "session_ended_at_utc": "2026-07-30T12:00:00.000Z",
+    "agent": {
+      "name": "shadow-loan-council",
+      "version": "1.5",
+      "identity_ref": null
+    },
+    "models": [
+      {
+        "model_id": "council-v1",
+        "provider": "deterministic-rules",
+        "sampling_params_hash": null
+      }
+    ],
+    "environment_fingerprint": {
+      "os": "darwin",
+      "node_version": "v24.14.1",
+      "hostname_hash": null
+    },
+    "schema_versions": {
+      "bundle": 1,
+      "attest_core": "2.3.0"
+    }
+  },
+  "events": [
+    {
+      "seq": 0,
+      "ts_utc": "2026-07-30T04:18:08.700Z",
+      "event_type": "prompt",
+      "actor": "user",
+      "payload_hash": "6f711e86ec2fe5fbe0aad7d2fd203727abd68a3f94120efdfb35c62acc28a8d2",
+      "payload_ref": "sha256:6f711e86ec2fe5fbe0aad7d2fd203727abd68a3f94120efdfb35c62acc28a8d2",
+      "prev_hash": "5326688a26dfcb150c9e24d5d8f0d0ad17bbf424ed5fb28136153de435b86035",
+      "extensions": {}
+    },
+    {
+      "seq": 1,
+      "ts_utc": "2026-07-30T04:18:08.700Z",
+      "event_type": "tool_call",
+      "actor": "tool",
+      "payload_hash": "5b1b9dde94ae18e4a098e0f97d86cd988b597dbc201a96a2e82b625ea964a4d8",
+      "payload_ref": "sha256:5b1b9dde94ae18e4a098e0f97d86cd988b597dbc201a96a2e82b625ea964a4d8",
+      "prev_hash": "9f21a1d4121306a2529f19150b741abe2c9fb06b4d7fe6abcdb6aac517e1874e",
+      "extensions": {}
+    },
+    {
+      "seq": 2,
+      "ts_utc": "2026-07-30T04:18:08.700Z",
+      "event_type": "model_output",
+      "actor": "model",
+      "payload_hash": "178e1bff34fa72f06de4c3f80b3b77054775f021267ffe65358fea634288f9ce",
+      "payload_ref": "sha256:178e1bff34fa72f06de4c3f80b3b77054775f021267ffe65358fea634288f9ce",
+      "prev_hash": "5862a14579eeb5289556b101de9a159b02f27140d38cabc80150c1addadf033d",
+      "extensions": {}
+    },
+    {
+      "seq": 3,
+      "ts_utc": "2026-07-30T04:18:08.700Z",
+      "event_type": "human_approval",
+      "actor": "user",
+      "payload_hash": "db0b2ea7550644ffabed498aa4d751a57b5922a2b3e1ce8ce3eb83b6370a0672",
+      "payload_ref": "sha256:db0b2ea7550644ffabed498aa4d751a57b5922a2b3e1ce8ce3eb83b6370a0672",
+      "prev_hash": "9fd298a448d8a47cdfca267f7ea7ba406c111ae415d48422c7e0a4be1ada51a5",
+      "extensions": {}
+    },
+    {
+      "seq": 4,
+      "ts_utc": "2026-07-30T12:00:00.000Z",
+      "event_type": "session_end",
+      "actor": "system",
+      "payload_hash": "17f5e4b4ed8a3bbdcea4d3d90f508247a1b71ad74a284258f5ad878dcdb67332",
+      "payload_ref": "sha256:17f5e4b4ed8a3bbdcea4d3d90f508247a1b71ad74a284258f5ad878dcdb67332",
+      "prev_hash": "0f836e31ebf790e8ed904e8e2b692118de94855c977992fd08aa004ff8a608c8",
+      "extensions": {}
+    }
+  ],
+  "batch_root": "291101993ac7dc50d9f66958b8a8fbf7b614446e2288f1d5af73c3a7078e7502",
+  "signatures": [
+    {
+      "algorithm": "ed25519",
+      "key_id": "case-aml-flagged",
+      "signature": "rr-egsJOa2NyP3e5EXFMdRlyyJwkGtAp8f59lO9YsmeGD-BKIR-sAibzcSCBKtuBIuSIlPTJAtuAXC9MewU9DQ",
+      "signed_at_utc": "2026-07-30T04:18:08.700Z"
+    }
+  ]
+}

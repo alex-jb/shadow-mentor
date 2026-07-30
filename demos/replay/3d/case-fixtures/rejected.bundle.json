@@ -1,0 +1,91 @@
+{
+  "bundle_version": 1,
+  "spec_version": "shadow-evidence/v1",
+  "header": {
+    "session_id": "case-rejected",
+    "session_started_at_utc": "2026-07-30T12:00:00.000Z",
+    "session_ended_at_utc": "2026-07-30T12:00:00.000Z",
+    "agent": {
+      "name": "shadow-loan-council",
+      "version": "1.5",
+      "identity_ref": null
+    },
+    "models": [
+      {
+        "model_id": "council-v1",
+        "provider": "deterministic-rules",
+        "sampling_params_hash": null
+      }
+    ],
+    "environment_fingerprint": {
+      "os": "darwin",
+      "node_version": "v24.14.1",
+      "hostname_hash": null
+    },
+    "schema_versions": {
+      "bundle": 1,
+      "attest_core": "2.3.0"
+    }
+  },
+  "events": [
+    {
+      "seq": 0,
+      "ts_utc": "2026-07-30T04:18:08.696Z",
+      "event_type": "prompt",
+      "actor": "user",
+      "payload_hash": "0c7a43d632ffb6ef0a5827112cf7433c3c64577e4882661cf58655f2b7ed40f6",
+      "payload_ref": "sha256:0c7a43d632ffb6ef0a5827112cf7433c3c64577e4882661cf58655f2b7ed40f6",
+      "prev_hash": "ba72750069f4941c54b6ad019bc3e3913f0231cc68591f5785698c113af7d5ea",
+      "extensions": {}
+    },
+    {
+      "seq": 1,
+      "ts_utc": "2026-07-30T04:18:08.696Z",
+      "event_type": "tool_call",
+      "actor": "tool",
+      "payload_hash": "5b1b9dde94ae18e4a098e0f97d86cd988b597dbc201a96a2e82b625ea964a4d8",
+      "payload_ref": "sha256:5b1b9dde94ae18e4a098e0f97d86cd988b597dbc201a96a2e82b625ea964a4d8",
+      "prev_hash": "b7dcfd1e90362d355adc11b593e25538e9bc6143723dd919dbdb8c8744a4bf62",
+      "extensions": {}
+    },
+    {
+      "seq": 2,
+      "ts_utc": "2026-07-30T04:18:08.697Z",
+      "event_type": "model_output",
+      "actor": "model",
+      "payload_hash": "614a203f0eff2e3d902532c5ea2b6405e4938e4a4bc8bfe369f14808beced566",
+      "payload_ref": "sha256:614a203f0eff2e3d902532c5ea2b6405e4938e4a4bc8bfe369f14808beced566",
+      "prev_hash": "e8f06647588503a0ff8b0587d153509e7c6963d4e8f96f00aa1ccf95ae5eab12",
+      "extensions": {}
+    },
+    {
+      "seq": 3,
+      "ts_utc": "2026-07-30T04:18:08.697Z",
+      "event_type": "human_approval",
+      "actor": "user",
+      "payload_hash": "3ac0fb20f4a0e1fd68866dd50c91901a40c432959340ff9e95ab44e4d8502bbf",
+      "payload_ref": "sha256:3ac0fb20f4a0e1fd68866dd50c91901a40c432959340ff9e95ab44e4d8502bbf",
+      "prev_hash": "c8a1c1a04036503742cac8235158f447cc1aa253264a032f6e8ef2943287cb8f",
+      "extensions": {}
+    },
+    {
+      "seq": 4,
+      "ts_utc": "2026-07-30T12:00:00.000Z",
+      "event_type": "session_end",
+      "actor": "system",
+      "payload_hash": "17f5e4b4ed8a3bbdcea4d3d90f508247a1b71ad74a284258f5ad878dcdb67332",
+      "payload_ref": "sha256:17f5e4b4ed8a3bbdcea4d3d90f508247a1b71ad74a284258f5ad878dcdb67332",
+      "prev_hash": "c01504daa8b97d3a46550ccb8f114a97ba5c6353ce49d8dcc2c9239782016306",
+      "extensions": {}
+    }
+  ],
+  "batch_root": "7aad16554ba75e3a7c652fb1b0bed1b40a77d8c853143c8e462e8906789e2155",
+  "signatures": [
+    {
+      "algorithm": "ed25519",
+      "key_id": "case-rejected",
+      "signature": "M6i1ky9W49Kp6fiLx9I-wOZAZ4Hc-C6kaxtkGEgiXpW4yk8VNUuWadqgFwyJe_Au3RoZc-X34Z05sSmjCVE6CA",
+      "signed_at_utc": "2026-07-30T04:18:08.697Z"
+    }
+  ]
+}
