@@ -22,6 +22,7 @@ import { createBeats } from "./beats.js";
 import { createWebXR } from "./webxr.js";
 import { initPreflight } from "./preflight.js";
 import { createGamepad } from "./gamepad.js";
+import { loadedBundle, initBundleLoader, isLoaded, clearLoaded } from "./bundle-loader.js";
 import { makeText, billboardInView } from "./labels.js";
 
 const params = new URLSearchParams(location.search);
@@ -70,7 +71,16 @@ controls.maxPolarAngle = Math.PI / 2 + lim;
 // stray lit material from going pure black. We use none by design.
 
 // ── the room ──
-const room = createAuditRoom({ C });
+// Operator-loaded bundle (drop your own signed evidence) overrides the demo.
+const opBundle = loadedBundle();
+const room = createAuditRoom(opBundle ? { C, bundle: opBundle } : { C });
+initBundleLoader({
+  onError: (msg) => { try { flash("load: " + msg); } catch { console.warn("[load]", msg); } },
+});
+// Press O to go back to the canned demo when an operator bundle is loaded.
+window.addEventListener("keydown", (e) => {
+  if ((e.key === "o" || e.key === "O") && isLoaded()) { clearLoaded(); location.reload(); }
+});
 scene.add(room.group);
 
 // ── in-scene HUD (world-anchored → shows in BOTH eyes in SBS) ──

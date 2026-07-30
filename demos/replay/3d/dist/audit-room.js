@@ -1,5 +1,5 @@
 (() => {
-  // ../shadow-mentor/node_modules/three/build/three.module.js
+  // ../../../../../../../Users/alexji/Desktop/AI-Projects/shadow-mentor/node_modules/three/build/three.module.js
   var REVISION = "160";
   var MOUSE = { LEFT: 0, MIDDLE: 1, RIGHT: 2, ROTATE: 0, DOLLY: 1, PAN: 2 };
   var TOUCH = { ROTATE: 0, PAN: 1, DOLLY_PAN: 2, DOLLY_ROTATE: 3 };
@@ -22330,7 +22330,7 @@
     }
   }
 
-  // ../shadow-mentor/node_modules/three/examples/jsm/controls/OrbitControls.js
+  // ../../../../../../../Users/alexji/Desktop/AI-Projects/shadow-mentor/node_modules/three/examples/jsm/controls/OrbitControls.js
   var _changeEvent = { type: "change" };
   var _startEvent = { type: "start" };
   var _endEvent = { type: "end" };
@@ -23044,7 +23044,7 @@
     }
   };
 
-  // demos/replay/3d/constants.js
+  // constants.js
   var STATUS = Object.freeze({
     intact: "#E8E8E8",
     // resting/verified SURFACE — neutral paper (profile override, not status green)
@@ -23175,7 +23175,7 @@
   }
   var C = buildConstants("laptop");
 
-  // demos/replay/3d/flat-fit.js
+  // flat-fit.js
   var DEG = Math.PI / 180;
   function visibleHalfWidth(distance, fovVDeg, aspect2) {
     const halfH = distance * Math.tan(fovVDeg * DEG / 2);
@@ -23209,7 +23209,7 @@
     };
   }
 
-  // demos/replay/3d/labels.js
+  // labels.js
   var PX_PER_UNIT = 900;
   var SANS = '-apple-system, "SF Pro Display", "Segoe UI", "PingFang SC", system-ui, sans-serif';
   var MONO = '"SF Mono", "JetBrains Mono", "Cascadia Code", ui-monospace, Menlo, monospace';
@@ -23341,7 +23341,7 @@
     obj.quaternion.copy(camera2.quaternion);
   }
 
-  // demos/replay/verify-browser.js
+  // ../verify-browser.js
   function canonicalize(value) {
     if (value === null || typeof value !== "object") return JSON.stringify(value);
     if (Array.isArray(value)) return "[" + value.map(canonicalize).join(",") + "]";
@@ -23486,7 +23486,7 @@
   }
   var _internal = { canonicalize, canonicalBytes, sha256Hex, signedShape };
 
-  // demos/replay/tamper.js
+  // ../tamper.js
   function clonePristine(bundle) {
     return JSON.parse(JSON.stringify(bundle));
   }
@@ -23532,7 +23532,7 @@
     return { tamperedSeq, verify, caption };
   }
 
-  // demos/replay/3d/demo-data.js
+  // demo-data.js
   var DEMO_BUNDLE = {
     "bundle_version": 1,
     "spec_version": "shadow-evidence/v1",
@@ -23749,7 +23749,7 @@
     { "n": 8, "name": "trust badges", "cam": { "frame": "badges" }, "action": "trust" }
   ];
 
-  // demos/replay/3d/verify.js
+  // verify.js
   var { canonicalBytes: canonicalBytes2, sha256Hex: sha256Hex2, signedShape: signedShape2 } = _internal;
   var REVIEWER_KEY_ID = "reviewer-local-demo";
   function hexToBytes2(hex) {
@@ -23827,7 +23827,7 @@ ${b64}
     return ev;
   }
 
-  // demos/replay/3d/annotation-anchor.js
+  // annotation-anchor.js
   function chooseAnnotationSide(cardX, arcCenterX = 0) {
     return cardX < arcCenterX ? "upper-right" : "upper-left";
   }
@@ -23855,7 +23855,7 @@ ${b64}
     };
   }
 
-  // demos/replay/3d/scene.js
+  // scene.js
   var DEG2 = Math.PI / 180;
   var smooth = (k) => k * k * (3 - 2 * k);
   var clamp01 = (x) => x < 0 ? 0 : x > 1 ? 1 : x;
@@ -24400,7 +24400,7 @@ IMPACT  ${obj.impact}`;
     };
   }
 
-  // demos/replay/3d/stereo.js
+  // stereo.js
   var LS_EYE_SEP = "shadow.auditroom.eyeSep";
   var LS_CONVERGENCE = "shadow.auditroom.convergence";
   function createStereo({ renderer: renderer2, scene: scene2, camera: camera2, C: C3 }) {
@@ -24496,7 +24496,7 @@ IMPACT  ${obj.impact}`;
     };
   }
 
-  // demos/replay/3d/voice.js
+  // voice.js
   var INTENTS = Object.freeze([
     "FOCUS_EVENT",
     "FILTER_BY_TYPE",
@@ -24632,7 +24632,7 @@ IMPACT  ${obj.impact}`;
     } };
   }
 
-  // demos/replay/3d/beats.js
+  // beats.js
   var smooth2 = (k) => k * k * (3 - 2 * k);
   function createBeats({ camera: camera2, controls: controls2, room: room2, C: C3 }) {
     let active = null;
@@ -24723,7 +24723,7 @@ IMPACT  ${obj.impact}`;
     } };
   }
 
-  // ../shadow-mentor/node_modules/three/examples/jsm/webxr/XRButton.js
+  // ../../../../../../../Users/alexji/Desktop/AI-Projects/shadow-mentor/node_modules/three/examples/jsm/webxr/XRButton.js
   var XRButton = class {
     static createButton(renderer2, sessionInit = {}) {
       const button = document.createElement("button");
@@ -24843,7 +24843,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../shadow-mentor/node_modules/three/examples/jsm/utils/BufferGeometryUtils.js
+  // ../../../../../../../Users/alexji/Desktop/AI-Projects/shadow-mentor/node_modules/three/examples/jsm/utils/BufferGeometryUtils.js
   function toTrianglesDrawMode(geometry, drawMode) {
     if (drawMode === TrianglesDrawMode) {
       console.warn("THREE.BufferGeometryUtils.toTrianglesDrawMode(): Geometry already defined as triangles.");
@@ -24899,7 +24899,7 @@ IMPACT  ${obj.impact}`;
     }
   }
 
-  // ../shadow-mentor/node_modules/three/examples/jsm/loaders/GLTFLoader.js
+  // ../../../../../../../Users/alexji/Desktop/AI-Projects/shadow-mentor/node_modules/three/examples/jsm/loaders/GLTFLoader.js
   var GLTFLoader = class extends Loader {
     constructor(manager) {
       super(manager);
@@ -27350,7 +27350,7 @@ IMPACT  ${obj.impact}`;
     });
   }
 
-  // ../shadow-mentor/node_modules/three/examples/jsm/libs/motion-controllers.module.js
+  // ../../../../../../../Users/alexji/Desktop/AI-Projects/shadow-mentor/node_modules/three/examples/jsm/libs/motion-controllers.module.js
   var Constants = {
     Handedness: Object.freeze({
       NONE: "none",
@@ -27641,7 +27641,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../shadow-mentor/node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js
+  // ../../../../../../../Users/alexji/Desktop/AI-Projects/shadow-mentor/node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js
   var DEFAULT_PROFILES_PATH = "https://cdn.jsdelivr.net/npm/@webxr-input-profiles/assets@1.0/dist/profiles";
   var DEFAULT_PROFILE = "generic-trigger";
   var XRControllerModel = class extends Object3D {
@@ -27796,7 +27796,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../shadow-mentor/node_modules/three/examples/jsm/webxr/XRHandPrimitiveModel.js
+  // ../../../../../../../Users/alexji/Desktop/AI-Projects/shadow-mentor/node_modules/three/examples/jsm/webxr/XRHandPrimitiveModel.js
   var _matrix = new Matrix4();
   var _vector = new Vector3();
   var XRHandPrimitiveModel = class {
@@ -27863,7 +27863,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../shadow-mentor/node_modules/three/examples/jsm/webxr/XRHandMeshModel.js
+  // ../../../../../../../Users/alexji/Desktop/AI-Projects/shadow-mentor/node_modules/three/examples/jsm/webxr/XRHandMeshModel.js
   var DEFAULT_HAND_PROFILE_PATH = "https://cdn.jsdelivr.net/npm/@webxr-input-profiles/assets@1.0/dist/profiles/generic-hand/";
   var XRHandMeshModel = class {
     constructor(handModel, controller, path, handedness, loader = null) {
@@ -27935,7 +27935,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // ../shadow-mentor/node_modules/three/examples/jsm/webxr/XRHandModelFactory.js
+  // ../../../../../../../Users/alexji/Desktop/AI-Projects/shadow-mentor/node_modules/three/examples/jsm/webxr/XRHandModelFactory.js
   var XRHandModel = class extends Object3D {
     constructor(controller) {
       super();
@@ -27982,7 +27982,7 @@ IMPACT  ${obj.impact}`;
     }
   };
 
-  // demos/replay/3d/webxr.js
+  // webxr.js
   function createWebXR({ renderer: renderer2, scene: scene2, camera: camera2, room: room2, C: C3, mountButton }) {
     renderer2.xr.enabled = true;
     let savedBg;
@@ -28108,7 +28108,7 @@ IMPACT  ${obj.impact}`;
     } };
   }
 
-  // demos/replay/3d/preflight.js
+  // preflight.js
   function initPreflight({ renderer: renderer2, mount = document.body, appCommit = "" }) {
     const panel = document.createElement("div");
     panel.id = "xr-preflight";
@@ -28235,7 +28235,7 @@ IMPACT  ${obj.impact}`;
     return { updatePose, state, render };
   }
 
-  // demos/replay/3d/gamepad.js
+  // gamepad.js
   function createGamepad({ dispatch: dispatch2, nextBeat, prevBeat, gotoBeat, voice: voice2 }) {
     const prev2 = {};
     let talking = false;
@@ -28282,7 +28282,98 @@ IMPACT  ${obj.impact}`;
     } };
   }
 
-  // demos/replay/3d/app.js
+  // bundle-loader.js
+  var STORAGE_KEY = "shadow-audit-room:loaded-bundle";
+  function loadedBundle() {
+    try {
+      const raw = sessionStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }
+  function isLoaded() {
+    return loadedBundle() != null;
+  }
+  function clearLoaded() {
+    try {
+      sessionStorage.removeItem(STORAGE_KEY);
+    } catch {
+    }
+  }
+  function validateBundle(obj) {
+    if (!obj || typeof obj !== "object") return { ok: false, reason: "not a JSON object" };
+    if (!obj.header || typeof obj.header !== "object") return { ok: false, reason: "missing header{}" };
+    if (!Array.isArray(obj.events)) return { ok: false, reason: "missing events[]" };
+    if (obj.events.length === 0) return { ok: false, reason: "events[] is empty" };
+    if (!Array.isArray(obj.signatures) || obj.signatures.length === 0)
+      return { ok: false, reason: "missing signatures[] \u2014 an unsigned bundle cannot be attested" };
+    for (const e of obj.events) {
+      if (typeof e.seq !== "number") return { ok: false, reason: "an event is missing a numeric seq" };
+    }
+    return { ok: true };
+  }
+  function initBundleLoader({ dropEl, inputEl, onError = () => {
+  }, onLoaded = () => {
+  } } = {}) {
+    async function handleFile(file) {
+      let text;
+      try {
+        text = await file.text();
+      } catch (err) {
+        onError(`could not read file: ${err?.message ?? err}`);
+        return;
+      }
+      let obj;
+      try {
+        obj = JSON.parse(text);
+      } catch (err) {
+        onError(`not valid JSON \u2014 nothing changed (${err?.message ?? err})`);
+        return;
+      }
+      const v = validateBundle(obj);
+      if (!v.ok) {
+        onError(`not an evidence bundle: ${v.reason} \u2014 nothing changed`);
+        return;
+      }
+      try {
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+      } catch (err) {
+        onError(`could not stash bundle (storage full?): ${err?.message ?? err}`);
+        return;
+      }
+      onLoaded();
+      location.reload();
+    }
+    if (dropEl) {
+      dropEl.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropEl.classList.add("drag-over");
+      });
+      dropEl.addEventListener("dragleave", () => dropEl.classList.remove("drag-over"));
+      dropEl.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropEl.classList.remove("drag-over");
+        const file = e.dataTransfer?.files?.[0];
+        if (file) void handleFile(file);
+      });
+    }
+    if (inputEl) {
+      inputEl.addEventListener("change", (e) => {
+        const file = e.target.files?.[0];
+        if (file) void handleFile(file);
+      });
+    }
+    window.addEventListener("dragover", (e) => e.preventDefault());
+    window.addEventListener("drop", (e) => {
+      e.preventDefault();
+      const file = e.dataTransfer?.files?.[0];
+      if (file) void handleFile(file);
+    });
+    return { handleFile };
+  }
+
+  // app.js
   var params = new URLSearchParams(location.search);
   var preset = params.get("xreal") === "1" ? "xreal" : "laptop";
   var C2 = buildConstants(preset);
@@ -28319,7 +28410,23 @@ IMPACT  ${obj.impact}`;
   controls.maxAzimuthAngle = lim;
   controls.minPolarAngle = Math.PI / 2 - lim;
   controls.maxPolarAngle = Math.PI / 2 + lim;
-  var room = createAuditRoom({ C: C2 });
+  var opBundle = loadedBundle();
+  var room = createAuditRoom(opBundle ? { C: C2, bundle: opBundle } : { C: C2 });
+  initBundleLoader({
+    onError: (msg) => {
+      try {
+        flash("load: " + msg);
+      } catch {
+        console.warn("[load]", msg);
+      }
+    }
+  });
+  window.addEventListener("keydown", (e) => {
+    if ((e.key === "o" || e.key === "O") && isLoaded()) {
+      clearLoaded();
+      location.reload();
+    }
+  });
   scene.add(room.group);
   var hud = new Group();
   scene.add(hud);
@@ -28516,7 +28623,7 @@ IMPACT  ${obj.impact}`;
           } });
           renderer.setAnimationLoop(xrLoop);
         }
-        if (!preflight) preflight = initPreflight({ renderer, appCommit: "1503760" });
+        if (!preflight) preflight = initPreflight({ renderer, appCommit: "70c4db3" });
       } catch (e) {
         fatal("WebXR unavailable: " + e.message);
       }
