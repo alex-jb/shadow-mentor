@@ -45,6 +45,16 @@ const ENVELOPE_PATTERNS = [
   /rate_limit_error/i,
   /credit_balance_too_low/i,
   /insufficient_quota/i,
+  // Network unreachability is an ENVIRONMENT condition, same class as a
+  // billing envelope: a sandboxed/offline machine with a key configured
+  // must skip, not fail (observed 2026-07-29: 2 hard failures with
+  // getaddrinfo ENOTFOUND api.anthropic.com under a network sandbox).
+  /ENOTFOUND/i,
+  /EAI_AGAIN/i,
+  /ECONNREFUSED/i,
+  /ETIMEDOUT/i,
+  /fetch failed/i,
+  /Connection error/i,
 ];
 
 function isEnvelopeError(err) {

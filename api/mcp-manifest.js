@@ -21,7 +21,16 @@
 
 import { createHash } from "node:crypto";
 
-const SHADOW_VERSION = "v1.5.15";
+// Single source of truth for public-state numbers (P0, 2026-07-20) — never
+// hardcode the version here again: v1.5.15 sat stale for ~30 releases while
+// the SBOM claimed to be the thing bank counsel pins (fixed 2026-07-29).
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+const __mfDir = dirname(fileURLToPath(import.meta.url));
+const SHADOW_VERSION = "v" + JSON.parse(
+  readFileSync(join(__mfDir, "..", "release-state.json"), "utf8"),
+).repo_version;
 const MCP_PROTOCOL_VERSION = "2024-11-05";
 
 // Canonical tool list — must match mcp/server.js TOOLS array.
@@ -39,7 +48,6 @@ const CANONICAL_TOOLS = [
       "CFPB Circular 2026-03",
     ],
     determinismClaim: "no-llm-inside-tool",
-    latencyPercentiles: { p50_ms: 2, p95_ms: 5 },
   },
   {
     name: "shadow_loan_council_typed",
@@ -52,7 +60,6 @@ const CANONICAL_TOOLS = [
       "CFPB Circular 2026-03",
     ],
     determinismClaim: "no-llm-inside-tool",
-    latencyPercentiles: { p50_ms: 3, p95_ms: 6 },
   },
   {
     name: "shadow_risk_tools",
@@ -61,7 +68,6 @@ const CANONICAL_TOOLS = [
     inputSchemaKeys: ["tool", "params"],
     regulatoryScope: ["BRD Risk Core Specification", "SR 26-2 (GenAI/agentic AI carved out by footnote 3)"],
     determinismClaim: "no-llm-inside-tool",
-    latencyPercentiles: { p50_ms: 1, p95_ms: 3 },
   },
   {
     name: "shadow_recall",
@@ -70,7 +76,6 @@ const CANONICAL_TOOLS = [
     inputSchemaKeys: ["persona", "scenario"],
     regulatoryScope: ["SR 26-2 audit trail continuity"],
     determinismClaim: "no-llm-inside-tool",
-    latencyPercentiles: { p50_ms: 2, p95_ms: 8 },
   },
   {
     name: "shadow_calibration",
@@ -79,7 +84,6 @@ const CANONICAL_TOOLS = [
     inputSchemaKeys: ["persona"],
     regulatoryScope: ["SR 26-2 Model Risk Management"],
     determinismClaim: "no-llm-inside-tool",
-    latencyPercentiles: { p50_ms: 1, p95_ms: 4 },
   },
   {
     name: "shadow_scenarios",
@@ -88,7 +92,6 @@ const CANONICAL_TOOLS = [
     inputSchemaKeys: [],
     regulatoryScope: [],
     determinismClaim: "no-llm-inside-tool",
-    latencyPercentiles: { p50_ms: 1, p95_ms: 2 },
   },
   {
     name: "shadow_traceability",
@@ -103,7 +106,6 @@ const CANONICAL_TOOLS = [
       "Schufa C-634/21",
     ],
     determinismClaim: "no-llm-inside-tool",
-    latencyPercentiles: { p50_ms: 1, p95_ms: 2 },
   },
   {
     name: "shadow_verify_attestation",
@@ -112,7 +114,6 @@ const CANONICAL_TOOLS = [
     inputSchemaKeys: ["attestation", "originalRequest", "originalResponse"],
     regulatoryScope: ["SR 26-2 tamper-evident audit chain"],
     determinismClaim: "no-llm-inside-tool",
-    latencyPercentiles: { p50_ms: 2, p95_ms: 6 },
   },
   {
     name: "shadow_size_position",
@@ -131,7 +132,6 @@ const CANONICAL_TOOLS = [
       "Kelly-cap discipline",
     ],
     determinismClaim: "no-llm-inside-tool",
-    latencyPercentiles: { p50_ms: 1, p95_ms: 3 },
   },
   {
     name: "shadow_disparity",
@@ -149,7 +149,18 @@ const CANONICAL_TOOLS = [
       "SolasAI methodology (Apache-2.0)",
     ],
     determinismClaim: "no-llm-inside-tool",
-    latencyPercentiles: { p50_ms: 1, p95_ms: 4 },
+  },
+  {
+    name: "shadow_banking_profile",
+    description:
+      "Check a Shadow evidence bundle against the Banking Evidence Profile v1 — the 'is this credit decision auditable?' pass/fail gate. Confirms examiner-required evidence (integrity, decision outcome, manifests, policy version, timestamps, human review, principal reason codes, governed reason-code dictionary, citations, retention), each mapped to its Reg B / FCRA / SR 26-2 hook. Optional examiner-ready packet. Structural PASS means evidence exists and is tamper-evident — it does NOT certify the decision was correct/fair/compliant.",
+    inputSchemaKeys: ["bundle", "public_key", "payloads", "packet"],
+    regulatoryScope: [
+      "ECOA/Reg B (12 CFR 1002)",
+      "FCRA",
+      "SR 26-2 footnote 3 delegation",
+    ],
+    determinismClaim: "no-llm-inside-tool",
   },
 ];
 

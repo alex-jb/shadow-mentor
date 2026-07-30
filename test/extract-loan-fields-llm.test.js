@@ -76,6 +76,8 @@ test("extractLoanFieldsLLM live: real tool-use extraction on the stub PDF text",
   } catch (err) {
     // billing-envelope events are not regressions (brain rule)
     if (/usage limit|credit balance|rate limit|429|quota/i.test(err.message)) { console.log("skipped (billing envelope):", err.message); return; }
+    // Network unreachability = environment, same class (2026-07-29):
+    if (/ENOTFOUND|EAI_AGAIN|ECONNREFUSED|ETIMEDOUT|fetch failed|Connection error/i.test(String(err.message) + String(err.cause ?? ""))) { console.log("skipped (network unreachable):", err.message); return; }
     throw err;
   }
 });

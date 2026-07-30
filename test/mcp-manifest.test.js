@@ -13,16 +13,17 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const REPO_ROOT = join(__dirname, "..");
 
-test("buildManifest returns 10 tools (v2.0.3+ adds shadow_disparity)", () => {
+test("buildManifest returns 11 tools (v2.2.0 adds shadow_banking_profile to the manifest)", () => {
   const m = buildManifest();
-  assert.equal(m.tool_count, 10);
-  assert.equal(m.tools.length, 10);
+  assert.equal(m.tool_count, 11);
+  assert.equal(m.tools.length, 11);
 });
 
-test("buildManifest tools include all 10 canonical Shadow MCP tools", () => {
+test("buildManifest tools include all 11 canonical Shadow MCP tools", () => {
   const m = buildManifest();
   const names = m.tools.map((t) => t.name).sort();
   assert.deepEqual(names, [
+    "shadow_banking_profile",
     "shadow_calibration",
     "shadow_disparity",
     "shadow_loan_council",
@@ -86,13 +87,11 @@ test("buildManifest tools include regulatoryScope + determinismClaim", () => {
   }
 });
 
-test("buildManifest tools include p50/p95 latency budgets", () => {
-  const m = buildManifest();
-  for (const tool of m.tools) {
-    assert.ok(tool.latencyPercentiles, `${tool.name} latencyPercentiles required`);
-    assert.equal(typeof tool.latencyPercentiles.p50_ms, "number");
-    assert.equal(typeof tool.latencyPercentiles.p95_ms, "number");
-    assert.ok(tool.latencyPercentiles.p95_ms >= tool.latencyPercentiles.p50_ms);
+test("manifest carries NO invented latency numbers (unmeasured p50/p95 removed 2026-07-29)", () => {
+  // An SBOM designed for contract-pinning must not contain fabricated
+  // measurements; latencyPercentiles were hardcoded, never measured.
+  for (const tool of buildManifest().tools) {
+    assert.ok(!("latencyPercentiles" in tool), `${tool.name} must not carry invented latency numbers`);
   }
 });
 
@@ -107,7 +106,21 @@ test("canonical tool list in api/mcp-manifest.js includes shadow_verify_attestat
   );
 });
 
-test("mcp/server.js source contains a TOOLS array with 8 tool names", () => {
+test("manifest and mcp/server.js agree on the EXACT tool-name set (bidirectional)", () => {
+  // One-way checks let the server grow a 11th/12th tool the manifest never
+  // lists — exactly the silent drift the manifest_hash pitch promises to
+  // prevent (shadow_banking_profile drifted unlisted until 2026-07-29).
+  const src0 = readFileSync(join(REPO_ROOT, "mcp", "server.js"), "utf-8");
+  const serverNames = new Set([...src0.matchAll(/name: "(shadow_[a-z_]+)"/g)].map((m) => m[1]));
+  const manifestNames = new Set(buildManifest().tools.map((t2) => t2.name));
+  assert.deepEqual(
+    [...manifestNames].sort(),
+    [...serverNames].sort(),
+    "manifest tool set must equal mcp/server.js tool set exactly",
+  );
+});
+
+test("mcp/server.js source contains every manifest tool name", () => {
   // Rough parity check — if mcp/server.js drops a tool, this test catches
   // the drift so the manifest stays honest.
   const src = readFileSync(join(REPO_ROOT, "mcp", "server.js"), "utf-8");

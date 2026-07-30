@@ -101,7 +101,7 @@ Does not prove:
 - That the verdict was correct.
 - That the input was truthful.
 - That the LLM rationale is factually accurate.
-- That the bank did not re-sign the chain with the same private key at a later date. This is the "insider at the bank" adversary. Defeating this requires an external timestamp anchor — RFC 3161 TSA or an append-only public log (Sigstore Rekor, for example). Neither is currently wired into Shadow. See v2.1 roadmap.
+Verification of both anchor types is SHIPPED: `--check-anchors full` in the verify CLI, the `shadow_banking_profile` MCP tool, and `api/banking-profile` all validate RFC 3161 / Rekor anchors (`packages/attest-core/anchors.js`, pinned by `test/seal-and-anchor.test.js`). Creation (`sealAndAnchor`) exists and is unit-tested; a worked end-to-end example against a real TSA/Rekor instance is the remaining gap.
 
 ## What is not part of this architecture
 
