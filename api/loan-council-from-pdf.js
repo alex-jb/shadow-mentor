@@ -35,6 +35,7 @@
 //   400 extracted loan failed validateLoan (schema violation)
 
 import { extractTextFromPdf, extractLoanFields } from "../lib/ocr/index.js";
+import { apiGuard } from "../lib/api-guard.js";
 import { runLoanCouncil } from "../lib/run-loan-council.js";
 import { validateLoan } from "../lib/schemas/loan.js";
 
@@ -49,17 +50,22 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "POST only" });
   }
 
+  // Denial-of-wallet guard: auth (fail-closed if SHADOW_API_KEY set) + rate limit + size cap.
+  if (!apiGuard(req, res, { maxBytes: 12 * 1024 * 1024, rpm: 10 })) return;
+
   const { pdf_base64, force_ocr_provider, force_extractor } = req.body ?? {};
 
   let pdfBuffer = null;
   if (pdf_base64) {
-    try {
-      pdfBuffer = Buffer.from(pdf_base64, "base64");
-    } catch (err) {
-      return res.status(400).json({
-        error: "pdf_base64 not valid base64",
-        details: err?.message
-      });
+    if (typeof pdf_base64 !== "string") {
+      return res.status(400).json({ error: "pdf_base64 must be a base64 string" });
+    }
+    // Buffer.from(...,"base64") never throws (it silently drops invalid chars), so the
+    // old try/catch was dead code. Validate the decoded bytes are actually a PDF via
+    // the %PDF- magic header instead of trusting the field name.
+    pdfBuffer = Buffer.from(pdf_base64, "base64");
+    if (pdfBuffer.length < 5 || pdfBuffer.subarray(0, 5).toString("latin1") !== "%PDF-") {
+      return res.status(400).json({ error: "pdf_base64 does not decode to a PDF (missing %PDF- header)" });
     }
   }
   // Allow empty body for stub-demo mode (no PDF uploaded → OCR returns stub text)

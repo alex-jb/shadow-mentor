@@ -10,6 +10,8 @@
 // Returns: { verdict:{text,tone}, claims:[{text,source}], model_id }
 // 503 with a clear message when no ANTHROPIC_API_KEY — the demo falls back to its
 // offline mock (recommended for an airplane-mode venue).
+import { apiGuard } from "../lib/api-guard.js";
+
 const MODEL = "claude-haiku-4-5";
 
 export default async function handler(req, res) {
@@ -22,6 +24,9 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "POST only", example: { image_base64: "<base64>", media_type: "image/png", kind: "financial statement" } });
   }
+
+  // Denial-of-wallet guard: auth (fail-closed if SHADOW_API_KEY set) + rate limit + size cap.
+  if (!apiGuard(req, res, { maxBytes: 8 * 1024 * 1024, rpm: 15 })) return;
 
   const { image_base64, media_type = "image/png", kind = "financial document" } = req.body ?? {};
   if (!image_base64 || typeof image_base64 !== "string") {

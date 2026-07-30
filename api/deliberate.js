@@ -9,6 +9,7 @@
 // to prove the council pattern, not to ship enterprise data through it.
 
 import Anthropic from "@anthropic-ai/sdk";
+import { apiGuard } from "../lib/api-guard.js";
 import { callGlm } from "../lib/glm-call.js";
 import { callLocalLlm } from "../lib/local-llm-call.js";
 import { PERSONA_PROMPTS, SCENARIO_CONTEXTS } from "../lib/prompts.js";
@@ -58,6 +59,8 @@ export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
+  // Denial-of-wallet guard: auth (fail-closed if SHADOW_API_KEY set) + rate limit + size cap.
+  if (!apiGuard(req, res, { maxBytes: 128 * 1024, rpm: 20 })) return;
 
   const body = req.body || {};
 

@@ -54,10 +54,6 @@
     frame: {
       label: "🕶 Brilliant Frame · color mini HUD · camera + local-only · open SDK",
       describe: "Brilliant Frame mode — color mini HUD shows 2 voices (junior + compliance). Camera scans screen + real-world; processed locally and discarded. Best for internal scenarios where no customer is present."
-    },
-    xreal: {
-      label: "✨ XReal Air 2 Ultra · 6DoF spatial AR · bone conduction · camera + local-only",
-      describe: "XReal Air 2 Ultra mode — JARVIS-style. 3 floating panels anchored in your real workspace at depth (Risk Surface, Bias Constellation, Counterparty Network). Full 3-voice council. Only you can see the panels through the AR glasses. Bone-conduction council whisper. Power-user / trader / analyst at own desk."
     }
   };
 

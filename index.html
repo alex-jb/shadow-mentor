@@ -4,7 +4,43 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Shadow — Independent evidence & decision audit layer for AI</title>
+<meta name="description" content="Shadow is the independent, open-source verifier for AI decisions in regulated workflows. When an AI agent approves a loan or runs a compliance check, Shadow produces a signed, hash-chained evidence bundle any third party can verify offline — with ECOA/Reg B adverse-action codes and GDPR Art. 22 explainability mapped to each decision." />
 <link rel="stylesheet" href="src/style.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "Shadow",
+      "applicationCategory": "BusinessApplication",
+      "applicationSubCategory": "AI governance & audit",
+      "operatingSystem": "Node.js, Web, MCP",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Open-source core (MIT)" },
+      "description": "The independent, open-source verifier for AI decisions in regulated workflows. Records what an AI agent decided, why, and against which regulation as a signed, hash-chained evidence bundle any third party can verify offline. Others log their own agents; Shadow verifies anyone's — independently.",
+      "featureList": [
+        "Ed25519-signed, SHA-256 hash-chained evidence bundles",
+        "Offline single-file verifier (no network, no dependencies)",
+        "ECOA / Reg B adverse-action reason-code mapping",
+        "GDPR Art. 22 + Schufa explainability",
+        "Independent audit of third-party / untrusted agent output"
+      ],
+      "license": "https://opensource.org/licenses/MIT",
+      "codeRepository": "https://github.com/alex-jb/shadow-mentor",
+      "keywords": "AI decision audit, verifiable AI, agent governance, adverse action, ECOA, Reg B, GDPR Article 22, evidence bundle, hash chain, Ed25519"
+    },
+    {
+      "@type": "Organization",
+      "name": "Shadow",
+      "url": "https://orshadow.com",
+      "sameAs": ["https://github.com/alex-jb/shadow-mentor"]
+    },
+    { "@type": "DefinedTerm", "name": "Evidence bundle", "description": "A signed, hash-chained record of an AI decision — the claims made, the evidence each cites, the policies applied, and the final recommendation — independently verifiable offline." },
+    { "@type": "DefinedTerm", "name": "First failure", "description": "The exact point in an AI decision's provenance chain where verification breaks — surfaced spatially so an auditor sees where trust ends." },
+    { "@type": "DefinedTerm", "name": "Independent verification", "description": "A non-conflicted third party (not the model vendor) confirms an AI decision's record was not silently rewritten — the seat an examiner requires that a self-attesting platform cannot fill." }
+  ]
+}
+</script>
 </head>
 <body>
 <header class="topbar">
@@ -18,7 +54,6 @@
     <button id="dev-desktop" class="dev-btn active" data-device="desktop">🖥 Desktop</button>
     <button id="dev-g2" class="dev-btn" data-device="g2">👓 Even G2</button>
     <button id="dev-frame" class="dev-btn" data-device="frame">🕶 Brilliant Frame</button>
-    <button id="dev-xreal" class="dev-btn" data-device="xreal">✨ XReal Air 2 Ultra</button>
     <span class="mode-divider"></span>
     <span class="mode-label">Mode:</span>
     <button id="mode-cloud" class="mode-btn active">Cloud (mock)</button>
@@ -123,37 +158,6 @@
   <a href="docs/shadow-onepager.md">one-pager →</a>
   <a href="docs/2026-06-17-market-research-memo.md">research memo →</a>
 </footer>
-
-<!-- XReal "spatial AR" overlay — visible only when xreal device is selected -->
-<div class="spatial-panels" id="spatial-panels">
-  <div class="spatial-panel sp-risk">
-    <div class="panel-title">⌖ 3D Risk Surface</div>
-    VaR(99%) 1d: $4.2M<br/>
-    ES tail: $5.8M<br/>
-    Concentration HHI: 1,840<br/>
-    <span style="color:#fbbf24;">▲ vol regime shift</span>
-  </div>
-  <div class="spatial-panel sp-bias">
-    <div class="panel-title">⌖ Bias Constellation</div>
-    n=30 prior calls<br/>
-    approve cluster: 18 (high agree)<br/>
-    block scatter: 7 (split council)<br/>
-    <span style="color:#34d399;">✓ calibration healthy</span>
-  </div>
-  <div class="spatial-panel sp-network">
-    <div class="panel-title">⌖ Counterparty Network</div>
-    52,418 nodes loaded<br/>
-    you are 2-hops from<br/>
-    flagged sub-cluster<br/>
-    <span style="color:#ef4444;">⚠ walk to inspect</span>
-  </div>
-  <div class="spatial-panel sp-jarvis-hint">
-    <div class="panel-title">⌖ JARVIS mode active</div>
-    Same brain. 3 floating panels anchored<br/>
-    in your real workspace. Only you can see them.<br/>
-    Bone-conduction audio whispers council verdicts.
-  </div>
-</div>
 
 <script src="src/mock-data.js"></script>
 <script src="src/app.js"></script>

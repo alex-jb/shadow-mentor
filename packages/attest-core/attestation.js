@@ -92,14 +92,32 @@ export const SIGNATURE_MODES = Object.freeze({
   ED25519: "ed25519",
 });
 
-// Default mode. HMAC keeps existing callers back-compat. Ops teams
-// running procurement pilots should flip to ed25519 via env var:
-//   SHADOW_ATTESTATION_MODE=ed25519
-//   SHADOW_ATTESTATION_ED25519_PRIVATE_KEY=<PEM or base64 raw>
-//   SHADOW_ATTESTATION_KEY_ID=<rotation-tag>
-const DEFAULT_MODE = process.env.SHADOW_ATTESTATION_MODE === "ed25519"
-  ? SIGNATURE_MODES.ED25519
-  : SIGNATURE_MODES.HMAC;
+// Default mode: prefer Ed25519 (asymmetric, INDEPENDENTLY verifiable) whenever an
+// Ed25519 key is configured or explicitly requested — so any real deployment that
+// sets a key automatically produces the independently-verifiable signatures we
+// advertise, with no second flag to remember. HMAC-SHA256 (shared-secret, NOT
+// independently verifiable) remains only for keyless local dev / back-compat and
+// emits a one-time warning so it can never reach a procurement buyer by accident.
+//   SHADOW_ATTESTATION_ED25519_PRIVATE_KEY=<PEM or base64 raw>   → Ed25519 (recommended)
+//   SHADOW_ATTESTATION_MODE=hmac                                 → force dev HMAC
+const DEFAULT_MODE = (() => {
+  const m = process.env.SHADOW_ATTESTATION_MODE;
+  if (m === "hmac") return SIGNATURE_MODES.HMAC;
+  if (m === "ed25519") return SIGNATURE_MODES.ED25519;
+  return process.env.SHADOW_ATTESTATION_ED25519_PRIVATE_KEY
+    ? SIGNATURE_MODES.ED25519
+    : SIGNATURE_MODES.HMAC;
+})();
+
+// One-time loud warning the moment HMAC is actually used to sign, so a
+// shared-secret (non-independently-verifiable) attestation can't be shipped to a
+// bank silently. Suppressed under test.
+let _hmacWarned = false;
+function warnHmacOnce() {
+  if (_hmacWarned || process.env.NODE_ENV === "test" || process.env.SHADOW_SUPPRESS_HMAC_WARN) return;
+  _hmacWarned = true;
+  console.warn("[shadow] ⚠ signing with HMAC-SHA256 (shared secret) — this attestation is NOT independently verifiable; set SHADOW_ATTESTATION_ED25519_PRIVATE_KEY for procurement-grade Ed25519.");
+}
 
 // Ed25519 key material from env — nullable; we only fail if callers
 // actually request ed25519 mode without providing a key.
@@ -335,6 +353,7 @@ export function buildAttestation(params) {
   if (mode !== SIGNATURE_MODES.HMAC && mode !== SIGNATURE_MODES.ED25519) {
     throw new Error(`buildAttestation: unsupported mode "${mode}"`);
   }
+  if (mode === SIGNATURE_MODES.HMAC) warnHmacOnce();
 
   const requestCommitment = commitmentOf(request);
   const outputCommitment = commitmentOf(response);

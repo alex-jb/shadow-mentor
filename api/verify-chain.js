@@ -58,9 +58,16 @@ export default async function handler(req, res) {
 
   return res.status(200).json({
     ...result,
+    // SCOPE (honesty): this endpoint verifies hash-chain ORDERING/INTEGRITY only —
+    // that the sequence wasn't reordered, inserted-into, or truncated. It does NOT
+    // verify signatures/authenticity (a fully re-computed forged chain would pass
+    // the link check). Run POST /api/verify-attestation per record with the key to
+    // confirm each attestation is genuinely signed.
+    verifies: "hash-chain-links-only",
+    signature_check: "not-performed — run /api/verify-attestation per record for authenticity",
     interpretation: result.ok
-      ? `Chain intact. All ${result.links_verified} link(s) verified — no reordering, insertion, or truncation detected.`
-      : `Chain COMPROMISED at index ${result.broken_at_index}. Records at or after that point cannot be trusted for audit purposes.`,
+      ? `Hash-chain intact: all ${result.links_verified} link(s) match — no reordering, insertion, or truncation. NOTE: this is an ordering/integrity check ONLY; it does NOT prove authenticity. Verify each record's signature via /api/verify-attestation.`
+      : `Hash-chain COMPROMISED at index ${result.broken_at_index}: records at or after that point fail the link check and cannot be trusted for audit purposes.`,
     latency_ms,
     timestamp: new Date().toISOString(),
   });

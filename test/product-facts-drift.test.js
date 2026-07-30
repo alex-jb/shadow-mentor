@@ -85,3 +85,15 @@ test("head-directed focus is never described as eye tracking", () => {
   const hd = FACTS.pending_capabilities.find((c) => c.id === "head-directed-focus");
   assert.ok(/NOT eye tracking/i.test(hd.note));
 });
+
+test("index.html + src/app.js carry no retired hardware/product narrative", () => {
+  // The header comment promised this surface was guarded; it wasn't — the banned
+  // XReal Air 2 Ultra / JARVIS / 6DoF spatial-AR narrative lived in index.html and
+  // src/app.js while the guard only scanned llms.txt. This closes that gap.
+  for (const p of ["index.html", "src/app.js"]) {
+    const s = read(p);
+    for (const dead of FACTS.retired_narrative_terms) {
+      assert.ok(!s.includes(dead), `${p} still contains retired narrative term: "${dead}"`);
+    }
+  }
+});

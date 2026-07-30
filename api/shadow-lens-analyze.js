@@ -10,6 +10,7 @@
 // works offline; live mode needs ANTHROPIC_API_KEY. Server key from env
 // SHADOW_LENS_PRIVATE_KEY/PUBLIC_KEY, else an ephemeral demo key (returned + labeled).
 import { generateKeyPairSync } from "node:crypto";
+import { apiGuard } from "../lib/api-guard.js";
 import { validateImageInput } from "../apps/shadow-lens/backend/input-guards.mjs";
 import { analyzeSourceBound, makeClaudeLlm, computeSourceMapHash } from "../apps/shadow-lens/backend/analyze.mjs";
 import { buildShadowLensSession } from "../apps/shadow-lens/backend/build-session.mjs";
@@ -41,6 +42,8 @@ export default async function handler(req, res) {
   applyCors(req, res);
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
+  // Denial-of-wallet guard: auth (fail-closed if SHADOW_API_KEY set) + rate limit + size cap.
+  if (!apiGuard(req, res, { maxBytes: 512 * 1024, rpm: 20 })) return;
 
   const body = req.body ?? {};
   const { source_map, capture, device, build, reviewers, reviewer_interaction, decision, findings, mode, capture_image_base64 } = body;

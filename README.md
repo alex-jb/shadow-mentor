@@ -1,6 +1,8 @@
 # Shadow
 
-**A cryptographic evidence layer for AI agents.** Every session becomes a signed, hash-chained record you can hand an auditor. Verify offline with a single HTML file.
+**The independent, open-source verifier for AI decisions in regulated workflows.** When an AI agent approves a loan or runs a compliance check, Shadow independently records *what* it decided, *why*, and against which regulation — a signed, hash-chained evidence bundle any third party can verify offline, with a single HTML file.
+
+> **Others log their own agents; Shadow verifies anyone's — independently.** A platform attesting its own decisions is the vendor grading its own homework; an examiner needs a non-conflicted third party. That seat is the moat, not the cryptography (which Microsoft's Agent Governance Toolkit made free in 2026-04). The defensible depth is the banking reason-code layer — ECOA/Reg B adverse-action codes, GDPR Art. 22 + Schufa explainability — mapped to each decision and each test.
 
 > *Same wire, opposite guarantee.* `claude-mem` is memory for the agent. Shadow is evidence for the auditor. Both hook the same Claude Code events. Different jobs.
 
