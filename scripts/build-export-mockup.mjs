@@ -1,0 +1,130 @@
+#!/usr/bin/env node
+// scripts/build-export-mockup.mjs
+// Design mockup for the thin-scope EXPORT / examiner-pack screen (§4 pattern #8):
+// one-click TYPED document bundle (not a raw PDF) + a read-only examiner portal + the
+// offline-verify instructions, so a regulator re-checks the record with no account and
+// no trust in Shadow. Runs the real council at build time to size the real artifacts.
+// Radix Blue, hallmark disciplines.
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+import { reviewAdverseAction } from "../lib/adverse-action-review.js";
+
+const R = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const D = resolve(R, "demos/adverse-action");
+const application = JSON.parse(readFileSync(resolve(D, "sample-denied-application.json"), "utf8"));
+const result = reviewAdverseAction(application, { keyId: "prod-2026-Q3", nowIso: "2026-07-13T14:02:00.000Z" });
+const bundleBytes = JSON.stringify(result.bundle, null, 2).length;
+const reportBytes = result.report.length;
+const pubkeyBytes = result.publicKeyPem.length;
+const kb = (n) => (n / 1024).toFixed(1) + " KB";
+const OUT = resolve(D, "export-mockup");
+
+const html = `<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Shadow — export the examiner pack</title>
+<meta name="description" content="One-click examiner pack: the adverse-action notice, the reason-code report, and the signed evidence bundle that re-verifies offline — plus a read-only link your examiner opens with no account."/>
+<!-- Hallmark · pre-emit critique: P5 H4 E4 S5 R5 V4 -->
+<style>
+:root{
+  --bg:#FCFCFD;--surface:#FFF;--sunken:#F6F7F9;--border-subtle:#ECEDEF;--border:#DDE0E4;--border-strong:#C4C8CE;
+  --t1:#14161A;--t2:#565C63;--t3:#878D95;--accent:#3E63DD;--accent-hover:#3452C4;--accent-bg:#EDF2FE;
+  --ok:#1A7F37;--ok-bg:#E6F4EA;--warn:#9A6700;--warn-bg:#FFF8E1;--radius:6px;--radius-sm:4px;
+  --sans:-apple-system,"Inter","Segoe UI",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0C0D10;--surface:#141619;--sunken:#0F1013;--border-subtle:#1F2227;--border:#2A2E35;--border-strong:#3A3F47;
+  --t1:#EBEDF0;--t2:#9AA1AB;--t3:#6B7178;--accent:#7B85E0;--accent-hover:#8B94E6;--accent-bg:#1A1D33;
+  --ok:#3FB950;--ok-bg:#12261A;--warn:#D29922;--warn-bg:#26200E;}}
+*{margin:0;padding:0;box-sizing:border-box}html,body{overflow-x:clip}
+body{font-family:var(--sans);background:var(--bg);color:var(--t1);font-feature-settings:"tnum" 1,"cv05" 1;line-height:1.5;-webkit-font-smoothing:antialiased}
+.mono{font-family:var(--mono);font-variant-ligatures:none}.tnum{font-variant-numeric:tabular-nums}
+.wrap{max-width:760px;margin:0 auto;padding:24px 22px 64px}
+header{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--border-subtle);padding-bottom:14px;margin-bottom:18px}
+.wordmark{font-size:15px;font-weight:640}.wordmark b{color:var(--accent)}
+.role{font-size:12px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.lede h1{font-size:21px;font-weight:640;letter-spacing:-.015em;margin-bottom:6px}
+.lede p{font-size:13.5px;color:var(--t2);margin-bottom:8px}
+.sealed{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ok);background:var(--ok-bg);border:1px solid var(--ok);border-radius:20px;padding:2px 11px;margin-bottom:22px}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:16px}
+.panel h2{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);font-weight:640;margin-bottom:12px}
+.art{display:flex;align-items:center;gap:13px;padding:12px 0;border-bottom:1px solid var(--border-subtle)}
+.art:last-child{border-bottom:0}
+.ic{flex:0 0 34px;width:34px;height:34px;border-radius:var(--radius-sm);background:var(--accent-bg);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;font-family:var(--mono)}
+.art .m{flex:1;min-width:0}.art .t{font-size:13.5px;font-weight:560}.art .d{font-size:11.5px;color:var(--t3);margin-top:1px}
+.art .sz{font-size:11.5px;color:var(--t3);font-variant-numeric:tabular-nums}
+.dl{font:inherit;font-size:12px;font-weight:560;height:30px;padding:0 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--t1);cursor:pointer}
+.dl:hover{border-color:var(--border-strong)}
+.pack{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.btn{font:inherit;font-size:13px;font-weight:560;height:34px;padding:0 15px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--t1);cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.primary:hover{background:var(--accent-hover)}
+.verify{background:var(--sunken);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:12px 14px;font-size:12.5px;color:var(--t2)}
+.verify code{font-family:var(--mono);font-size:12px;background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1px 5px}
+.verify .cmd{display:block;font-family:var(--mono);font-size:12px;color:var(--t1);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 11px;margin:8px 0;overflow-x:auto}
+.link{display:flex;align-items:center;gap:10px;background:var(--sunken);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;margin-top:10px}
+.link .u{flex:1;min-width:0;font-family:var(--mono);font-size:11.5px;color:var(--accent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scope{font-size:11.5px;color:var(--t3);margin-top:10px;line-height:1.6}.scope b{color:var(--t2)}
+.warn{font-size:11.5px;color:var(--warn);background:var(--warn-bg);border:1px solid var(--warn);border-radius:var(--radius-sm);padding:8px 11px;margin-top:12px}
+.foot{margin-top:22px;font-size:11px;color:var(--t3);line-height:1.6}.foot a{color:var(--accent);text-decoration:none}
+.critique{margin-top:16px;font-size:10.5px;color:var(--t3);font-family:var(--mono)}
+</style></head>
+<body>
+<div class="wrap">
+  <header><span class="wordmark">🛡 <b>Shadow</b></span><span class="role">export · examiner pack</span></header>
+
+  <div class="lede">
+    <h1>Hand your examiner the record.</h1>
+    <p>One pack, three named artifacts, and a link they open with no account. The signed bundle re-verifies offline — they don't have to trust you, or us.</p>
+  </div>
+  <span class="sealed">● Sealed · Application ${application.application_id} · key <span class="mono" style="font-weight:600;margin-left:3px">prod-2026-Q3</span></span>
+
+  <div class="panel">
+    <h2>What's in the pack</h2>
+    <div class="art">
+      <div class="ic">PDF</div>
+      <div class="m"><div class="t">Adverse-action notice</div><div class="d">The borrower-facing §1002.9(b)(2) notice — 4 principal reasons + ECOA rights.</div></div>
+      <span class="sz">~24 KB</span><button class="dl">Download</button>
+    </div>
+    <div class="art">
+      <div class="ic">MD</div>
+      <div class="m"><div class="t">Reason-code report</div><div class="d">Examiner-readable: each reason code → the model factor → the Reg B / Addendum source.</div></div>
+      <span class="sz">${kb(reportBytes)}</span><button class="dl">Download</button>
+    </div>
+    <div class="art">
+      <div class="ic">JSON</div>
+      <div class="m"><div class="t">Signed evidence bundle + public key</div><div class="d">Ed25519-signed, hash-chained, 5 events — re-verifies offline. Ships with <span class="mono">shadow-public.pem</span>.</div></div>
+      <span class="sz">${kb(bundleBytes + pubkeyBytes)}</span><button class="dl">Download</button>
+    </div>
+    <div class="pack">
+      <button class="btn primary">Download pack (.zip)</button>
+      <button class="btn">Create read-only examiner link</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>How your examiner verifies it — no account, offline</h2>
+    <div class="verify">
+      Any of these re-checks the signature + hash-chain and rebinds the decision to what was signed. Nothing is uploaded; nothing phones home.
+      <span class="cmd">npx shadow-verify bundle.json --public-key shadow-public.pem</span>
+      Or open <code>verify.html</code> from the pack and drop the bundle in. Or compare the key fingerprint against the lender's published key, out-of-band. Green ⇒ intact; red ⇒ names the exact altered step.
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Read-only examiner link</h2>
+    <div class="link"><span class="u">https://shadow.example-lender.com/exam/SL-2026-014?token=…</span><button class="dl">Copy</button></div>
+    <div class="scope">
+      <b>Scoped to this one case.</b> The examiner sees the exact same state you do — read-only, no login. Served from your environment (self-hosted), so no applicant PII passes through Shadow.
+      <br><b>Observation window:</b> 2026-07-13 → 2026-08-12. <b>Locked on handoff:</b> once shared, the record can't be silently altered — any change re-seals as a new version and the old link keeps showing what was handed over.
+    </div>
+    <div class="warn">Applicant PII (FICO/DTI/notice text) lives in the report, not the bundle. A hosted share carries the <b>bundle only</b>; the full pack with the report is download-first or served from your own environment.</div>
+  </div>
+
+  <div class="foot">Independent + open-source (MIT). The bundle re-verifies with the same CLI a bank runs in its own CI. · <a href="https://github.com/alex-jb/shadow-mentor">github.com/alex-jb/shadow-mentor</a></div>
+  <div class="critique">Hallmark · pre-emit critique: P5 H4 E4 S5 R5 V4 — mockup for docs/APP_DESIGN_BRIEF §4 pattern #8 (Export screen, thin scope)</div>
+</div>
+</body></html>`;
+
+mkdirSync(OUT, { recursive: true });
+writeFileSync(resolve(OUT, "index.html"), html);
+console.log("[build] demos/adverse-action/export-mockup/index.html  (Export / examiner-pack screen — typed artifacts + read-only portal + offline verify)");
