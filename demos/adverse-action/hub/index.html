@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Shadow — adverse-action verification, one flow</title>
+<meta name="description" content="The thin-scope Shadow product: review an AI-denied credit decision, seal an exam-ready record, hand your examiner a link they verify themselves — offline, no account. Three working mockups on synthetic data."/>
+<!-- Hallmark · pre-emit critique: P5 H5 E4 S5 R5 V4 -->
+<style>
+:root{
+  --bg:#FCFCFD;--surface:#FFF;--sunken:#F6F7F9;--border-subtle:#ECEDEF;--border:#DDE0E4;--border-strong:#C4C8CE;
+  --t1:#14161A;--t2:#565C63;--t3:#878D95;--accent:#3E63DD;--accent-hover:#3452C4;--accent-bg:#EDF2FE;
+  --ok:#1A7F37;--ok-bg:#E6F4EA;--radius:6px;--radius-sm:4px;
+  --sans:-apple-system,"Inter","Segoe UI",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0C0D10;--surface:#141619;--sunken:#0F1013;--border-subtle:#1F2227;--border:#2A2E35;--border-strong:#3A3F47;
+  --t1:#EBEDF0;--t2:#9AA1AB;--t3:#6B7178;--accent:#7B85E0;--accent-hover:#8B94E6;--accent-bg:#1A1D33;--ok:#3FB950;--ok-bg:#12261A;}}
+*{margin:0;padding:0;box-sizing:border-box}html,body{overflow-x:clip}
+body{font-family:var(--sans);background:var(--bg);color:var(--t1);line-height:1.5;-webkit-font-smoothing:antialiased}
+.mono{font-family:var(--mono)}
+.wrap{max-width:780px;margin:0 auto;padding:44px 24px 72px}
+header{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--border-subtle);padding-bottom:16px;margin-bottom:26px}
+.wordmark{font-size:15px;font-weight:640}.wordmark b{color:var(--accent)}
+.role{font-size:12px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.lede{max-width:600px;margin-bottom:14px}
+.lede h1{font-size:23px;font-weight:640;letter-spacing:-.015em;margin-bottom:9px;line-height:1.25}
+.lede p{font-size:14px;color:var(--t2)}
+.synthetic{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--t3);border:1px solid var(--border);border-radius:20px;padding:2px 11px;margin-bottom:26px}
+.flow{display:flex;flex-direction:column;gap:12px}
+a.card{display:flex;align-items:flex-start;gap:15px;text-decoration:none;color:inherit;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:17px 18px;transition:border-color .12s,background .12s}
+a.card:hover{border-color:var(--accent);background:var(--accent-bg)}
+.num{flex:0 0 26px;width:26px;height:26px;border-radius:50%;border:1px solid var(--border-strong);color:var(--t2);font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums;margin-top:1px}
+a.card:hover .num{border-color:var(--accent);color:var(--accent)}
+.m{flex:1;min-width:0}.t{font-size:15.5px;font-weight:600}.t .who{font-weight:400;color:var(--t3);font-size:13px;margin-left:6px}
+.d{font-size:12.5px;color:var(--t2);margin-top:3px;line-height:1.5}
+.arw{color:var(--border-strong);font-size:20px;margin-top:2px}a.card:hover .arw{color:var(--accent)}
+.rail{margin:24px 0;padding:14px 16px;background:var(--sunken);border:1px solid var(--border-subtle);border-radius:var(--radius);font-size:12.5px;color:var(--t2)}
+.rail b{color:var(--t1)}.rail .mono{font-size:12px;color:var(--t1);background:var(--surface);border:1px solid var(--border);border-radius:3px;padding:1px 5px}
+.foot{margin-top:26px;font-size:11.5px;color:var(--t3);line-height:1.7}.foot a{color:var(--accent);text-decoration:none}
+</style></head>
+<body>
+<div class="wrap">
+  <header><span class="wordmark">🛡 <b>Shadow</b></span><span class="role">adverse-action verification</span></header>
+
+  <div class="lede">
+    <h1>When the examiner asks why your model denied that applicant, answer in an afternoon — with a record they verify themselves.</h1>
+    <p>The independent, open-source verifier for AI credit decisions. Not the model vendor — which is exactly why the record is credible. One workflow, three surfaces.</p>
+  </div>
+  <span class="synthetic">● Working mockups on synthetic data — the verify moment is real</span>
+
+  <div class="flow">
+    <a class="card" href="https://shadow-review-sign-mockup.vercel.app/" target="_blank" rel="noopener">
+      <span class="num">1</span>
+      <span class="m"><span class="t">Review &amp; sign<span class="who">the compliance officer</span></span>
+      <span class="d">One AI-denied decision → the Reg B / ECOA §1002.9(b)(2) principal reasons, an editable notice, human sign-off. The verdict is deterministic; you word the reasons, or dispute them back to the model team.</span></span>
+      <span class="arw">›</span>
+    </a>
+    <a class="card" href="https://shadow-export-mockup.vercel.app/" target="_blank" rel="noopener">
+      <span class="num">2</span>
+      <span class="m"><span class="t">Export the pack<span class="who">hand it over</span></span>
+      <span class="d">A typed bundle — the adverse-action notice, the reason-code report, and the signed evidence bundle that re-verifies offline — plus a read-only link your examiner opens with no account.</span></span>
+      <span class="arw">›</span>
+    </a>
+    <a class="card" href="https://shadow-verify-mockup.vercel.app/" target="_blank" rel="noopener">
+      <span class="num">3</span>
+      <span class="m"><span class="t">Verify<span class="who">what the examiner (or the applicant) does</span></span>
+      <span class="d">Drop the bundle → check the signature + hash-chain and rebind the decision to what was signed, in the browser. Green ⇒ intact; red ⇒ names the exact altered step. No account, no trust in us.</span></span>
+      <span class="arw">›</span>
+    </a>
+  </div>
+
+  <div class="rail">
+    <b>See it end-to-end first?</b> The <a href="https://shadow-aa-demo.vercel.app/" style="color:var(--accent);text-decoration:none">worked example</a> runs one denied loan through all of it on a single page — verify it, then tamper with it and watch it break. Or from a terminal: <span class="mono">npx shadow-verify bundle.json --public-key k.pem</span>.
+  </div>
+
+  <div class="foot">Independent + open-source (MIT). EU-first (GDPR Art. 22 + Schufa) and US (Reg B / ECOA). The record re-verifies with no account and no trust in Shadow. · <a href="https://github.com/alex-jb/shadow-mentor">github.com/alex-jb/shadow-mentor</a></div>
+</div>
+</body></html>
