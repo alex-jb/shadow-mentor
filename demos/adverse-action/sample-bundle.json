@@ -2,9 +2,9 @@
   "bundle_version": 1,
   "spec_version": "shadow-evidence/v1",
   "header": {
-    "session_id": "9582beaed81f72f858d02bd2fdd5ba8d957e1fe64d59c02266aa8aca8ae71553",
-    "session_started_at_utc": "2026-07-31T01:58:57.074Z",
-    "session_ended_at_utc": "2026-07-31T01:58:57.075Z",
+    "session_id": "a83f7d08d60ec4ca4370896220b6d4cae4a699d3123ae3ae2bb6c60e76023d91",
+    "session_started_at_utc": "2026-07-31T02:13:06.743Z",
+    "session_ended_at_utc": "2026-07-31T02:13:06.744Z",
     "agent": {
       "name": "shadow-adverse-action",
       "version": "1.0.0",
@@ -24,62 +24,62 @@
   "events": [
     {
       "seq": 0,
-      "ts_utc": "2026-07-31T01:58:57.074Z",
+      "ts_utc": "2026-07-31T02:13:06.743Z",
       "event_type": "session_start",
       "actor": "system",
       "payload_hash": "510f2f3473921066e54514aa8fbf447799c9a9d0987f052d252259083c3f10ac",
       "payload_ref": "sha256:510f2f3473921066e54514aa8fbf447799c9a9d0987f052d252259083c3f10ac",
-      "prev_hash": "def24373604206af3e31bc49795efbba91e857cb85409a7d81d1f2e71dcde53f",
+      "prev_hash": "ef21ff45ddc7ebdccd574ac5f6a929cef208ab9937d85571bb184c33962d0304",
       "extensions": {}
     },
     {
       "seq": 1,
-      "ts_utc": "2026-07-31T01:58:57.074Z",
+      "ts_utc": "2026-07-31T02:13:06.743Z",
       "event_type": "user_message",
       "actor": "user",
       "payload_hash": "2e4d1481bbe86b192ce5de0a9ef26fd149cb44f2c76abb0ae77f0b67b223c1af",
       "payload_ref": "sha256:2e4d1481bbe86b192ce5de0a9ef26fd149cb44f2c76abb0ae77f0b67b223c1af",
-      "prev_hash": "3e2c642a041e812ed116b592510cb64459db0415e253d91b08eb436f4c5cdf8e",
+      "prev_hash": "0b1daeb7bce9ebed8450bff58bb3d1b8212c89e70ee5cc64ed8d3341f626472e",
       "extensions": {}
     },
     {
       "seq": 2,
-      "ts_utc": "2026-07-31T01:58:57.074Z",
+      "ts_utc": "2026-07-31T02:13:06.743Z",
       "event_type": "model_output",
       "actor": "model",
       "payload_hash": "961ec39ab2b769138dd9fc68fe3ec522b138caace1dd63dcc9940aaa53244c52",
       "payload_ref": "sha256:961ec39ab2b769138dd9fc68fe3ec522b138caace1dd63dcc9940aaa53244c52",
-      "prev_hash": "d11e14958782a1c2bde44f7618dd3974b723be3e27f2b7f55b23529c5ba2a623",
+      "prev_hash": "a26e2aa543c882cb7eb2b8025317c7e48dc374492bc0b1b7b70bf3a4912f1cea",
       "extensions": {}
     },
     {
       "seq": 3,
-      "ts_utc": "2026-07-31T01:58:57.074Z",
+      "ts_utc": "2026-07-31T02:13:06.743Z",
       "event_type": "tool_result",
       "actor": "tool",
       "payload_hash": "2e1f8f6cf2ca1ed6cca4b3bc45d66b6722195325f1bd4203100564952211f6b1",
       "payload_ref": "sha256:2e1f8f6cf2ca1ed6cca4b3bc45d66b6722195325f1bd4203100564952211f6b1",
-      "prev_hash": "58c8a484f5ae3dda315649265ce5c21822339bef0ee5d00973fe5c5569825033",
+      "prev_hash": "74d47f7fc533271ed00f8d18e7ec1860a903aa945afca8fd0263b9de850405f5",
       "extensions": {}
     },
     {
       "seq": 4,
-      "ts_utc": "2026-07-31T01:58:57.075Z",
+      "ts_utc": "2026-07-31T02:13:06.744Z",
       "event_type": "session_end",
       "actor": "system",
       "payload_hash": "5c7659c00515f4fc4bc04482c438ccc4fd52bb017b490b2e8ebe3a0e9ac62bc2",
       "payload_ref": "sha256:5c7659c00515f4fc4bc04482c438ccc4fd52bb017b490b2e8ebe3a0e9ac62bc2",
-      "prev_hash": "cda0acffde3f4c55b05f272515d9da0e677b240ecccc17485902e8de607eb956",
+      "prev_hash": "11a900be205742b5a5e2b5e18229039205c205189f59281ada43f98fb03d907d",
       "extensions": {}
     }
   ],
-  "batch_root": "61bf993950618eced96ef83d96527da7b4f172422436aa5b6ed2be8d19ae48a0",
+  "batch_root": "0e3edd35b2e12aa642cb214afae88667e8c204f912d51966556379197f6f57c2",
   "signatures": [
     {
       "algorithm": "ed25519",
       "key_id": "ephemeral-demo",
-      "signature": "MJTDWf3Uoznz4GzV0MSwx40AC-aJeOy2hzUycsT15uDxA9lYKltFYYQ4qPYHy6nmqe1uyU3ulWYC1PQsY_eLAw",
-      "signed_at_utc": "2026-07-31T01:58:57.076Z"
+      "signature": "SRLwasBuE7QfGcVHlpeJSdZvsK5NjPMB8uebvzEfaQbSawCN9F4Lmeuf7jctaACBoS6eAk3GJWCxp2fOH6MtCg",
+      "signed_at_utc": "2026-07-31T02:13:06.745Z"
     }
   ]
 }

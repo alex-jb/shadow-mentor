@@ -1,5 +1,5 @@
 # Adverse-Action Review — SL-2026-014
-*Independent verification by Shadow · 2026-07-31T01:58:57.074Z · signing: Ed25519 (ephemeral demo key — pass --key for a persistent identity)*
+*Independent verification by Shadow · 2026-07-31T02:13:06.743Z · signing: Ed25519 (ephemeral demo key — pass a key for a persistent identity)*
 
 **Decision:** BLOCK
 **Applicant signals:** FICO 648 · DTI 0.45 · LTV 0.9
@@ -47,5 +47,4 @@ You have the right to a statement of the specific reasons for this decision unde
 
 ## Evidence record
 - Bundle: signed + hash-chained (5 events).
-- Self-check: **verified**.
-- Re-verify independently, offline with the accompanying public key: `bin/shadow-verify.mjs <bundle.json> --public-key <bundle>.pub.pem` — or open `verify.html` and drop the bundle in. No network, no trust in Shadow required.
+- Re-verify independently, offline with the accompanying public key: `bin/shadow-verify.mjs <bundle.json> --public-key <pub>.pem`, or open `verify.html` and drop the bundle in. No network, no trust in Shadow required.
