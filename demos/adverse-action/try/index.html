@@ -503,7 +503,7 @@ const seedHash=h=>sha256Hex(cbytes({...h,session_ended_at_utc:null}));
 const signedShape=e=>{const{payload_ref,payload,...r}=e;return r;};
 const hexToBytes=h=>{const o=new Uint8Array(h.length/2);for(let i=0;i<o.length;i++)o[i]=parseInt(h.substr(i*2,2),16);return o;};
 const b64u=s=>{const p=s.replace(/-/g,"+").replace(/_/g,"/")+"==".slice(0,(4-s.length%4)%4);const b=atob(p);const o=new Uint8Array(b.length);for(let i=0;i<b.length;i++)o[i]=b.charCodeAt(i);return o;};
-function pemToSpki(pem){const c=pem.replace(/-----BEGIN [^-]+-----|-----END [^-]+-----|\s+/g,"");const b=atob(c);const o=new Uint8Array(b.length);for(let i=0;i<b.length;i++)o[i]=b.charCodeAt(i);return o.buffer;}
+function pemToSpki(pem){const c=pem.replace(/-----BEGIN [^-]+-----|-----END [^-]+-----|\\\\s+/g,"");const b=atob(c);const o=new Uint8Array(b.length);for(let i=0;i<b.length;i++)o[i]=b.charCodeAt(i);return o.buffer;}
 async function verifyBundle(bundle,pem){
   if(!bundle||typeof bundle!=="object")return{ok:false,reason:"bundle_missing"};
   if(bundle.bundle_version!==1)return{ok:false,reason:"unsupported_version"};

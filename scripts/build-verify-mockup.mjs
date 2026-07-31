@@ -8,15 +8,14 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { BROWSER_VERIFY_JS as VERIFY_JS } from "../packages/attest-core/verify-bundle.browser.mjs";
 
 const R = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const D = resolve(R, "demos/adverse-action");
 const bundle = readFileSync(resolve(D, "sample-bundle.json"), "utf8").trim();
 const pubkey = readFileSync(resolve(D, "sample-bundle.pub.pem"), "utf8").trim();
 
-// Reuse the corrected VERIFY_JS verbatim from the demo build (single source of truth).
-const demoSrc = readFileSync(resolve(R, "scripts/build-adverse-action-demo.mjs"), "utf8");
-const VERIFY_JS = demoSrc.match(/const VERIFY_JS = `([\s\S]*?)`;/)[1];
+// The browser verifier is the single shared source in packages/attest-core (imported above).
 
 const OUT = resolve(D, "verify-mockup");
 

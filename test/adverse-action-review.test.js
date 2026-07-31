@@ -76,6 +76,18 @@ test("the wedge bundle is self-contained — verify reports source_resolution VE
   assert.equal(v.sourceResolution, "VERIFIED", "every event's plaintext must rebind to its hash");
 });
 
+// B4 — draft mode returns the reasons + notices UNSIGNED (no eager seal, no ephemeral key);
+// sealing happens on a later call with the final notices + a persistent key.
+test("draft mode returns notices but no sealed bundle", () => {
+  const r = reviewAdverseAction(DENIED, { draft: true });
+  assert.equal(r.draft, true);
+  assert.equal(r.verify, "draft");
+  assert.equal(r.bundle, null);
+  assert.equal(r.publicKeyPem, null);
+  assert.equal(r.ephemeralKey, false);
+  assert.ok(r.notices.length >= 1, "draft still surfaces the reason-coded notices to review");
+});
+
 // B2 — a real LOS record missing a ratio must yield a legible error, not a
 // `Cannot read properties of undefined (reading 'toFixed')` crash.
 test("a missing required ratio yields a legible error, not a crash", () => {

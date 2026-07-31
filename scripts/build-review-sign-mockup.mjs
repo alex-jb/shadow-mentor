@@ -10,6 +10,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { BROWSER_VERIFY_JS as VERIFY_JS } from "../packages/attest-core/verify-bundle.browser.mjs";
 import { reviewAdverseAction } from "../lib/adverse-action-review.js";
 
 const R = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -21,8 +22,7 @@ const bundleJson = JSON.stringify(result.bundle);
 const noticeText = (n) => !n.notice ? "" : (typeof n.notice === "string" ? n.notice : (n.notice.text || n.notice.reason || ""));
 const reasons = result.notices.map((n) => ({ code: n.code, label: n.label || "", source: (application && "") , text: noticeText(n) }));
 
-const demoSrc = readFileSync(resolve(R, "scripts/build-adverse-action-demo.mjs"), "utf8");
-const VERIFY_JS = demoSrc.match(/const VERIFY_JS = `([\s\S]*?)`;/)[1];
+// The browser verifier is the single shared source in packages/attest-core (imported above).
 
 // ECOA rights block (shown once, not per card — it's the same statutory language).
 const ECOA = "The federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, age, or because income derives from a public-assistance program. The federal agency that administers compliance is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington DC 20552.";
