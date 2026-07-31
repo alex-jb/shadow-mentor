@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Shadow — review &amp; sign an adverse action</title>
+<meta name="description" content="The compliance officer's workspace: review the model's principal reason codes, edit the Reg B notice, sign off to seal a tamper-evident record, or dispute the decision back to the model team."/>
+<!-- Hallmark · pre-emit critique: P5 H5 E4 S5 R4 V4 -->
+<style>
+:root{
+  --bg:#FCFCFD;--surface:#FFF;--sunken:#F6F7F9;--border-subtle:#ECEDEF;--border:#DDE0E4;--border-strong:#C4C8CE;
+  --t1:#14161A;--t2:#565C63;--t3:#878D95;--accent:#3E63DD;--accent-hover:#3452C4;--accent-bg:#EDF2FE;
+  --ok:#1A7F37;--ok-bg:#E6F4EA;--fail:#B42318;--fail-bg:#FDECEA;--warn:#9A6700;--warn-bg:#FFF8E1;--neutral:#565C63;--neutral-bg:#F0F1F3;
+  --radius:6px;--radius-sm:4px;--sans:-apple-system,"Inter","Segoe UI",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0C0D10;--surface:#141619;--sunken:#0F1013;--border-subtle:#1F2227;--border:#2A2E35;--border-strong:#3A3F47;
+  --t1:#EBEDF0;--t2:#9AA1AB;--t3:#6B7178;--accent:#7B85E0;--accent-hover:#8B94E6;--accent-bg:#1A1D33;
+  --ok:#3FB950;--ok-bg:#12261A;--fail:#F85149;--fail-bg:#2A1615;--warn:#D29922;--warn-bg:#26200E;--neutral:#9AA1AB;--neutral-bg:#1C1F24;}}
+*{margin:0;padding:0;box-sizing:border-box}html,body{overflow-x:clip}
+body{font-family:var(--sans);background:var(--bg);color:var(--t1);font-feature-settings:"tnum" 1,"cv05" 1;line-height:1.5;-webkit-font-smoothing:antialiased}
+.mono{font-family:var(--mono);font-variant-ligatures:none}.tnum{font-variant-numeric:tabular-nums}
+.wrap{max-width:1140px;margin:0 auto;padding:20px 22px 64px}
+header{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--border-subtle);padding-bottom:14px;margin-bottom:16px}
+.wordmark{font-size:15px;font-weight:640;letter-spacing:-.01em}.wordmark b{color:var(--accent)}
+.role{font-size:12px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+/* summary band */
+.band{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:14px}
+.band .id{font-weight:640;font-size:15px}.band .id .mono{font-size:13px;color:var(--t2);font-weight:400}
+.decision{font-size:12px;font-weight:640;color:var(--fail);background:var(--fail-bg);border:1px solid var(--fail);border-radius:var(--radius-sm);padding:2px 8px;letter-spacing:.03em}
+.sig{display:flex;gap:14px;margin-left:auto;font-size:12.5px;color:var(--t2)}
+.sig b{color:var(--t1);font-weight:600}
+.clock{font-size:12px;font-weight:600;color:var(--warn);background:var(--warn-bg);border:1px solid var(--warn);border-radius:20px;padding:2px 10px}
+/* checklist */
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;font-size:12px}
+.step{display:flex;align-items:center;gap:6px;color:var(--t3);padding:4px 10px;border:1px solid var(--border-subtle);border-radius:20px}
+.step .dot{width:7px;height:7px;border-radius:50%;background:var(--border-strong)}
+.step.done{color:var(--ok)}.step.done .dot{background:var(--ok)}
+.step.active{color:var(--accent);border-color:var(--accent)}.step.active .dot{background:var(--accent)}
+/* two-column: work + rail */
+.cols{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:18px;align-items:start}
+@media (max-width:900px){.cols{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.panel h2{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);font-weight:640;margin-bottom:12px;display:flex;justify-content:space-between}
+.detnote{font-size:11.5px;color:var(--t3);margin:-4px 0 14px;background:var(--sunken);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:7px 10px}
+.detnote b{color:var(--t2)}
+.rcard{border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px;background:var(--surface)}
+.rcard.edited{border-color:var(--accent)}
+.rtop{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.code{font-size:12.5px;font-weight:600;color:var(--accent);background:var(--accent-bg);border-radius:var(--radius-sm);padding:1px 7px}
+.rlabel{font-size:13px;font-weight:560;flex:1;min-width:0}
+.state{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;padding:1px 7px;border-radius:var(--radius-sm)}
+.state.grounded{color:var(--ok);background:var(--ok-bg)}
+.state.edited{color:var(--accent);background:var(--accent-bg)}
+.state.refusal{color:var(--warn);background:var(--warn-bg)}
+.nlbl{display:block;font-size:11px;color:var(--t3);margin-bottom:5px}.nlbl .ai{color:var(--accent);margin-left:4px}
+.notice{width:100%;min-height:52px;font:inherit;font-size:12.5px;color:var(--t1);background:var(--sunken);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px;resize:vertical;line-height:1.5}
+.notice:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:var(--accent)}
+.cap{font-size:11px;color:var(--t3);margin:4px 0 14px}
+.ecoa{font-size:11px;color:var(--t3);background:var(--sunken);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:9px 11px;margin-bottom:14px;line-height:1.55}
+details.council{margin-bottom:16px}details.council summary{font-size:12px;color:var(--t2);cursor:pointer;font-weight:560}
+.voices{font-size:12px;color:var(--t2);margin-top:8px}.voices div{padding:3px 0;border-bottom:1px solid var(--border-subtle)}.voices b{color:var(--t1)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid var(--border-subtle);padding-top:14px}
+.btn{font:inherit;font-size:13px;font-weight:560;height:34px;padding:0 15px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--t1);cursor:pointer}
+.btn:hover{border-color:var(--border-strong)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn.primary:hover{background:var(--accent-hover)}
+.btn.primary:disabled{opacity:.5;cursor:not-allowed}
+.btn.danger{color:var(--fail);border-color:var(--fail)}
+/* right rail */
+.rail{position:sticky;top:18px;display:flex;flex-direction:column;gap:14px}
+.banner{border-radius:var(--radius);border:1px solid var(--border);border-left-width:3px;padding:12px 14px}
+.banner .h{font-size:13.5px;font-weight:620;display:flex;align-items:center;gap:7px}.banner .s{font-size:11.5px;margin-top:4px;color:var(--t2)}
+.banner.idle{border-left-color:var(--border-strong)}.banner.idle .h{color:var(--t3)}
+.banner.ok{background:var(--ok-bg);border-left-color:var(--ok)}.banner.ok .h{color:var(--ok)}
+.banner.dispute{background:var(--warn-bg);border-left-color:var(--warn)}.banner.dispute .h{color:var(--warn)}
+.rail h3{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--t3);font-weight:640;margin-bottom:8px}
+.spine{list-style:none}
+.node{position:relative;padding:0 0 12px 20px;font-size:12px;color:var(--t2)}
+.node:before{content:"";position:absolute;left:3px;top:3px;width:9px;height:9px;border-radius:50%;border:2px solid var(--ok);background:var(--surface)}
+.node:after{content:"";position:absolute;left:7px;top:12px;bottom:0;width:2px;background:var(--border)}
+.node:last-child:after{display:none}
+.node b{color:var(--t1);font-weight:560}
+.node .diff{margin-top:3px;font-size:11px;color:var(--accent);background:var(--accent-bg);border-radius:var(--radius-sm);padding:2px 7px;display:none}
+.node.hasdiff .diff{display:inline-block}
+.fp{font-size:11.5px;color:var(--t2)}.fp .mono{color:var(--t1)}
+.railpanel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.foot{margin-top:22px;font-size:11px;color:var(--t3);line-height:1.6}.foot a{color:var(--accent);text-decoration:none}
+.critique{margin-top:16px;font-size:10.5px;color:var(--t3);font-family:var(--mono)}
+</style></head>
+<body>
+<div class="wrap">
+  <header><span class="wordmark">🛡 <b>Shadow</b></span><span class="role">review &amp; sign · adverse action</span></header>
+
+  <div class="band">
+    <span class="id">Application <span class="mono">SL-2026-014</span></span>
+    <span class="decision">DENIED</span>
+    <span class="clock" id="clock">18 days to ECOA notice</span>
+    <span class="sig tnum">FICO <b>648</b> · DTI <b>0.45</b> · LTV <b>0.9</b> · model <b class="mono" style="font-weight:600">loan-council v1</b> · <span class="mono">2026-07-13</span></span>
+  </div>
+
+  <div class="steps" id="steps">
+    <span class="step done"><span class="dot"></span>Reasons cited</span>
+    <span class="step active" data-step="notice"><span class="dot"></span>Notice drafted</span>
+    <span class="step" data-step="signed"><span class="dot"></span>Signed off</span>
+    <span class="step" data-step="ready"><span class="dot"></span>Examiner-ready</span>
+  </div>
+
+  <div class="cols">
+    <div class="panel">
+      <h2><span>Principal reasons · Reg B / ECOA §1002.9(b)(2)</span><span style="color:var(--t3);text-transform:none;letter-spacing:0;font-weight:400">4 of ≤4</span></h2>
+      <div class="detnote">The <b>DENIED</b> verdict is produced by deterministic policy rules (FICO/DTI/LTV/risk thresholds) and is <b>not editable here</b> — only the notice prose below. This is the integrity boundary: you review and word the reasons; you don't rewrite the decision.</div>
+
+    <div class="rcard" data-i="0">
+      <div class="rtop">
+        <span class="code mono">AA01</span>
+        <span class="rlabel">Insufficient credit score for standard approval threshold</span>
+        <span class="state grounded" data-state>grounded</span>
+      </div>
+      <div class="notice-wrap">
+        <label class="nlbl">Principal reason — §1002.9(b)(2) notice text <span class="ai">AI-drafted · editable</span></label>
+        <textarea class="notice" data-orig="This notice is being provided to you because your application for credit was not approved.
+
+The principal reason for this decision is:
+Your credit score of 648 is below our standard approval threshold for this product.
+
+You have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.">This notice is being provided to you because your application for credit was not approved.
+
+The principal reason for this decision is:
+Your credit score of 648 is below our standard approval threshold for this product.
+
+You have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.</textarea>
+      </div>
+    </div>
+    <div class="rcard" data-i="1">
+      <div class="rtop">
+        <span class="code mono">AA02</span>
+        <span class="rlabel">Debt-to-income ratio exceeds standard eligibility threshold</span>
+        <span class="state grounded" data-state>grounded</span>
+      </div>
+      <div class="notice-wrap">
+        <label class="nlbl">Principal reason — §1002.9(b)(2) notice text <span class="ai">AI-drafted · editable</span></label>
+        <textarea class="notice" data-orig="This notice is being provided to you because your application for credit was not approved.
+
+The principal reason for this decision is:
+Your debt-to-income ratio of 45.0% exceeds our standard eligibility threshold for this product.
+
+You have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.">This notice is being provided to you because your application for credit was not approved.
+
+The principal reason for this decision is:
+Your debt-to-income ratio of 45.0% exceeds our standard eligibility threshold for this product.
+
+You have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.</textarea>
+      </div>
+    </div>
+    <div class="rcard" data-i="2">
+      <div class="rtop">
+        <span class="code mono">AA04</span>
+        <span class="rlabel">Portfolio / market risk appetite threshold exceeded</span>
+        <span class="state grounded" data-state>grounded</span>
+      </div>
+      <div class="notice-wrap">
+        <label class="nlbl">Principal reason — §1002.9(b)(2) notice text <span class="ai">AI-drafted · editable</span></label>
+        <textarea class="notice" data-orig="This notice is being provided to you because your application for credit was not approved.
+
+The principal reason for this decision is:
+The requested transaction exceeds our current portfolio risk-appetite threshold for this sector and rating.
+
+You have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.">This notice is being provided to you because your application for credit was not approved.
+
+The principal reason for this decision is:
+The requested transaction exceeds our current portfolio risk-appetite threshold for this sector and rating.
+
+You have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.</textarea>
+      </div>
+    </div>
+    <div class="rcard" data-i="3">
+      <div class="rtop">
+        <span class="code mono">AA03</span>
+        <span class="rlabel">Collateral coverage / LTV exceeds standard eligibility threshold</span>
+        <span class="state grounded" data-state>grounded</span>
+      </div>
+      <div class="notice-wrap">
+        <label class="nlbl">Principal reason — §1002.9(b)(2) notice text <span class="ai">AI-drafted · editable</span></label>
+        <textarea class="notice" data-orig="This notice is being provided to you because your application for credit was not approved.
+
+The principal reason for this decision is:
+Your loan-to-value ratio of 90.0% exceeds our standard collateral coverage requirement for this product.
+
+You have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.">This notice is being provided to you because your application for credit was not approved.
+
+The principal reason for this decision is:
+Your loan-to-value ratio of 90.0% exceeds our standard collateral coverage requirement for this product.
+
+You have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.</textarea>
+      </div>
+    </div>
+      <div class="cap" id="cap">4 principal reasons — at the §1002.9(b)(2) guidance ceiling ("disclosure of more than four is not likely to be helpful").</div>
+      <div class="ecoa"><b style="color:var(--t2)">ECOA rights (included on every notice):</b> The federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, age, or because income derives from a public-assistance program. The federal agency that administers compliance is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington DC 20552.</div>
+      <details class="council"><summary>Council rationale (for human reviewers — does not change the verdict)</summary>
+        <div class="voices">
+          <div><b>Credit Fundamentals</b> — block: FICO 648 below Addendum A floor; credit-eligibility floor failure is a hard block.</div>
+          <div><b>Risk Officer</b> — block: LTV 0.9 and portfolio risk exceed Addendum C appetite.</div>
+          <div><b>Fair Lending Compliance</b> — reasons map to permissible factors under Reg B §1002.6; no prohibited-basis proxy detected.</div>
+          <div><b>Customer Advocate</b> — escalate note: applicant near DTI margin; document compensating-factor path.</div>
+          <div><b>Macro Contrarian</b> — concur: no evidence to override the credit-floor block.</div>
+        </div>
+      </details>
+      <div class="actions">
+        <button class="btn primary" id="sign">Sign off &amp; seal the record</button>
+        <button class="btn danger" id="dispute">Dispute / return to model team</button>
+      </div>
+    </div>
+
+    <div class="rail">
+      <div class="banner idle" id="banner">
+        <div class="h" id="bh">◷ Not yet sealed</div>
+        <div class="s" id="bs">Sign off to seal a tamper-evident record. The examiner verifies it offline — this is a preview of what they'll see.</div>
+      </div>
+      <div class="railpanel">
+        <h3>Provenance</h3>
+        <ul class="spine">
+          <li class="node"><b>Source</b> — loan application intake</li>
+          <li class="node"><b>Application</b> — signals FICO/DTI/LTV recorded</li>
+          <li class="node"><b>Council verdict</b> — DENIED + 4 reason codes</li>
+          <li class="node" id="node-notice"><b>Notices</b> — §1002.9(b)(2) text<span class="diff" id="notice-diff">AI-drafted → officer-edited (both sealed)</span></li>
+          <li class="node" id="node-seal"><b>Sealed record</b> — <span id="seal-state" style="color:var(--t3)">pending sign-off</span></li>
+        </ul>
+      </div>
+      <div class="railpanel">
+        <h3>Signing identity</h3>
+        <div class="fp">key <span class="mono">prod-2026-Q3</span><br><span id="fp" class="mono" style="font-size:11px">fingerprint —</span></div>
+      </div>
+      <button class="btn primary" id="export" disabled style="width:100%">Export examiner pack</button>
+    </div>
+  </div>
+
+  <div class="foot">Independent + open-source (MIT). The sealed record re-verifies offline — <span class="mono">npx shadow-verify bundle.json --public-key k.pem</span> — with no account and no trust in Shadow. · <a href="https://github.com/alex-jb/shadow-mentor">github.com/alex-jb/shadow-mentor</a></div>
+  <div class="critique">Hallmark · pre-emit critique: P5 H5 E4 S5 R4 V4 — mockup for docs/APP_DESIGN_BRIEF (review-sign screen, thin scope)</div>
+</div>
+
+<script>
+const PUBKEY="-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAVIdDS4r2YLF1wIpt13dad8PIdDFR/jdk/KYh8ts9iVw=\n-----END PUBLIC KEY-----\n";
+const CLEAN={"bundle_version":1,"spec_version":"shadow-evidence/v1","header":{"session_id":"b306abf8fce888a4c1d7dc5b880bbdb516d852374273a8cdd60a37772700afd2","session_started_at_utc":"2026-07-13T14:02:00.000Z","session_ended_at_utc":"2026-07-31T19:15:04.095Z","agent":{"name":"shadow-adverse-action","version":"1.0.0","identity_ref":null},"models":[],"environment_fingerprint":{"os":"darwin","node_version":"v24.14.1","hostname_hash":null},"schema_versions":{"bundle":1,"attest_core":"2.0.0"}},"events":[{"seq":0,"ts_utc":"2026-07-13T14:02:00.000Z","event_type":"session_start","actor":"system","payload_hash":"510f2f3473921066e54514aa8fbf447799c9a9d0987f052d252259083c3f10ac","payload_ref":"sha256:510f2f3473921066e54514aa8fbf447799c9a9d0987f052d252259083c3f10ac","prev_hash":"65f110b4124ec6577e1fe4d3e3c056178323331f966e27c1640f6a87264c9a8a","extensions":{},"payload":{"kind":"adverse_action_review","application_id":"SL-2026-014"}},{"seq":1,"ts_utc":"2026-07-13T14:02:00.000Z","event_type":"user_message","actor":"user","payload_hash":"2e4d1481bbe86b192ce5de0a9ef26fd149cb44f2c76abb0ae77f0b67b223c1af","payload_ref":"sha256:2e4d1481bbe86b192ce5de0a9ef26fd149cb44f2c76abb0ae77f0b67b223c1af","prev_hash":"85d80ebf6d41abda4734b4c86e703938040ac07503f84d4c44440e588f04e2a2","extensions":{},"payload":{"kind":"credit_application","application":{"application_id":"SL-2026-014","credit_score":648,"debt_to_income":0.45,"loan_to_value":0.9,"notice_language":"en","market_proxy_prices":[100,101,99,102,98,103,97,104,96,105,95,106],"collateral_positions":[],"borrower_exposure_weights":{"obligor_a":0.5,"obligor_b":0.5}}}},{"seq":2,"ts_utc":"2026-07-13T14:02:00.000Z","event_type":"model_output","actor":"model","payload_hash":"961ec39ab2b769138dd9fc68fe3ec522b138caace1dd63dcc9940aaa53244c52","payload_ref":"sha256:961ec39ab2b769138dd9fc68fe3ec522b138caace1dd63dcc9940aaa53244c52","prev_hash":"5405cd1e06c803e658d11e8bb52d0cd2f54ca1f0db2c81a964d92ff032678c3c","extensions":{},"payload":{"kind":"council_verdict","final_verdict":"block","adverse_action_codes":[{"code":"AA01","label":"Insufficient credit score for standard approval threshold","source":"Addendum A"},{"code":"AA02","label":"Debt-to-income ratio exceeds standard eligibility threshold","source":"Addendum B"},{"code":"AA04","label":"Portfolio / market risk appetite threshold exceeded","source":"Addendum C Risk Appetite Note"},{"code":"AA03","label":"Collateral coverage / LTV exceeds standard eligibility threshold","source":"Addendum C"}],"voices":[{"voice":"Credit Fundamentals","verdict":"block","confidence":0.82,"rationale":"FICO=648 below Addendum A floor 700 (Reg B §1002.6 permissible consideration); credit-eligibility floor failure is a hard block per Levitchi 2026-06-19 policy semantics. Principal reason per CFPB Circular 2022-03: insufficient credit history depth (AA01).","adverse_action_codes":[{"code":"AA01","label":"Insufficient credit score for standard approval threshold","source":"Addendum A"},{"code":"AA02","label":"Debt-to-income ratio exceeds standard eligibility threshold","source":"Addendum B"}],"metrics":{"var_95_10d":0.2722107143368385,"es_95_10d":0.3011693009684171,"concentration":{"passes":true,"max_weight":0.5,"breaches":[],"threshold":0.8},"sector_exposure":{}}},{"voice":"Risk Officer","verdict":"block","confidence":0.78,"rationale":"SR 26-2 materiality assessment: VaR(95%, 10d)=27.22% vs 12% Addendum C benchmark (status: breach); LTV=0.90 vs 0.80 Addendum C ceiling. Effective challenge: exposure × purpose warrants hard block on portfolio concentration grounds.","adverse_action_codes":[{"code":"AA04","label":"Portfolio / market risk appetite threshold exceeded","source":"Addendum C Risk Appetite Note"},{"code":"AA03","label":"Collateral coverage / LTV exceeds standard eligibility threshold","source":"Addendum C"}],"metrics":{"var_95_10d":0.2722107143368385,"es_95_10d":0.3011693009684171,"concentration":{"passes":true,"max_weight":0.5,"breaches":[],"threshold":0.8},"sector_exposure":{},"risk_budget_status":"breach"}},{"voice":"Fair Lending Compliance","verdict":"approve","confidence":0.91,"rationale":"ECOA/Reg B disparate-impact review complete; no protected-basis proxy features detected in feature set; adverse-action reasons drawn from signed dictionary per CFPB Circular 2022-03 principal-reason accuracy.","adverse_action_codes":[],"metrics":{"fair_lending_review_flag":false}},{"voice":"Customer Advocate","verdict":"approve","confidence":0.74,"rationale":"Customer-facing explanation and adverse-action reason list reviewed against CFPB Circular 2026-03 plain-language readability standards; no principal-reason accuracy or dictionary coverage flags.","adverse_action_codes":[],"metrics":{"adverse_action_reasons":[]}},{"voice":"Macro Contrarian","verdict":"approve","confidence":0.69,"rationale":"Sector=unknown; sector-cycle overlay and historical stress-episode correlation within Addendum C tolerance. No macro-contrarian escalation.","adverse_action_codes":[],"metrics":{"sector":null}}]}},{"seq":3,"ts_utc":"2026-07-13T14:02:00.000Z","event_type":"tool_result","actor":"tool","payload_hash":"2e1f8f6cf2ca1ed6cca4b3bc45d66b6722195325f1bd4203100564952211f6b1","payload_ref":"sha256:2e1f8f6cf2ca1ed6cca4b3bc45d66b6722195325f1bd4203100564952211f6b1","prev_hash":"89a3348382db0a4619bb5e0c1fb5f19fead2bee0783608b6717f8d2e2a7333d8","extensions":{},"payload":{"kind":"adverse_action_notices","language":"en","notices":[{"code":"AA01","notice":{"aa_code":"AA01","aa_code_summary":"Insufficient credit score for standard approval threshold","language":"en","text":"This notice is being provided to you because your application for credit was not approved.\n\nThe principal reason for this decision is:\nYour credit score of 648 is below our standard approval threshold for this product.\n\nYou have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.","reason_text":"Your credit score of 648 is below our standard approval threshold for this product.","citations":[{"id":"12CFR1002.9(b)(2)","title":12,"part":"1002","section":"9","subsection":"(b)(2)","regulator":"CFPB","source_url":"https://www.ecfr.gov/current/title-12/chapter-X/part-1002/subpart-A/section-1002.9"},{"id":"CFPB-Circular-2023-03","title":"CFPB","part":"Circular","section":"2023-03","subsection":null,"regulator":"CFPB","source_url":"https://www.federalregister.gov/documents/2024/04/17/2024-08003/consumer-financial-protection-circular-2023-03-adverse-action-notification-requirements-and-proper"},{"id":"CFPB-Circular-2022-03","title":"CFPB","part":"Circular","section":"2022-03","subsection":null,"regulator":"CFPB","source_url":"https://www.consumerfinance.gov/compliance/circulars/circular-2022-03-adverse-action-notification-requirements-in-connection-with-credit-decisions-based-on-complex-algorithms/"},{"id":"CFPB-Bulletin-2024-09","title":"CFPB","part":"Bulletin","section":"2024-09","subsection":null,"regulator":"CFPB","source_url":"https://www.consumerfinance.gov/compliance/supervisory-guidance/"}],"notice_sha256":"b19c8545dae1b4c03d7a4e156f948c37519682c05ddbf99d788b03953ecff70d"}},{"code":"AA02","notice":{"aa_code":"AA02","aa_code_summary":"Debt-to-income ratio exceeds standard eligibility threshold","language":"en","text":"This notice is being provided to you because your application for credit was not approved.\n\nThe principal reason for this decision is:\nYour debt-to-income ratio of 45.0% exceeds our standard eligibility threshold for this product.\n\nYou have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.","reason_text":"Your debt-to-income ratio of 45.0% exceeds our standard eligibility threshold for this product.","citations":[{"id":"12CFR1002.9(b)(2)","title":12,"part":"1002","section":"9","subsection":"(b)(2)","regulator":"CFPB","source_url":"https://www.ecfr.gov/current/title-12/chapter-X/part-1002/subpart-A/section-1002.9"},{"id":"CFPB-Circular-2023-03","title":"CFPB","part":"Circular","section":"2023-03","subsection":null,"regulator":"CFPB","source_url":"https://www.federalregister.gov/documents/2024/04/17/2024-08003/consumer-financial-protection-circular-2023-03-adverse-action-notification-requirements-and-proper"},{"id":"CFPB-Circular-2022-03","title":"CFPB","part":"Circular","section":"2022-03","subsection":null,"regulator":"CFPB","source_url":"https://www.consumerfinance.gov/compliance/circulars/circular-2022-03-adverse-action-notification-requirements-in-connection-with-credit-decisions-based-on-complex-algorithms/"},{"id":"CFPB-Bulletin-2024-09","title":"CFPB","part":"Bulletin","section":"2024-09","subsection":null,"regulator":"CFPB","source_url":"https://www.consumerfinance.gov/compliance/supervisory-guidance/"}],"notice_sha256":"1f75033f2c03b578932e0d8a0d8d472f9d37547c92777a0836cb52b7d9713acc"}},{"code":"AA04","notice":{"aa_code":"AA04","aa_code_summary":"Portfolio / market risk appetite threshold exceeded","language":"en","text":"This notice is being provided to you because your application for credit was not approved.\n\nThe principal reason for this decision is:\nThe requested transaction exceeds our current portfolio risk-appetite threshold for this sector and rating.\n\nYou have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.","reason_text":"The requested transaction exceeds our current portfolio risk-appetite threshold for this sector and rating.","citations":[{"id":"CFPB-Circular-2023-03","title":"CFPB","part":"Circular","section":"2023-03","subsection":null,"regulator":"CFPB","source_url":"https://www.federalregister.gov/documents/2024/04/17/2024-08003/consumer-financial-protection-circular-2023-03-adverse-action-notification-requirements-and-proper"},{"id":"CFPB-Circular-2022-03","title":"CFPB","part":"Circular","section":"2022-03","subsection":null,"regulator":"CFPB","source_url":"https://www.consumerfinance.gov/compliance/circulars/circular-2022-03-adverse-action-notification-requirements-in-connection-with-credit-decisions-based-on-complex-algorithms/"}],"notice_sha256":"95eb45afbae929ab5a3d34752ea3a6a548d24b8784f33f11b5fdf3907b508147"}},{"code":"AA03","notice":{"aa_code":"AA03","aa_code_summary":"Collateral coverage / LTV exceeds standard eligibility threshold","language":"en","text":"This notice is being provided to you because your application for credit was not approved.\n\nThe principal reason for this decision is:\nYour loan-to-value ratio of 90.0% exceeds our standard collateral coverage requirement for this product.\n\nYou have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.","reason_text":"Your loan-to-value ratio of 90.0% exceeds our standard collateral coverage requirement for this product.","citations":[{"id":"12CFR1002.9(b)(2)","title":12,"part":"1002","section":"9","subsection":"(b)(2)","regulator":"CFPB","source_url":"https://www.ecfr.gov/current/title-12/chapter-X/part-1002/subpart-A/section-1002.9"},{"id":"CFPB-Circular-2023-03","title":"CFPB","part":"Circular","section":"2023-03","subsection":null,"regulator":"CFPB","source_url":"https://www.federalregister.gov/documents/2024/04/17/2024-08003/consumer-financial-protection-circular-2023-03-adverse-action-notification-requirements-and-proper"},{"id":"CFPB-Circular-2022-03","title":"CFPB","part":"Circular","section":"2022-03","subsection":null,"regulator":"CFPB","source_url":"https://www.consumerfinance.gov/compliance/circulars/circular-2022-03-adverse-action-notification-requirements-in-connection-with-credit-decisions-based-on-complex-algorithms/"},{"id":"CFPB-Bulletin-2024-09","title":"CFPB","part":"Bulletin","section":"2024-09","subsection":null,"regulator":"CFPB","source_url":"https://www.consumerfinance.gov/compliance/supervisory-guidance/"}],"notice_sha256":"f74e86d0a0910cba2d6e38483cbbb099a185322e88e5058ae0cc8ef0e760f89f"}}]}},{"seq":4,"ts_utc":"2026-07-31T19:15:04.095Z","event_type":"session_end","actor":"system","payload_hash":"c55280f889f10013d765a76c181aa7d304c13afe6b4bd69d68a166fe97051bd2","payload_ref":"sha256:c55280f889f10013d765a76c181aa7d304c13afe6b4bd69d68a166fe97051bd2","prev_hash":"9b9b4d5da43307b8ab57d348c4703a1afd276626f9e87754f437b179bc919469","extensions":{},"payload":{"event_count":4,"session_duration_ms":1573984095}}],"batch_root":"bc5988f0247cd368f54faafdfaf1bf43d9783d0f0f70a6550c4f3b1dd9459e4d","signatures":[{"algorithm":"ed25519","key_id":"prod-2026-Q3","signature":"8Q9IA3b8Rz3ENeMnZ9e9Wyxi6qLLGabMmKzFE-55K4cwpb_Gffhc6FZD4glzqU3N1tiuNIgQAZAeRA7EFKX2BA","signed_at_utc":"2026-07-31T19:15:04.096Z"}]};
+
+function canonicalize(v){if(v===null||typeof v!=="object")return JSON.stringify(v);
+  if(Array.isArray(v))return "["+v.map(canonicalize).join(",")+"]";
+  return "{"+Object.keys(v).sort().map(k=>JSON.stringify(k)+":"+canonicalize(v[k])).join(",")+"}";}
+const cbytes=v=>new TextEncoder().encode(canonicalize(v));
+async function sha256Hex(b){const d=await crypto.subtle.digest("SHA-256",b);return [...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,"0")).join("");}
+const seedHash=h=>sha256Hex(cbytes({...h,session_ended_at_utc:null}));
+const signedShape=e=>{const{payload_ref,payload,...r}=e;return r;};
+const hexToBytes=h=>{const o=new Uint8Array(h.length/2);for(let i=0;i<o.length;i++)o[i]=parseInt(h.substr(i*2,2),16);return o;};
+const b64u=s=>{const p=s.replace(/-/g,"+").replace(/_/g,"/")+"==".slice(0,(4-s.length%4)%4);const b=atob(p);const o=new Uint8Array(b.length);for(let i=0;i<b.length;i++)o[i]=b.charCodeAt(i);return o;};
+function pemToSpki(pem){const c=pem.replace(/-----BEGIN [^-]+-----|-----END [^-]+-----|\\s+/g,"");const b=atob(c);const o=new Uint8Array(b.length);for(let i=0;i<b.length;i++)o[i]=b.charCodeAt(i);return o.buffer;}
+async function verifyBundle(bundle,pem){
+  if(!bundle||typeof bundle!=="object")return{ok:false,reason:"bundle_missing"};
+  if(bundle.bundle_version!==1)return{ok:false,reason:"unsupported_version"};
+  if(!Array.isArray(bundle.events))return{ok:false,reason:"events_not_array"};
+  if(!Array.isArray(bundle.signatures)||!bundle.signatures.length)return{ok:false,reason:"signatures_missing"};
+  let prev=await seedHash(bundle.header),hashes=[],present=0;
+  for(let i=0;i<bundle.events.length;i++){const ev=bundle.events[i];
+    if(ev.seq!==i)return{ok:false,reason:"seq_gap",seq:i};
+    if(ev.prev_hash!==prev)return{ok:false,reason:"prev_hash_mismatch",seq:i};
+    if(ev.payload!==undefined&&ev.payload!==null){const rh=await sha256Hex(cbytes(ev.payload));if(rh!==ev.payload_hash)return{ok:false,reason:"payload_hash_mismatch",seq:i};present++;}
+    const own=await sha256Hex(cbytes(signedShape(ev)));hashes.push(own);prev=own;}
+  const concat=new Uint8Array(hashes.length*32);hashes.forEach((h,i)=>concat.set(hexToBytes(h),i*32));
+  const root=await sha256Hex(concat);
+  if(root!==bundle.batch_root)return{ok:false,reason:"batch_root_mismatch"};
+  const sig=bundle.signatures[0];
+  if(sig.algorithm!=="ed25519")return{ok:false,reason:"unsupported_algorithm"};
+  if(!pem)return{ok:false,reason:"public_key_missing"};
+  let key;try{key=await crypto.subtle.importKey("spki",pemToSpki(pem),{name:"Ed25519"},false,["verify"]);}catch(e){return{ok:false,reason:"public_key_import_failed"};}
+  let ok;try{ok=await crypto.subtle.verify({name:"Ed25519"},key,b64u(sig.signature),hexToBytes(root));}catch(e){return{ok:false,reason:"signature_malformed"};}
+  if(!ok)return{ok:false,reason:"signature_verification_failed"};
+  return {ok:true,keyId:sig.key_id,batchRoot:root,sourceResolution:(present>0&&present===bundle.events.length?"VERIFIED":"NOT_PRESENT")};
+}
+const $=id=>document.getElementById(id);
+let edited=false, sealed=false;
+
+// F2 — editing a notice flips the card to "edited" and surfaces the AI→edited diff node.
+document.querySelectorAll(".notice").forEach(t=>{
+  t.addEventListener("input",()=>{
+    const card=t.closest(".rcard");const was=t.value!==t.getAttribute("data-orig");
+    card.classList.toggle("edited",was);
+    const st=card.querySelector("[data-state]");st.textContent=was?"edited":"grounded";st.className="state "+(was?"edited":"grounded");
+    edited=[...document.querySelectorAll(".notice")].some(x=>x.value!==x.getAttribute("data-orig"));
+    $("node-notice").classList.toggle("hasdiff",edited);
+  });
+});
+
+async function fingerprint(){try{const der=pemToSpki(PUBKEY);const d=await crypto.subtle.digest("SHA-256",der);
+  const hex=[...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,"0")).join("");
+  $("fp").textContent=hex.slice(0,16).replace(/(.{4})/g,"$1 ").trim();}catch(e){}}
+fingerprint();
+
+function step(name,cls){const el=document.querySelector('[data-step="'+name+'"]');if(el){el.className="step "+cls;}}
+
+$("sign").onclick=async()=>{
+  // seal → checklist advances → F7: signing AUTO-fires the rail verify (no separate click)
+  sealed=true;
+  step("notice","done");step("signed","done");step("ready","done");
+  $("seal-state").textContent=edited?"sealed (AI-drafted + officer-edited both covered)":"sealed";
+  $("seal-state").style.color="var(--ok)";
+  const r=await verifyBundle(CLEAN,PUBKEY);
+  const b=$("banner");b.className="banner ok";
+  $("bh").textContent="✓ Signature valid · chain intact";
+  $("bs").innerHTML="<span class='mono'>Ed25519 · key prod-2026-Q3 · "+(r.sourceResolution==="VERIFIED"?"source VERIFIED":"")+"</span> — this is what your examiner will verify, offline.";
+  $("sign").textContent="Sealed ✓";$("sign").disabled=true;$("export").disabled=false;
+};
+
+$("dispute").onclick=()=>{
+  const note=prompt("Return to model team — state the substantive disagreement (recorded + sealed as exam evidence):","Reason code AA04 (portfolio risk) not substantiated for this obligor mix; request model-team review before notice issues.");
+  if(note===null)return;
+  step("signed","done");step("ready","done");
+  const b=$("banner");b.className="banner dispute";
+  $("bh").textContent="⚑ Disputed — returned to model team";
+  $("bs").textContent="The verdict is immutable; your disagreement is now part of the sealed record. A documented challenge is good exam evidence.";
+  $("seal-state").textContent="sealed (disputed — returned)";$("seal-state").style.color="var(--warn)";
+  $("node-notice").classList.add("hasdiff");$("notice-diff").textContent="analyst dispute note (sealed)";
+  $("export").disabled=false;$("sign").disabled=true;
+};
+$("export").onclick=()=>alert("Mockup: exports the typed examiner pack — adverse-action notice (PDF) + reason-code report + the signed bundle (ZIP) that re-verifies offline + a read-only examiner link.");
+</script>
+</body></html>
