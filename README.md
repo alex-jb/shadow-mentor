@@ -28,9 +28,9 @@
 
 <!-- readme-stats:begin -->
 **Version**: 2.2.0
-**Tests**: 1595/1598 passing (0 failing)
+**Tests**: 1811/1824 passing (0 failing)
 **Attestation signed fields**: 21 parameters, 14 append-only conditional bindings
-**Release tags**: 59
+**Release tags**: 60
 <!-- readme-stats:end -->
 
 Numbers above are regenerated from source by `node scripts/readme-stats.mjs --write`. CI blocks pushes where they drift.
@@ -56,6 +56,27 @@ npm install shadow-attest-core
 ```
 
 Includes all of M1 (evidence bundle) + M3 (external anchoring: RFC 3161 TSA + Sigstore Rekor + CA trust store) + M4 (offline verify). **Published on npm: 2.1.0** (2026-07-17, from operator laptop). **2.2.0 is on `main`, pending publish** — adds `sealAndAnchor()` + Document Source-Map v1.1; the export surface is frozen by a contract test so version + surface can't drift again. The OpenTelemetry adapter ships alongside as [`shadow-adapter-otel`](https://www.npmjs.com/package/shadow-adapter-otel) (`npm install shadow-adapter-otel`): map any instrumented agent's OTel GenAI/MCP spans onto signed evidence.
+
+## The wedge — adverse-action verification in one command
+
+The narrowest thing Shadow sells: an AI-denied credit application → an examiner-ready **Reg B / ECOA §1002.9(b)(2)** adverse-action report (the specific reason codes + compliant notice text) → bound into a signed, hash-chained bundle the applicant, the lender, or a regulator **re-verifies offline** — no trust in us required.
+
+**See it in the browser** (nothing to install): **[shadow-aa-demo.vercel.app](https://shadow-aa-demo.vercel.app/)** — one denied application, the full report, then click *Verify the record* (green) and *Tamper: flip the verdict* (red) to watch the signature + hash-chain catch the edit.
+
+**Run it on your own data:**
+
+```bash
+# CLI — mints an ephemeral key if you don't pass one, so the record still verifies
+node bin/shadow-adverse-action.mjs application.json --out-report r.md --out-bundle b.json
+node bin/shadow-verify.mjs b.json --public-key b.pub.pem   # independent, offline
+
+# or over HTTP
+curl -sX POST http://localhost:3000/api/adverse-action \
+  -H 'content-type: application/json' \
+  -d '{"application":{"application_id":"SL-2026-014","credit_score":648,"debt_to_income":0.45,"loan_to_value":0.90}}'
+```
+
+The verdict is **deterministic rules** (FICO/DTI/LTV thresholds), not an LLM — the personas write rationale prose for human reviewers but cannot change the decision. Pass `--key private.pem` (or set `SHADOW_ATTESTATION_ED25519_PRIVATE_KEY`) for a persistent signing identity banks pin.
 
 ## v3 evidence bundle — flight recorder for AI agents
 

@@ -60,8 +60,26 @@ namespace ShadowLens.Narrative
             _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             var canvasGo = new GameObject("ShadowStageHUD", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
             canvasGo.transform.SetParent(transform, false);
-            canvasGo.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+            var _canvas = canvasGo.GetComponent<Canvas>();
             var scaler = canvasGo.GetComponent<CanvasScaler>(); scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize; scaler.referenceResolution = new Vector2(1600, 900);
+#if SHADOW_XREAL_SDK
+            // On XREAL glasses a ScreenSpaceOverlay canvas draws to the phone panel, NOT the glasses
+            // display — so the council/decision/controls were invisible in-lens. Render the HUD in
+            // WORLD SPACE, sized + placed as a panel that frames the central 3D case map (council
+            // left, decision right, the 3D core/voices in the middle gap, controls along the bottom —
+            // exactly this class's intended composition).
+            _canvas.renderMode = RenderMode.WorldSpace;
+            var _hudRT = (RectTransform)canvasGo.transform;
+            _hudRT.sizeDelta = new Vector2(1600, 900);
+            var _hudCam = Camera.main;
+            var _hudFwd = _hudCam ? _hudCam.transform.forward : Vector3.forward;
+            var _hudPos = (_hudCam ? _hudCam.transform.position : new Vector3(0, 1.5f, 0)) + _hudFwd * 1.7f;
+            canvasGo.transform.position = _hudPos;
+            canvasGo.transform.rotation = Quaternion.LookRotation(_hudFwd);
+            canvasGo.transform.localScale = Vector3.one * 0.0013f; // ~2.1 m-wide panel behind the 1.3 m core
+#else
+            _canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+#endif
             var c = canvasGo.transform;
 
             _title = Label(c, "SHADOW LENS — banking decision", 26, new Vector2(0, 1), new Vector2(16, -14), ShadowDesignTokens.TextPrimary, TextAnchor.UpperLeft);
@@ -103,29 +121,71 @@ namespace ShadowLens.Narrative
             var cam = Camera.main;
             var camForward = cam != null ? cam.transform.forward : Vector3.forward;
             _camForward = camForward;
-            var center = cam != null ? cam.transform.position + camForward * 1.9f : new Vector3(0, 1.5f, -1.9f);
+            // ~1.3 m ahead: comfortable arm's-length focal plane for the small One Pro FoV (research:
+            // 0.8–1.2 m core), close enough to read + far enough to fuse. With 6DoF this places once,
+            // then stays world-anchored so the user can lean in / walk around it.
+            var center = cam != null ? cam.transform.position + camForward * 1.3f : new Vector3(0, 1.5f, -1.3f);
             _worldRoot = new GameObject("StageWorld").transform; _worldRoot.SetParent(transform, false); _worldRoot.position = center;
             _nodesRoot = new GameObject("Nodes").transform; _nodesRoot.SetParent(_worldRoot, false);
             _caseNode = null;
             BuildCaseCore(_worldRoot, camForward);   // the semantic center: a legible banking-case core (label + ring), not a bare sphere
 
-            var v0 = new V3(0, 0, 0);
-            for (int i = 0; i < ShadowBankingNarrativeData.Voices.Length; i++)
-            {
-                var voice = ShadowBankingNarrativeData.Voices[i];
-                var p = ShadowSemanticEncoding.VoicePosition(i, ShadowBankingNarrativeData.Voices.Length, voice.relevance, v0, 0f);
-                var node = GameObject.CreatePrimitive(PrimitiveType.Sphere); node.name = "Voice_" + voice.voice; node.transform.SetParent(_nodesRoot, false);
-                node.transform.localPosition = new Vector3(p.x, p.y, p.z);
-                float size = ShadowSemanticEncoding.NodeSize(voice.importance);
-                node.transform.localScale = Vector3.one * size * 2f;
-                _voiceNodes.Add(node);
+            // The 5 council voices are AVATAR CARDS (portrait + name + stance + vote) in a shallow
+            // semicircle around the case core — a "council of people," not abstract spheres.
+            var voices = ShadowBankingNarrativeData.Voices;
+            for (int i = 0; i < voices.Length; i++)
+                _voiceNodes.Add(BuildVoiceCard(i, voices.Length, voices[i], _nodesRoot, camForward));
+        }
 
-                // flat, camera-facing perspective label (voice name + vote) — so the 5 spheres are
-                // readable topology, not anonymous balls. One dominant at a time is handled in Render.
-                var lbl = FlatWorldLabel(node.transform, voice.voice + "\n(" + voice.vote + ")",
-                    new Vector3(0f, -(size + 0.05f), 0f), camForward, 0.0009f, 26, new Vector2(300, 90));
-                _voiceLabels.Add(lbl);
+        static string AvatarId(string voice)
+        {
+            switch (voice)
+            {
+                case "Credit Fundamentals":     return "credit_fundamentals";
+                case "Risk Officer":            return "risk_officer";
+                case "Fair Lending Compliance": return "fair_lending_compliance";
+                case "Customer Advocate":       return "customer_advocate";
+                case "Macro Contrarian":        return "macro_contrarian";
+                default:                        return "risk_officer";
             }
+        }
+
+        // A world-space council-member card: portrait (Resources/Avatars) + name + stance/vote,
+        // placed on a shallow concave arc facing the viewer around the case core.
+        GameObject BuildVoiceCard(int i, int count, ShadowVoice voice, Transform parent, Vector3 camForward)
+        {
+            float t = count > 1 ? i / (float)(count - 1) : 0.5f;      // 0..1 across the arc
+            float R = 0.95f;
+            float x = (t - 0.5f) * 2f * R;                            // −R..+R left-to-right
+            float z = -Mathf.Abs(t - 0.5f) * 0.35f;                  // edges wrap slightly toward viewer
+            var right = Vector3.Cross(camForward, Vector3.up).normalized; if (right.sqrMagnitude < 1e-4f) right = Vector3.right;
+            var local = right * x + Vector3.up * 0.12f + camForward * z;
+
+            var go = new GameObject("VoiceCard_" + voice.voice, typeof(Canvas)); go.transform.SetParent(parent, false);
+            go.transform.localPosition = local;
+            go.transform.rotation = Quaternion.LookRotation(camForward);
+            go.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+            ((RectTransform)go.transform).sizeDelta = new Vector2(260, 360);
+            go.transform.localScale = Vector3.one * 0.0014f;
+
+            var bg = new GameObject("bg", typeof(Image)); bg.transform.SetParent(go.transform, false);
+            bg.GetComponent<Image>().color = ShadowDesignTokens.PanelPrimary;
+            var brt = bg.GetComponent<Image>().rectTransform; brt.anchorMin = Vector2.zero; brt.anchorMax = Vector2.one; brt.offsetMin = brt.offsetMax = Vector2.zero;
+            bg.AddComponent<Outline>().effectColor = ShadowDesignTokens.Border;
+
+            var tex = Resources.Load<Texture2D>("Avatars/" + AvatarId(voice.voice));
+            if (tex != null)
+            {
+                var img = new GameObject("avatar", typeof(RawImage)); img.transform.SetParent(go.transform, false);
+                img.GetComponent<RawImage>().texture = tex;
+                var irt = img.GetComponent<RawImage>().rectTransform;
+                irt.anchorMin = new Vector2(0.08f, 0.40f); irt.anchorMax = new Vector2(0.92f, 0.96f); irt.offsetMin = irt.offsetMax = Vector2.zero;
+            }
+            var nm = Label(go.transform, voice.voice, 24, new Vector2(0.5f, 0.30f), Vector2.zero, ShadowDesignTokens.TextPrimary, TextAnchor.MiddleCenter);
+            nm.rectTransform.sizeDelta = new Vector2(250, 60);
+            var vt = Label(go.transform, voice.stance + "\n· vote: " + voice.vote, 18, new Vector2(0.5f, 0.10f), Vector2.zero, ShadowDesignTokens.TextSecondary, TextAnchor.MiddleCenter);
+            vt.rectTransform.sizeDelta = new Vector2(250, 72);
+            return go;
         }
 
         // A small, flat, camera-facing world-space label (Perplexity-pill style). Static: oriented
@@ -172,7 +232,7 @@ namespace ShadowLens.Narrative
                 var pill = GameObject.CreatePrimitive(PrimitiveType.Sphere);
                 pill.name = "Link_" + chain[i].seq + "_" + chain[i].type;
                 pill.transform.SetParent(_auditRoot, false); pill.transform.localPosition = wp; pill.transform.localScale = Vector3.one * 0.06f;
-                var rr = pill.GetComponent<Renderer>(); if (rr) rr.material.color = verified ? ShadowDesignTokens.Verified : ShadowDesignTokens.Tampered;
+                var rr = pill.GetComponent<Renderer>(); if (rr) rr.material = Glow(verified ? ShadowDesignTokens.Verified : ShadowDesignTokens.Tampered);
                 string tag = verified ? chain[i].hashPrefix : "NOT VERIFIED";
                 FlatWorldLabel(pill.transform, chain[i].label + "\n" + tag, new Vector3(0f, -0.09f, 0f), camForward, 0.0007f, 22, new Vector2(260, 80));
             }
@@ -190,7 +250,7 @@ namespace ShadowLens.Narrative
             caseGo.name = "CaseNode"; caseGo.transform.SetParent(worldRoot, false);
             caseGo.transform.localPosition = Vector3.zero;
             caseGo.transform.localScale = Vector3.one * 0.16f;   // slightly smaller so the ring + label read as the case
-            var r = caseGo.GetComponent<Renderer>(); if (r) r.material.color = ShadowDesignTokens.Information;
+            var r = caseGo.GetComponent<Renderer>(); if (r) r.material = Glow(ShadowDesignTokens.Information);
 
             // one static containment ring, face-on to the (fixed) camera — reads as a data node, not a plain ball
             var ringGo = new GameObject("CaseRing", typeof(LineRenderer)); ringGo.transform.SetParent(caseGo.transform, false);
@@ -297,6 +357,11 @@ namespace ShadowLens.Narrative
         }
 
         // ── builders ──
+        // Bright UNLIT material for spheres on additive optics: the scene has no lights, so a default
+        // Standard sphere renders near-black in-lens. Sprites/Default emits its colour directly → the
+        // node reads as a glowing orb. Guaranteed-present shader (the LineRenderers use it too).
+        static Material Glow(Color c) { var m = new Material(Shader.Find("Sprites/Default")); m.color = c; return m; }
+
         Image Panel(Transform parent, Vector2 anchorMin, Vector2 anchorMax)
         {
             var go = new GameObject("Panel", typeof(Image)); go.transform.SetParent(parent, false);
