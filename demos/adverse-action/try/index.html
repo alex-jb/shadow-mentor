@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Shadow — a verified adverse-action decision</title>
+<meta name="description" content="See one AI-denied loan turned into an examiner-ready Reg B / ECOA §1002.9(b)(2) adverse-action report bound into a signed, tamper-evident evidence bundle — and verify it yourself, offline, in your browser."/>
+<style>
+  :root{color-scheme:light dark;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;line-height:1.5;color:#17212b;background:#f6f8fa;padding:28px 18px 60px;}
+  @media(prefers-color-scheme:dark){body{color:#dfe7ef;background:#0b0f15;}}
+  .wrap{max-width:820px;margin:0 auto;}
+  h1{font-size:24px;letter-spacing:-.3px;margin-bottom:4px;}
+  .sub{color:#5b6b7a;font-size:14px;margin-bottom:20px;}
+  .card{background:#fff;border:1px solid #dbe3ea;border-radius:12px;padding:18px 20px;margin:14px 0;}
+  @media(prefers-color-scheme:dark){.card{background:#121824;border-color:#232f3d;}}
+  .card h2{font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:#12766a;margin-bottom:8px;}
+  pre{background:#0d1117;color:#c9d5e1;border-radius:8px;padding:12px 14px;overflow-x:auto;font-size:12.5px;line-height:1.5;}
+  code{font-family:ui-monospace,Menlo,monospace;background:rgba(120,140,160,.15);padding:0 4px;border-radius:3px;font-size:.92em;}
+  .report h2{font-size:16px;color:inherit;text-transform:none;letter-spacing:0;margin:2px 0 6px;}
+  .report h3{font-size:13px;color:#12766a;margin:14px 0 3px;}
+  .report h4{font-size:13.5px;margin:12px 0 2px;}
+  .report p{margin:5px 0;font-size:13.5px;} .report li{margin:3px 0 3px 18px;font-size:13.5px;}
+  .btn{font:inherit;font-weight:600;font-size:15px;border:0;border-radius:9px;padding:12px 20px;cursor:pointer;margin:4px 8px 4px 0;}
+  .btn.go{background:#12a594;color:#04120f;} .btn.tamper{background:transparent;color:#b45309;border:1px solid #d8a24a;}
+  .btn.reset{background:transparent;color:#8a93a3;border:1px solid #33414f;}
+  #status{margin-top:12px;font-weight:650;font-size:16px;padding:12px 14px;border-radius:9px;display:none;}
+  #status.ok{display:block;background:#e3f5ee;color:#12766a;border:1px solid #b9e3d5;}
+  #status.fail{display:block;background:#fde7e4;color:#b42318;border:1px solid #f3b7ad;}
+  @media(prefers-color-scheme:dark){#status.ok{background:#0e2a22;} #status.fail{background:#2a1210;}}
+  .foot{margin-top:22px;color:#7b8896;font-size:12px;line-height:1.7;}
+  .hi{color:#12a594;} a{color:#3b82f6;}
+</style></head>
+<body><div class="wrap">
+<h1>See a verified adverse-action decision</h1>
+<div class="sub">One AI-denied loan → an examiner-ready Reg&nbsp;B / ECOA §1002.9(b)(2) report → a signed record you verify yourself, offline. Nothing is uploaded; this page runs entirely in your browser.</div>
+
+<div class="card">
+  <h2>1 · The AI-denied application (input)</h2>
+  <pre id="app"></pre>
+</div>
+
+<div class="card report" id="report">
+  <h2>2 · The examiner-ready adverse-action report (output)</h2>
+</div>
+
+<div class="card">
+  <h2>3 · The signed evidence record — verify it yourself</h2>
+  <p style="font-size:13.5px;margin-bottom:10px;color:#5b6b7a">The decision above is bound into an Ed25519-signed, hash-chained bundle. Verify it here — offline, no trust in Shadow — then tamper with it and watch it break.</p>
+  <button class="btn go" id="verify">Verify the record</button>
+  <button class="btn tamper" id="tamper">Tamper: flip the verdict</button>
+  <button class="btn reset" id="reset" style="display:none">Reset</button>
+  <div id="status"></div>
+</div>
+
+<div class="foot">
+  Independent + open-source (MIT). Same WebCrypto verifier as <code>verify.html</code>; same CLI a bank runs in its own CI (<code>bin/shadow-verify.mjs</code>). Ephemeral demo signing key. <span class="hi">Verification proves the record wasn't altered — not that the underlying decision is correct.</span> · <a href="https://github.com/alex-jb/shadow-mentor">github.com/alex-jb/shadow-mentor</a>
+</div>
+</div>
+
+<script>
+const APPLICATION={
+  "application_id": "SL-2026-014",
+  "credit_score": 648,
+  "debt_to_income": 0.45,
+  "loan_to_value": 0.90,
+  "notice_language": "en",
+  "market_proxy_prices": [100, 101, 99, 102, 98, 103, 97, 104, 96, 105, 95, 106],
+  "collateral_positions": [],
+  "borrower_exposure_weights": { "obligor_a": 0.5, "obligor_b": 0.5 }
+};
+const PUBKEY="-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAXtygWN9iO+9RhV+yKBaOK9lQ4qWz4Oha65OSD1v0Cks=\n-----END PUBLIC KEY-----";
+const CLEAN_BUNDLE={
+  "bundle_version": 1,
+  "spec_version": "shadow-evidence/v1",
+  "header": {
+    "session_id": "a83f7d08d60ec4ca4370896220b6d4cae4a699d3123ae3ae2bb6c60e76023d91",
+    "session_started_at_utc": "2026-07-31T02:13:06.743Z",
+    "session_ended_at_utc": "2026-07-31T02:13:06.744Z",
+    "agent": {
+      "name": "shadow-adverse-action",
+      "version": "1.0.0",
+      "identity_ref": null
+    },
+    "models": [],
+    "environment_fingerprint": {
+      "os": "darwin",
+      "node_version": "v24.14.1",
+      "hostname_hash": null
+    },
+    "schema_versions": {
+      "bundle": 1,
+      "attest_core": "2.0.0"
+    }
+  },
+  "events": [
+    {
+      "seq": 0,
+      "ts_utc": "2026-07-31T02:13:06.743Z",
+      "event_type": "session_start",
+      "actor": "system",
+      "payload_hash": "510f2f3473921066e54514aa8fbf447799c9a9d0987f052d252259083c3f10ac",
+      "payload_ref": "sha256:510f2f3473921066e54514aa8fbf447799c9a9d0987f052d252259083c3f10ac",
+      "prev_hash": "ef21ff45ddc7ebdccd574ac5f6a929cef208ab9937d85571bb184c33962d0304",
+      "extensions": {}
+    },
+    {
+      "seq": 1,
+      "ts_utc": "2026-07-31T02:13:06.743Z",
+      "event_type": "user_message",
+      "actor": "user",
+      "payload_hash": "2e4d1481bbe86b192ce5de0a9ef26fd149cb44f2c76abb0ae77f0b67b223c1af",
+      "payload_ref": "sha256:2e4d1481bbe86b192ce5de0a9ef26fd149cb44f2c76abb0ae77f0b67b223c1af",
+      "prev_hash": "0b1daeb7bce9ebed8450bff58bb3d1b8212c89e70ee5cc64ed8d3341f626472e",
+      "extensions": {}
+    },
+    {
+      "seq": 2,
+      "ts_utc": "2026-07-31T02:13:06.743Z",
+      "event_type": "model_output",
+      "actor": "model",
+      "payload_hash": "961ec39ab2b769138dd9fc68fe3ec522b138caace1dd63dcc9940aaa53244c52",
+      "payload_ref": "sha256:961ec39ab2b769138dd9fc68fe3ec522b138caace1dd63dcc9940aaa53244c52",
+      "prev_hash": "a26e2aa543c882cb7eb2b8025317c7e48dc374492bc0b1b7b70bf3a4912f1cea",
+      "extensions": {}
+    },
+    {
+      "seq": 3,
+      "ts_utc": "2026-07-31T02:13:06.743Z",
+      "event_type": "tool_result",
+      "actor": "tool",
+      "payload_hash": "2e1f8f6cf2ca1ed6cca4b3bc45d66b6722195325f1bd4203100564952211f6b1",
+      "payload_ref": "sha256:2e1f8f6cf2ca1ed6cca4b3bc45d66b6722195325f1bd4203100564952211f6b1",
+      "prev_hash": "74d47f7fc533271ed00f8d18e7ec1860a903aa945afca8fd0263b9de850405f5",
+      "extensions": {}
+    },
+    {
+      "seq": 4,
+      "ts_utc": "2026-07-31T02:13:06.744Z",
+      "event_type": "session_end",
+      "actor": "system",
+      "payload_hash": "5c7659c00515f4fc4bc04482c438ccc4fd52bb017b490b2e8ebe3a0e9ac62bc2",
+      "payload_ref": "sha256:5c7659c00515f4fc4bc04482c438ccc4fd52bb017b490b2e8ebe3a0e9ac62bc2",
+      "prev_hash": "11a900be205742b5a5e2b5e18229039205c205189f59281ada43f98fb03d907d",
+      "extensions": {}
+    }
+  ],
+  "batch_root": "0e3edd35b2e12aa642cb214afae88667e8c204f912d51966556379197f6f57c2",
+  "signatures": [
+    {
+      "algorithm": "ed25519",
+      "key_id": "ephemeral-demo",
+      "signature": "SRLwasBuE7QfGcVHlpeJSdZvsK5NjPMB8uebvzEfaQbSawCN9F4Lmeuf7jctaACBoS6eAk3GJWCxp2fOH6MtCg",
+      "signed_at_utc": "2026-07-31T02:13:06.745Z"
+    }
+  ]
+};
+
+function canonicalize(v){if(v===null||typeof v!=="object")return JSON.stringify(v);
+  if(Array.isArray(v))return "["+v.map(canonicalize).join(",")+"]";
+  return "{"+Object.keys(v).sort().map(k=>JSON.stringify(k)+":"+canonicalize(v[k])).join(",")+"}";}
+const cbytes=v=>new TextEncoder().encode(canonicalize(v));
+async function sha256Hex(b){const d=await crypto.subtle.digest("SHA-256",b);return [...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,"0")).join("");}
+const seedHash=h=>sha256Hex(cbytes({...h,session_ended_at_utc:null}));
+const signedShape=e=>{const{payload_ref,...r}=e;return r;};
+const hexToBytes=h=>{const o=new Uint8Array(h.length/2);for(let i=0;i<o.length;i++)o[i]=parseInt(h.substr(i*2,2),16);return o;};
+const b64u=s=>{const p=s.replace(/-/g,"+").replace(/_/g,"/")+"==".slice(0,(4-s.length%4)%4);const b=atob(p);const o=new Uint8Array(b.length);for(let i=0;i<b.length;i++)o[i]=b.charCodeAt(i);return o;};
+function pemToSpki(pem){const c=pem.replace(/-----BEGIN [^-]+-----|-----END [^-]+-----|\s+/g,"");const b=atob(c);const o=new Uint8Array(b.length);for(let i=0;i<b.length;i++)o[i]=b.charCodeAt(i);return o.buffer;}
+async function verifyBundle(bundle,pem){
+  if(!bundle||typeof bundle!=="object")return{ok:false,reason:"bundle_missing"};
+  if(bundle.bundle_version!==1)return{ok:false,reason:"unsupported_version"};
+  if(!Array.isArray(bundle.events))return{ok:false,reason:"events_not_array"};
+  if(!Array.isArray(bundle.signatures)||!bundle.signatures.length)return{ok:false,reason:"signatures_missing"};
+  let prev=await seedHash(bundle.header),hashes=[];
+  for(let i=0;i<bundle.events.length;i++){const ev=bundle.events[i];
+    if(ev.seq!==i)return{ok:false,reason:"seq_gap",seq:i};
+    if(ev.prev_hash!==prev)return{ok:false,reason:"prev_hash_mismatch",seq:i};
+    const own=await sha256Hex(cbytes(signedShape(ev)));hashes.push(own);prev=own;}
+  const concat=new Uint8Array(hashes.length*32);hashes.forEach((h,i)=>concat.set(hexToBytes(h),i*32));
+  const root=await sha256Hex(concat);
+  if(root!==bundle.batch_root)return{ok:false,reason:"batch_root_mismatch"};
+  const sig=bundle.signatures[0];
+  if(sig.algorithm!=="ed25519")return{ok:false,reason:"unsupported_algorithm"};
+  if(!pem)return{ok:false,reason:"public_key_missing"};
+  let key;try{key=await crypto.subtle.importKey("spki",pemToSpki(pem),{name:"Ed25519"},false,["verify"]);}catch(e){return{ok:false,reason:"public_key_import_failed"};}
+  let ok;try{ok=await crypto.subtle.verify({name:"Ed25519"},key,b64u(sig.signature),hexToBytes(root));}catch(e){return{ok:false,reason:"signature_malformed"};}
+  if(!ok)return{ok:false,reason:"signature_verification_failed"};
+  return {ok:true,keyId:sig.key_id,batchRoot:root};
+}
+document.getElementById("app").textContent=JSON.stringify(APPLICATION,null,2);
+document.getElementById("report").insertAdjacentHTML("beforeend",`<h2>Adverse-Action Review — SL-2026-014</h2>
+<p><em>Independent verification by Shadow · 2026-07-31T02:13:06.743Z · signing: Ed25519 (ephemeral demo key — pass a key for a persistent identity)</em></p>
+
+<p><b>Decision:</b> BLOCK</p>
+<p><b>Applicant signals:</b> FICO 648 · DTI 0.45 · LTV 0.9</p>
+
+<h3>Reg B / ECOA §1002.9(b)(2) adverse-action reasons</h3>
+
+<h4>AA01 — Insufficient credit score for standard approval threshold</h4>
+<p>This notice is being provided to you because your application for credit was not approved.</p>
+
+<p>The principal reason for this decision is:</p>
+<p>Your credit score of 648 is below our standard approval threshold for this product.</p>
+
+<p>You have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.</p>
+
+<h4>AA02 — Debt-to-income ratio exceeds standard eligibility threshold</h4>
+<p>This notice is being provided to you because your application for credit was not approved.</p>
+
+<p>The principal reason for this decision is:</p>
+<p>Your debt-to-income ratio of 45.0% exceeds our standard eligibility threshold for this product.</p>
+
+<p>You have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.</p>
+
+<h4>AA04 — Portfolio / market risk appetite threshold exceeded</h4>
+<p>This notice is being provided to you because your application for credit was not approved.</p>
+
+<p>The principal reason for this decision is:</p>
+<p>The requested transaction exceeds our current portfolio risk-appetite threshold for this sector and rating.</p>
+
+<p>You have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.</p>
+
+<h4>AA03 — Collateral coverage / LTV exceeds standard eligibility threshold</h4>
+<p>This notice is being provided to you because your application for credit was not approved.</p>
+
+<p>The principal reason for this decision is:</p>
+<p>Your loan-to-value ratio of 90.0% exceeds our standard collateral coverage requirement for this product.</p>
+
+<p>You have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.</p>
+
+<h3>Council reasoning (deterministic verdict; LLM writes rationale only)</h3>
+<li><b>Credit Fundamentals</b> — block</li>
+<li><b>Risk Officer</b> — block</li>
+<li><b>Fair Lending Compliance</b> — approve</li>
+<li><b>Customer Advocate</b> — approve</li>
+<li><b>Macro Contrarian</b> — approve</li>
+
+<h3>Evidence record</h3>
+<li>Bundle: signed + hash-chained (5 events).</li>
+<li>Re-verify independently, offline with the accompanying public key: <code>bin/shadow-verify.mjs &lt;bundle.json&gt; --public-key &lt;pub&gt;.pem</code>, or open <code>verify.html</code> and drop the bundle in. No network, no trust in Shadow required.</li>
+`);
+
+let working=JSON.parse(JSON.stringify(CLEAN_BUNDLE));
+const statusEl=document.getElementById("status");
+async function run(){
+  const r=await verifyBundle(working,PUBKEY);
+  if(r.ok){statusEl.className="ok";statusEl.textContent="✓ Record verified — signature + hash-chain intact (key "+(r.keyId||"?")+"). The decision above is exactly what was sealed.";}
+  else{statusEl.className="fail";statusEl.textContent="✗ Verification FAILED — "+r.reason+(r.seq!=null?" @ seq "+r.seq:"")+". The record was altered after signing; it can no longer be trusted.";}
+  document.getElementById("reset").style.display=working===CLEAN_BUNDLE?"none":"inline-block";
+}
+document.getElementById("verify").onclick=run;
+document.getElementById("tamper").onclick=async()=>{
+  working=JSON.parse(JSON.stringify(CLEAN_BUNDLE));
+  // corrupt the sealed council-verdict event's payload_hash → breaks the chain
+  const ev=working.events.find(e=>e.payload_ref&&e.payload_ref.kind==="council_verdict")||working.events[2];
+  ev.payload_hash=(ev.payload_hash||"").replace(/.$/, c=>c==="0"?"1":"0");
+  await run();
+  document.getElementById("reset").style.display="inline-block";
+};
+document.getElementById("reset").onclick=()=>{working=JSON.parse(JSON.stringify(CLEAN_BUNDLE));statusEl.style.display="none";statusEl.className="";document.getElementById("reset").style.display="none";};
+</script>
+</body></html>
