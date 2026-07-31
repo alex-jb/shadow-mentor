@@ -2,9 +2,9 @@
   "bundle_version": 1,
   "spec_version": "shadow-evidence/v1",
   "header": {
-    "session_id": "a83f7d08d60ec4ca4370896220b6d4cae4a699d3123ae3ae2bb6c60e76023d91",
-    "session_started_at_utc": "2026-07-31T02:13:06.743Z",
-    "session_ended_at_utc": "2026-07-31T02:13:06.744Z",
+    "session_id": "5be92270652f7737bab2faaeeb04839f176e9b4930e1d785a65dfaba90ecd0c1",
+    "session_started_at_utc": "2026-07-31T04:39:27.640Z",
+    "session_ended_at_utc": "2026-07-31T04:39:27.641Z",
     "agent": {
       "name": "shadow-adverse-action",
       "version": "1.0.0",
@@ -24,62 +24,400 @@
   "events": [
     {
       "seq": 0,
-      "ts_utc": "2026-07-31T02:13:06.743Z",
+      "ts_utc": "2026-07-31T04:39:27.640Z",
       "event_type": "session_start",
       "actor": "system",
       "payload_hash": "510f2f3473921066e54514aa8fbf447799c9a9d0987f052d252259083c3f10ac",
       "payload_ref": "sha256:510f2f3473921066e54514aa8fbf447799c9a9d0987f052d252259083c3f10ac",
-      "prev_hash": "ef21ff45ddc7ebdccd574ac5f6a929cef208ab9937d85571bb184c33962d0304",
-      "extensions": {}
+      "prev_hash": "77d39489a2bd23fe3e97d53731cfa5a9590143a990b6a6aee3fd197e8430ca0a",
+      "extensions": {},
+      "payload": {
+        "kind": "adverse_action_review",
+        "application_id": "SL-2026-014"
+      }
     },
     {
       "seq": 1,
-      "ts_utc": "2026-07-31T02:13:06.743Z",
+      "ts_utc": "2026-07-31T04:39:27.640Z",
       "event_type": "user_message",
       "actor": "user",
       "payload_hash": "2e4d1481bbe86b192ce5de0a9ef26fd149cb44f2c76abb0ae77f0b67b223c1af",
       "payload_ref": "sha256:2e4d1481bbe86b192ce5de0a9ef26fd149cb44f2c76abb0ae77f0b67b223c1af",
-      "prev_hash": "0b1daeb7bce9ebed8450bff58bb3d1b8212c89e70ee5cc64ed8d3341f626472e",
-      "extensions": {}
+      "prev_hash": "33aec5c8b70f3ab64fdeee88e771de86b6f9e815792839d4e0850aeb5debbacd",
+      "extensions": {},
+      "payload": {
+        "kind": "credit_application",
+        "application": {
+          "application_id": "SL-2026-014",
+          "credit_score": 648,
+          "debt_to_income": 0.45,
+          "loan_to_value": 0.9,
+          "notice_language": "en",
+          "market_proxy_prices": [
+            100,
+            101,
+            99,
+            102,
+            98,
+            103,
+            97,
+            104,
+            96,
+            105,
+            95,
+            106
+          ],
+          "collateral_positions": [],
+          "borrower_exposure_weights": {
+            "obligor_a": 0.5,
+            "obligor_b": 0.5
+          }
+        }
+      }
     },
     {
       "seq": 2,
-      "ts_utc": "2026-07-31T02:13:06.743Z",
+      "ts_utc": "2026-07-31T04:39:27.640Z",
       "event_type": "model_output",
       "actor": "model",
       "payload_hash": "961ec39ab2b769138dd9fc68fe3ec522b138caace1dd63dcc9940aaa53244c52",
       "payload_ref": "sha256:961ec39ab2b769138dd9fc68fe3ec522b138caace1dd63dcc9940aaa53244c52",
-      "prev_hash": "a26e2aa543c882cb7eb2b8025317c7e48dc374492bc0b1b7b70bf3a4912f1cea",
-      "extensions": {}
+      "prev_hash": "810e7b343b3d51246ad66bc3da4183b4413229ced9a216f14663ca1671d68e7c",
+      "extensions": {},
+      "payload": {
+        "kind": "council_verdict",
+        "final_verdict": "block",
+        "adverse_action_codes": [
+          {
+            "code": "AA01",
+            "label": "Insufficient credit score for standard approval threshold",
+            "source": "Addendum A"
+          },
+          {
+            "code": "AA02",
+            "label": "Debt-to-income ratio exceeds standard eligibility threshold",
+            "source": "Addendum B"
+          },
+          {
+            "code": "AA04",
+            "label": "Portfolio / market risk appetite threshold exceeded",
+            "source": "Addendum C Risk Appetite Note"
+          },
+          {
+            "code": "AA03",
+            "label": "Collateral coverage / LTV exceeds standard eligibility threshold",
+            "source": "Addendum C"
+          }
+        ],
+        "voices": [
+          {
+            "voice": "Credit Fundamentals",
+            "verdict": "block",
+            "confidence": 0.82,
+            "rationale": "FICO=648 below Addendum A floor 700 (Reg B §1002.6 permissible consideration); credit-eligibility floor failure is a hard block per Levitchi 2026-06-19 policy semantics. Principal reason per CFPB Circular 2022-03: insufficient credit history depth (AA01).",
+            "adverse_action_codes": [
+              {
+                "code": "AA01",
+                "label": "Insufficient credit score for standard approval threshold",
+                "source": "Addendum A"
+              },
+              {
+                "code": "AA02",
+                "label": "Debt-to-income ratio exceeds standard eligibility threshold",
+                "source": "Addendum B"
+              }
+            ],
+            "metrics": {
+              "var_95_10d": 0.2722107143368385,
+              "es_95_10d": 0.3011693009684171,
+              "concentration": {
+                "passes": true,
+                "max_weight": 0.5,
+                "breaches": [],
+                "threshold": 0.8
+              },
+              "sector_exposure": {}
+            }
+          },
+          {
+            "voice": "Risk Officer",
+            "verdict": "block",
+            "confidence": 0.78,
+            "rationale": "SR 26-2 materiality assessment: VaR(95%, 10d)=27.22% vs 12% Addendum C benchmark (status: breach); LTV=0.90 vs 0.80 Addendum C ceiling. Effective challenge: exposure × purpose warrants hard block on portfolio concentration grounds.",
+            "adverse_action_codes": [
+              {
+                "code": "AA04",
+                "label": "Portfolio / market risk appetite threshold exceeded",
+                "source": "Addendum C Risk Appetite Note"
+              },
+              {
+                "code": "AA03",
+                "label": "Collateral coverage / LTV exceeds standard eligibility threshold",
+                "source": "Addendum C"
+              }
+            ],
+            "metrics": {
+              "var_95_10d": 0.2722107143368385,
+              "es_95_10d": 0.3011693009684171,
+              "concentration": {
+                "passes": true,
+                "max_weight": 0.5,
+                "breaches": [],
+                "threshold": 0.8
+              },
+              "sector_exposure": {},
+              "risk_budget_status": "breach"
+            }
+          },
+          {
+            "voice": "Fair Lending Compliance",
+            "verdict": "approve",
+            "confidence": 0.91,
+            "rationale": "ECOA/Reg B disparate-impact review complete; no protected-basis proxy features detected in feature set; adverse-action reasons drawn from signed dictionary per CFPB Circular 2022-03 principal-reason accuracy.",
+            "adverse_action_codes": [],
+            "metrics": {
+              "fair_lending_review_flag": false
+            }
+          },
+          {
+            "voice": "Customer Advocate",
+            "verdict": "approve",
+            "confidence": 0.74,
+            "rationale": "Customer-facing explanation and adverse-action reason list reviewed against CFPB Circular 2026-03 plain-language readability standards; no principal-reason accuracy or dictionary coverage flags.",
+            "adverse_action_codes": [],
+            "metrics": {
+              "adverse_action_reasons": []
+            }
+          },
+          {
+            "voice": "Macro Contrarian",
+            "verdict": "approve",
+            "confidence": 0.69,
+            "rationale": "Sector=unknown; sector-cycle overlay and historical stress-episode correlation within Addendum C tolerance. No macro-contrarian escalation.",
+            "adverse_action_codes": [],
+            "metrics": {
+              "sector": null
+            }
+          }
+        ]
+      }
     },
     {
       "seq": 3,
-      "ts_utc": "2026-07-31T02:13:06.743Z",
+      "ts_utc": "2026-07-31T04:39:27.640Z",
       "event_type": "tool_result",
       "actor": "tool",
       "payload_hash": "2e1f8f6cf2ca1ed6cca4b3bc45d66b6722195325f1bd4203100564952211f6b1",
       "payload_ref": "sha256:2e1f8f6cf2ca1ed6cca4b3bc45d66b6722195325f1bd4203100564952211f6b1",
-      "prev_hash": "74d47f7fc533271ed00f8d18e7ec1860a903aa945afca8fd0263b9de850405f5",
-      "extensions": {}
+      "prev_hash": "25601384e57a9605d6de0b27d12970a805efd165fdc9f8374b4bd2b20d295b52",
+      "extensions": {},
+      "payload": {
+        "kind": "adverse_action_notices",
+        "language": "en",
+        "notices": [
+          {
+            "code": "AA01",
+            "notice": {
+              "aa_code": "AA01",
+              "aa_code_summary": "Insufficient credit score for standard approval threshold",
+              "language": "en",
+              "text": "This notice is being provided to you because your application for credit was not approved.\n\nThe principal reason for this decision is:\nYour credit score of 648 is below our standard approval threshold for this product.\n\nYou have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.",
+              "reason_text": "Your credit score of 648 is below our standard approval threshold for this product.",
+              "citations": [
+                {
+                  "id": "12CFR1002.9(b)(2)",
+                  "title": 12,
+                  "part": "1002",
+                  "section": "9",
+                  "subsection": "(b)(2)",
+                  "regulator": "CFPB",
+                  "source_url": "https://www.ecfr.gov/current/title-12/chapter-X/part-1002/subpart-A/section-1002.9"
+                },
+                {
+                  "id": "CFPB-Circular-2023-03",
+                  "title": "CFPB",
+                  "part": "Circular",
+                  "section": "2023-03",
+                  "subsection": null,
+                  "regulator": "CFPB",
+                  "source_url": "https://www.federalregister.gov/documents/2024/04/17/2024-08003/consumer-financial-protection-circular-2023-03-adverse-action-notification-requirements-and-proper"
+                },
+                {
+                  "id": "CFPB-Circular-2022-03",
+                  "title": "CFPB",
+                  "part": "Circular",
+                  "section": "2022-03",
+                  "subsection": null,
+                  "regulator": "CFPB",
+                  "source_url": "https://www.consumerfinance.gov/compliance/circulars/circular-2022-03-adverse-action-notification-requirements-in-connection-with-credit-decisions-based-on-complex-algorithms/"
+                },
+                {
+                  "id": "CFPB-Bulletin-2024-09",
+                  "title": "CFPB",
+                  "part": "Bulletin",
+                  "section": "2024-09",
+                  "subsection": null,
+                  "regulator": "CFPB",
+                  "source_url": "https://www.consumerfinance.gov/compliance/supervisory-guidance/"
+                }
+              ],
+              "notice_sha256": "b19c8545dae1b4c03d7a4e156f948c37519682c05ddbf99d788b03953ecff70d"
+            }
+          },
+          {
+            "code": "AA02",
+            "notice": {
+              "aa_code": "AA02",
+              "aa_code_summary": "Debt-to-income ratio exceeds standard eligibility threshold",
+              "language": "en",
+              "text": "This notice is being provided to you because your application for credit was not approved.\n\nThe principal reason for this decision is:\nYour debt-to-income ratio of 45.0% exceeds our standard eligibility threshold for this product.\n\nYou have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.",
+              "reason_text": "Your debt-to-income ratio of 45.0% exceeds our standard eligibility threshold for this product.",
+              "citations": [
+                {
+                  "id": "12CFR1002.9(b)(2)",
+                  "title": 12,
+                  "part": "1002",
+                  "section": "9",
+                  "subsection": "(b)(2)",
+                  "regulator": "CFPB",
+                  "source_url": "https://www.ecfr.gov/current/title-12/chapter-X/part-1002/subpart-A/section-1002.9"
+                },
+                {
+                  "id": "CFPB-Circular-2023-03",
+                  "title": "CFPB",
+                  "part": "Circular",
+                  "section": "2023-03",
+                  "subsection": null,
+                  "regulator": "CFPB",
+                  "source_url": "https://www.federalregister.gov/documents/2024/04/17/2024-08003/consumer-financial-protection-circular-2023-03-adverse-action-notification-requirements-and-proper"
+                },
+                {
+                  "id": "CFPB-Circular-2022-03",
+                  "title": "CFPB",
+                  "part": "Circular",
+                  "section": "2022-03",
+                  "subsection": null,
+                  "regulator": "CFPB",
+                  "source_url": "https://www.consumerfinance.gov/compliance/circulars/circular-2022-03-adverse-action-notification-requirements-in-connection-with-credit-decisions-based-on-complex-algorithms/"
+                },
+                {
+                  "id": "CFPB-Bulletin-2024-09",
+                  "title": "CFPB",
+                  "part": "Bulletin",
+                  "section": "2024-09",
+                  "subsection": null,
+                  "regulator": "CFPB",
+                  "source_url": "https://www.consumerfinance.gov/compliance/supervisory-guidance/"
+                }
+              ],
+              "notice_sha256": "1f75033f2c03b578932e0d8a0d8d472f9d37547c92777a0836cb52b7d9713acc"
+            }
+          },
+          {
+            "code": "AA04",
+            "notice": {
+              "aa_code": "AA04",
+              "aa_code_summary": "Portfolio / market risk appetite threshold exceeded",
+              "language": "en",
+              "text": "This notice is being provided to you because your application for credit was not approved.\n\nThe principal reason for this decision is:\nThe requested transaction exceeds our current portfolio risk-appetite threshold for this sector and rating.\n\nYou have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.",
+              "reason_text": "The requested transaction exceeds our current portfolio risk-appetite threshold for this sector and rating.",
+              "citations": [
+                {
+                  "id": "CFPB-Circular-2023-03",
+                  "title": "CFPB",
+                  "part": "Circular",
+                  "section": "2023-03",
+                  "subsection": null,
+                  "regulator": "CFPB",
+                  "source_url": "https://www.federalregister.gov/documents/2024/04/17/2024-08003/consumer-financial-protection-circular-2023-03-adverse-action-notification-requirements-and-proper"
+                },
+                {
+                  "id": "CFPB-Circular-2022-03",
+                  "title": "CFPB",
+                  "part": "Circular",
+                  "section": "2022-03",
+                  "subsection": null,
+                  "regulator": "CFPB",
+                  "source_url": "https://www.consumerfinance.gov/compliance/circulars/circular-2022-03-adverse-action-notification-requirements-in-connection-with-credit-decisions-based-on-complex-algorithms/"
+                }
+              ],
+              "notice_sha256": "95eb45afbae929ab5a3d34752ea3a6a548d24b8784f33f11b5fdf3907b508147"
+            }
+          },
+          {
+            "code": "AA03",
+            "notice": {
+              "aa_code": "AA03",
+              "aa_code_summary": "Collateral coverage / LTV exceeds standard eligibility threshold",
+              "language": "en",
+              "text": "This notice is being provided to you because your application for credit was not approved.\n\nThe principal reason for this decision is:\nYour loan-to-value ratio of 90.0% exceeds our standard collateral coverage requirement for this product.\n\nYou have the right to a statement of the specific reasons for this decision under the Equal Credit Opportunity Act (15 U.S.C. §1691). The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, or age (provided the applicant has the capacity to contract); because all or part of the applicant's income derives from any public assistance program; or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law concerning this creditor is the Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552.",
+              "reason_text": "Your loan-to-value ratio of 90.0% exceeds our standard collateral coverage requirement for this product.",
+              "citations": [
+                {
+                  "id": "12CFR1002.9(b)(2)",
+                  "title": 12,
+                  "part": "1002",
+                  "section": "9",
+                  "subsection": "(b)(2)",
+                  "regulator": "CFPB",
+                  "source_url": "https://www.ecfr.gov/current/title-12/chapter-X/part-1002/subpart-A/section-1002.9"
+                },
+                {
+                  "id": "CFPB-Circular-2023-03",
+                  "title": "CFPB",
+                  "part": "Circular",
+                  "section": "2023-03",
+                  "subsection": null,
+                  "regulator": "CFPB",
+                  "source_url": "https://www.federalregister.gov/documents/2024/04/17/2024-08003/consumer-financial-protection-circular-2023-03-adverse-action-notification-requirements-and-proper"
+                },
+                {
+                  "id": "CFPB-Circular-2022-03",
+                  "title": "CFPB",
+                  "part": "Circular",
+                  "section": "2022-03",
+                  "subsection": null,
+                  "regulator": "CFPB",
+                  "source_url": "https://www.consumerfinance.gov/compliance/circulars/circular-2022-03-adverse-action-notification-requirements-in-connection-with-credit-decisions-based-on-complex-algorithms/"
+                },
+                {
+                  "id": "CFPB-Bulletin-2024-09",
+                  "title": "CFPB",
+                  "part": "Bulletin",
+                  "section": "2024-09",
+                  "subsection": null,
+                  "regulator": "CFPB",
+                  "source_url": "https://www.consumerfinance.gov/compliance/supervisory-guidance/"
+                }
+              ],
+              "notice_sha256": "f74e86d0a0910cba2d6e38483cbbb099a185322e88e5058ae0cc8ef0e760f89f"
+            }
+          }
+        ]
+      }
     },
     {
       "seq": 4,
-      "ts_utc": "2026-07-31T02:13:06.744Z",
+      "ts_utc": "2026-07-31T04:39:27.641Z",
       "event_type": "session_end",
       "actor": "system",
       "payload_hash": "5c7659c00515f4fc4bc04482c438ccc4fd52bb017b490b2e8ebe3a0e9ac62bc2",
       "payload_ref": "sha256:5c7659c00515f4fc4bc04482c438ccc4fd52bb017b490b2e8ebe3a0e9ac62bc2",
-      "prev_hash": "11a900be205742b5a5e2b5e18229039205c205189f59281ada43f98fb03d907d",
-      "extensions": {}
+      "prev_hash": "3f7a3f5d38c46c59e165ab43725706180dd2f57556a8b13f9d18900cdc8d23df",
+      "extensions": {},
+      "payload": {
+        "event_count": 4,
+        "session_duration_ms": 1
+      }
     }
   ],
-  "batch_root": "0e3edd35b2e12aa642cb214afae88667e8c204f912d51966556379197f6f57c2",
+  "batch_root": "66b98e8003a60c244d3eaf4eaa323543cf57ddf065785e49d6bcbc8997833624",
   "signatures": [
     {
       "algorithm": "ed25519",
       "key_id": "ephemeral-demo",
-      "signature": "SRLwasBuE7QfGcVHlpeJSdZvsK5NjPMB8uebvzEfaQbSawCN9F4Lmeuf7jctaACBoS6eAk3GJWCxp2fOH6MtCg",
-      "signed_at_utc": "2026-07-31T02:13:06.745Z"
+      "signature": "rQq3qre8m4BLQg13GcivFkqfmKAsys7GCcZ58SgkWLNkuTgJ1jcmY7ZjqrVtUOLdQwSjWt-U4KEGPi3mqd5bDA",
+      "signed_at_utc": "2026-07-31T04:39:27.642Z"
     }
   ]
 }

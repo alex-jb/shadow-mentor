@@ -84,12 +84,15 @@ function headerSeedHash(header) {
   return sha256Hex(canonicalBytes(normalized));
 }
 
-// `payload_ref` is a hint about where the content-addressed payload lives.
-// Its value is EXCLUDED from the signed record shape so the operator can
-// null it out during a GDPR erasure without invalidating the chain. The
-// authenticator is `payload_hash`, which stays in the signed shape.
+// `payload_ref` (where the content-addressed payload lives) and `payload` (the
+// optional inline plaintext, when embedPayloads is on) are BOTH excluded from the
+// signed record shape so the operator can null either during a GDPR erasure
+// without invalidating the chain. The authenticator is `payload_hash`, which
+// stays in the signed shape — so a verifier rebinds inline payload → payload_hash
+// explicitly (see verifyBundle), and editing the plaintext is caught there even
+// though it doesn't perturb the own-hash / chain.
 function signedShape(event) {
-  const { payload_ref, ...rest } = event;
+  const { payload_ref, payload, ...rest } = event;
   return rest;
 }
 
@@ -121,6 +124,7 @@ export function createSession(params) {
     signingAlgorithm = "ed25519",
     attestCoreVersion = ATTEST_CORE_VERSION,
     store = null,
+    embedPayloads = false,
   } = params ?? {};
 
   if (!agent || typeof agent !== "object") throw new Error("createSession: agent required");
@@ -174,6 +178,12 @@ export function createSession(params) {
       privateKey: normalizePrivateKey(privateKey),
     },
     _store: store,
+    // When true, appendEvent retains the plaintext payload inline in each event
+    // so the sealed bundle is SELF-CONTAINED: a verifier can recompute
+    // sha256(payload) and rebind it to the signed payload_hash. The payload is
+    // still EXCLUDED from the signed shape (payload_hash is the authenticator),
+    // so an operator can null it during a GDPR erasure without breaking the chain.
+    _embedPayloads: embedPayloads === true,
   };
 
   if (store) {
@@ -223,6 +233,13 @@ export function appendEvent(session, event) {
     prev_hash: session._lastEventHash,
     extensions: event.extensions ?? {},
   };
+
+  // Self-contained bundles: keep the plaintext inline so a verifier can rebind it
+  // to payload_hash. Skipped when the ref was nulled (erasure) or points elsewhere
+  // (content lives in an external store keyed by payload_ref).
+  if (session._embedPayloads && payloadRef === `sha256:${payloadHash}`) {
+    record.payload = payload;
+  }
 
   const ownHash = sha256Hex(canonicalBytes(signedShape(record)));
   session.events.push(record);
@@ -590,6 +607,7 @@ export function verifyBundle(bundle, params) {
   const headerHash = headerSeedHash(bundle.header);
   let expectedPrev = headerHash;
   const eventHashes = [];
+  let payloadsPresent = 0;
 
   for (let i = 0; i < bundle.events.length; i++) {
     const ev = bundle.events[i];
@@ -597,6 +615,16 @@ export function verifyBundle(bundle, params) {
       `Event at index ${i} declares seq ${ev.seq}; the chain is missing or reordered starting here.`);
     if (ev.prev_hash !== expectedPrev) return fail(i, "prev_hash_mismatch",
       `prev_hash at seq ${i} does not match the previous event's own hash; chain broken at this point and every event after it is unverifiable against this signature.`);
+    // Rebind inline plaintext to its signed payload_hash. payload is EXCLUDED from
+    // the signed shape, so a plaintext edit (e.g. verdict BLOCK→APPROVE) leaves the
+    // chain + signature intact — this recompute is the only thing that catches it,
+    // and it names the exact edited seq (correct tamper locus).
+    if (ev.payload !== undefined && ev.payload !== null) {
+      const rehash = sha256Hex(canonicalBytes(ev.payload));
+      if (rehash !== ev.payload_hash) return fail(i, "payload_hash_mismatch",
+        `The inline payload at seq ${i} does not hash to its signed payload_hash; the human-readable content was altered after signing while the hash was left intact.`);
+      payloadsPresent++;
+    }
     const own = sha256Hex(canonicalBytes(signedShape(ev)));
     eventHashes.push(own);
     expectedPrev = own;
@@ -656,5 +684,15 @@ export function verifyBundle(bundle, params) {
     }
   }
 
-  return { ok: true, trustLevel, anchors: anchorResults };
+  // source_resolution: can the verifier SEE (and rebind) the content it attests?
+  //   VERIFIED    — every event carried inline plaintext and each rebound to its hash
+  //   PARTIAL     — some events carried plaintext (rebound), some are hash-only
+  //   NOT_PRESENT — hash-only bundle (content lives elsewhere / was erased); the
+  //                 signature + chain are valid but the plaintext is not in-hand
+  const n = bundle.events.length;
+  const sourceResolution = payloadsPresent === 0 ? "NOT_PRESENT"
+    : payloadsPresent === n ? "VERIFIED"
+    : "PARTIAL";
+
+  return { ok: true, trustLevel, anchors: anchorResults, sourceResolution };
 }

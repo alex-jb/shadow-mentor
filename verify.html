@@ -158,7 +158,7 @@ function canonicalize(v){if(v===null||typeof v!=="object")return JSON.stringify(
 const cbytes=v=>new TextEncoder().encode(canonicalize(v));
 async function sha256Hex(b){const d=await crypto.subtle.digest("SHA-256",b);return [...new Uint8Array(d)].map(x=>x.toString(16).padStart(2,"0")).join("");}
 const seedHash=h=>sha256Hex(cbytes({...h,session_ended_at_utc:null}));
-const signedShape=e=>{const{payload_ref,...r}=e;return r;};
+const signedShape=e=>{const{payload_ref,payload,...r}=e;return r;};
 const hexToBytes=h=>{const o=new Uint8Array(h.length/2);for(let i=0;i<o.length;i++)o[i]=parseInt(h.substr(i*2,2),16);return o;};
 const b64u=s=>{const p=s.replace(/-/g,"+").replace(/_/g,"/")+"==".slice(0,(4-s.length%4)%4);const b=atob(p);const o=new Uint8Array(b.length);for(let i=0;i<b.length;i++)o[i]=b.charCodeAt(i);return o;};
 function pemToSpki(pem){const c=pem.replace(/-----BEGIN [^-]+-----|-----END [^-]+-----|\s+/g,"");const b=atob(c);const o=new Uint8Array(b.length);for(let i=0;i<b.length;i++)o[i]=b.charCodeAt(i);return o.buffer;}
@@ -171,10 +171,13 @@ async function verifyBundle(bundle,pem){
   M.profile="VERIFIED";
   if(!Array.isArray(bundle.events))return F(null,"events_not_array");
   if(!Array.isArray(bundle.signatures)||!bundle.signatures.length)return F(null,"signatures_missing");
-  let prev=await seedHash(bundle.header),hashes=[];
+  let prev=await seedHash(bundle.header),hashes=[],present=0;
   for(let i=0;i<bundle.events.length;i++){const ev=bundle.events[i];
     if(ev.seq!==i){M.hash_chain="FAILED";return F(i,"seq_gap");}
     if(ev.prev_hash!==prev){M.hash_chain="FAILED";return F(i,"prev_hash_mismatch");}
+    // Rebind inline plaintext to its signed payload_hash — catches a plaintext edit
+    // (e.g. verdict BLOCK→APPROVE) that leaves the chain + signature intact.
+    if(ev.payload!==undefined&&ev.payload!==null){const rh=await sha256Hex(cbytes(ev.payload));if(rh!==ev.payload_hash){M.source_resolution="FAILED";return F(i,"payload_hash_mismatch");}present++;}
     const own=await sha256Hex(cbytes(signedShape(ev)));hashes.push(own);prev=own;}
   const concat=new Uint8Array(hashes.length*32);hashes.forEach((h,i)=>concat.set(hexToBytes(h),i*32));
   const root=await sha256Hex(concat);
@@ -188,6 +191,9 @@ async function verifyBundle(bundle,pem){
   catch(e){M.signature="MALFORMED";return F(null,"signature_malformed");}  // garbage base64 → clean FAILED, not an uncaught atob error
   if(!ok){M.signature="FAILED";return F(null,"signature_verification_failed");}
   M.signature="VERIFIED";
+  // source_resolution VERIFIED only when every event's plaintext was present AND rebound
+  // to its hash; otherwise leave NOT_PRESENT (never over-claim what we can't see).
+  if(present>0&&present===bundle.events.length)M.source_resolution="VERIFIED";
   if(Array.isArray(bundle.external_anchors)&&bundle.external_anchors.length)M.external_anchor="NOT_CHECKED";
   return {ok:true,matrix:M,batchRoot:root,sessionId:bundle.header.session_id,keyId:sig.key_id,algorithm:sig.algorithm};
 }

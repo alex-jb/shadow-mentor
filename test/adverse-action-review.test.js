@@ -54,6 +54,37 @@ test("editing a sealed payload_hash makes the bundle FAIL (tamper caught)", () =
   assert.equal(verifyBundle(tampered, { publicKey: r.publicKeyPem }).ok, false);
 });
 
+// B1 — the whole product thesis. Previously UNDETECTABLE: the plaintext wasn't in
+// the bundle, so flipping the displayed verdict left verification GREEN. Now the
+// payload is embedded + rebound to its signed hash, so this must FAIL.
+test("editing the sealed PLAINTEXT verdict (hash left intact) makes the bundle FAIL", () => {
+  const r = reviewAdverseAction(DENIED);
+  const tampered = JSON.parse(JSON.stringify(r.bundle));
+  const ev = tampered.events.find((e) => e.payload && e.payload.kind === "council_verdict");
+  assert.ok(ev, "council_verdict payload must be embedded in the bundle");
+  assert.equal(ev.payload.final_verdict, "block");
+  ev.payload.final_verdict = "approve"; // flip BLOCK→APPROVE, leave payload_hash intact
+  const v = verifyBundle(tampered, { publicKey: r.publicKeyPem });
+  assert.equal(v.ok, false, "a plaintext edit that leaves the hash intact must FAIL");
+  assert.equal(v.reason, "payload_hash_mismatch");
+});
+
+test("the wedge bundle is self-contained — verify reports source_resolution VERIFIED", () => {
+  const r = reviewAdverseAction(DENIED);
+  const v = verifyBundle(r.bundle, { publicKey: r.publicKeyPem });
+  assert.equal(v.ok, true);
+  assert.equal(v.sourceResolution, "VERIFIED", "every event's plaintext must rebind to its hash");
+});
+
+// B2 — a real LOS record missing a ratio must yield a legible error, not a
+// `Cannot read properties of undefined (reading 'toFixed')` crash.
+test("a missing required ratio yields a legible error, not a crash", () => {
+  assert.throws(
+    () => reviewAdverseAction({ application_id: "X", credit_score: 648, loan_to_value: 0.9 }),
+    /missing required field 'debt_to_income'/,
+  );
+});
+
 test("truncating the chain makes the bundle FAIL", () => {
   const r = reviewAdverseAction(DENIED);
   const truncated = JSON.parse(JSON.stringify(r.bundle));
