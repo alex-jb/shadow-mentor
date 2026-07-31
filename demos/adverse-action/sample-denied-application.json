@@ -1,0 +1,10 @@
+{
+  "application_id": "SL-2026-014",
+  "credit_score": 648,
+  "debt_to_income": 0.45,
+  "loan_to_value": 0.90,
+  "notice_language": "en",
+  "market_proxy_prices": [100, 101, 99, 102, 98, 103, 97, 104, 96, 105, 95, 106],
+  "collateral_positions": [],
+  "borrower_exposure_weights": { "obligor_a": 0.5, "obligor_b": 0.5 }
+}
