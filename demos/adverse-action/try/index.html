@@ -69,14 +69,14 @@ const APPLICATION={
   "collateral_positions": [],
   "borrower_exposure_weights": { "obligor_a": 0.5, "obligor_b": 0.5 }
 };
-const PUBKEY="-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAKxxznI5vuaBQhH65kmJAP08tK3y0wtyS6jH+f+aKtbI=\n-----END PUBLIC KEY-----";
+const PUBKEY="-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA5PbMbEptUUxcN0jbsgy1v8bAj5Ydt/qLOvhB9oPSmSQ=\n-----END PUBLIC KEY-----";
 const CLEAN_BUNDLE={
   "bundle_version": 1,
   "spec_version": "shadow-evidence/v1",
   "header": {
-    "session_id": "5be92270652f7737bab2faaeeb04839f176e9b4930e1d785a65dfaba90ecd0c1",
-    "session_started_at_utc": "2026-07-31T04:39:27.640Z",
-    "session_ended_at_utc": "2026-07-31T04:39:27.641Z",
+    "session_id": "8eca59ae2ffb95c2db3707453211fee904b6babeb0538a0a0bad8e13f2b5b4e7",
+    "session_started_at_utc": "2026-08-05T19:10:21.553Z",
+    "session_ended_at_utc": "2026-08-05T19:10:21.555Z",
     "agent": {
       "name": "shadow-adverse-action",
       "version": "1.0.0",
@@ -96,12 +96,12 @@ const CLEAN_BUNDLE={
   "events": [
     {
       "seq": 0,
-      "ts_utc": "2026-07-31T04:39:27.640Z",
+      "ts_utc": "2026-08-05T19:10:21.553Z",
       "event_type": "session_start",
       "actor": "system",
       "payload_hash": "510f2f3473921066e54514aa8fbf447799c9a9d0987f052d252259083c3f10ac",
       "payload_ref": "sha256:510f2f3473921066e54514aa8fbf447799c9a9d0987f052d252259083c3f10ac",
-      "prev_hash": "77d39489a2bd23fe3e97d53731cfa5a9590143a990b6a6aee3fd197e8430ca0a",
+      "prev_hash": "92c1575a6023b92faf6812ee02339515c724b5302772192b1be3ff17e577e80e",
       "extensions": {},
       "payload": {
         "kind": "adverse_action_review",
@@ -110,12 +110,12 @@ const CLEAN_BUNDLE={
     },
     {
       "seq": 1,
-      "ts_utc": "2026-07-31T04:39:27.640Z",
+      "ts_utc": "2026-08-05T19:10:21.553Z",
       "event_type": "user_message",
       "actor": "user",
       "payload_hash": "2e4d1481bbe86b192ce5de0a9ef26fd149cb44f2c76abb0ae77f0b67b223c1af",
       "payload_ref": "sha256:2e4d1481bbe86b192ce5de0a9ef26fd149cb44f2c76abb0ae77f0b67b223c1af",
-      "prev_hash": "33aec5c8b70f3ab64fdeee88e771de86b6f9e815792839d4e0850aeb5debbacd",
+      "prev_hash": "5df625160da3450f2c99d418e72ce96b2b4a459e79f9b29f6f0d59c1ed8041e7",
       "extensions": {},
       "payload": {
         "kind": "credit_application",
@@ -149,12 +149,12 @@ const CLEAN_BUNDLE={
     },
     {
       "seq": 2,
-      "ts_utc": "2026-07-31T04:39:27.640Z",
+      "ts_utc": "2026-08-05T19:10:21.553Z",
       "event_type": "model_output",
       "actor": "model",
-      "payload_hash": "961ec39ab2b769138dd9fc68fe3ec522b138caace1dd63dcc9940aaa53244c52",
-      "payload_ref": "sha256:961ec39ab2b769138dd9fc68fe3ec522b138caace1dd63dcc9940aaa53244c52",
-      "prev_hash": "810e7b343b3d51246ad66bc3da4183b4413229ced9a216f14663ca1671d68e7c",
+      "payload_hash": "43dba48fae29c5662175e54d6713d658a493d3a5b0495a347b1d75b3c9c48aaa",
+      "payload_ref": "sha256:43dba48fae29c5662175e54d6713d658a493d3a5b0495a347b1d75b3c9c48aaa",
+      "prev_hash": "1e2b2c576caaddd2dbefe2619e317b53590acc254fd81700e648abf43555f6e6",
       "extensions": {},
       "payload": {
         "kind": "council_verdict",
@@ -186,7 +186,7 @@ const CLEAN_BUNDLE={
             "voice": "Credit Fundamentals",
             "verdict": "block",
             "confidence": 0.82,
-            "rationale": "FICO=648 below Addendum A floor 700 (Reg B §1002.6 permissible consideration); credit-eligibility floor failure is a hard block per Levitchi 2026-06-19 policy semantics. Principal reason per CFPB Circular 2022-03: insufficient credit history depth (AA01).",
+            "rationale": "FICO=648 below Addendum A floor 700 (Reg B §1002.6 permissible consideration); credit-eligibility floor failure is a hard block per Levitchi 2026-06-19 policy semantics. Principal reason under Reg B §1002.9(b)(2): insufficient credit history depth (AA01).",
             "adverse_action_codes": [
               {
                 "code": "AA01",
@@ -245,7 +245,7 @@ const CLEAN_BUNDLE={
             "voice": "Fair Lending Compliance",
             "verdict": "approve",
             "confidence": 0.91,
-            "rationale": "ECOA/Reg B disparate-impact review complete; no protected-basis proxy features detected in feature set; adverse-action reasons drawn from signed dictionary per CFPB Circular 2022-03 principal-reason accuracy.",
+            "rationale": "ECOA/Reg B disparate-impact review complete; no protected-basis proxy features detected in feature set; adverse-action reasons drawn from signed dictionary per Reg B §1002.9(b)(2) principal-reason accuracy.",
             "adverse_action_codes": [],
             "metrics": {
               "fair_lending_review_flag": false
@@ -255,7 +255,7 @@ const CLEAN_BUNDLE={
             "voice": "Customer Advocate",
             "verdict": "approve",
             "confidence": 0.74,
-            "rationale": "Customer-facing explanation and adverse-action reason list reviewed against CFPB Circular 2026-03 plain-language readability standards; no principal-reason accuracy or dictionary coverage flags.",
+            "rationale": "Customer-facing explanation and adverse-action reason list reviewed against Reg B §1002.9(b)(2) specific-reason readability; no principal-reason accuracy or dictionary coverage flags.",
             "adverse_action_codes": [],
             "metrics": {
               "adverse_action_reasons": []
@@ -276,12 +276,12 @@ const CLEAN_BUNDLE={
     },
     {
       "seq": 3,
-      "ts_utc": "2026-07-31T04:39:27.640Z",
+      "ts_utc": "2026-08-05T19:10:21.553Z",
       "event_type": "tool_result",
       "actor": "tool",
-      "payload_hash": "2e1f8f6cf2ca1ed6cca4b3bc45d66b6722195325f1bd4203100564952211f6b1",
-      "payload_ref": "sha256:2e1f8f6cf2ca1ed6cca4b3bc45d66b6722195325f1bd4203100564952211f6b1",
-      "prev_hash": "25601384e57a9605d6de0b27d12970a805efd165fdc9f8374b4bd2b20d295b52",
+      "payload_hash": "e2cdfb8776861b02f3d8c4a6597685b1b140b0372e4cfc7c24181b32e6e17439",
+      "payload_ref": "sha256:e2cdfb8776861b02f3d8c4a6597685b1b140b0372e4cfc7c24181b32e6e17439",
+      "prev_hash": "9905f0e32a6e86114ea6723ef169b9f63060fbac669aabc04b512ba705e3d7d1",
       "extensions": {},
       "payload": {
         "kind": "adverse_action_notices",
@@ -304,33 +304,6 @@ const CLEAN_BUNDLE={
                   "subsection": "(b)(2)",
                   "regulator": "CFPB",
                   "source_url": "https://www.ecfr.gov/current/title-12/chapter-X/part-1002/subpart-A/section-1002.9"
-                },
-                {
-                  "id": "CFPB-Circular-2023-03",
-                  "title": "CFPB",
-                  "part": "Circular",
-                  "section": "2023-03",
-                  "subsection": null,
-                  "regulator": "CFPB",
-                  "source_url": "https://www.federalregister.gov/documents/2024/04/17/2024-08003/consumer-financial-protection-circular-2023-03-adverse-action-notification-requirements-and-proper"
-                },
-                {
-                  "id": "CFPB-Circular-2022-03",
-                  "title": "CFPB",
-                  "part": "Circular",
-                  "section": "2022-03",
-                  "subsection": null,
-                  "regulator": "CFPB",
-                  "source_url": "https://www.consumerfinance.gov/compliance/circulars/circular-2022-03-adverse-action-notification-requirements-in-connection-with-credit-decisions-based-on-complex-algorithms/"
-                },
-                {
-                  "id": "CFPB-Bulletin-2024-09",
-                  "title": "CFPB",
-                  "part": "Bulletin",
-                  "section": "2024-09",
-                  "subsection": null,
-                  "regulator": "CFPB",
-                  "source_url": "https://www.consumerfinance.gov/compliance/supervisory-guidance/"
                 }
               ],
               "notice_sha256": "b19c8545dae1b4c03d7a4e156f948c37519682c05ddbf99d788b03953ecff70d"
@@ -353,33 +326,6 @@ const CLEAN_BUNDLE={
                   "subsection": "(b)(2)",
                   "regulator": "CFPB",
                   "source_url": "https://www.ecfr.gov/current/title-12/chapter-X/part-1002/subpart-A/section-1002.9"
-                },
-                {
-                  "id": "CFPB-Circular-2023-03",
-                  "title": "CFPB",
-                  "part": "Circular",
-                  "section": "2023-03",
-                  "subsection": null,
-                  "regulator": "CFPB",
-                  "source_url": "https://www.federalregister.gov/documents/2024/04/17/2024-08003/consumer-financial-protection-circular-2023-03-adverse-action-notification-requirements-and-proper"
-                },
-                {
-                  "id": "CFPB-Circular-2022-03",
-                  "title": "CFPB",
-                  "part": "Circular",
-                  "section": "2022-03",
-                  "subsection": null,
-                  "regulator": "CFPB",
-                  "source_url": "https://www.consumerfinance.gov/compliance/circulars/circular-2022-03-adverse-action-notification-requirements-in-connection-with-credit-decisions-based-on-complex-algorithms/"
-                },
-                {
-                  "id": "CFPB-Bulletin-2024-09",
-                  "title": "CFPB",
-                  "part": "Bulletin",
-                  "section": "2024-09",
-                  "subsection": null,
-                  "regulator": "CFPB",
-                  "source_url": "https://www.consumerfinance.gov/compliance/supervisory-guidance/"
                 }
               ],
               "notice_sha256": "1f75033f2c03b578932e0d8a0d8d472f9d37547c92777a0836cb52b7d9713acc"
@@ -395,22 +341,13 @@ const CLEAN_BUNDLE={
               "reason_text": "The requested transaction exceeds our current portfolio risk-appetite threshold for this sector and rating.",
               "citations": [
                 {
-                  "id": "CFPB-Circular-2023-03",
-                  "title": "CFPB",
-                  "part": "Circular",
-                  "section": "2023-03",
-                  "subsection": null,
+                  "id": "12CFR1002.9(b)(2)",
+                  "title": 12,
+                  "part": "1002",
+                  "section": "9",
+                  "subsection": "(b)(2)",
                   "regulator": "CFPB",
-                  "source_url": "https://www.federalregister.gov/documents/2024/04/17/2024-08003/consumer-financial-protection-circular-2023-03-adverse-action-notification-requirements-and-proper"
-                },
-                {
-                  "id": "CFPB-Circular-2022-03",
-                  "title": "CFPB",
-                  "part": "Circular",
-                  "section": "2022-03",
-                  "subsection": null,
-                  "regulator": "CFPB",
-                  "source_url": "https://www.consumerfinance.gov/compliance/circulars/circular-2022-03-adverse-action-notification-requirements-in-connection-with-credit-decisions-based-on-complex-algorithms/"
+                  "source_url": "https://www.ecfr.gov/current/title-12/chapter-X/part-1002/subpart-A/section-1002.9"
                 }
               ],
               "notice_sha256": "95eb45afbae929ab5a3d34752ea3a6a548d24b8784f33f11b5fdf3907b508147"
@@ -433,33 +370,6 @@ const CLEAN_BUNDLE={
                   "subsection": "(b)(2)",
                   "regulator": "CFPB",
                   "source_url": "https://www.ecfr.gov/current/title-12/chapter-X/part-1002/subpart-A/section-1002.9"
-                },
-                {
-                  "id": "CFPB-Circular-2023-03",
-                  "title": "CFPB",
-                  "part": "Circular",
-                  "section": "2023-03",
-                  "subsection": null,
-                  "regulator": "CFPB",
-                  "source_url": "https://www.federalregister.gov/documents/2024/04/17/2024-08003/consumer-financial-protection-circular-2023-03-adverse-action-notification-requirements-and-proper"
-                },
-                {
-                  "id": "CFPB-Circular-2022-03",
-                  "title": "CFPB",
-                  "part": "Circular",
-                  "section": "2022-03",
-                  "subsection": null,
-                  "regulator": "CFPB",
-                  "source_url": "https://www.consumerfinance.gov/compliance/circulars/circular-2022-03-adverse-action-notification-requirements-in-connection-with-credit-decisions-based-on-complex-algorithms/"
-                },
-                {
-                  "id": "CFPB-Bulletin-2024-09",
-                  "title": "CFPB",
-                  "part": "Bulletin",
-                  "section": "2024-09",
-                  "subsection": null,
-                  "regulator": "CFPB",
-                  "source_url": "https://www.consumerfinance.gov/compliance/supervisory-guidance/"
                 }
               ],
               "notice_sha256": "f74e86d0a0910cba2d6e38483cbbb099a185322e88e5058ae0cc8ef0e760f89f"
@@ -470,26 +380,26 @@ const CLEAN_BUNDLE={
     },
     {
       "seq": 4,
-      "ts_utc": "2026-07-31T04:39:27.641Z",
+      "ts_utc": "2026-08-05T19:10:21.555Z",
       "event_type": "session_end",
       "actor": "system",
-      "payload_hash": "5c7659c00515f4fc4bc04482c438ccc4fd52bb017b490b2e8ebe3a0e9ac62bc2",
-      "payload_ref": "sha256:5c7659c00515f4fc4bc04482c438ccc4fd52bb017b490b2e8ebe3a0e9ac62bc2",
-      "prev_hash": "3f7a3f5d38c46c59e165ab43725706180dd2f57556a8b13f9d18900cdc8d23df",
+      "payload_hash": "c9aece619e70e86eb20750d50599027bc4ad919047e545ef85c92d7faba1e61f",
+      "payload_ref": "sha256:c9aece619e70e86eb20750d50599027bc4ad919047e545ef85c92d7faba1e61f",
+      "prev_hash": "5049e8be2185faf74a897b8d01bb66bf44c85d05941735b2478454d21e278ee0",
       "extensions": {},
       "payload": {
         "event_count": 4,
-        "session_duration_ms": 1
+        "session_duration_ms": 2
       }
     }
   ],
-  "batch_root": "66b98e8003a60c244d3eaf4eaa323543cf57ddf065785e49d6bcbc8997833624",
+  "batch_root": "3e19076b54933d8f0337e53b553e382976fb6fb8f708a353e86331a21de02802",
   "signatures": [
     {
       "algorithm": "ed25519",
       "key_id": "ephemeral-demo",
-      "signature": "rQq3qre8m4BLQg13GcivFkqfmKAsys7GCcZ58SgkWLNkuTgJ1jcmY7ZjqrVtUOLdQwSjWt-U4KEGPi3mqd5bDA",
-      "signed_at_utc": "2026-07-31T04:39:27.642Z"
+      "signature": "vFU2FjB3pfALK6WLAdlcD9j-XHJ_KMP2VopTPQqXAnuWd_Hxc29nwZpEOek_VxNDEJ_-5BPBlilXmQcUeGjlCA",
+      "signed_at_utc": "2026-08-05T19:10:21.556Z"
     }
   ]
 };
@@ -528,7 +438,7 @@ async function verifyBundle(bundle,pem){
 }
 document.getElementById("app").textContent=JSON.stringify(APPLICATION,null,2);
 document.getElementById("report").insertAdjacentHTML("beforeend",`<h2>Adverse-Action Review — SL-2026-014</h2>
-<p><em>Independent verification by Shadow · 2026-07-31T04:39:27.640Z · signing: Ed25519 (ephemeral demo key — pass a key for a persistent identity)</em></p>
+<p><em>Independent verification by Shadow · 2026-08-05T19:10:21.553Z · signing: Ed25519 (ephemeral demo key — pass a key for a persistent identity)</em></p>
 
 <p><b>Decision:</b> BLOCK</p>
 <p><b>Applicant signals:</b> FICO 648 · DTI 0.45 · LTV 0.9</p>

@@ -1,5 +1,5 @@
 # Adverse-Action Review — SL-2026-014
-*Independent verification by Shadow · 2026-07-31T04:39:27.640Z · signing: Ed25519 (ephemeral demo key — pass a key for a persistent identity)*
+*Independent verification by Shadow · 2026-08-05T19:10:21.553Z · signing: Ed25519 (ephemeral demo key — pass a key for a persistent identity)*
 
 **Decision:** BLOCK
 **Applicant signals:** FICO 648 · DTI 0.45 · LTV 0.9

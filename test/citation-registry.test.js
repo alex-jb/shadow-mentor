@@ -134,8 +134,11 @@ test("§1002.9(b)(2) is valid for AA03 (LTV)", () => {
   assert.equal(isValidForAA("12CFR1002.9(b)(2)", "AA03"), true);
 });
 
-test("A2 — §1002.9(b)(2) NOT valid for AA04 (portfolio risk)", () => {
-  assert.equal(isValidForAA("12CFR1002.9(b)(2)", "AA04"), false);
+test("§1002.9(b)(2) is valid for AA04 (portfolio risk) — it is the general specificity rule", () => {
+  // Updated 2026-08-05: §1002.9(b)(2) applies to EVERY adverse-action notice regardless of the
+  // reason. AA04 was previously grounded only in CFPB Circulars 2022-03/2023-03, both withdrawn
+  // 2025-05-12 — so AA04 was added to the durable statute to keep it grounded, not left uncited.
+  assert.equal(isValidForAA("12CFR1002.9(b)(2)", "AA04"), true);
 });
 
 test("A2 — SR 26-2 governance-only NOT valid for any AA code", () => {
