@@ -1,13 +1,14 @@
 # Shadow — pilot outreach kit
 *The review's #1 next move: get one real compliance officer to run one real denied application. This is the kit to make that happen. 2026-08-04.*
 
-> Discipline (from the JTBD research): this buyer is defensive, personally exposed, and regulation-fluent. They trust **specific citations, admissions of the lender's own liability, and examiner vocabulary**; they distrust **superlatives, "AI magic," and anything implying the tool absorbs their accountability.** Every word below leads with the reg section, not the technology. No fabricated metrics. Cite **GDPR Art. 22 + Schufa C-634/21** (live) and **CFPB Circular 2022-03 / Reg B §1002.9(b)(2)** — never "EU AI Act" (deferred 2027).
+> Discipline (from the JTBD research): this buyer is defensive, personally exposed, and regulation-fluent. They trust **specific citations, admissions of the lender's own liability, and examiner vocabulary**; they distrust **superlatives, "AI magic," and anything implying the tool absorbs their accountability.** Every word below leads with the reg section, not the technology. No fabricated metrics.
+> **Citation discipline (updated 2026-08-05 after the landscape scan — verify current numbers before sending):** anchor on the **durable statute — ECOA 15 U.S.C. §1691(d) + Reg B 12 CFR §1002.9(b)(2)** — plus **GDPR Art. 22 + Schufa (C-634/21)** in the EU. **Do NOT cite specific CFPB circulars by number** (the 2022/2023 adverse-action circulars were withdrawn; the statute is what endures), do not cite "EU AI Act" (credit-scoring deferred to 2027-12), and drop the VyStar reference (UDAAP/ops case, not fair-lending/AI). US enforcement now runs through **state AGs + private litigation**, not the CFPB — where verified, lead with state exposure (NJ vendor-AI liability, CO AI Act high-risk credit) and the Mass AG v. Earnest AI-underwriting settlement.
 
 ---
 
 ## 1 · Who to target (in priority order)
 1. **Fair-lending compliance officer** or **Model Risk Management (2nd-line) analyst** at an **EU-exposed fintech lender** (GDPR Art. 22 + Schufa make automated-decision explanation legally live today). Title cues: "Head of Fair Lending", "Model Validation Lead", "Adverse Action Specialist", "Chief Compliance Officer (lending)".
-2. Same role at a **US fintech lender** using AI/ML underwriting (Reg B + CFPB Circular 2022-03 make the "explain your model's specific reasons" obligation live).
+2. Same role at a **US fintech lender** using AI/ML underwriting (**Reg B §1002.9(b)(2)** makes the "explain your model's specific reasons" obligation live; enforcement now via state AGs + private suits, not the CFPB).
 3. NOT the data-science team (they built the model — they're the problem being managed, not the buyer).
 
 **Best channel: warm intro through Lora.** She has mid-tier banking contacts (`Correspondence/ECC-2026/lora-mid-tier-contacts-2026-07-07.md`) and the fair-lending domain standing. A one-line intro from her outperforms any cold email — use §3 first, §4 only as fallback.
@@ -16,7 +17,7 @@
 
 > ### When the examiner asks why your model denied that applicant, can you answer in an afternoon?
 >
-> Under **Reg B / ECOA §1002.9(b)(2)** you owe each denied applicant the **specific** principal reasons — not FCRA "key factors," not "did not meet our proprietary model." **CFPB Circular 2022-03** is explicit: *a creditor's lack of understanding of its own methods is not a defense.* In the EU, **GDPR Art. 22 + Schufa (C-634/21)** make the same per-decision explanation legally live today.
+> Under **Reg B / ECOA §1002.9(b)(2)** you owe each denied applicant the **specific** principal reasons — not FCRA "key factors," not "did not meet our proprietary model." The obligation is on the *lender*, and **model complexity is no excuse** — "we can't explain the model's reasons" does not satisfy the statute. In the EU, **GDPR Art. 22 + Schufa (C-634/21)** make the same per-decision explanation legally live today.
 >
 > **Shadow** is the independent, open-source verifier for AI credit decisions. We didn't build your model — which is exactly why your regulator trusts us to check it. For each denied decision, Shadow:
 > - maps the model's output to the **specific §1002.9(b)(2) principal reasons** (and refuses to guess when it can't ground one);
@@ -37,7 +38,7 @@
 >
 > Hi [Name],
 >
-> You owe each denied applicant the specific principal reasons under Reg B §1002.9(b)(2) [EU: GDPR Art. 22 + Schufa], and Circular 2022-03 says not understanding your own model isn't a defense. If your underwriting uses an AI/ML model, producing those specific reasons — and evidence that survives an exam — is harder than it should be.
+> You owe each denied applicant the specific principal reasons under Reg B §1002.9(b)(2) [EU: GDPR Art. 22 + Schufa], and model complexity doesn't excuse a vague reason. If your underwriting uses an AI/ML model, producing those specific reasons — and evidence that survives an exam — is harder than it should be.
 >
 > I've built an independent, open-source verifier for exactly this: it maps a denied decision to its §1002.9(b)(2) principal reasons and seals a record your examiner re-verifies offline, no account. It's analysis-only and runs on your data.
 >
@@ -55,7 +56,7 @@
 ## 6 · What NOT to do
 - Don't lead with the crypto, the hash-chain, or "AI" — lead with their exam and their liability.
 - Don't promise it decides or fixes anything — it's analysis-only; that's a feature to this buyer.
-- Don't cite EU AI Act, "SR 26-2 Tier 3," or any fabricated adoption metric.
+- Don't cite EU AI Act, "SR 26-2 Tier 3," a withdrawn CFPB circular by number, the VyStar case, or any fabricated adoption metric. Anchor on the durable statute (ECOA §1691(d) / Reg B §1002.9(b)(2)).
 - Don't send the public mockup links until Deployment Protection is off (they currently 302). Until then, screen-share the local build or the worked example (`shadow-aa-demo.vercel.app`, which is public).
 
 ## Alex's next actions
