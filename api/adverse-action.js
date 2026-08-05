@@ -36,9 +36,13 @@ export default async function handler(req, res) {
   const privateKey = process.env.SHADOW_ATTESTATION_ED25519_PRIVATE_KEY || null;
   const keyId = process.env.SHADOW_ATTESTATION_KEY_ID || undefined;
 
+  // Two-phase flow: pass { draft: true } to get the reasons + notices UNSIGNED for the officer
+  // to review/edit, then POST /api/adverse-action/seal with the edited notices to sign off.
+  const draft = req.body?.draft === true;
+
   let result;
   try {
-    result = reviewAdverseAction(application, { privateKey, keyId });
+    result = reviewAdverseAction(application, draft ? { draft: true } : { privateKey, keyId });
   } catch (e) {
     return res.status(400).json({ error: "review failed", detail: e.message });
   }
