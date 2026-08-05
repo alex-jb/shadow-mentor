@@ -44,7 +44,9 @@ async function headerSeedHash(header) {
 }
 
 function signedShape(event) {
-  const { payload_ref, ...rest } = event;
+  // Match verify.html: both payload_ref AND inline payload are excluded from the signed
+  // shape (payload_hash is the authenticator; the payload is rebound separately).
+  const { payload_ref, payload, ...rest } = event;
   return rest;
 }
 
@@ -74,6 +76,12 @@ async function webcryptoVerify(bundle, publicKeyPem) {
     const ev = bundle.events[i];
     if (ev.seq !== i) return { ok: false, reason: `seq gap ${i}` };
     if (ev.prev_hash !== expectedPrev) return { ok: false, reason: "prev_hash mismatch", failedSeq: i };
+    // Rebind inline plaintext to its signed payload_hash (matches verify.html) — catches a
+    // plaintext edit that leaves the chain intact.
+    if (ev.payload !== undefined && ev.payload !== null) {
+      const rehash = await sha256Hex(canonicalBytes(ev.payload));
+      if (rehash !== ev.payload_hash) return { ok: false, reason: "payload_hash_mismatch", failedSeq: i };
+    }
     const own = await sha256Hex(canonicalBytes(signedShape(ev)));
     eventHashes.push(own);
     expectedPrev = own;
@@ -165,4 +173,43 @@ test("verify.html algorithm accepts a bundle with redacted payload_ref (parity)"
 
   assert.equal(nodeResult.ok, true, nodeResult.reason);
   assert.equal(htmlResult.ok, true, htmlResult.reason);
+});
+
+// The EMBEDDED-payload path — the one the adverse-action wedge actually produces
+// (embedPayloads:true), which no parity test previously exercised (A#4). A plaintext
+// edit leaves the chain intact and must be caught only by the payload→hash rebind.
+test("verify.html verifier rebinds an EMBEDDED-payload bundle + localizes a plaintext edit (parity with Node)", async () => {
+  const { publicKey, privateKey } = generateKeyPairSync("ed25519");
+  const s = createSession({
+    agent: { name: "parity", version: "1.0.0" }, models: [],
+    environmentFingerprint: { os: "test", node_version: process.version },
+    keyId: "parity", privateKey, embedPayloads: true,
+  });
+  appendEvent(s, { event_type: "model_output", actor: "model", payload: { kind: "council_verdict", final_verdict: "block" } });
+  const bundle = sealSession(s);
+  const pub = publicKey.export({ type: "spki", format: "pem" });
+
+  assert.equal((await webcryptoVerify(bundle, pub)).ok, true, "clean embedded bundle must verify");
+  assert.equal(nodeVerify(bundle, { publicKey: pub }).ok, true);
+
+  const t = JSON.parse(JSON.stringify(bundle));
+  const ev = t.events.find((e) => e.payload && e.payload.kind === "council_verdict");
+  ev.payload.final_verdict = "approve"; // plaintext flip, hash + chain untouched
+  const html = await webcryptoVerify(t, pub);
+  const node = nodeVerify(t, { publicKey: pub });
+  assert.equal(html.ok, false, "plaintext edit must FAIL in the verify.html algorithm");
+  assert.equal(html.reason, "payload_hash_mismatch");
+  assert.equal(node.ok, false);
+});
+
+// Guard against silent drift: verify.html hand-maintains its inline verifier (not yet
+// build-generated from the shared module), so pin the load-bearing rebind lines directly.
+test("verify.html source still carries the payload rebind (drift guard)", async () => {
+  const { readFileSync } = await import("node:fs");
+  const { fileURLToPath } = await import("node:url");
+  const { resolve, dirname } = await import("node:path");
+  const src = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), "..", "verify.html"), "utf8");
+  assert.match(src, /const signedShape=e=>\{const\{payload_ref,payload,\.\.\.r\}=e/, "signedShape must strip BOTH payload_ref and payload");
+  assert.match(src, /ev\.payload_hash/, "must reference payload_hash for the rebind");
+  assert.match(src, /payload_hash_mismatch/, "must fail with payload_hash_mismatch on a plaintext edit");
 });
