@@ -4,7 +4,7 @@
   "workspaces": [
     "packages/*"
   ],
-  "description": "Shadow — on-device AI council and audit chain for regulated banking workflows",
+  "description": "Shadow \u2014 on-device AI council and audit chain for regulated banking workflows",
   "license": "MIT",
   "author": "Alex Xiaoyu Ji <xji1@mail.yu.edu>",
   "contributors": [
@@ -37,7 +37,8 @@
     "shadow-lens:contract": "node scripts/contract-fingerprint.mjs",
     "shadow-lens:spatial-acceptance": "node scripts/gen-spatial-acceptance.mjs",
     "shadow-lens:unity-contract": "node scripts/gen-unity-contract.mjs",
-    "shadow-lens:spatial-live-smoke": "node scripts/spatial-live-smoke.mjs"
+    "shadow-lens:spatial-live-smoke": "node scripts/spatial-live-smoke.mjs",
+    "repro:model3": "node scripts/repro-model3.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.107.0",

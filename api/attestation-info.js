@@ -17,8 +17,8 @@
 // a bank downloading the key every request would leak audit-tooling
 // activity to any downstream caching proxy.
 
-import { createHash } from "node:crypto";
-import { SIGNATURE_MODES } from "../lib/attestation.js";
+import { createHash, createPublicKey } from "node:crypto";
+import { SIGNATURE_MODES, resolveSignatureMode } from "../lib/attestation.js";
 
 function computeFingerprint(publicKeyPem) {
   // Standard SPKI fingerprint per RFC 5280 §4.2.1.2 — SHA-256 of the
@@ -41,12 +41,20 @@ export default async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(200).end();
   if (req.method !== "GET") return res.status(405).json({ error: "GET only" });
 
-  const mode = process.env.SHADOW_ATTESTATION_MODE === "ed25519"
-    ? SIGNATURE_MODES.ED25519
-    : SIGNATURE_MODES.HMAC;
+  // Report the SAME mode the signer actually uses (M3 fix) — not a narrower flag check.
+  const mode = resolveSignatureMode();
 
   const keyId = process.env.SHADOW_ATTESTATION_KEY_ID || "dev-v1";
-  const publicKey = process.env.SHADOW_ATTESTATION_ED25519_PUBLIC_KEY || null;
+  // Prefer an explicitly-published public key; otherwise derive it from the private key
+  // so the recommended single-key deployment (only SHADOW_ATTESTATION_ED25519_PRIVATE_KEY
+  // set) still serves the key a SIEM needs to verify. Never expose the private key.
+  let publicKey = process.env.SHADOW_ATTESTATION_ED25519_PUBLIC_KEY || null;
+  if (!publicKey && mode === SIGNATURE_MODES.ED25519 && process.env.SHADOW_ATTESTATION_ED25519_PRIVATE_KEY) {
+    try {
+      publicKey = createPublicKey(process.env.SHADOW_ATTESTATION_ED25519_PRIVATE_KEY)
+        .export({ type: "spki", format: "pem" }).toString().trim();
+    } catch { publicKey = null; }
+  }
 
   const body = {
     service: "shadow-mentor",

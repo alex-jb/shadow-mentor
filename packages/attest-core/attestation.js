@@ -100,14 +100,20 @@ export const SIGNATURE_MODES = Object.freeze({
 // emits a one-time warning so it can never reach a procurement buyer by accident.
 //   SHADOW_ATTESTATION_ED25519_PRIVATE_KEY=<PEM or base64 raw>   → Ed25519 (recommended)
 //   SHADOW_ATTESTATION_MODE=hmac                                 → force dev HMAC
-const DEFAULT_MODE = (() => {
-  const m = process.env.SHADOW_ATTESTATION_MODE;
+// The single source of truth for which mode a deployment actually signs in.
+// Exported so discovery surfaces (GET /api/attestation-info) report the SAME mode
+// the signer uses — otherwise a key-set / MODE-unset deployment signs Ed25519 while
+// the endpoint advertises HMAC + a null public key, and a bank SIEM can't hydrate the
+// key to verify genuine signatures (M3).
+export function resolveSignatureMode(env = process.env) {
+  const m = env.SHADOW_ATTESTATION_MODE;
   if (m === "hmac") return SIGNATURE_MODES.HMAC;
   if (m === "ed25519") return SIGNATURE_MODES.ED25519;
-  return process.env.SHADOW_ATTESTATION_ED25519_PRIVATE_KEY
+  return env.SHADOW_ATTESTATION_ED25519_PRIVATE_KEY
     ? SIGNATURE_MODES.ED25519
     : SIGNATURE_MODES.HMAC;
-})();
+}
+const DEFAULT_MODE = resolveSignatureMode();
 
 // One-time loud warning the moment HMAC is actually used to sign, so a
 // shared-secret (non-independently-verifiable) attestation can't be shipped to a

@@ -79,9 +79,11 @@ test("attestation-info GET returns full metadata in Ed25519 mode", async () => {
   }
 });
 
-test("attestation-info hides all key material in HMAC mode", async () => {
+test("attestation-info hides all key material in HMAC mode (truly keyless)", async () => {
   const prevMode = process.env.SHADOW_ATTESTATION_MODE;
-  delete process.env.SHADOW_ATTESTATION_MODE;  // defaults to HMAC
+  const prevPriv = process.env.SHADOW_ATTESTATION_ED25519_PRIVATE_KEY;
+  delete process.env.SHADOW_ATTESTATION_MODE;          // no explicit mode
+  delete process.env.SHADOW_ATTESTATION_ED25519_PRIVATE_KEY;  // and no key → HMAC
   try {
     const handler = await callHandler();
     const res = mockRes();
@@ -91,15 +93,46 @@ test("attestation-info hides all key material in HMAC mode", async () => {
     assert.equal(res.body.public_key_pem, null);
     assert.equal(res.body.completeness_check.hmac_mode, true);
   } finally {
-    process.env.SHADOW_ATTESTATION_MODE = prevMode;
+    if (prevMode !== undefined) process.env.SHADOW_ATTESTATION_MODE = prevMode;
+    if (prevPriv !== undefined) process.env.SHADOW_ATTESTATION_ED25519_PRIVATE_KEY = prevPriv;
+  }
+});
+
+// M3 fix: the RECOMMENDED deployment (only the private key set, no MODE flag) must
+// report ed25519 AND serve the public key — derived from the private key — so a bank
+// SIEM can hydrate it and verify genuine signatures. This was the silent-failure bug.
+test("attestation-info reports ed25519 + serves the derived key when only the private key is set", async () => {
+  const { privateKey } = generateKeyPairSync("ed25519", {});
+  const privPem = privateKey.export({ type: "pkcs8", format: "pem" }).toString();
+  const prevMode = process.env.SHADOW_ATTESTATION_MODE;
+  const prevPriv = process.env.SHADOW_ATTESTATION_ED25519_PRIVATE_KEY;
+  const prevPub = process.env.SHADOW_ATTESTATION_ED25519_PUBLIC_KEY;
+  delete process.env.SHADOW_ATTESTATION_MODE;                 // no MODE flag (recommended)
+  delete process.env.SHADOW_ATTESTATION_ED25519_PUBLIC_KEY;   // no separately-published pubkey
+  process.env.SHADOW_ATTESTATION_ED25519_PRIVATE_KEY = privPem;
+  try {
+    const handler = await callHandler();
+    const res = mockRes();
+    await handler(mockReq("GET"), res);
+    assert.equal(res.body.mode, "ed25519");
+    assert.ok(res.body.public_key_pem && res.body.public_key_pem.includes("BEGIN PUBLIC KEY"), "must serve the derived public key");
+    assert.ok(res.body.public_key_fingerprint_sha256, "must expose a fingerprint");
+    assert.equal(res.body.completeness_check.ed25519_public_key_present, true);
+    assert.equal(res.body.completeness_check.warning, null);
+  } finally {
+    if (prevMode !== undefined) process.env.SHADOW_ATTESTATION_MODE = prevMode;
+    if (prevPriv !== undefined) process.env.SHADOW_ATTESTATION_ED25519_PRIVATE_KEY = prevPriv; else delete process.env.SHADOW_ATTESTATION_ED25519_PRIVATE_KEY;
+    if (prevPub !== undefined) process.env.SHADOW_ATTESTATION_ED25519_PUBLIC_KEY = prevPub;
   }
 });
 
 test("attestation-info surfaces warning when ed25519 mode but no key configured", async () => {
   const prevMode = process.env.SHADOW_ATTESTATION_MODE;
   const prevKey = process.env.SHADOW_ATTESTATION_ED25519_PUBLIC_KEY;
+  const prevPriv = process.env.SHADOW_ATTESTATION_ED25519_PRIVATE_KEY;
   process.env.SHADOW_ATTESTATION_MODE = "ed25519";
   delete process.env.SHADOW_ATTESTATION_ED25519_PUBLIC_KEY;
+  delete process.env.SHADOW_ATTESTATION_ED25519_PRIVATE_KEY;  // no key at all → warning
   try {
     const handler = await callHandler();
     const res = mockRes();
@@ -109,6 +142,7 @@ test("attestation-info surfaces warning when ed25519 mode but no key configured"
   } finally {
     process.env.SHADOW_ATTESTATION_MODE = prevMode;
     if (prevKey) process.env.SHADOW_ATTESTATION_ED25519_PUBLIC_KEY = prevKey;
+    if (prevPriv !== undefined) process.env.SHADOW_ATTESTATION_ED25519_PRIVATE_KEY = prevPriv;
   }
 });
 
