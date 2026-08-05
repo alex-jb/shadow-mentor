@@ -42,6 +42,13 @@ const FORBIDDEN = [
   {
     pattern: /\bSR[\s-]?26[\s-]?2\s+Tier\s*\d/i,
     note: 'SR 26-2 does not use a Tier taxonomy. Reference footnote 3 or the model-purpose / model-exposure materiality construct instead.',
+    // Legitimate quotations: internal audit/strategy/outreach docs that name the
+    // retired phrase specifically to flag it as forbidden ("retire", "don't cite").
+    allow_in: [
+      "docs/PILOT_OUTREACH_KIT_2026-08-04.md",
+      "docs/SHADOW_FULL_SCAN_2026-07-30.html",
+      "docs/research/2026-07-21-shadow-remaining-work-deep-research.md",
+    ],
   },
   {
     pattern: /\bTier\s*3\s+(?:companion|excluded|carve-out|delegation|GenAI)/i,
@@ -70,6 +77,12 @@ const FORBIDDEN = [
   {
     pattern: /\btamper[\s-]?proof\b/i,
     note: 'Shadow is tamper-EVIDENT, not tamper-PROOF. Attestation reveals tampering; it does not prevent it.',
+    // Legitimate quotations: the anti-slop design brief (+ its autoplan snapshot) lists
+    // "99.9% tamper-proof" as a banned fabricated-metric EXAMPLE, not a claim.
+    allow_in: [
+      "docs/APP_DESIGN_BRIEF_2026-07-30.md",
+      "docs/autoplan/",
+    ],
   },
   {
     pattern: /\bguarantees?\s+compliance\b/i,
@@ -136,7 +149,9 @@ function walk(dir, acc = []) {
     let s;
     try { s = statSync(full); } catch { continue; }
     if (s.isDirectory()) {
-      if (name === "node_modules" || name === ".git") continue;
+      // .claude/ holds local agent state + worktrees (incl. copies of this very script,
+      // which self-match its phrase list). Never shipped; never in a CI clean checkout.
+      if (name === "node_modules" || name === ".git" || name === ".claude") continue;
       walk(full, acc);
     } else if (s.isFile()) {
       if (!shouldSkip(rel)) acc.push(rel);
@@ -166,6 +181,9 @@ for (const rel of files) {
   for (let i = 0; i < lines.length; i++) {
     for (const f of FORBIDDEN) {
       if (f.pattern.test(lines[i])) {
+        // Scoped exclusion: a legitimate quotation (audit/strategy doc naming the bad
+        // phrase to flag it). allow_in matches an exact relpath or a dir prefix.
+        if (f.allow_in && f.allow_in.some((p) => rel === p || rel.startsWith(p))) break;
         hits.push({ file: rel, line: i + 1, text: lines[i].trim().slice(0, 160), note: f.note });
         break; // one hit per line is enough
       }
