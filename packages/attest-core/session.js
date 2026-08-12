@@ -97,6 +97,20 @@ function signedShape(event) {
 }
 
 /**
+ * The canonical own-hash (content fingerprint) of a single event, computed over
+ * its signed shape — exactly the value the NEXT event carries in `prev_hash`, and
+ * the per-event leaf that folds into `batch_root`. Exported so downstream adapters
+ * (e.g. the OCSF `record_integrity` exporter) reuse the identical hashing logic
+ * instead of duplicating it and drifting. This is the OCSF `attestation.fingerprint`.
+ *
+ * @param {object} event — an event record from a sealed bundle's `events[]`
+ * @returns {string} lowercase hex SHA-256
+ */
+export function eventOwnHash(event) {
+  return sha256Hex(canonicalBytes(signedShape(event)));
+}
+
+/**
  * Create a new evidence-bundle session.
  *
  * @param {object} params

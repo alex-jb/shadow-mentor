@@ -1,6 +1,6 @@
 # Shadow standards map
 
-> **v1 — 2026-07-10.** Field-by-field mapping from the Shadow v3 evidence-bundle format to (1) EU AI Act Article 12 record-keeping obligations, (2) OpenTelemetry GenAI semantic conventions, (3) ISO/IEC DIS 24970 (AI system life-cycle processes, in draft), and (4) prEN 18229-1 (European AI Act harmonized standard, in draft). Documents that are still in draft carry an inline "will revise when finalized" annotation on every applicable row.
+> **v2 — 2026-08-11.** Field-by-field mapping from the Shadow v3 evidence-bundle format to (1) EU AI Act Article 12 record-keeping obligations, (2) OpenTelemetry GenAI semantic conventions, (3) ISO/IEC DIS 24970 (AI system life-cycle processes, in draft), (4) prEN 18229-1 (European AI Act harmonized standard, in draft), (5) OCSF 1.9.0 `record_integrity` profile (published 2026-08-03), and (6) DSSE/in-toto envelope + L1/L2/L3 conformance levels. Documents that are still in draft carry an inline "will revise when finalized" annotation; §5–§6 are marked "target, not yet emitted."
 
 ## Purpose
 
@@ -158,13 +158,69 @@ prEN 18229-1 is expected to formalize the technical means by which Article 12 ob
 
 ---
 
-## 5. NIST AI 600-1 (Generative AI Profile) cross-reference
+## 5. OCSF 1.9.0 — `record_integrity` profile
+
+**Status: PUBLISHED, 2026-08-03.** The Open Cybersecurity Schema Framework (OCSF, backed by Splunk/AWS and ingested by most bank SIEMs) released v1.9.0 on 2026-08-03. It added a `record_integrity` profile to `base_event`, an `attestation` object, and an `ai_agent` object. This is the single most direct standard-format expression of what Shadow's evidence bundle already computes.
+
+**What Shadow claims here:** Shadow's bundle carries the exact primitives OCSF's `record_integrity` profile defines — a per-event cryptographic fingerprint, digital signatures, a tamper-evident previous-event chain, and an attesting-authority identifier. An OCSF exporter is therefore a field-mapping layer over primitives that already exist, not new cryptography.
+
+**What Shadow ships today:** the exporter exists — `shadow-adapter-ocsf` (`bundleToOcsf`) projects a sealed bundle to the events below, exposed on three surfaces (library, `POST /api/ocsf-export`, and the `shadow-ocsf` CLI), with a test asserting `attestation.fingerprint` equals attest-core's own `eventOwnHash` so there is zero hashing drift from the signed bundle.
+
+**What Shadow does NOT claim here:** the exporter is **not yet validated against a live OCSF schema-validator or a SIEM ingest**, and it does **not** assert a precise per-event OCSF `class_uid` taxonomy (see §5.3-adjacent note below). "Emits the record_integrity profile" means the attestation + ai_agent attributes are populated per the mapping; full OCSF conformance is claimed only after schema-validator + SIEM round-trip testing.
+
+### 5.1 `attestation` object → Shadow evidence field
+
+| OCSF 1.9.0 field (`record_integrity` / `attestation`) | Shadow evidence field | Notes |
+|---|---|---|
+| `attestation.fingerprint` | `events[i]` own-hash (SHA-256 over the canonical signed shape) | Per-event content fingerprint. Shadow's own-hash excludes `payload_ref` + `payload`; `payload_hash` is the in-shape authenticator. |
+| `attestation.signatures[]` | `signatures[]` (Ed25519 over `batch_root`) | Shadow signs the session-level `batch_root` (SHA-256 root over the ordered per-event own-hashes). The terminal/`session_end` event carries the session signature; each event still carries its own `fingerprint` + `prev_event`. |
+| `prev_event.fingerprint` | `events[i].prev_hash` | Content-binding to the previous event's own-hash. Genesis `prev_hash` = header seed hash. |
+| `prev_event.uid` / `prev_event.type_uid` | `events[i-1].seq` / `events[i-1].event_type` | Retrieval keys for the prior event. |
+| `chain_uid` | `header.session_id` | The tamper-evident chain identifier. |
+| `authority_uid` | signing `key_id` (surfaced by `GET /api/attestation-info`) | Identifies the attesting party (Shadow's signing key). |
+| `attestation_list` | `external_anchors[]` (RFC 3161 TSA + Rekor, M3, in progress) | Optional additional attestations from external time-anchors when the operator runs the anchoring adapter. |
+
+### 5.2 `ai_agent` object → Shadow header
+
+| OCSF 1.9.0 `ai_agent` attribute | Shadow field | Notes |
+|---|---|---|
+| `ai_agent.uid` / `ai_agent.name` | `header.agent.identity_ref` / `header.agent.name` | Distinct from OCSF's security-sensor `agent` object; Shadow's accountable operator identity binds here. |
+| `ai_agent.charter` | recorded system prompt / persona constitution | Maps when the operator emits the agent's governing prompt as a `prompt` event or header field. Shadow's persona prompts (`lib/run-loan-council.js`) are the credit-vertical charter. |
+| `hosted_ai_agent_list` | `header.models[]` + sub-agent events | Where a session spawns sub-agents (`subagent_stop` events), each maps to a hosted-agent entry. |
+
+### 5.3 Why this is the domain-correct provenance format
+
+OCSF `record_integrity` lands natively in the SIEM a bank security team already runs. It converts the objection "Shadow uses a bespoke bundle format" into "Shadow emits the OCSF `record_integrity` profile" — a procurement checkbox rather than a footnote. It is also the reason **C2PA is not the target format**: C2PA is media-provenance (images, video, documents); OCSF is the security-event provenance standard for exactly this domain.
+
+---
+
+## 6. Signature envelope + conformance levels (DSSE / in-toto)
+
+**Status: target, not yet emitted.** Shadow today signs a bespoke Ed25519 bundle. Wrapping the same signature in a **DSSE** (Dead Simple Signing Envelope) / in-toto envelope makes it verifiable by the existing supply-chain toolchain (cosign, in-toto, Sigstore) with no new cryptography — the payload and signature are unchanged, only the envelope framing is standard.
+
+### 6.1 Where Shadow sits today, by conformance level
+
+Adapting the L1/L2/L3 framing that fed OCSF (the `forensic-audit-trail-spec`, archived 2026-08-04 because it "landed upstream in OCSF 1.9.0"):
+
+| Level | Requirement | Shadow status |
+|---|---|---|
+| **L1** | HMAC/hash chain + canonical JSON (RFC 8785-style) | **Met.** Shadow's hash chain + canonical signed shape already satisfy L1. |
+| **L2** | Signed session attestations, ES256/Ed25519 min, public-key discovery | **Substantially met** — Shadow signs with Ed25519 and publishes the key via `GET /api/attestation-info`. **Gap:** the signature is not yet wrapped in a standard DSSE/in-toto envelope. |
+| **L3** | SPIFFE/SPIRE identity federation | **Not targeted.** Out of Shadow's independent-verifier scope; belongs to an enforcement/identity kernel, which Shadow deliberately is not (see §6.2). |
+
+### 6.2 The honest positioning consequence
+
+The crypto layer is no longer a differentiator — as of 2026-08-03 it is a **ratified OCSF profile**, and two well-funded governance kernels (OrgKernel, Microsoft Agent Governance Toolkit) occupy the "prove what happened" narrative from **inside** the agent's trust boundary. Shadow's differentiator is the two things they structurally cannot be: (1) **independent verification from outside** that boundary, offline, with no vendor dependency; and (2) **fair-lending reason-code depth** (see [`CITATION_MAP.md`](./CITATION_MAP.md)). Emitting OCSF + DSSE is table stakes to be legible to the buyer; the moat is elsewhere.
+
+---
+
+## 7. NIST AI 600-1 (Generative AI Profile) cross-reference
 
 NIST AI 600-1 mapping is maintained in a dedicated sister document: [`docs/NIST-AI-600-1-MAP.md`](./NIST-AI-600-1-MAP.md). That document reads from the same event-type × record-purpose lens as §1 above; the mappings are additive.
 
 ---
 
-## 6. What Shadow does NOT map to
+## 8. What Shadow does NOT map to
 
 Explicit non-claims:
 
@@ -176,7 +232,7 @@ Explicit non-claims:
 
 ---
 
-## 7. Update policy
+## 9. Update policy
 
 This document is versioned in git. Changes to the mapping tables must be paired with:
 
@@ -184,12 +240,13 @@ This document is versioned in git. Changes to the mapping tables must be paired 
 - If Shadow's evidence-bundle format changes (new event type, new signed field), update the mapping tables here in the same PR that ships the format change.
 - The "will revise when finalized" annotation is removed only when the underlying standard reaches published / stable status *and* the mapping has been reviewed against the final clause numbers.
 
-## 8. Change log
+## 10. Change log
 
 | Version | Date | Change |
 |---|---|---|
 | v1 | 2026-07-10 | Initial mapping. Article 12 (in force). OTel GenAI (experimental). ISO/IEC DIS 24970 (draft, placeholder). prEN 18229-1 (draft, placeholder). Non-mapped explicit list. |
+| v2 | 2026-08-11 | Added §5 OCSF 1.9.0 `record_integrity` / `attestation` / `ai_agent` mapping (published 2026-08-03) and §6 DSSE envelope + L1/L2/L3 conformance-level self-assessment. Both marked target-not-yet-emitted. Renumbered trailing sections. |
 
-## 9. Feedback
+## 11. Feedback
 
 Auditors and procurement officers who find a mapping row unclear, missing, or wrong are invited to open an issue at `github.com/alex-jb/shadow-mentor/issues` with the standard citation and the ambiguity. Corrections that improve auditor traversal are welcome.

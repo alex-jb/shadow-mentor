@@ -1,0 +1,38 @@
+{
+  "name": "shadow-adapter-ocsf",
+  "version": "1.0.0",
+  "description": "Project a sealed Shadow evidence bundle onto OCSF 1.9.0 record_integrity events — the crypto audit chain a bank SIEM already ingests, with zero hashing drift from the signed bundle.",
+  "type": "module",
+  "license": "MIT",
+  "main": "index.js",
+  "bin": {
+    "shadow-ocsf": "cli-ocsf.mjs"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "cli-ocsf.mjs",
+    "README.md"
+  ],
+  "dependencies": {
+    "shadow-attest-core": "^2.2.0"
+  },
+  "keywords": [
+    "ocsf",
+    "record-integrity",
+    "attestation",
+    "provenance",
+    "siem",
+    "audit",
+    "ai-agent",
+    "ed25519",
+    "shadow"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

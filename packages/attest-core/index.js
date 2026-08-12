@@ -34,6 +34,7 @@ export {
   sealPartialBundle,
   recoverSession,
   verifyBundle,
+  eventOwnHash,
 } from "./session.js";
 export { createFileStore, listSessionFiles } from "./store-file.js";
 
