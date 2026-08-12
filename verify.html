@@ -151,6 +151,7 @@ function safeParse(text){
   return {ok:true,value:p};
 }
 
+//__VERIFY_MATRIX_START__ (generated from packages/attest-core/verify-bundle.browser.mjs — do not edit by hand; run `npm run build:verify-html`)
 // ── real evidence verifier (mirror of verify/verify-bundle.mjs) ──
 function canonicalize(v){if(v===null||typeof v!=="object")return JSON.stringify(v);
   if(Array.isArray(v))return "["+v.map(canonicalize).join(",")+"]";
@@ -197,6 +198,7 @@ async function verifyBundle(bundle,pem){
   if(Array.isArray(bundle.external_anchors)&&bundle.external_anchors.length)M.external_anchor="NOT_CHECKED";
   return {ok:true,matrix:M,batchRoot:root,sessionId:bundle.header.session_id,keyId:sig.key_id,algorithm:sig.algorithm};
 }
+//__VERIFY_MATRIX_END__
 
 // ── i18n render ──
 function applyLang(){
