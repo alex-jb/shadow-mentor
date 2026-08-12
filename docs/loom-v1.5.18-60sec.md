@@ -1,6 +1,6 @@
 # Shadow v1.5.18 — 60-second Loom script
 
-**Audience:** Bank counsel / compliance officer / procurement head at a mid-tier US bank. Assume they know Reg B / CFPB Circular 2026-03 / SR 26-2 but have NEVER seen Shadow before.
+**Audience:** Bank counsel / compliance officer / procurement head at a mid-tier US bank. Assume they know Reg B / Reg B §1002.9(b)(2) / SR 26-2 but have NEVER seen Shadow before.
 
 **Constraint:** Exactly 60 seconds. Kill everything that doesn't cite either a CFR section or a real number. Alex records once, no re-shoots.
 

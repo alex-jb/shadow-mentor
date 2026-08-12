@@ -29,7 +29,7 @@ Every decision is Ed25519-signed. The signature covers 22 field slots — 8 requ
 
 *(Advance the slide / page. Point at the persona cards, the verdict pill, the trust chain visualization.)*
 
-The domain framing on this specific demo is credit. Reg B §1002.9 specific-principal-reasons, CFPB Circular 2026-03, state fair-lending regimes in NY / MA / CA / NJ / IL, GDPR Article 22 and the Schufa decision for EU-active institutions. Those are the regulatory hooks that actually bind at mid-tier banks in 2026.
+The domain framing on this specific demo is credit. Reg B §1002.9 specific-principal-reasons, Reg B §1002.9(b)(2), state fair-lending regimes in NY / MA / CA / NJ / IL, GDPR Article 22 and the Schufa decision for EU-active institutions. Those are the regulatory hooks that actually bind at mid-tier banks in 2026.
 
 Lora's BRD — the risk / credit-policy / adverse-action module set — is what gave us a real vertical to characterize the response function against. Without her domain work we wouldn't have real fixtures to test drift against. The SIVE fixture set that catches persona-response-function pathologies came out of that collaboration.
 

@@ -59,6 +59,23 @@ const FORBIDDEN = [
     note: 'CFPB Bulletin 2024-09 does not exist (it was a fabricated alias, removed from the citation registry 2026-08-05 along with the equally-fabricated "Circular 2026-03"). The durable authority for adverse-action specificity is Reg B 12 CFR 1002.9(b)(2) + ECOA 15 U.S.C. 1691(a). CFPB Circulars 2022-03 and 2023-03 are real but were withdrawn 2025-05-12 — cite them only as historical.',
   },
   {
+    pattern: /\bCircular\s+2026-03\b/i,
+    note: '"CFPB Circular 2026-03" is a FABRICATED citation — a registry alias to the non-existent "Bulletin 2024-09", removed from the citation registry 2026-08-05 (see docs/REG-B-2026-07-21-FINAL-RULE.md). It resolves to NO registry entry. Cite the durable authority instead: Reg B 12 CFR 1002.9(b)(2) + ECOA 15 U.S.C. 1691(a).',
+    // Legitimate references to the fabricated term: the doc that documents it AS
+    // fabricated, the already-submitted IEEE paper (immutable record), the
+    // bank-counsel-signed reason-code dictionary (correcting it is a governance
+    // re-hash, tracked separately), and the citation scanner whose pattern comment
+    // must keep the string so groundResearchMemo still flags it EVIDENCE_INSUFFICIENT.
+    allow_in: [
+      "docs/REG-B-2026-07-21-FINAL-RULE.md",
+      "docs/ieee-vr-2027/paper-full-v1.md",
+      "docs/ieee-vr-2027/paper-skeleton.md",
+      "lib/schemas/reason-code-dictionary.json",
+      "lib/citation-scanner.js",
+      "CHANGELOG.md",
+    ],
+  },
+  {
     pattern: /\b13\s+days?\s+before\s+Reg\s+B\b/i,
     note: 'The 2026-07-21 Reg B rule is deregulatory. Do not use countdown urgency framing.',
   },

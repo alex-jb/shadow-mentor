@@ -62,7 +62,7 @@ Answers GSAR requirement (2) "data origins." Shadow explicitly declares:
 - **Shadow training data**: none. Shadow does not train models.
 - **Persona prompts source**: `lib/prompts.js` — hand-authored, citation-grounded, Ed25519-signed per attestation
 - **Regulatory citations source**: `lib/schemas/citation-registry.json` — primary-source URLs (federalreserve.gov, cfpb.gov, ecfr.gov, sec.gov, fincen.gov)
-- **Reason codes source**: `lib/schemas/reason-code-dictionary.json` — CFPB Circular 2026-03 aligned + Loredana Levitchi BRD Addenda A/B/C
+- **Reason codes source**: `lib/schemas/reason-code-dictionary.json` — Reg B §1002.9(b)(2) aligned + Loredana Levitchi BRD Addenda A/B/C
 - **Model training cutoffs**: enumerated per provider, sourced from published model cards
 
 ### §4. Risk assessments

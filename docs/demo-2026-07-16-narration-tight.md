@@ -20,7 +20,7 @@ Every decision is Ed25519-signed over 22 field slots. `previous_hash` chains dec
 
 *(Advance the page. Point at persona cards, the verdict pill, the trust chain.)*
 
-Regulatory hooks that actually bind at mid-tier banks: Reg B §1002.9, CFPB Circular 2026-03, state fair-lending regimes in NY / MA / CA, GDPR Article 22 plus the Schufa decision for EU exposure.
+Regulatory hooks that actually bind at mid-tier banks: Reg B §1002.9, Reg B §1002.9(b)(2), state fair-lending regimes in NY / MA / CA, GDPR Article 22 plus the Schufa decision for EU exposure.
 
 Prof. Levitchi's BRD gave us the risk and adverse-action module set. Without her domain work we wouldn't have real fixtures to catch persona-response-function drift.
 
