@@ -56,7 +56,7 @@ const FORBIDDEN = [
   },
   {
     pattern: /\bCFPB\s+Bulletin\s+2024-09\b/i,
-    note: 'CFPB Bulletin 2024-09 (as commonly cited for adverse-action specificity) does not exist. Use Circular 2026-03 (2026-05-05, current) or Circular 2023-03 (historical predecessor, withdrawn 2025-05-12).',
+    note: 'CFPB Bulletin 2024-09 does not exist (it was a fabricated alias, removed from the citation registry 2026-08-05 along with the equally-fabricated "Circular 2026-03"). The durable authority for adverse-action specificity is Reg B 12 CFR 1002.9(b)(2) + ECOA 15 U.S.C. 1691(a). CFPB Circulars 2022-03 and 2023-03 are real but were withdrawn 2025-05-12 — cite them only as historical.',
   },
   {
     pattern: /\b13\s+days?\s+before\s+Reg\s+B\b/i,

@@ -36,7 +36,7 @@ const CANONICAL_TOOLS = [
     regulatoryScope: [
       "SR 26-2 footnote 3 delegation",
       "ECOA/Reg B (12 CFR 1002)",
-      "CFPB Circular 2026-03",
+      "Reg B §1002.9(b)(2)",
     ],
     determinismClaim: "no-llm-inside-tool",
     latencyPercentiles: { p50_ms: 2, p95_ms: 5 },
@@ -49,7 +49,7 @@ const CANONICAL_TOOLS = [
     regulatoryScope: [
       "SR 26-2 footnote 3 delegation",
       "ECOA/Reg B (12 CFR 1002)",
-      "CFPB Circular 2026-03",
+      "Reg B §1002.9(b)(2)",
     ],
     determinismClaim: "no-llm-inside-tool",
     latencyPercentiles: { p50_ms: 3, p95_ms: 6 },
@@ -96,7 +96,7 @@ const CANONICAL_TOOLS = [
       "Source attribution for any benchmark rule (BRD vs Addendum vs Risk Appetite Note) with governance-layer classification.",
     inputSchemaKeys: ["rule"],
     regulatoryScope: [
-      "CFPB Circular 2026-03",
+      "Reg B §1002.9(b)(2)",
       "ECOA/Reg B",
       "SR 26-2",
       "GDPR Art. 22",

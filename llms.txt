@@ -29,7 +29,7 @@ It proves **integrity** (the record wasn't tampered) and increasingly **groundin
 - **EU AI Act Article 14 — human oversight** of high-risk AI (Regulation (EU) 2024/1689, in force).
 - **GDPR Article 22 — automated individual decision-making** — complementary to Art. 14, not a replacement.
 - **Schufa (ECJ C-634/21)** — automated credit-scoring interpretation, enforceable today.
-- **CFPB Circular 2026-03** — adverse-action reason-code specificity.
+- **Reg B §1002.9(b)(2)** — adverse-action reason-code specificity.
 - Honest scope: SR 26-2 currently scopes generative/agentic AI *out* of model-risk guidance pending a future study. Shadow fills that governance gap as an independent evidence layer; it does not claim regulation already mandates it.
 
 ## Honesty ladder

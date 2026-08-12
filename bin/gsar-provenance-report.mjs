@@ -115,7 +115,7 @@ export function generateGsarReport({
     regulatory_citations_source:
       "lib/schemas/citation-registry.json — primary-source URLs (federalreserve.gov, cfpb.gov, ecfr.gov, sec.gov)",
     reason_codes_source:
-      "lib/schemas/reason-code-dictionary.json — CFPB Circular 2026-03 aligned + Loredana Levitchi BRD Addenda A/B/C",
+      "lib/schemas/reason-code-dictionary.json — Reg B §1002.9(b)(2) aligned + Loredana Levitchi BRD Addenda A/B/C",
     model_training_cutoffs: {
       anthropic_claude_sonnet: "January 2025 per Anthropic model card",
       anthropic_claude_haiku: "January 2025 per Anthropic model card",

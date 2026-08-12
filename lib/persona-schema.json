@@ -91,7 +91,7 @@
         ]
       },
       "L3_thresholds": {
-        "source_document": "CFPB Circular 2026-03 model-traceability",
+        "source_document": "Reg B §1002.9(b)(2) model-traceability",
         "escalate_on_any_aa_reason": true
       },
       "adverse_action_codes": []

@@ -339,7 +339,7 @@ export function handleToolCall(name, args) {
     }
     if (council.adverse_action_codes && council.adverse_action_codes.length > 0) {
       builder.appendLine("");
-      builder.appendLine("Adverse-action codes (CFPB Circular 2026-03):");
+      builder.appendLine("Adverse-action codes (Reg B §1002.9(b)(2)):");
       for (const c of council.adverse_action_codes) {
         builder.appendLine(`  ${c.code} — ${c.label}`);
       }
