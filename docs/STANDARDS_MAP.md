@@ -196,7 +196,9 @@ OCSF `record_integrity` lands natively in the SIEM a bank security team already 
 
 ## 6. Signature envelope + conformance levels (DSSE / in-toto)
 
-**Status: target, not yet emitted.** Shadow today signs a bespoke Ed25519 bundle. Wrapping the same signature in a **DSSE** (Dead Simple Signing Envelope) / in-toto envelope makes it verifiable by the existing supply-chain toolchain (cosign, in-toto, Sigstore) with no new cryptography — the payload and signature are unchanged, only the envelope framing is standard.
+**Status: shipped (library + endpoint).** Alongside the bespoke Ed25519 bundle, Shadow now emits a **DSSE** (Dead Simple Signing Envelope) / in-toto Statement — the envelope the existing supply-chain toolchain (cosign, in-toto, Sigstore) already verifies. `dsseAttestBundle()` (`packages/attest-core/dsse.js`) and `POST /api/dsse-attest` sign an in-toto Statement whose subject digest is bound to the bundle's `batch_root`, so the DSSE attestation is tied to the exact evidence chain; the native Ed25519-over-`batch_root` signature also rides in the predicate for cross-check.
+
+**One honest correction vs. the earlier framing:** DSSE does **not** re-wrap the existing signature — DSSE signs the **PAE** (Pre-Authentication Encoding) of `(payloadType, payload)`, so this is a *new* Ed25519 signature by the same key over the standard envelope, not a re-framing of the batch_root signature. `verifyDsse()` (public key only) and any DSSE-aware external tool verify it. Not yet round-tripped through cosign/Sigstore in CI — that is the remaining interop validation.
 
 ### 6.1 Where Shadow sits today, by conformance level
 
@@ -205,7 +207,7 @@ Adapting the L1/L2/L3 framing that fed OCSF (the `forensic-audit-trail-spec`, ar
 | Level | Requirement | Shadow status |
 |---|---|---|
 | **L1** | HMAC/hash chain + canonical JSON (RFC 8785-style) | **Met.** Shadow's hash chain + canonical signed shape already satisfy L1. |
-| **L2** | Signed session attestations, ES256/Ed25519 min, public-key discovery | **Substantially met** — Shadow signs with Ed25519 and publishes the key via `GET /api/attestation-info`. **Gap:** the signature is not yet wrapped in a standard DSSE/in-toto envelope. |
+| **L2** | Signed session attestations, ES256/Ed25519 min, public-key discovery | **Met** — Shadow signs with Ed25519, publishes the key via `GET /api/attestation-info`, and now emits a standard DSSE/in-toto envelope (`dsseAttestBundle` / `POST /api/dsse-attest`). Remaining: cosign/Sigstore round-trip in CI. |
 | **L3** | SPIFFE/SPIRE identity federation | **Not targeted.** Out of Shadow's independent-verifier scope; belongs to an enforcement/identity kernel, which Shadow deliberately is not (see §6.2). |
 
 ### 6.2 The honest positioning consequence

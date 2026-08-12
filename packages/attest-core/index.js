@@ -38,6 +38,18 @@ export {
 } from "./session.js";
 export { createFileStore, listSessionFiles } from "./store-file.js";
 
+// DSSE (Dead Simple Signing Envelope) + in-toto Statement emission — wrap the
+// same Ed25519 signature in the format cosign/in-toto/Sigstore already verify.
+export {
+  pae,
+  signDsse,
+  verifyDsse,
+  inTotoStatement,
+  dsseAttestBundle,
+  INTOTO_PAYLOAD_TYPE,
+  SHADOW_PREDICATE_TYPE,
+} from "./dsse.js";
+
 // v3 M3 sprint 1 + 2 + 3: external anchoring (RFC 3161 TSA + Sigstore Rekor).
 export {
   TRUST_LEVELS,

@@ -50,19 +50,21 @@ test("attest-core exports the documented symbols", () => {
 // version stayed 2.1.0 (a silent SemVer drift on a published package).
 test("attest-core export surface is frozen + versioned (drift must be intentional)", () => {
   const EXPECTED_EXPORTS = [
-    "ATTESTATION_VERSION", "EVENT_TYPES", "SIGNATURE_MODES", "TRUST_LEVELS", "appendEvent",
+    "ATTESTATION_VERSION", "EVENT_TYPES", "INTOTO_PAYLOAD_TYPE", "SHADOW_PREDICATE_TYPE",
+    "SIGNATURE_MODES", "TRUST_LEVELS", "appendEvent",
     "buildAttestation", "buildRekorHashedrekordEntry", "buildTimestampRequest", "canonicalizeJson",
-    "computeAttestationHash", "createFileStore", "createSession", "eventOwnHash", "extractRekorPayloadHash",
-    "listSessionFiles", "parseTimestampResponse", "recoverSession", "rekorLeafHash", "requestTimestamp",
-    "sealAndAnchor", "sealPartialBundle", "sealSession", "submitRekorEntry", "trustLevelRank",
-    "validateCmsCertChain", "verifyAttestation", "verifyBundle", "verifyCmsSignature",
+    "computeAttestationHash", "createFileStore", "createSession", "dsseAttestBundle", "eventOwnHash",
+    "extractRekorPayloadHash", "inTotoStatement",
+    "listSessionFiles", "pae", "parseTimestampResponse", "recoverSession", "rekorLeafHash", "requestTimestamp",
+    "sealAndAnchor", "sealPartialBundle", "sealSession", "signDsse", "submitRekorEntry", "trustLevelRank",
+    "validateCmsCertChain", "verifyAttestation", "verifyBundle", "verifyCmsSignature", "verifyDsse",
     "verifyInclusionProof", "verifyRekorAnchor", "verifyRekorSet", "verifyRfc3161Anchor",
   ].sort();
   assert.deepEqual(Object.keys(AttestCore).sort(), EXPECTED_EXPORTS,
     "attest-core export surface changed — update EXPECTED_EXPORTS AND bump the package version");
   const pkg = JSON.parse(readFileSync(PKG_PATH, "utf8"));
   assert.equal(pkg.version, "2.2.0",
-    "sealAndAnchor + Source-Map v1.1 + eventOwnHash (OCSF adapter leaf) landed after 2.1.0 was published — package is 2.2.0 (pending npm publish)");
+    "sealAndAnchor + Source-Map v1.1 + eventOwnHash (OCSF adapter leaf) + DSSE/in-toto emission landed after 2.1.0 was published — package is 2.2.0 (pending npm publish)");
 });
 
 
