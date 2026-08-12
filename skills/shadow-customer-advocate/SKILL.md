@@ -42,7 +42,7 @@ Install this skill when you want Claude to:
 ## Regulatory anchors
 
 - **CFPB Circular 2026-03** — model-traceability. Rationale must cite specific policy reason + threshold.
-- **CFPB Circular 2022-03** — "model complexity is not a defense" (still binding).
+- **CFPB Circular 2022-03** — "model complexity is not a defense" (withdrawn 2025-05-12; the specificity duty now anchors on Reg B §1002.9(b)(2)).
 - **ECOA / Reg B** — 30-day notice window + specific-reason requirement.
 - **Fair Housing Act** — separate state AG enforcement lane (survives 2026-07-21 disparate-impact narrowing).
 

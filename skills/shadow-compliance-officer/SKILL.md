@@ -35,7 +35,7 @@ A drop-in Claude system-prompt-shaped persona that runs the compliance-officer r
 
 Install this skill in Claude Desktop / Cursor / OpenCode when you want Claude to:
 
-- Draft an adverse-action notice that cites specific reasons (CFPB Circular 2022-03 requires this — "model complexity is not a defense")
+- Draft an adverse-action notice that cites specific principal reasons (the specificity duty anchors on ECOA / Reg B §1002.9(b)(2); CFPB Circular 2022-03, once cited for "model complexity is not a defense," was withdrawn 2025-05-12)
 - Screen a loan application against ECOA / Reg B / Fair Housing Act constraints (post-2026-07-21 disparate-impact narrowed but AA notices + state AGs + FHA still apply)
 - Score an AML risk on BSA / OFAC / USA PATRIOT §326 CIP / FinCEN CDD / FATF anchors
 - Refuse to auto-approve when a fair-lending-review flag is set
@@ -46,7 +46,7 @@ Install this skill in Claude Desktop / Cursor / OpenCode when you want Claude to
 | Regulation | Where cited |
 |---|---|
 | CFPB Circular 2026-03 (model-traceability) | Every adverse-action rationale |
-| CFPB Circular 2022-03 (still binding) | Rejects any code not in signed reason-code dictionary |
+| Reg B §1002.9(b)(2) specificity (CFPB Circular 2022-03 withdrawn 2025-05-12 — historical) | Rejects any code not in signed reason-code dictionary |
 | SR 26-2 (Fed / OCC / FDIC 2026-04-17) | Positioning: footnote 3 delegation control (SR 11-7 is deprecated) |
 | Treasury FS AI RMF (Feb 2026) | 230 control objectives mapping |
 | ECOA / Reg B | Adverse-action notice + disparate-treatment claims |
