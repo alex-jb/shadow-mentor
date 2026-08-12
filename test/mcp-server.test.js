@@ -10,8 +10,8 @@ import { buildAttestation, SIGNATURE_MODES } from "../lib/attestation.js";
 import { createSession, appendEvent, sealSession } from "../packages/attest-core/session.js";
 import { computeDictionaryHash } from "../lib/enforce-reason-code-dictionary.js";
 
-test("MCP server exposes 11 tools (adds shadow_banking_profile)", () => {
-  assert.equal(TOOLS.length, 11);
+test("MCP server exposes 12 tools (adds shadow_research_check)", () => {
+  assert.equal(TOOLS.length, 12);
   const names = TOOLS.map((t) => t.name);
   for (const expected of [
     "shadow_loan_council",
@@ -24,10 +24,25 @@ test("MCP server exposes 11 tools (adds shadow_banking_profile)", () => {
     "shadow_verify_attestation",
     "shadow_size_position",
     "shadow_disparity",
-    "shadow_banking_profile"
+    "shadow_banking_profile",
+    "shadow_research_check"
   ]) {
     assert.ok(names.includes(expected), `missing tool ${expected}`);
   }
+});
+
+test("shadow_research_check: labels in-force / withdrawn / ungrounded citations in a memo", () => {
+  const memo = "Denial per 12 CFR 1002.9(b)(2) and 15 U.S.C. 1691(a). CFPB Circular 2022-03 historically. Also 12 CFR 9999.1.";
+  const r = handleToolCall("shadow_research_check", { memo });
+  assert.ok(r.in_force.some((x) => x.id === "12CFR1002.9(b)(2)"));
+  assert.ok(r.withdrawn.some((x) => x.id === "CFPB-Circular-2022-03" && x.sunset === "2025-05-12"));
+  assert.ok(r.ungrounded.includes("12 CFR 9999.1"));
+  assert.equal(r.ok, false);
+});
+
+test("shadow_research_check: rejects a missing/empty memo", () => {
+  assert.match(handleToolCall("shadow_research_check", {}).error, /non-empty 'memo'/);
+  assert.match(handleToolCall("shadow_research_check", { memo: "   " }).error, /non-empty 'memo'/);
 });
 
 test("shadow_banking_profile: a conforming credit-decision bundle → CONFORMS + optional packet", () => {

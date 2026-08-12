@@ -4,7 +4,7 @@
   "positioning": "Independent evidence and decision audit layer for AI systems",
   "one_line": "Cryptographic evidence + independent audit layer for AI decisions — signs, grounds, and adversarially checks what an agent (yours or a third party's) actually decided.",
   "council_voice_count": 5,
-  "tool_count": 11,
+  "tool_count": 12,
   "mcp_tools": [
     "shadow_loan_council",
     "shadow_loan_council_typed",
@@ -16,7 +16,8 @@
     "shadow_verify_attestation",
     "shadow_banking_profile",
     "shadow_size_position",
-    "shadow_disparity"
+    "shadow_disparity",
+    "shadow_research_check"
   ],
   "license": "MIT",
   "repository": "https://github.com/alex-jb/shadow-mentor",

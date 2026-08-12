@@ -21,7 +21,7 @@ It proves **integrity** (the record wasn't tampered) and increasingly **groundin
 - **Audit primitives**: reason-code dictionary (AA01–AA06), disparity metrics (AIR / SMD, 4/5 rule), proxy detection (ECOA §701), un-hallucinable citation registry with sunset handling.
 - **Third-party ingestion**: `packages/adapter-otel` seals a vendor agent's OTel trace (structural today); semantic audit of ingested LLM/agent output is the active build.
 - **Standards interop**: emits the audit chain as OCSF 1.9.0 `record_integrity` events (`packages/adapter-ocsf`, `POST /api/ocsf-export`, `npx shadow-ocsf`) for bank-SIEM ingest, and as a DSSE / in-toto attestation (`POST /api/dsse-attest`) verifiable by cosign / in-toto / Sigstore. Not yet validated against a live OCSF schema-validator / cosign round-trip.
-- **MCP server** (`mcp/server.js`): 11 tools — shadow_loan_council, shadow_loan_council_typed, shadow_risk_tools, shadow_recall, shadow_calibration, shadow_scenarios, shadow_traceability, shadow_verify_attestation, shadow_banking_profile, shadow_size_position, shadow_disparity.
+- **MCP server** (`mcp/server.js`): 12 tools — shadow_loan_council, shadow_loan_council_typed, shadow_risk_tools, shadow_recall, shadow_calibration, shadow_scenarios, shadow_traceability, shadow_verify_attestation, shadow_banking_profile, shadow_size_position, shadow_disparity, shadow_research_check.
 
 ## Regulatory references (current)
 

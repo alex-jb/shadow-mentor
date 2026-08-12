@@ -6,7 +6,7 @@
 
 Shadow already ships 8 HTTP endpoints on Vercel. The MCP server lets you skip the curl and call Shadow directly from your LLM chat — same way you'd call `read_file` or `git_status`. Procurement-grade banking workflows are easier to demo when an analyst can type "what would the compliance council say about a B-rated TLB with FICO 740 and DTI 0.28?" and get the verdict back inline.
 
-The 11 tools exposed:
+The 12 tools exposed:
 
 | Tool | Purpose | Backed by |
 |---|---|---|
@@ -21,6 +21,7 @@ The 11 tools exposed:
 | `shadow_size_position` | Trader-Pack Risk Sizer (FinPos): direction in → fund/skip + Kelly-capped position size + volatility scalar. Never returns a direction. Pure computation. | `lib/personas/trader-pack/risk-sizer.js` |
 | `shadow_disparity` | Fair-lending disparity metrics (adverse-impact ratio, standardized mean difference, segmented AIR). | `lib/disparity/index.js` |
 | `shadow_banking_profile` | **New**: check an evidence bundle against Banking Evidence Profile v1 — the "is this credit decision auditable?" pass/fail gate (integrity + examiner-required evidence, each mapped to Reg B / FCRA / SR 26-2; a swapped/ungoverned reason-code dictionary fails). Optionally returns an examiner-ready packet. `shadow:read` seat. | `lib/enforce-banking-profile.js` + `lib/evidence-packet.js` |
+| `shadow_research_check` | **New**: ground the citations in a regulatory research memo against the citation registry. Labels each IN_FORCE / WITHDRAWN (with sunset date) / EVIDENCE_INSUFFICIENT (citation-shaped but resolves to nothing). Time-aware currency; same registry the council prompt-injects. Backs the `shadow-deep-research` skill. | `lib/research-grounding.js` + `lib/citation-registry.js` |
 
 All tools run locally — no network call, no LLM cost. Built on top of the same `lib/` modules that back `/api/loan-council` and `/api/scenarios` on Vercel.
 

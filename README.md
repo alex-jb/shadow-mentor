@@ -166,7 +166,7 @@ Standards interop (emit the audit chain in formats a bank SIEM / supply-chain to
 
 ## MCP integration
 
-Shadow ships an 11-tool MCP server (`mcp/server.js`) usable from Cursor, Claude Desktop, Zed, or any MCP client. See [`mcp/README.md`](./mcp/README.md).
+Shadow ships a 12-tool MCP server (`mcp/server.js`) usable from Cursor, Claude Desktop, Zed, or any MCP client. See [`mcp/README.md`](./mcp/README.md).
 
 ## Threat model
 

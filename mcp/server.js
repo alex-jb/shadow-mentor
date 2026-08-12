@@ -37,6 +37,7 @@ import { verifyBundle } from "../packages/attest-core/session.js";
 import { checkBankingProfileV1 } from "../lib/enforce-banking-profile.js";
 import { buildExaminerPacket, renderPacketMarkdown } from "../lib/evidence-packet.js";
 import { adverseImpactRatio, standardizedMeanDifference, segmentedAIR } from "../lib/disparity/index.js";
+import { groundResearchMemo } from "../lib/research-grounding.js";
 import { createResponse, isEnvelope } from "./response.js";
 
 const TOOLS = [
@@ -268,6 +269,20 @@ const TOOLS = [
         }
       },
       required: ["mode"]
+    }
+  },
+  {
+    name: "shadow_research_check",
+    description: "Ground the citations in a regulatory research memo against Shadow's checked-in citation registry. Returns every citation labeled IN_FORCE, WITHDRAWN (with the sunset date, e.g. CFPB Circular 2022-03 → 2025-05-12), or EVIDENCE_INSUFFICIENT (citation-shaped but resolves to no registry entry — an invented regulation). Use this to catch a memo that cites a withdrawn or hallucinated authority BEFORE it reaches an examiner. Backs the shadow-deep-research skill; same registry the loan council prompt-injects, so currency never disagrees. Time-aware: a citation binding when written but withdrawn since is flagged withdrawn.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        memo: {
+          type: "string",
+          description: "The research-memo prose to check. Every citation-shaped token is resolved against lib/schemas/citation-registry.json."
+        }
+      },
+      required: ["memo"]
     }
   }
 ];
@@ -522,6 +537,13 @@ export function handleToolCall(name, args) {
     } catch (err) {
       return { error: `Risk Sizer input invalid: ${err.message}` };
     }
+  }
+
+  if (name === "shadow_research_check") {
+    if (typeof args.memo !== "string" || !args.memo.trim()) {
+      return { error: "shadow_research_check requires a non-empty 'memo' string" };
+    }
+    return groundResearchMemo(args.memo);
   }
 
   throw new Error(`unknown tool: ${name}`);
