@@ -17,6 +17,9 @@
 - ✅ **M1.1** evidence bundle 规格 + JSON Schema(`spec/EVIDENCE_BUNDLE.md`, `spec/evidence-bundle.schema.json`)
 - ✅ **M1.2** 流式 session API(`createSession` / `appendEvent` / `sealSession` / `recoverSession` / `sealPartialBundle`)+ 崩溃恢复 + 10k-event 性能验收(69ms 实测 vs 5s 目标,72× 富余)
 - ✅ **M2.3** 通用 HTTP ingest(`POST /api/evidence/events`)
+- ✅ **标准互操作** — 把审计链输出成银行 SIEM / 供应链工具链已能验证的格式(详见 [`docs/STANDARDS_MAP.md`](./docs/STANDARDS_MAP.md) §5–§6):
+  - OCSF 1.9.0 `record_integrity` 事件(`packages/adapter-ocsf` / `POST /api/ocsf-export` / `npx shadow-ocsf`),fingerprint 用 attest-core 自己的 `eventOwnHash` 算,与签名 bundle 零漂移。*尚未对真实 OCSF schema-validator / SIEM ingest 验证;不声称 per-event `class_uid` 分类学。*
+  - DSSE / in-toto attestation(`POST /api/dsse-attest`,subject digest 绑 `batch_root`),cosign / in-toto / Sigstore 可验。*尚未在 CI 里做 cosign/Sigstore round-trip。*
 - ✅ **M4** 离线验证器三件套:
   - `verify.html` — WebCrypto 单文件浏览器验证,零网络零构建,USB 优盘可用
   - `bin/shadow-verify.mjs` CLI + `npm run verify:bundle`

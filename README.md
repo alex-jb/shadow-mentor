@@ -159,6 +159,11 @@ v3 evidence bundle (M2.3, shipped 2026-07-10):
 
 - `POST /api/evidence/events` — generic HTTP ingest for evidence bundles. Accepts a full session (header + ordered event list) in one JSON body, returns a signed + chain-verified bundle matching `spec/EVIDENCE_BUNDLE.md`. Stateless; server holds the Ed25519 signing key via `SHADOW_ATTESTATION_ED25519_PRIVATE_KEY`.
 
+Standards interop (emit the audit chain in formats a bank SIEM / supply-chain toolchain already verifies — see [`docs/STANDARDS_MAP.md`](./docs/STANDARDS_MAP.md) §5–§6):
+
+- `POST /api/ocsf-export` — project a sealed bundle to [OCSF 1.9.0](https://github.com/ocsf/ocsf-schema) `record_integrity` events (per-event `attestation` fingerprint + chain + `ai_agent`). Read-only, no key. Same primitive as `npx shadow-ocsf <bundle.json>` and the `shadow-adapter-ocsf` library. Fingerprints are computed with attest-core's own `eventOwnHash`, so there is zero drift from the signed bundle. *Not yet validated against a live OCSF schema-validator / SIEM ingest; no per-event `class_uid` taxonomy claimed.*
+- `POST /api/dsse-attest` — wrap the bundle as a [DSSE](https://github.com/secure-systems-lab/dsse) / in-toto Statement (subject digest bound to `batch_root`) verifiable by cosign / in-toto / Sigstore. Signs the DSSE PAE with the same Ed25519 key; requires a persistent `SHADOW_ATTESTATION_ED25519_PRIVATE_KEY` (no ephemeral attestation). *Not yet round-tripped through cosign/Sigstore in CI.*
+
 ## MCP integration
 
 Shadow ships an 11-tool MCP server (`mcp/server.js`) usable from Cursor, Claude Desktop, Zed, or any MCP client. See [`mcp/README.md`](./mcp/README.md).
