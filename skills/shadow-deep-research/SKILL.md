@@ -76,6 +76,17 @@ Country-risk screen basis                         | 31 CFR 1010.230             
 
 Every non-empty AUTHORITY cell is registry-resolvable; every WITHDRAWN row carries the sunset date; any ungroundable claim is `EVIDENCE_INSUFFICIENT`, never filled with a plausible guess.
 
+## Mechanical grounding check
+
+The discipline above is not just a prompt — it ships as a deterministic gate you can run on any memo:
+
+```bash
+node bin/shadow-research-check.mjs memo.md      # or:  cat memo.md | node bin/shadow-research-check.mjs -
+npm run research:check -- memo.md
+```
+
+It resolves every citation in the memo against [`lib/schemas/citation-registry.json`](https://github.com/alex-jb/shadow-mentor/blob/master/lib/schemas/citation-registry.json) and labels each **IN_FORCE**, **WITHDRAWN** (with the sunset date), or **EVIDENCE_INSUFFICIENT** (looks like a citation, resolves to nothing). Exit code `1` when any citation is ungrounded, so a memo that cites an invented regulation can fail CI. It uses the same registry the loan council prompt-injects (`lib/citation-registry.js`), so a memo and the runtime council never disagree about whether an authority is current — and currency is time-aware, so a citation withdrawn last year is flagged even if it was binding when first written.
+
 ## Install
 
 ```bash
