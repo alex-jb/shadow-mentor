@@ -80,8 +80,9 @@ test("invalid AA code fails enforcement", () => {
   assert.equal(result.ok, false);
   assert.deepEqual(result.invalid, ["AA99_MADE_UP"]);
   assert.match(result.reason, /not backed by signed reason-code dictionary/);
-  // Must cite the CFPB circular for auditor
-  assert.match(result.reason, /Circular 2022-03/);
+  // Must cite the durable adverse-action-specificity authority for the auditor
+  // (Reg B §1002.9(b)(2); the old CFPB Circular 2022-03 was withdrawn 2025-05-12)
+  assert.match(result.reason, /Reg B §1002\.9\(b\)\(2\)/);
 });
 
 
