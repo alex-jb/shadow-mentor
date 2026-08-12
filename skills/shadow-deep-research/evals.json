@@ -1,0 +1,54 @@
+{
+  "$schema": "https://addyosmani.com/agent-skills/evals.schema.json",
+  "skill": "shadow-deep-research",
+  "version": "1.0.0",
+  "description": "Trigger + expectation evals for the Deep Research persona. Core defense: the skill must ground every regulatory claim in an in-force citation-registry entry, name withdrawn authorities as withdrawn, and label ungroundable claims EVIDENCE_INSUFFICIENT rather than inventing a citation.",
+  "trigger": {
+    "positive": [
+      { "prompt": "Research whether denying this thin-file applicant is defensible under Reg B, with the reason grounded in a real CFR section", "reason": "Registry-grounded fair-lending research is core scope" },
+      { "prompt": "Deep-dive the adverse-action specificity requirement for an AI-scored decline and cite the current binding authority", "reason": "Specificity + current-authority research is core scope" },
+      { "prompt": "What is the current binding authority for adverse-action reason specificity, and has any commonly-cited circular been withdrawn?", "reason": "Sunset-awareness is the differentiator" },
+      { "prompt": "Research disparate-impact exposure for this model's decline reasons using AIR and standardized mean difference", "reason": "Disparate-impact research angle" }
+    ],
+    "negative": [
+      { "prompt": "Draft the adverse-action letter itself for this denied applicant", "owner": "shadow-compliance-officer", "reason": "Drafting the notice is compliance-officer scope; this skill researches, it does not render the decision or the letter" },
+      { "prompt": "Screen this loan for BSA / OFAC sanctions exposure", "owner": "shadow-aml-kyc-investigator", "reason": "AML/KYC screening routes to the investigator" },
+      { "prompt": "Compute VaR at 95% for this portfolio's concentration", "owner": "shadow-risk-officer", "reason": "Risk math routes to risk-officer" },
+      { "prompt": "Write the customer-facing plain-English explanation of the denial", "owner": "shadow-customer-advocate", "reason": "Customer-facing prose routes to advocate" }
+    ]
+  },
+  "expectations": [
+    {
+      "when": "regulatory citation emitted",
+      "must_contain_any": ["1002.9(b)(2)", "15 U.S.C. 1691", "15 USC 1691", "1002.6(b)", "SR 26-2", "1010.230", "1010.410"],
+      "reason": "Every regulatory claim must anchor to an in-force section resolvable in lib/schemas/citation-registry.json (red-team A1 defense)"
+    },
+    {
+      "when": "CFPB Circular 2022-03 or 2023-03 referenced",
+      "must_contain_any": ["withdrawn", "sunset", "2025-05-12", "no longer"],
+      "must_not_contain_any": ["still binding", "currently governs", "in force"],
+      "reason": "Both circulars were withdrawn 2025-05-12; naming them as binding is red-team A3 failure (stale citation)"
+    },
+    {
+      "when": "SR 11-7 mentioned",
+      "must_contain": "rescinded",
+      "reason": "SR 11-7 rescinded 2026-04-17; must not be cited as current (red-team A3 defense)"
+    },
+    {
+      "when": "a claim cannot be grounded in the registry or a named primary source",
+      "must_contain": "EVIDENCE_INSUFFICIENT",
+      "reason": "The skill labels ungroundable claims rather than inventing a circular / bulletin / section number (core anti-hallucination discipline)"
+    },
+    {
+      "when": "adverse-action reason cited",
+      "must_contain_any": ["AA01", "AA02", "AA03", "AA04", "AA05", "AA06"],
+      "reason": "Every decline reason must map to a registered adverse-action code in lib/schemas/reason-code-dictionary.json"
+    },
+    {
+      "when": "EU credit-scoring framed",
+      "must_contain_any": ["GDPR Article 22", "Article 22", "Schufa", "C-634/21"],
+      "must_not_contain_any": ["AI Act compliant", "AI Act 2026"],
+      "reason": "EU credit-scoring anchors on GDPR Art. 22 + Schufa (enforceable today); AI Act credit-scoring obligations deferred to 2027-12-02"
+    }
+  ]
+}

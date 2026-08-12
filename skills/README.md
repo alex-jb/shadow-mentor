@@ -26,6 +26,7 @@ Full-catalog matrix — one skill per Shadow persona plus one for the aggregate 
 | [`shadow-attestation-verify`](./shadow-attestation-verify/SKILL.md) | audit | Verify a Shadow attestation record (Ed25519 or HMAC) without leaving Claude Desktop. Cross-language, works with Python 3.9–3.13 shadow-verify library. |
 | [`shadow-size-position`](./shadow-size-position/SKILL.md) | trading | FinPos-style position sizer. Direction is an input from an upstream Judge; sizer decides fund/skip + position_usd only. Never emits a direction. |
 | [`shadow-ds-govern`](./shadow-ds-govern/SKILL.md) | data-science | 5-voice deterministic model-risk council. Fair-ML BLOCK on EEOC 80% rule violation is unconditional. Missing metadata is REWORK, never SHIP. |
+| [`shadow-deep-research`](./shadow-deep-research/SKILL.md) | research | Deep regulatory + evidence research where every citation resolves in the in-force citation registry, withdrawn authorities (Circulars 2022-03 / 2023-03, SR 11-7) are named as withdrawn, and ungroundable claims are labeled EVIDENCE_INSUFFICIENT instead of invented. |
 
 **Credit Fundamentals** persona is intentionally NOT shipped as a standalone SKILL.md because its `FICO < 700 hard block` is Lora's non-negotiable policy floor (per her 2026-06-19 binding decision) — it should only run inside the full council alongside Compliance and Risk. Consumers who want a credit-only check should use `shadow-loan-council` directly.
 
