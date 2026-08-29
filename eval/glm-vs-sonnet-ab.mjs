@@ -54,6 +54,7 @@ const ENVELOPE_PATTERNS = [
   /usage limit/i,
   /api usage limits/i,
   /credit_balance_too_low/i,
+  /credit balance is too low/i,
   /insufficient_quota/i,
   /reached your specified/i,
 ];

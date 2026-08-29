@@ -44,6 +44,7 @@ const ENVELOPE_PATTERNS = [
   /quota/i,
   /rate_limit_error/i,
   /credit_balance_too_low/i,
+  /credit balance is too low/i,
   /insufficient_quota/i,
 ];
 
