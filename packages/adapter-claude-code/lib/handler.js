@@ -36,7 +36,7 @@ import {
 import { existsSync, mkdirSync, writeFileSync, readFileSync, appendFileSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
 
-import { mapEvent, actorFor, extractPayload } from "./mapping.js";
+import { mapEvent, actorFor, extractPayload, extractToolMetadata } from "./mapping.js";
 import { enrichFromTranscript } from "./transcript.js";
 
 const KEY_ID_DEFAULT = "claude-code-local";
@@ -164,6 +164,8 @@ function appendMappedEvent(session, eventName, stdin) {
   const { agentVersion: discoveredVersion, modelId: discoveredModelId } =
     enrichFromTranscript(stdin?.transcript_path);
   const extensions = {};
+  const toolMetadata = extractToolMetadata(eventName, stdin);
+  if (toolMetadata) extensions.claude_code = toolMetadata;
   if (discoveredVersion) extensions.discovered_agent_version = discoveredVersion;
   if (discoveredModelId) extensions.discovered_model_id = discoveredModelId;
 
@@ -185,6 +187,9 @@ export function handleHookEvent({ eventName, stdin, shadowDir, privateKey, keyId
   if (!shadowDir) throw new Error("handleHookEvent: shadowDir required");
   if (!privateKey) throw new Error("handleHookEvent: privateKey required");
   const s = stdin ?? {};
+  if (s.hook_event_name !== undefined && s.hook_event_name !== eventName) {
+    throw new Error("handleHookEvent: hook_event_name does not match the routed event");
+  }
 
   const shadowEventType = mapEvent(eventName);
   if (!shadowEventType) return { skipped: true, reason: `unmapped ${eventName}` };

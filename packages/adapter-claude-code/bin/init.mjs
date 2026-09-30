@@ -22,6 +22,8 @@ const HOOK_EVENTS = [
   "SessionStart",
   "UserPromptSubmit",
   "PreToolUse",
+  "PermissionRequest",
+  "PermissionDenied",
   "PostToolUse",
   "PostToolUseFailure",
   "SubagentStop",

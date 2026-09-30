@@ -23,6 +23,8 @@ test("mapEvent maps every documented hook event to a Shadow event type", () => {
   assert.equal(mapEvent("SessionStart"),       "session_start");
   assert.equal(mapEvent("UserPromptSubmit"),   "prompt");
   assert.equal(mapEvent("PreToolUse"),         "tool_call");
+  assert.equal(mapEvent("PermissionRequest"),  "tool_call");
+  assert.equal(mapEvent("PermissionDenied"),   "tool_error");
   assert.equal(mapEvent("PostToolUse"),        "tool_result");
   assert.equal(mapEvent("PostToolUseFailure"), "tool_error");
   assert.equal(mapEvent("SubagentStop"),       "subagent_stop");
@@ -40,12 +42,14 @@ test("mapEvent returns null for unknown events (Notification, TeammateIdle, etc)
 
 // ── actorFor ──────────────────────────────────────────────────
 
-test("actorFor tags UserPromptSubmit as user, everything else as agent", () => {
+test("actorFor tags prompts as user, tool observation as agent, permissions as system", () => {
   assert.equal(actorFor("UserPromptSubmit"), "user");
   assert.equal(actorFor("SessionStart"), "agent");
   assert.equal(actorFor("PreToolUse"), "agent");
   assert.equal(actorFor("PostToolUse"), "agent");
   assert.equal(actorFor("Stop"), "agent");
+  assert.equal(actorFor("PermissionRequest"), "system");
+  assert.equal(actorFor("PermissionDenied"), "system");
 });
 
 // ── extractPayload ─────────────────────────────────────────────
@@ -159,9 +163,10 @@ test("extractPayload returns empty object for unknown events", () => {
 // will be missing evidence for those turns. This test doesn't fix
 // that, but it makes the coverage decision visible.
 
-test("regression: 9 events currently mapped (Alex updates when Anthropic changes surface)", () => {
+test("regression: 11 events currently mapped (Alex updates when Anthropic changes surface)", () => {
   const documented = [
     "SessionStart", "UserPromptSubmit", "PreToolUse", "PostToolUse",
+    "PermissionRequest", "PermissionDenied",
     "PostToolUseFailure", "SubagentStop", "Stop", "PreCompact", "SessionEnd",
   ];
   for (const e of documented) {

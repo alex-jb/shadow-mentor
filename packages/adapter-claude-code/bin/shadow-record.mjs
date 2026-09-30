@@ -52,7 +52,7 @@ function loadPrivateKey() {
 function usage() {
   process.stderr.write(
     "Usage:\n" +
-    "  shadow-record hook <SessionStart|UserPromptSubmit|PreToolUse|PostToolUse|PostToolUseFailure|SubagentStop|Stop|PreCompact|SessionEnd>\n" +
+    "  shadow-record hook <SessionStart|UserPromptSubmit|PreToolUse|PermissionRequest|PermissionDenied|PostToolUse|PostToolUseFailure|SubagentStop|Stop|PreCompact|SessionEnd>\n" +
     "  shadow-record seal <session_id> [--partial]\n" +
     "  shadow-record init\n",
   );

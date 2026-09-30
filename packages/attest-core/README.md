@@ -2,7 +2,7 @@
 
 Zero-LLM-dep cryptographic evidence primitives for AI decision attestation and agent session recording.
 
-**Status:** v2.0.0 — physical source lives here. Prior `lib/` paths are back-compat shims.
+**Status:** v2.4.0 (pending npm publication) — physical source lives here. Prior `lib/` paths are back-compat shims.
 
 ## What lives here
 
@@ -11,6 +11,7 @@ Zero-LLM-dep cryptographic evidence primitives for AI decision attestation and a
 - Batch attestation with SHA-256 batch root — O(1) verification over N decisions
 - Hash-chain primitives (`previous_hash` linking) with tamper detection
 - **Streaming session API** (v3 M1.2, added 2026-07-10): `createSession` / `appendEvent` / `sealSession` / `verifyBundle` for evidence-bundle recording per [`../../spec/EVIDENCE_BUNDLE.md`](../../spec/EVIDENCE_BUNDLE.md)
+- `canonicalize` re-exports the existing general JSON canonicalizer used by attestation and session hashing. It supports finite fractional JSON numbers; `canonicalizeJson` remains the separate integer-only Rekor helper. This export does not change canonicalization or signing rules.
 
 ## What does NOT live here
 
@@ -35,6 +36,7 @@ Node.js `>= 20` (uses the built-in `node:crypto` Ed25519 API).
 import {
   ATTESTATION_VERSION,
   SIGNATURE_MODES,
+  canonicalize,
   buildAttestation,
   verifyAttestation,
   computeAttestationHash,

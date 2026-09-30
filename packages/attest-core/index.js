@@ -16,6 +16,7 @@
 export {
   ATTESTATION_VERSION,
   SIGNATURE_MODES,
+  canonicalize,
   buildAttestation,
   verifyAttestation,
 } from "./attestation.js";
