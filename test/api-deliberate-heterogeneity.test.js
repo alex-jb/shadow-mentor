@@ -1,10 +1,12 @@
 // test/api-deliberate-heterogeneity.test.js
 // ──────────────────────────────────────────────────────────────────
 // v1.5.34 contract tests for the /api/deliberate strict_heterogeneity
-// pre-flight gate. Only tests the early-return paths — no LLM calls.
+// pre-flight gate. Successful routing reaches a mocked SDK resource;
+// no provider HTTP request is allowed, including with a static fake key.
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { offlineDeliberate, OFFLINE_PROVIDER_ERROR } from "./helpers/offline-deliberate.js";
 
 const { default: handler } = await import("../api/deliberate.js");
 
@@ -25,7 +27,8 @@ function mockRes() {
 }
 
 
-test("strict_heterogeneity=true + only ANTHROPIC_API_KEY set → HTTP 428", async () => {
+test("strict_heterogeneity=true + only ANTHROPIC_API_KEY set → HTTP 428", async (t) => {
+  const messages = offlineDeliberate(t);
   const originalAnthropic = process.env.ANTHROPIC_API_KEY;
   const originalGlm = process.env.GLM_API_KEY;
   const originalLocal = process.env.SHADOW_LOCAL_LLM_URL;
@@ -47,6 +50,7 @@ test("strict_heterogeneity=true + only ANTHROPIC_API_KEY set → HTTP 428", asyn
   assert.equal(res.body.unique_providers_used, 1);
   assert.equal(res.body.anchor, "arXiv:2606.19826");
   assert.match(res.body.reason, /arXiv:2606\.19826/);
+  assert.equal(messages.mock.callCount(), 0);
 
   // restore env
   if (originalAnthropic !== undefined) process.env.ANTHROPIC_API_KEY = originalAnthropic;
@@ -56,7 +60,8 @@ test("strict_heterogeneity=true + only ANTHROPIC_API_KEY set → HTTP 428", asyn
 });
 
 
-test("strict_heterogeneity=true + min_providers=3 + only 2 configured → HTTP 428", async () => {
+test("strict_heterogeneity=true + min_providers=3 + only 2 configured → HTTP 428", async (t) => {
+  const messages = offlineDeliberate(t);
   const originalAnthropic = process.env.ANTHROPIC_API_KEY;
   const originalGlm = process.env.GLM_API_KEY;
   const originalLocal = process.env.SHADOW_LOCAL_LLM_URL;
@@ -76,6 +81,7 @@ test("strict_heterogeneity=true + min_providers=3 + only 2 configured → HTTP 4
   assert.equal(res.statusCode, 428);
   assert.equal(res.body.min_required, 3);
   assert.equal(res.body.providers_available_count, 2);
+  assert.equal(messages.mock.callCount(), 0);
 
   if (originalAnthropic !== undefined) process.env.ANTHROPIC_API_KEY = originalAnthropic;
   else delete process.env.ANTHROPIC_API_KEY;
@@ -85,7 +91,8 @@ test("strict_heterogeneity=true + min_providers=3 + only 2 configured → HTTP 4
 });
 
 
-test("strict_heterogeneity=false (default) + only ANTHROPIC → 428 gate does NOT fire (back-compat)", async () => {
+test("strict_heterogeneity=false (default) + only ANTHROPIC → 428 gate does NOT fire (back-compat)", async (t) => {
+  const messages = offlineDeliberate(t);
   // Without strict_heterogeneity opt-in, the gate must not fire. A caller
   // making no changes from pre-v1.5.34 sees no new HTTP status codes.
   const originalAnthropic = process.env.ANTHROPIC_API_KEY;
@@ -101,11 +108,12 @@ test("strict_heterogeneity=false (default) + only ANTHROPIC → 428 gate does NO
     // NO strict_heterogeneity field — default is false
   }), res);
 
-  // Will fail LATER when LLM call is attempted, not at 428. So we just
-  // check it did NOT return 428. It will likely return 500 downstream
-  // because the test-key is not real, but that's the expected legacy
-  // path — the gate did not preempt it.
+  // The SDK mock fails only after the preflight succeeds. Assert that
+  // concrete boundary, rather than accepting any unrelated non-428.
   assert.notEqual(res.statusCode, 428);
+  assert.equal(res.statusCode, 500);
+  assert.equal(res.body.error, OFFLINE_PROVIDER_ERROR);
+  assert.equal(messages.mock.callCount(), 3);
 
   if (originalAnthropic !== undefined) process.env.ANTHROPIC_API_KEY = originalAnthropic;
   else delete process.env.ANTHROPIC_API_KEY;
@@ -113,7 +121,8 @@ test("strict_heterogeneity=false (default) + only ANTHROPIC → 428 gate does NO
 });
 
 
-test("strict_heterogeneity=true + 2 providers configured → gate PASSES, proceeds to LLM call", async () => {
+test("strict_heterogeneity=true + 2 providers configured → gate PASSES, reaches mocked SDK", async (t) => {
+  const messages = offlineDeliberate(t);
   const originalAnthropic = process.env.ANTHROPIC_API_KEY;
   const originalGlm = process.env.GLM_API_KEY;
   process.env.ANTHROPIC_API_KEY = "test-key";
@@ -127,10 +136,12 @@ test("strict_heterogeneity=true + 2 providers configured → gate PASSES, procee
     strict_heterogeneity: true,
   }), res);
 
-  // Gate should NOT return 428 — it passes preflight. Downstream will
-  // fail with 500 because test-keys are not real, but that's the
-  // legacy path, not the gate.
+  // All three initial voice calls reach the SDK mock; no HTTP request
+  // or follow-up request occurs after that controlled failure.
   assert.notEqual(res.statusCode, 428);
+  assert.equal(res.statusCode, 500);
+  assert.equal(res.body.error, OFFLINE_PROVIDER_ERROR);
+  assert.equal(messages.mock.callCount(), 3);
 
   if (originalAnthropic !== undefined) process.env.ANTHROPIC_API_KEY = originalAnthropic;
   else delete process.env.ANTHROPIC_API_KEY;
@@ -139,7 +150,8 @@ test("strict_heterogeneity=true + 2 providers configured → gate PASSES, procee
 });
 
 
-test("gate response body includes anchor arXiv:2606.19826 for procurement audit", async () => {
+test("gate response body includes anchor arXiv:2606.19826 for procurement audit", async (t) => {
+  const messages = offlineDeliberate(t);
   const originalAnthropic = process.env.ANTHROPIC_API_KEY;
   process.env.ANTHROPIC_API_KEY = "test-key";
   delete process.env.GLM_API_KEY;
@@ -153,13 +165,15 @@ test("gate response body includes anchor arXiv:2606.19826 for procurement audit"
   }), res);
 
   assert.equal(res.body.anchor, "arXiv:2606.19826");
+  assert.equal(messages.mock.callCount(), 0);
 
   if (originalAnthropic !== undefined) process.env.ANTHROPIC_API_KEY = originalAnthropic;
   else delete process.env.ANTHROPIC_API_KEY;
 });
 
 
-test("gate fires BEFORE unknown persona check (misconfigured deployment fails fast)", async () => {
+test("gate fires BEFORE unknown persona check (misconfigured deployment fails fast)", async (t) => {
+  const messages = offlineDeliberate(t);
   // If a caller sends an unknown persona AND strict_heterogeneity=true
   // with a bad env, the 428 fires FIRST — protecting against a caller
   // who might spelunk the persona namespace via the response error.
@@ -182,6 +196,7 @@ test("gate fires BEFORE unknown persona check (misconfigured deployment fails fa
   // the expected non-200 statuses.
   assert.ok([400, 428].includes(res.statusCode),
     `expected 400 or 428, got ${res.statusCode}`);
+  assert.equal(messages.mock.callCount(), 0);
 
   if (originalAnthropic !== undefined) process.env.ANTHROPIC_API_KEY = originalAnthropic;
   else delete process.env.ANTHROPIC_API_KEY;
