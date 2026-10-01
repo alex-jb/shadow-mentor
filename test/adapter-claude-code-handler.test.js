@@ -12,7 +12,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, readFileSync, existsSync } from "node:fs";
+import { mkdtempSync, readFileSync, existsSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { generateKeyPairSync } from "node:crypto";
@@ -295,4 +295,64 @@ test("handleHookEvent — recovery works across process boundaries (simulated)",
   assert.ok(bundle.events.length >= 3);
   const verify = verifyBundle(bundle, { publicKey: publicPem });
   assert.equal(verify.ok, true, verify.reason);
+});
+
+test("pending queue corruption is retained instead of replayed or signed", (t) => {
+  const { privatePem } = freshKeypair();
+  const corruptLines = [
+    '{"private_input":"SECRET_PENDING_INPUT"',
+    'null',
+    '[]',
+    'false',
+    '0',
+    JSON.stringify({ eventName: "Notification", stdin: { session_id: SESSION_ID } }),
+    JSON.stringify({ eventName: "constructor", stdin: { session_id: SESSION_ID } }),
+    JSON.stringify({ eventName: "PreToolUse", stdin: "SECRET_PENDING_INPUT" }),
+    JSON.stringify({ eventName: "PreToolUse" }),
+    JSON.stringify({ eventName: "PreToolUse", stdin: { session_id: "another-session" } }),
+    JSON.stringify({ eventName: "PermissionDenied", stdin: { session_id: SESSION_ID, hook_event_name: "PreToolUse" } }),
+    Buffer.from([0xff]),
+  ];
+  for (const corruptLine of corruptLines) {
+    const shadowDir = freshShadowDir();
+    t.after(() => rmSync(shadowDir, { recursive: true, force: true }));
+    handleHookEvent({ eventName: "SessionStart", stdin: stdinFor("SessionStart"), shadowDir, privateKey: privatePem });
+    const pending = join(shadowDir, "sessions", `${SESSION_ID}.pending.jsonl`);
+    const original = Buffer.concat([readFileSync(pending), Buffer.from(corruptLine), Buffer.from("\n")]);
+    writeFileSync(pending, original);
+    const assertInvalid = (run) => assert.throws(run, (error) => {
+      assert.match(error.message, /^readPending: (?:.+ at line 2|invalid UTF-8)$/);
+      assert.equal(error.message.includes("SECRET_PENDING_INPUT"), false);
+      return true;
+    });
+    assertInvalid(() => handleHookEvent({ eventName: "SessionEnd", stdin: stdinFor("SessionEnd"), shadowDir, privateKey: privatePem }));
+    assertInvalid(() => sealSessionById({ sessionId: SESSION_ID, shadowDir, privateKey: privatePem }));
+    assertInvalid(() => sealSessionById({ sessionId: SESSION_ID, shadowDir, privateKey: privatePem, partial: true }));
+    assert.deepEqual(readFileSync(pending), original, "keep every pending byte for explicit recovery");
+    assert.equal(existsSync(join(shadowDir, "sessions", `${SESSION_ID}.jsonl`)), false);
+    assert.equal(existsSync(join(shadowDir, "sessions", SESSION_ID, "bundle.json")), false);
+  }
+});
+
+test("an existing session store cannot bypass validation of a corrupt pending queue", (t) => {
+  const shadowDir = freshShadowDir();
+  t.after(() => rmSync(shadowDir, { recursive: true, force: true }));
+  const { privatePem } = freshKeypair();
+  const transcriptPath = join(shadowDir, "controlled-transcript.jsonl");
+  writeFileSync(transcriptPath, JSON.stringify({ type: "assistant", version: "SYNTHETIC_TEST", message: { model: "SYNTHETIC_NO_MODEL_CALL" } }) + "\n");
+  handleHookEvent({ eventName: "SessionStart", stdin: stdinFor("SessionStart", { transcript_path: transcriptPath }), shadowDir, privateKey: privatePem });
+  const store = join(shadowDir, "sessions", `${SESSION_ID}.jsonl`);
+  const originalStore = readFileSync(store, "utf8");
+  const pending = join(shadowDir, "sessions", `${SESSION_ID}.pending.jsonl`);
+  const originalPending = '{"private_input":"SECRET_PENDING_INPUT"\n';
+  writeFileSync(pending, originalPending);
+  for (const eventName of ["PreToolUse", "SessionEnd"]) {
+    assert.throws(() => handleHookEvent({ eventName, stdin: stdinFor(eventName), shadowDir, privateKey: privatePem }), /readPending: invalid JSON at line 1/);
+  }
+  for (const partial of [false, true]) {
+    assert.throws(() => sealSessionById({ sessionId: SESSION_ID, shadowDir, privateKey: privatePem, partial }), /readPending: invalid JSON at line 1/);
+  }
+  assert.equal(readFileSync(store, "utf8"), originalStore);
+  assert.equal(readFileSync(pending, "utf8"), originalPending);
+  assert.equal(existsSync(join(shadowDir, "sessions", SESSION_ID, "bundle.json")), false);
 });

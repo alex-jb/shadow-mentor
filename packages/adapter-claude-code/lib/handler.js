@@ -64,11 +64,37 @@ function bundlePath(shadowDir, sessionId) {
 function readPending(shadowDir, sessionId) {
   const path = pendingPath(shadowDir, sessionId);
   if (!existsSync(path)) return [];
-  const raw = readFileSync(path, "utf8").trim();
-  if (!raw) return [];
-  return raw.split("\n").filter(Boolean).map((line) => {
-    try { return JSON.parse(line); } catch { return null; }
-  }).filter(Boolean);
+  let raw;
+  try {
+    raw = new TextDecoder("utf-8", { fatal: true }).decode(readFileSync(path));
+  } catch (error) {
+    if (error.code === "ERR_ENCODING_INVALID_ENCODED_DATA") {
+      throw new Error("readPending: invalid UTF-8");
+    }
+    throw error;
+  }
+  const records = [];
+  const object = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
+  for (const [index, line] of raw.split("\n").entries()) {
+    if (!line.trim()) continue;
+    // Never log the line or JSON.parse's message: pending inputs can contain secrets.
+    const invalid = (reason) => new Error(`readPending: ${reason} at line ${index + 1}`);
+    let record;
+    try { record = JSON.parse(line); } catch { throw invalid("invalid JSON"); }
+    if (!object(record) || typeof record.eventName !== "string" ||
+        typeof mapEvent(record.eventName) !== "string" || !object(record.stdin)) {
+      throw invalid("invalid hook record");
+    }
+    // Keep the existing unknown-session fallback, but never replay another session's input.
+    if ((record.stdin.session_id ?? "unknown-session") !== sessionId) {
+      throw invalid("session mismatch");
+    }
+    if (record.stdin.hook_event_name !== undefined && record.stdin.hook_event_name !== record.eventName) {
+      throw invalid("hook event mismatch");
+    }
+    records.push(record);
+  }
+  return records;
 }
 
 function appendPending(shadowDir, sessionId, record) {
@@ -131,6 +157,8 @@ function materializeSession({ shadowDir, sessionId, stdin, privateKey, keyId, ag
  * the pending queue on disk forever.
  */
 function ensureSession({ shadowDir, sessionId, stdin, privateKey, keyId, forceMaterialize }) {
+  // Validate the complete queue before recovery or writes, including when a store already exists.
+  const pending = readPending(shadowDir, sessionId);
   mkdirSync(sessionsDir(shadowDir), { recursive: true });
   const storeFilePath = storePath(shadowDir, sessionId);
 
@@ -141,7 +169,6 @@ function ensureSession({ shadowDir, sessionId, stdin, privateKey, keyId, forceMa
   }
 
   const { agentVersion, modelId } = enrichFromTranscript(stdin.transcript_path);
-  const pending = readPending(shadowDir, sessionId);
   const overCap = pending.length >= PENDING_HOOK_CAP;
 
   if (!modelId && !forceMaterialize && !overCap) {
@@ -243,6 +270,8 @@ export function handleHookEvent({ eventName, stdin, shadowDir, privateKey, keyId
  */
 export function sealSessionById({ sessionId, shadowDir, privateKey, partial = false, keyId = KEY_ID_DEFAULT }) {
   if (!sessionId) throw new Error("sealSessionById: sessionId required");
+  // Corruption must not become a signed partial history or disappear during queue removal.
+  const pending = readPending(shadowDir, sessionId);
   const path = storePath(shadowDir, sessionId);
 
   // M2.2 Phase 2 (2026-07-13): if the store doesn't exist but a pending
@@ -250,7 +279,6 @@ export function sealSessionById({ sessionId, shadowDir, privateKey, partial = fa
   // model discovery. Force materialize now (unknown fallback) + replay
   // + seal so we never strand pending events.
   if (!existsSync(path) || readFileSync(path, "utf8").trim().length === 0) {
-    const pending = readPending(shadowDir, sessionId);
     if (pending.length === 0) {
       throw new Error(`sealSessionById: no store at ${path}`);
     }
@@ -284,7 +312,7 @@ export function sealSessionById({ sessionId, shadowDir, privateKey, partial = fa
     return writeBundleForSession({ shadowDir, sessionId, bundle });
   }
   // If a pending queue still exists on a recovered session, replay it.
-  const stillPending = readPending(shadowDir, sessionId);
+  const stillPending = pending;
   for (const rec of stillPending) {
     if (mapEvent(rec.eventName)) appendMappedEvent(session, rec.eventName, rec.stdin);
   }

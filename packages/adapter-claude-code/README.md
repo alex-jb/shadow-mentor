@@ -208,6 +208,38 @@ shadow-record seal <session_id> --partial  # partial seal, session_ended_at_utc:
 Running `seal` twice is idempotent — the second invocation rebuilds
 `bundle.json` from the persisted seal line without re-signing.
 
+### When the pending queue cannot be replayed
+
+Before recovering or writing a session, the adapter validates every
+nonblank line of `sessions/<session_id>.pending.jsonl`. Invalid UTF-8,
+malformed JSON, unsupported hook records, a different session ID, or
+conflicting hook names stop replay and sealing. The original pending
+file and any existing session store remain unchanged; the adapter does
+not discard bad rows and sign the remainder.
+
+The hook command still exits with status `0` so an observer failure does
+not block Claude Code. This status **does not establish successful
+capture**. Inspect the local `adapter-errors.log`; validation errors
+identify the failure without copying hook payload content into the log.
+Manual `shadow-record seal <session_id>` (including `--partial`) instead
+exits with status `1` when the pending queue is invalid.
+
+Preserve the original pending file and store before investigating. There
+is no automatic queue repair or command that safely drops a damaged row.
+Any future recovery procedure must retain the original bytes and report
+omitted or uncertain events rather than present them as complete capture.
+
+Offline subprocess tests cover both failure paths and a valid controlled
+hook session exported through `shadow-audit-package`: the evidence bundle
+is copied byte for byte and independently verifies with its ephemeral
+test public key. These inputs are synthetic; they do not establish
+compatibility with a live provider session.
+
+A sealed session also cannot append resumed hooks under the same session
+ID. Supporting resumed capture requires separate immutable segments and
+is not implemented. A valid signature establishes integrity of the
+recorded events; it does not prove capture completeness.
+
 ### PATH gotcha for hooks
 
 Claude Code spawns hooks via `/bin/sh`, which does **not** inherit your
