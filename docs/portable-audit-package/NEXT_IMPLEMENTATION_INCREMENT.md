@@ -1,41 +1,54 @@
-# Next implementation increment (bounded — not implemented in this task)
+# Next implementation increment — real capture health and immutable segments
 
-**One increment:** add the Core-owned package CLI in fixture mode.
+## Implemented foundation
 
-## Scope
+The fixture package CLI and portable 1.0/1.1/1.2 contracts from the original plan are implemented.
+The established `create --fixture banking` and `assemblePackage` remain fixture signing paths.
 
-- New `bin/shadow-package-audit.mjs` (name final at implementation) + npm alias.
-- New manifest contract `shadow-portable-audit-package/1.0` (new version string;
-  `shadow-verify-manifest-v1` untouched), reusing `verify/verify-manifest.mjs`
-  primitives + `shadow-canon/1`, extended with: `package_id`, `case_id`,
-  `bindings.evidence_session_id`, `assets[]{path,sha256,role,schema_version}`,
-  `key_provenance`, caller-supplied `built_at`, full-length key fingerprint,
-  two-way completeness rule.
-- Members in fixture mode: presentation from `--fixture banking` (via the existing
-  flow-export CLI/lib, unchanged); evidence from an **existing** fixture-signed
-  `shadow-evidence/v1` bundle input (never re-sealed); optional attestation member;
-  derived `verification/verification-result.json` via `verifyBundle`; generated
-  `provenance/runtime-manifest.json`.
-- Exit codes and validate-before-write/temp+rename discipline copied from the
-  flow-export CLI; `--json` summary; `--force` overwrite rule.
-- Tests: items 1–24 of `PACKAGE_TEST_STRATEGY.md` (25–28 belong to the later Web
-  increment).
-- Docs: contract doc + security-model deltas (which drifts from
-  `PACKAGE_CONTRACT_GAP.md` §Cross-cutting were resolved vs explicitly scoped out).
+This increment adds the explicit Core `create-operator` CLI and `assembleOperatorPackage` API for
+standalone 1.0 packages. They require an existing sealed bundle, supported narrative, independent
+verification inputs, a matching supplied Ed25519 package pair and explicit source/build time.
+Original evidence bytes and narrative labels remain unchanged. The producer does not capture
+hooks, invoke a model or supply missing approval. See the [operator runbook](PACKAGE_OPERATOR_RUNBOOK.md).
 
-## Preconditions / decisions to confirm at implementation start
+Web already has separate operator 1.0 admission and `VERIFIED_OPERATOR_KEY` display. Production and
+operator 1.1/1.2 remain unsupported there. No provider origin or capture completeness is established
+by either the producer entry point or a successful package verification.
 
-1. case_id ↔ evidence_session_id binding field (product decision — approved by
-   adopting the recommendation, exact field names to freeze in the contract doc).
-2. Whether event payload contents may ever be included (default: NO — hash-bound
-   payloads stay out; flag-gated future).
-3. Package delivery form for the browser (directory vs single-envelope) — may be
-   deferred; the CLI writes a directory either way.
+## Current next task
 
-## Hard boundaries carried forward
+> Establish observable capture health and accept an actual operator-run provider session through
+> recorder, independent evidence verification, `create-operator`, Core package verification and
+> Web import/reload/export. Define immutable segments before claiming sealed-session resume.
 
-No changes to `shadow-flow-export/1.0`, `shadow-evidence/v1`, `aex-attestation/v1`,
-or any existing CLI's interface; no new signing system; no Web/Flow/Lens changes;
-no backend/database/network; no live model calls; fixture keys labeled; no
-business-correctness or physical-XR claims; control-plane registration happens via
-a separate control-plane update after delivery.
+Keep capture, packaging, verification and presentation outcomes separate. Acceptance should cover:
+
+1. Installed hook configuration and genuine observed inputs recorded separately from the recorder's
+   signatures. Source/provider labels remain declarations; the observer must not change provider
+   permissions or execute tools merely to populate an audit record.
+2. Capture health for normal completion, interruption and corrupt deferred queues. Inspect adapter
+   diagnostics, pending/store state and expected event coverage; hook exit `0` alone is not success.
+3. The original sealed bundle independently verified with its public key, then included
+   byte-for-byte in an operator package whose outer key pair and full fingerprints are explicit.
+4. Independent Core package verification followed by Web import, reload, Report and byte-preserving
+   export. A successful display cannot fill missing capture evidence, identity or approval.
+5. A defined immutable-segment protocol for a resumed provider session after a prior segment is
+   sealed. Current same-session sealed-hook skipping must be exposed as incomplete resumed coverage,
+   not hidden behind a valid first bundle. Segment linkage is not package supersession or a business
+   decision lifecycle transition.
+6. Honest unknown/absent model identity, permission decisions, first failure, downstream impact,
+   human review and business approval. A successful tool result is not a recorded permission grant.
+
+## Boundaries carried forward
+
+- Signatures establish integrity under a key, not capture completeness, provider authenticity,
+  model quality, analytical correctness or organizational authority.
+- Operator source, signing provenance and build time are explicit declarations. Key revocation and
+  rotation are not checked; a valid signature alone does not prove freshness.
+- The browser executes no Core process and receives no private signing key. Core packaging is
+  offline and invokes no capture/provider/model action.
+- Fixture inputs remain labeled as fixtures even when an operator signs the outer package.
+- Existing `shadow-flow-export/1.0`, `shadow-evidence/v1` and `aex-attestation/v1` contracts remain
+  unchanged; no physical/XR validation claim is introduced.
+- This plan records implementation scope, not a completed real-provider experiment. Candidate
+  acceptance measurements belong in a separate evidence-backed acceptance record.

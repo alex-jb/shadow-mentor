@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // bin/shadow-audit-package.mjs
 //
-// Portable signed audit package CLI — FIXTURE MODE ONLY.
+// Portable signed audit package CLI — explicit fixture or operator signing.
 // Composes existing Shadow producers into one independently verifiable
 // shadow-portable-audit-package/1.0 directory, and verifies such a directory.
 // Implements the committed discovery decision
@@ -12,6 +12,12 @@
 //       [--supersedes <prior-package-dir>]
 //       [--evidence <bundle.json> --evidence-public-key <key.pem>]
 //       [--attestation <attestation.json>] [--built-at <iso8601>]
+//       [--build-commit <sha>] [--allow-identity-ref] [--force] [--json]
+//   shadow-audit-package create-operator --narrative <narrative.json>
+//       --source <operator-declaration> --evidence <bundle.json>
+//       --evidence-public-key <key.pem> --package-private-key <private.pem>
+//       --package-public-key <public.pem> --built-at <iso8601>
+//       --output-dir <dir> [--attestation <attestation.json>]
 //       [--build-commit <sha>] [--allow-identity-ref] [--force] [--json]
 //   shadow-audit-package verify --package <dir> [--public-key <key.pem>] [--json]
 //   shadow-audit-package verify-chain --package <dir> [--package <dir> ...]
@@ -31,6 +37,14 @@
 //            prior package by content identity (package_id + manifest sha256 +
 //            case + evidence session). The prior package is verified first and
 //            NEVER modified; without --supersedes an unchanged 1.0 is produced.
+//   create-operator
+//            Package an existing sealed bundle and supported narrative using
+//            an explicitly supplied matching Ed25519 package key pair. All
+//            inputs and built_at are required; no fixture/key/time defaults.
+//            Produces standalone v1.0 only. Source is operator-declared;
+//            signer identity, provider origin and capture completeness remain
+//            unverified. Narrative labels and original evidence are preserved.
+//            It never invokes a model, captures hooks or re-seals evidence.
 //   verify   Independently verify a package directory: manifest signature,
 //            two-way completeness, member hashes, case↔session bindings,
 //            internal evidence verification, derived-view re-derivation.
@@ -69,20 +83,20 @@
 //   decide:       0 ok · 2 usage · 3 input/I-O error · 4 assembled package
 //                 failed self-verification (nothing is written)
 //
-// Guarantees: offline (no network, no credentials); deterministic bytes for
+// Guarantees: offline (no network or provider credentials); deterministic bytes for
 // the same inputs (built_at defaults to the fixture timestamp, never wall
 // clock); atomic temp-directory + rename (a failed run leaves no partial
 // package); private keys are never written, printed, or packaged.
 // A valid package signature proves tamper-evidence only — never analytical
 // or business correctness. A valid supersession chain never invalidates or
 // erases the predecessor and never proves business correctness.
-import { readFileSync, writeFileSync, mkdirSync, renameSync, rmSync, existsSync } from "node:fs";
-import { resolve, dirname, join } from "node:path";
+import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, renameSync, rmSync, existsSync, realpathSync } from "node:fs";
+import { resolve, dirname, join, relative, isAbsolute } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { BANKING_NARRATIVE } from "../apps/shadow-lens/fixtures/banking-narrative.mjs";
 import { FIXTURE_RELEASE_PRIVATE_PEM, FIXTURE_RELEASE_PUBLIC_PEM, FIXTURE_RELEASE_LABEL } from "../verify/fixture-release-key.mjs";
-import { assemblePackage, verifyPackageDir, MEMBER_PATHS, SUPPORTED_PACKAGE_VERSIONS, BOUNDARY_STATEMENT } from "../lib/portable-audit-package.mjs";
+import { assemblePackage, assembleOperatorPackage, verifyPackageDir, MEMBER_PATHS, SUPPORTED_PACKAGE_VERSIONS, BOUNDARY_STATEMENT } from "../lib/portable-audit-package.mjs";
 import { verifyPackageChain, CHAIN_BOUNDARY_STATEMENT } from "../lib/portable-audit-package-chain.mjs";
 import { assembleDecisionPackage, verifyDecisionChain } from "../lib/decision-package.mjs";
 import { DECISION_BOUNDARY_STATEMENT, LIFECYCLE_QUALIFIER } from "../lib/decision-amendment.mjs";
@@ -155,6 +169,78 @@ function detectBuildCommit() {
 function readInput(path, what) {
   try { return readFileSync(path); }
   catch (e) { die(3, `shadow-audit-package: cannot read ${what}: ${e.message}`); }
+}
+
+function cmdCreateOperator(rest) {
+  const values = {
+    "--narrative": "narrative", "--source": "source", "--evidence": "evidence",
+    "--evidence-public-key": "evidencePublicKey", "--package-private-key": "packagePrivateKey",
+    "--package-public-key": "packagePublicKey", "--built-at": "builtAt", "--output-dir": "outputDir",
+    "--attestation": "attestation", "--build-commit": "buildCommit",
+  };
+  const flags = { "--allow-identity-ref": "allowIdentityRef", "--force": "force", "--json": "json" };
+  const args = {};
+  for (let i = 0; i < rest.length; i++) {
+    const arg = rest[i];
+    if (arg === "--help" || arg === "-h") { process.stdout.write(readHelp()); return; }
+    const field = Object.hasOwn(values, arg) ? values[arg] : Object.hasOwn(flags, arg) ? flags[arg] : null;
+    if (!field) die(2, "shadow-audit-package create-operator: unsupported argument (see --help)");
+    if (field in args) die(2, `shadow-audit-package create-operator: duplicate ${arg}`);
+    if (Object.hasOwn(flags, arg)) args[field] = true;
+    else {
+      const value = rest[++i];
+      if (!value || value.startsWith("--")) die(2, `shadow-audit-package create-operator: ${arg} needs a value`);
+      args[field] = value;
+    }
+  }
+  for (const flag of Object.keys(values).slice(0, 8))
+    if (!args[values[flag]]) die(2, `shadow-audit-package create-operator: ${flag} is required`);
+
+  const outDir = resolve(args.outputDir);
+  // --force must never erase original inputs, especially the signing key.
+  // Resolve existing ancestors too, so path aliases cannot bypass the guard.
+  const canonicalPath = (path) => {
+    let parent = resolve(path);
+    while (!existsSync(parent) && dirname(parent) !== parent) parent = dirname(parent);
+    return resolve(realpathSync(parent), relative(parent, resolve(path)));
+  };
+  try {
+    const output = canonicalPath(outDir);
+    for (const field of ["narrative", "evidence", "evidencePublicKey", "packagePrivateKey", "packagePublicKey", "attestation"]) {
+      if (!args[field]) continue;
+      const rel = relative(output, canonicalPath(args[field]));
+      if (rel === "" || (!isAbsolute(rel) && rel !== ".." && !rel.startsWith("../") && !rel.startsWith("..\\")))
+        die(3, "shadow-audit-package create-operator: output directory contains an input; refusing to replace original inputs");
+    }
+  } catch { die(3, "shadow-audit-package create-operator: cannot resolve input/output paths"); }
+  if (existsSync(outDir) && !args.force) die(3, "shadow-audit-package create-operator: output directory already exists; choose a new directory or use --force");
+
+  let narrative;
+  try { narrative = JSON.parse(readInput(args.narrative, "--narrative").toString("utf8")); }
+  catch { die(3, "shadow-audit-package create-operator: narrative must be valid JSON"); }
+  let producerVersion = "unknown";
+  try { producerVersion = JSON.parse(readFileSync(join(REPO_ROOT, "package.json"), "utf8")).version ?? "unknown"; } catch { /* keep unknown */ }
+  let assembled;
+  try {
+    assembled = assembleOperatorPackage({
+      narrative, source: args.source,
+      evidenceBytes: readInput(args.evidence, "--evidence"),
+      evidencePublicKeyPem: readInput(args.evidencePublicKey, "--evidence-public-key").toString("utf8"),
+      packagePrivateKeyPem: readInput(args.packagePrivateKey, "--package-private-key").toString("utf8"),
+      packagePublicKeyPem: readInput(args.packagePublicKey, "--package-public-key").toString("utf8"),
+      attestationBytes: args.attestation ? readInput(args.attestation, "--attestation") : null,
+      builtAt: args.builtAt, buildCommit: args.buildCommit ?? detectBuildCommit(), producerVersion,
+      allowIdentityRef: Boolean(args.allowIdentityRef),
+    });
+  } catch (e) { die(e.code === "SELF_VALIDATION" ? 4 : 3, `shadow-audit-package create-operator: ${e.message}`); }
+  writeAssembledPackage(assembled, outDir, null, Boolean(args.force));
+  const m = assembled.manifest;
+  if (args.json) process.stdout.write(JSON.stringify({ ok: true, manifest_version: m.manifest_version,
+    package_id: m.package_id, case_id: m.case_id, evidence_session_id: m.bindings.evidence_session_id,
+    key_provenance: "operator", package_public_key_fingerprint_sha256: m.signing.package_public_key_fingerprint_sha256,
+    member_count: m.assets.length, output_dir: outDir }) + "\n");
+  else process.stdout.write(`wrote ${outDir} (${m.manifest_version}, key_provenance=operator)\n` +
+    `${m.signing.key_label}\nSource is operator-declared; provider origin and capture completeness are unverified.\n${BOUNDARY_STATEMENT}\n`);
 }
 
 function cmdCreate(rest) {
@@ -231,10 +317,33 @@ function cmdCreate(rest) {
     die(e.code === "SELF_VALIDATION" ? 4 : 3, `shadow-audit-package: ${e.message}`);
   }
 
-  // atomic: write everything into a temp sibling, self-verify, then rename
-  const tmpDir = `${outDir}.tmp-${process.pid}`;
+  writeAssembledPackage(assembled, outDir, predecessorDir, args.force);
+
+  const m = assembled.manifest;
+  if (args.json) {
+    process.stdout.write(JSON.stringify({
+      ok: true, manifest_version: m.manifest_version, package_id: m.package_id,
+      case_id: m.case_id, evidence_session_id: m.bindings.evidence_session_id,
+      key_provenance: m.signing.key_provenance, member_count: m.assets.length,
+      output_dir: outDir,
+      ...(m.supersedes ? { supersedes: m.supersedes } : {}),
+    }) + "\n");
+  } else {
+    process.stdout.write(
+      `wrote ${outDir}  (${m.manifest_version}, ${m.assets.length} members, case ${m.case_id}, session ${m.bindings.evidence_session_id})\n` +
+      (m.supersedes ? `supersedes package ${m.supersedes.predecessor_package_id.slice(0, 16)}… (${m.supersedes.predecessor_manifest_version}) — the predecessor remains valid, unchanged evidence\n` : "") +
+      `signed with ${m.signing.key_label} (key_provenance=${m.signing.key_provenance}) — fixture keys are never production keys\n` +
+      `${BOUNDARY_STATEMENT}\n`);
+  }
+}
+
+function writeAssembledPackage(assembled, outDir, predecessorDir = null, force = false) {
+  // Unique temp sibling: do not reuse or delete a stale directory from a
+  // previous process. Self-verification precedes replacing the destination.
+  let tmpDir;
   try {
-    mkdirSync(tmpDir, { recursive: true });
+    mkdirSync(dirname(outDir), { recursive: true });
+    tmpDir = mkdtempSync(`${outDir}.tmp-`);
     for (const [rel, bytes] of assembled.files) {
       const abs = join(tmpDir, rel);
       mkdirSync(dirname(abs), { recursive: true });
@@ -255,30 +364,17 @@ function cmdCreate(rest) {
         die(4, `shadow-audit-package: assembled successor failed chain self-verification — nothing written:\n  - ${chain.chain_failures.map((f) => `${f.code}: ${f.detail}`).join("\n  - ")}`);
       }
     }
-    if (existsSync(outDir)) rmSync(outDir, { recursive: true, force: true }); // only reachable with --force
+    if (existsSync(outDir)) {
+      if (!force) throw new Error("output directory appeared during creation; refusing to overwrite without --force");
+      rmSync(outDir, { recursive: true, force: true });
+    }
     renameSync(tmpDir, outDir);
   } catch (e) {
-    try { rmSync(tmpDir, { recursive: true, force: true }); } catch { /* best-effort cleanup */ }
+    try { if (tmpDir) rmSync(tmpDir, { recursive: true, force: true }); } catch { /* best-effort cleanup */ }
     if (typeof e?.status === "number") throw e; // process.exit already in flight
     die(3, `shadow-audit-package: cannot write package: ${e.message}`);
   }
 
-  const m = assembled.manifest;
-  if (args.json) {
-    process.stdout.write(JSON.stringify({
-      ok: true, manifest_version: m.manifest_version, package_id: m.package_id,
-      case_id: m.case_id, evidence_session_id: m.bindings.evidence_session_id,
-      key_provenance: m.signing.key_provenance, member_count: m.assets.length,
-      output_dir: outDir,
-      ...(m.supersedes ? { supersedes: m.supersedes } : {}),
-    }) + "\n");
-  } else {
-    process.stdout.write(
-      `wrote ${outDir}  (${m.manifest_version}, ${m.assets.length} members, case ${m.case_id}, session ${m.bindings.evidence_session_id})\n` +
-      (m.supersedes ? `supersedes package ${m.supersedes.predecessor_package_id.slice(0, 16)}… (${m.supersedes.predecessor_manifest_version}) — the predecessor remains valid, unchanged evidence\n` : "") +
-      `signed with ${m.signing.key_label} (key_provenance=${m.signing.key_provenance}) — fixture keys are never production keys\n` +
-      `${BOUNDARY_STATEMENT}\n`);
-  }
 }
 
 function cmdVerify(rest) {
@@ -484,10 +580,11 @@ function main() {
   const [cmd, ...rest] = process.argv.slice(2);
   if (!cmd || cmd === "-h" || cmd === "--help") { process.stdout.write(readHelp()); process.exit(cmd ? 0 : 2); }
   if (cmd === "create") return cmdCreate(rest);
+  if (cmd === "create-operator") return cmdCreateOperator(rest);
   if (cmd === "verify") return cmdVerify(rest);
   if (cmd === "verify-chain") return cmdVerifyChain(rest);
   if (cmd === "decide") return cmdDecide(rest);
-  die(2, `shadow-audit-package: unknown command "${cmd}" (supported: create, verify, verify-chain, decide)`);
+  die(2, `shadow-audit-package: unknown command "${cmd}" (supported: create, create-operator, verify, verify-chain, decide)`);
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();
