@@ -15,9 +15,15 @@ Web already has separate operator 1.0 admission and `VERIFIED_OPERATOR_KEY` disp
 operator 1.1/1.2 remain unsupported there. No provider origin or capture completeness is established
 by either the producer entry point or a successful package verification.
 
+Read-only `shadow-record status` now observes pending queues, open stores, sealed bundles and
+global unattributed error-log metadata. It independently verifies a matching sealed bundle with
+the public key and distinguishes recorded, manual and partial termination. Capture completeness
+and provider origin remain `UNVERIFIED`; sealed-session resume remains `UNSUPPORTED`.
+See [capture health and acceptance boundaries](../CAPTURE_HEALTH_2026-10-02.md).
+
 ## Current next task
 
-> Establish observable capture health and accept an actual operator-run provider session through
+> Use the read-only health observations to accept an actual operator-run provider session through
 > recorder, independent evidence verification, `create-operator`, Core package verification and
 > Web import/reload/export. Define immutable segments before claiming sealed-session resume.
 

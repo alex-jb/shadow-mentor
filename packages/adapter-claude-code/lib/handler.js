@@ -64,9 +64,15 @@ function bundlePath(shadowDir, sessionId) {
 function readPending(shadowDir, sessionId) {
   const path = pendingPath(shadowDir, sessionId);
   if (!existsSync(path)) return [];
+  return parsePendingBytes(readFileSync(path), sessionId);
+}
+
+// Shared strict parser for replay and read-only health snapshots. It performs
+// no file access and never includes original hook content in an error.
+export function parsePendingBytes(bytes, sessionId) {
   let raw;
   try {
-    raw = new TextDecoder("utf-8", { fatal: true }).decode(readFileSync(path));
+    raw = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
   } catch (error) {
     if (error.code === "ERR_ENCODING_INVALID_ENCODED_DATA") {
       throw new Error("readPending: invalid UTF-8");
