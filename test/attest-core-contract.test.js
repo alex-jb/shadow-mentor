@@ -34,6 +34,7 @@ test("attest-core exports the documented symbols", () => {
   const expected = [
     "ATTESTATION_VERSION",
     "SIGNATURE_MODES",
+    "canonicalize",
     "buildAttestation",
     "verifyAttestation",
     "computeAttestationHash",
@@ -51,7 +52,7 @@ test("attest-core exports the documented symbols", () => {
 test("attest-core export surface is frozen + versioned (drift must be intentional)", () => {
   const EXPECTED_EXPORTS = [
     "ATTESTATION_VERSION", "EVENT_TYPES", "SIGNATURE_MODES", "TRUST_LEVELS", "appendEvent",
-    "buildAttestation", "buildRekorHashedrekordEntry", "buildTimestampRequest", "canonicalizeJson",
+    "buildAttestation", "buildRekorHashedrekordEntry", "buildTimestampRequest", "canonicalize", "canonicalizeJson",
     "computeAttestationHash", "createFileStore", "createSession", "extractRekorPayloadHash",
     "listSessionFiles", "parseTimestampResponse", "recoverSession", "rekorLeafHash", "requestTimestamp",
     "sealAndAnchor", "sealPartialBundle", "sealSession", "submitRekorEntry", "trustLevelRank",
@@ -66,8 +67,8 @@ test("attest-core export surface is frozen + versioned (drift must be intentiona
   assert.deepEqual(Object.keys(AttestCore).sort(), EXPECTED_EXPORTS,
     "attest-core export surface changed — update EXPECTED_EXPORTS AND bump the package version");
   const pkg = JSON.parse(readFileSync(PKG_PATH, "utf8"));
-  assert.equal(pkg.version, "2.3.0",
-    "aex-attestation/v2 named-envelope API added after 2.2.0 — package is 2.3.0 (pending npm publish)");
+  assert.equal(pkg.version, "2.4.0",
+    "general canonicalize export added after 2.3.0 — package is 2.4.0 (pending npm publish)");
 });
 
 

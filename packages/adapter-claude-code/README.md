@@ -34,15 +34,17 @@ in the manifest bumps and tests pin the shape.
 
 ## What it captures
 
-The adapter subscribes to **9 Claude Code hook events** and emits one signed
+The adapter subscribes to **11 Claude Code hook events** and emits one signed
 evidence event per hook:
 
 | Claude event | Shadow event type | What we sign |
 |---|---|---|
 | `SessionStart` | `session_start` | source (startup/resume/clear/compact), model, session_title |
 | `UserPromptSubmit` | `prompt` | prompt_id (v2.1.196+), SHA-256 of prompt text |
-| `PreToolUse` | `tool_call` | tool_name, tool_input (JSON) |
-| `PostToolUse` | `tool_result` | tool_name, SHA-256 of tool_output |
+| `PreToolUse` | `tool_call` | tool_name, tool_use_id, tool_input (JSON); permission UNKNOWN |
+| `PermissionRequest` | `tool_call` | permission-request phase, tool_name; permission UNKNOWN |
+| `PermissionDenied` | `tool_error` | auto-mode provider denial, tool_use_id, reason hash |
+| `PostToolUse` | `tool_result` | tool_name, tool_use_id, SHA-256 of canonical JSON tool_response (legacy tool_output supported); permission UNKNOWN |
 | `PostToolUseFailure` | `tool_error` | tool_name, error string |
 | `SubagentStop` | `subagent_stop` | agent_type, agent_id, last_assistant_message |
 | `Stop` | `turn_end` | last_assistant_message |
@@ -54,10 +56,109 @@ present since v2.1.196). Downstream verifier can group
 `prompt → tool_call* → tool_result* → turn_end` into a single reviewable
 turn without heuristic clustering.
 
-**Raw payload discipline**: Prompt text and tool_output are hashed at
-capture time; the raw text is stored in the local payload store (not
-transmitted) or optionally redacted per GDPR erasure pattern (null
-payload_ref, keep payload_hash).
+**Payload discipline**: The session API stores a canonical payload hash
+and a `payload_ref`; this adapter does not implement a durable raw-payload
+store. Prompt text, native tool responses, and denial reasons do not appear
+in the sealed bundle. Tool inputs contribute to the payload hash. While
+waiting for transcript-based model discovery, the local pending queue does
+contain the original hook input until replay and removal. Do not describe
+this behavior as complete raw capture or guaranteed erasure. For a native
+`tool_response`, even a JSON string is hashed as canonical JSON; legacy
+`tool_output` retains its UTF-8 string hash for compatibility.
+
+### Permission evidence (input contract checked 2026-09-30)
+
+Tool events carry the following **signed** projection at
+`event.extensions.claude_code`. This allows review without relying on an
+unavailable raw payload or a mutable `payload_ref`:
+
+```json
+{
+  "provider_hook": "PermissionDenied",
+  "phase": "PERMISSION_DENIAL",
+  "tool_use_id": "toolu_example",
+  "tool": "Bash",
+  "permission_mode": "auto",
+  "permission_decision": "DENIED",
+  "permission_evidence": "PROVIDER_DENIAL_HOOK",
+  "decision_source": "CLAUDE_CODE_AUTO_MODE",
+  "denial_reason_sha256": "<sha256 of the observed reason>"
+}
+```
+
+`phase` distinguishes `TOOL_ATTEMPT`, `PERMISSION_REQUEST`,
+`PERMISSION_DENIAL`, `TOOL_RESULT`, and `TOOL_FAILURE`. Existing bundle
+event types and version remain unchanged; count tool attempts by phase,
+not every `tool_call` row. `tool_use_id`, `tool`, and `permission_mode`
+are null when missing. `TOOL_RESULT` also carries `output_source`
+(`tool_response`, legacy `tool_output`, or null) and `output_hash_encoding`
+(`CANONICAL_JSON`, `UTF8_STRING`, or `MISSING`). Its `output_sha256` retains
+the observed output digest; it is null if both response fields are absent.
+
+This is **partial permission observation**:
+
+- `PermissionRequest` is a request, not approval. Its native input omits
+  `tool_use_id`; do not invent an ID or match requests to attempts by tool
+  name. Suggested allow rules do not establish a permission decision.
+- `PermissionDenied` records an **auto-mode denial only**. It does not
+  cover a human rejecting a dialog, a deny rule, or a blocking PreToolUse
+  hook. A denial can occur without a classifier verdict; the adapter does
+  not claim the classifier evaluated every denied call.
+  An explicitly conflicting permission mode is retained but yields
+  `UNKNOWN` / `NOT_OBSERVED` rather than an inferred auto-mode decision.
+- `PreToolUse`, `PostToolUse`, and `PostToolUseFailure` retain permission
+  `UNKNOWN` / evidence `NOT_OBSERVED`. A successful tool result and a
+  permissive mode do not prove a human or business approval.
+- Native observer input has no universal allow-decision event. Recording
+  an explicit allow or the original decision-maker needs instrumentation
+  in the application's actual decision handler. The SDK's `canUseTool`
+  callback alone is incomplete: calls approved earlier by hooks, rules,
+  or modes may bypass it. This adapter does not synthesize an allow record
+  or subscribe to an invented `PermissionEvaluated` hook.
+
+Permission events use actor `system`, never `user` or `human_approval`.
+The observer emits no decision JSON, no `retry`, and always exits 0 on the
+hook path. Existing policy hooks remain responsible for decisions.
+Signatures establish integrity of the local adapter's recorded statements;
+they do not authenticate the provider's inputs, prove capture completeness,
+or establish regulatory compliance. Test fixtures remain synthetic; a
+live Claude Code session is still required for provider acceptance.
+
+Primary sources checked 2026-09-30:
+
+- [Native hook inputs and decision outputs](https://code.claude.com/docs/en/hooks#permissionrequest)
+- [Auto-mode denial coverage](https://code.claude.com/docs/en/hooks#permissiondenied)
+- [SDK permission order and auto-approved callback bypass](https://code.claude.com/docs/en/agent-sdk/permissions#permission-evaluation-flow)
+- [SDK hooks and language support](https://code.claude.com/docs/en/agent-sdk/hooks)
+
+### Offline controlled demonstration
+
+From the repository root, run the actual adapter with synthetic hook
+inputs, then the actual portable-package CLI. A fresh local Ed25519 key
+is generated in memory; only its public key is written. No Claude session,
+model API call, or tool execution occurs. The bundle model/version and
+`DEMO_BOUNDARY.json` mark the demonstration as synthetic.
+
+```bash
+node packages/adapter-claude-code/bin/permission-observation-demo.mjs \
+  --output-dir /tmp/shadow-permission-demo
+
+node bin/shadow-audit-package.mjs create --fixture banking \
+  --evidence /tmp/shadow-permission-demo/sessions/shadow-permission-synthetic-no-model-call/bundle.json \
+  --evidence-public-key /tmp/shadow-permission-demo/public.pem \
+  --output-dir /tmp/shadow-permission-package --build-commit unknown --json
+
+node bin/shadow-audit-package.mjs verify \
+  --package /tmp/shadow-permission-package --json
+```
+
+Choose unused output directories: the demo refuses to overwrite. The
+package binds the banking **fixture narrative** to this synthetic session;
+that binding does not turn it into a real banking decision. The generic
+package CLI's outer signing key is explicitly a fixture key. `unknown`
+build provenance is deliberate for an uncommitted working copy; use the
+actual reviewed commit when reproducing from a published version. None
+of the committed canonical fixture files is modified.
 
 ---
 
@@ -73,6 +174,8 @@ npx @shadow/adapter-claude-code init
     "SessionStart":      [{"matcher": "*", "hooks": [{"type": "command", "command": "shadow-record hook SessionStart"}]}],
     "UserPromptSubmit":  [{"matcher": "*", "hooks": [{"type": "command", "command": "shadow-record hook UserPromptSubmit"}]}],
     "PreToolUse":        [{"matcher": "*", "hooks": [{"type": "command", "command": "shadow-record hook PreToolUse"}]}],
+    "PermissionRequest": [{"matcher": "*", "hooks": [{"type": "command", "command": "shadow-record hook PermissionRequest"}]}],
+    "PermissionDenied":  [{"matcher": "*", "hooks": [{"type": "command", "command": "shadow-record hook PermissionDenied"}]}],
     "PostToolUse":       [{"matcher": "*", "hooks": [{"type": "command", "command": "shadow-record hook PostToolUse"}]}],
     "PostToolUseFailure":[{"matcher": "*", "hooks": [{"type": "command", "command": "shadow-record hook PostToolUseFailure"}]}],
     "SubagentStop":      [{"matcher": "*", "hooks": [{"type": "command", "command": "shadow-record hook SubagentStop"}]}],
@@ -104,6 +207,38 @@ shadow-record seal <session_id> --partial  # partial seal, session_ended_at_utc:
 
 Running `seal` twice is idempotent — the second invocation rebuilds
 `bundle.json` from the persisted seal line without re-signing.
+
+### When the pending queue cannot be replayed
+
+Before recovering or writing a session, the adapter validates every
+nonblank line of `sessions/<session_id>.pending.jsonl`. Invalid UTF-8,
+malformed JSON, unsupported hook records, a different session ID, or
+conflicting hook names stop replay and sealing. The original pending
+file and any existing session store remain unchanged; the adapter does
+not discard bad rows and sign the remainder.
+
+The hook command still exits with status `0` so an observer failure does
+not block Claude Code. This status **does not establish successful
+capture**. Inspect the local `adapter-errors.log`; validation errors
+identify the failure without copying hook payload content into the log.
+Manual `shadow-record seal <session_id>` (including `--partial`) instead
+exits with status `1` when the pending queue is invalid.
+
+Preserve the original pending file and store before investigating. There
+is no automatic queue repair or command that safely drops a damaged row.
+Any future recovery procedure must retain the original bytes and report
+omitted or uncertain events rather than present them as complete capture.
+
+Offline subprocess tests cover both failure paths and a valid controlled
+hook session exported through `shadow-audit-package`: the evidence bundle
+is copied byte for byte and independently verifies with its ephemeral
+test public key. These inputs are synthetic; they do not establish
+compatibility with a live provider session.
+
+A sealed session also cannot append resumed hooks under the same session
+ID. Supporting resumed capture requires separate immutable segments and
+is not implemented. A valid signature establishes integrity of the
+recorded events; it does not prove capture completeness.
 
 ### PATH gotcha for hooks
 

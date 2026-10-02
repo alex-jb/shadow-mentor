@@ -12,6 +12,8 @@
 //                                                variant, network kill).
 //   shadow-record init                        — Wire ~/.claude/settings.json
 //                                                + generate ~/.shadow/keys/*.
+//   shadow-record status <session_id> [--json] [--public-key <pem>]
+//                                             — Read-only local observations.
 //
 // Non-blocking discipline for `hook`: exit 0 always. Any adapter failure
 // logs to ~/.shadow/adapter-errors.log and never blocks the parent
@@ -25,6 +27,7 @@ import { join } from "node:path";
 import { homedir } from "node:os";
 
 import { handleHookEvent, sealSessionById } from "../lib/handler.js";
+import { inspectCaptureHealth, validHealthSessionId, captureHealthExitCode } from "../lib/health.js";
 
 const SHADOW_DIR = process.env.SHADOW_DIR ?? join(homedir(), ".shadow");
 const KEY_ID     = process.env.SHADOW_KEY_ID ?? "claude-code-local";
@@ -52,14 +55,38 @@ function loadPrivateKey() {
 function usage() {
   process.stderr.write(
     "Usage:\n" +
-    "  shadow-record hook <SessionStart|UserPromptSubmit|PreToolUse|PostToolUse|PostToolUseFailure|SubagentStop|Stop|PreCompact|SessionEnd>\n" +
+    "  shadow-record hook <SessionStart|UserPromptSubmit|PreToolUse|PermissionRequest|PermissionDenied|PostToolUse|PostToolUseFailure|SubagentStop|Stop|PreCompact|SessionEnd>\n" +
     "  shadow-record seal <session_id> [--partial]\n" +
-    "  shadow-record init\n",
+    "  shadow-record init\n" +
+    "  shadow-record status <session_id> [--json] [--public-key <pem>]\n",
   );
 }
 
 async function main() {
   const [, , cmd, arg1, ...rest] = process.argv;
+
+  if (cmd === "status") {
+    if (!validHealthSessionId(arg1)) {
+      process.stderr.write("shadow-record status: a safe session_id is required\n"); process.exit(2);
+    }
+    let json = false, publicKeyPath = null;
+    for (let i = 0; i < rest.length; i++) {
+      if (rest[i] === "--json" && !json) json = true;
+      else if (rest[i] === "--public-key" && publicKeyPath === null && rest[i + 1] && !rest[i + 1].startsWith("--"))
+        publicKeyPath = rest[++i];
+      else { process.stderr.write("shadow-record status: unsupported, duplicate or missing argument\n"); process.exit(2); }
+    }
+    // Status never reaches the signing-key loader or error-log writer.
+    try {
+      const report = inspectCaptureHealth({ shadowDir: SHADOW_DIR, sessionId: arg1, publicKeyPath });
+      process.stdout.write(json ? JSON.stringify(report) + "\n" :
+        `capture status: ${report.health_state}\n` +
+        `pending hooks: ${report.observations.pending.hook_count ?? "unknown"}; stored events: ${report.observations.store.event_count ?? "unknown"}; bundle verification: ${report.observations.bundle.verification}\n` +
+        "Capture completeness and provider origin are UNVERIFIED. Sealed-session resume is UNSUPPORTED.\n" +
+        (report.diagnostics.length ? `diagnostics: ${report.diagnostics.join(", ")}\n` : ""));
+      process.exit(captureHealthExitCode(report));
+    } catch { process.stderr.write("shadow-record status: observation failed; no input content is emitted\n"); process.exit(1); }
+  }
 
   if (cmd === "init") {
     const { runInit } = await import("./init.mjs");

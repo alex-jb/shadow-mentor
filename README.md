@@ -1,6 +1,6 @@
 # Shadow
 
-**A cryptographic evidence layer for AI agents.** Every session becomes a signed, hash-chained record you can hand an auditor. Verify offline with a single HTML file.
+**A cryptographic evidence layer for AI agents.** Seal recorded session events into a signed, hash-chained record you can hand an auditor. Verify offline with a single HTML file.
 
 > *Same wire, opposite guarantee.* `claude-mem` is memory for the agent. Shadow is evidence for the auditor. Both hook the same Claude Code events. Different jobs.
 
@@ -16,7 +16,9 @@
 
 **First vertical**: AI-assisted credit decisions. Shadow signs each decision — verdict, adverse-action reason codes, model manifest, dictionary hash — with Ed25519, chains them with SHA-256, and lets a third party verify months later that the decision was not silently rewritten. The verdict engine itself is deterministic rules; the LLM personas produce prose rationale for human reviewers but cannot change the verdict.
 
-**Second vertical (in progress, target 2026-08-02)**: session-level evidence bundles via `@shadow/adapter-claude-code` — every Claude Code session auto-produces a signed bundle. See [`packages/adapter-claude-code/`](./packages/adapter-claude-code/).
+**Second vertical (in progress)**: session-level evidence bundles via `@shadow/adapter-claude-code`. The adapter records supported hooks and seals their evidence; real-provider capture acceptance is still pending. See [`packages/adapter-claude-code/`](./packages/adapter-claude-code/).
+
+**Read-only capture status:** `node packages/adapter-claude-code/bin/shadow-record.mjs status <session_id> --json` observes buffered hooks, open stores, sealed bundles and inconsistent or invalid artifacts using the public key. It distinguishes recorded, manual and partial termination; capture completeness and provider origin remain `UNVERIFIED`, and sealed-session resume remains `UNSUPPORTED`. Status never invokes the signing-key loader or repairs capture files. [Health contract and operator checks](./docs/CAPTURE_HEALTH_2026-10-02.md).
 
 **Status**: pre-1.0. Not audited. Not a compliance product — it produces evidence that supports a compliance narrative.
 
@@ -26,9 +28,9 @@
 
 <!-- readme-stats:begin -->
 **Version**: 2.2.0
-**Tests**: 2253/2256 passing (0 failing)
+**Tests**: 2310/2316 passing (0 failing)
 **Attestation signed fields**: 21 parameters, 14 append-only conditional bindings
-**Release tags**: 59
+**Release tags**: 60
 <!-- readme-stats:end -->
 
 Numbers above are regenerated from source by `node scripts/readme-stats.mjs --write`. CI blocks pushes where they drift.
