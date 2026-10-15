@@ -73,11 +73,19 @@ into the new session's list.
 ## Validation
 
 ```bash
-node --test test/research-cockpit.test.js test/controlled-execution-evidence.test.js test/session-api.test.js test/session-crash-recovery.test.js test/attest-core-contract.test.js test/adapter-claude-code-permissions.test.js
+node --test test/research-cockpit.test.js test/controlled-execution-evidence.test.js test/controlled-write-failure-observations.test.js test/session-api.test.js test/session-crash-recovery.test.js test/attest-core-contract.test.js test/adapter-claude-code-permissions.test.js
 ```
 
-The 2026-10-15 increment adds 18 tests; this targeted set has 94 tests, with
-zero failures or skips. A separate run used all six fetched assets to create,
+The 2026-10-15 targeted set has 104 tests, with zero failures or skips: the
+earlier 94 checks plus ten readback and event-order regressions. Faults include
+FIFO replacement, output growth beyond 64 KiB, contradictory signed event order,
+and a file-sync error after bytes were already written. A failed tool return
+does not establish absence of an effect. Readback accepts only a bounded,
+stable ordinary file and remains a local observation. The FIFO regression uses
+the POSIX `mkfifo` command. These checks do not implement or execute the proposed
+64-case cross-domain acceptance protocol.
+
+A separate run used all six fetched assets to create,
 download and reverify real local reports. It checked exact download byte hashes
 against signed action digests. These are engineered checks, not a trading
 benchmark. Remote-browser access to the isolated local service was unavailable;

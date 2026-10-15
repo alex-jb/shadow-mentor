@@ -64,7 +64,7 @@ function assertBlocked(f, result, expected) {
 
 // A holder of the trusted capture key can produce a new signed story. The
 // reviewer must independently recheck its grant rather than trust gate labels.
-function reseal(f, bundle, { mutate = () => {}, omitKind = null, incoherentKind = null, extraRows = [] } = {}) {
+function reseal(f, bundle, { mutate = () => {}, omitKind = null, incoherentKind = null, extraRows = [], reorder = (events) => events } = {}) {
   const session = createSession({ agent: bundle.header.agent, models: bundle.header.models,
     environmentFingerprint: bundle.header.environment_fingerprint, keyId: 'test-capture',
     privateKey: f.capture.privateKey, startedAtUtc: bundle.header.session_started_at_utc });
@@ -79,7 +79,7 @@ function reseal(f, bundle, { mutate = () => {}, omitKind = null, incoherentKind 
         extensions: { controlled_execution: data } });
     }
   }
-  for (const original of bundle.events) {
+  for (const original of reorder([...bundle.events])) {
     const event = structuredClone(original);
     const data = event.extensions?.controlled_execution;
     if (data?.kind === omitKind) continue;
@@ -489,6 +489,83 @@ function assertInconsistentSignedStream(f, bundle) {
   assert.equal(reviewed.effect, 'NOT_EVALUATED');
   assert.equal(reviewed.return_relation, 'NOT_EVALUATED');
 }
+
+function swapCapturedKinds(first, second) {
+  return (events) => {
+    const a = events.findIndex((event) => event.extensions?.controlled_execution?.kind === first);
+    const b = events.findIndex((event) => event.extensions?.controlled_execution?.kind === second);
+    assert.ok(a >= 0 && b >= 0, 'both captured rows must exist before reordering');
+    [events[a], events[b]] = [events[b], events[a]];
+    return events;
+  };
+}
+
+test('a presentation failure requires a preceding raw return even when readback is missing', (t) => {
+  const f = fixture(t);
+  const { bundle } = f.execute({ transformationId: 'throwing-view', renderForModel: () => { throw new Error('failed'); } });
+  const noReadback = reseal(f, bundle, { omitKind: 'LOCAL_READBACK' });
+  assertInconsistentSignedStream(f, reseal(f, noReadback, { omitKind: 'RAW_RETURN' }));
+});
+
+test('a presentation failure before the raw return cannot leave a matching readback confirmed', (t) => {
+  const f = fixture(t);
+  const { bundle } = f.execute({ transformationId: 'throwing-view', renderForModel: () => { throw new Error('failed'); } });
+  assertInconsistentSignedStream(f, reseal(f, bundle, { reorder: swapCapturedKinds('PRESENTATION_FAILED', 'RAW_RETURN') }));
+});
+
+test('a local readback before the raw return is an inconsistent stream', (t) => {
+  const f = fixture(t);
+  const { bundle } = f.execute();
+  assertInconsistentSignedStream(f, reseal(f, bundle, { reorder: swapCapturedKinds('LOCAL_READBACK', 'RAW_RETURN') }));
+});
+
+test('a readback failure before the raw return is an inconsistent stream', (t) => {
+  const f = fixture(t);
+  const { bundle } = f.execute({ transformationId: 'remove-before-readback', renderForModel: (raw) => { rmSync(f.target); return raw; } });
+  assert.equal(f.review(bundle).capture_shape, 'CONSISTENT');
+  assert.equal(f.review(bundle).effect, 'UNCONFIRMED');
+  assertInconsistentSignedStream(f, reseal(f, bundle, { reorder: swapCapturedKinds('READBACK_UNAVAILABLE', 'RAW_RETURN') }));
+});
+
+test('a local readback cannot precede the captured model response preparation', (t) => {
+  const f = fixture(t);
+  const { bundle } = f.execute();
+  assertInconsistentSignedStream(f, reseal(f, bundle, { reorder: swapCapturedKinds('LOCAL_READBACK', 'MODEL_VISIBLE_RETURN') }));
+});
+
+test('a local readback cannot precede the captured presentation failure', (t) => {
+  const f = fixture(t);
+  const { bundle } = f.execute({ transformationId: 'throwing-view', renderForModel: () => { throw new Error('failed'); } });
+  assertInconsistentSignedStream(f, reseal(f, bundle, { reorder: swapCapturedKinds('LOCAL_READBACK', 'PRESENTATION_FAILED') }));
+});
+
+test('a file grown beyond the write limit leaves readback unavailable and consumes its grant', (t) => {
+  const f = fixture(t);
+  const grantEnvelope = f.envelope();
+  const result = f.execute({ grantEnvelope, transformationId: 'grow-before-readback', renderForModel: (raw) => {
+    writeFileSync(f.target, Buffer.alloc(65537, 97));
+    return raw;
+  } });
+  assert.equal(result.tool_status, 'CREATED');
+  assert.equal(statSync(f.target).size, 65537);
+  assert.equal(rows(result.bundle, 'LOCAL_READBACK').length, 0);
+  assert.equal(rows(result.bundle, 'READBACK_UNAVAILABLE').length, 1);
+  const review = f.review(result.bundle);
+  assert.equal(review.capture_shape, 'CONSISTENT');
+  assert.equal(review.effect, 'UNCONFIRMED');
+  assert.equal(f.execute({ grantEnvelope }).gate_status, 'GRANT_ALREADY_CONSUMED');
+});
+
+test('readback accepts the full 65536-byte content limit and empty content', (t) => {
+  for (const content of ['', 'é'.repeat(32768)]) {
+    const f = fixture(t);
+    const grantEnvelope = f.envelope({ action: describeWrite({ ...f.defaults, content }) });
+    const result = f.execute({ content, grantEnvelope });
+    assert.equal(result.tool_status, 'CREATED');
+    assert.equal(readFileSync(f.target, 'utf8'), content);
+    assert.equal(f.review(result.bundle).effect, 'LOCAL_READBACK_MATCH');
+  }
+});
 
 test('a signed stream cannot claim both BLOCKED and CREATED for the same invocation', (t) => {
   const f = fixture(t);
