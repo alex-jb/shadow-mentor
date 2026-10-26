@@ -1,0 +1,1348 @@
+{
+  "schema": "shadow-known-discovery-false-pass-probe/1",
+  "created_at_utc": "2026-10-26T17:22:09.797884+00:00",
+  "source": "https://github.com/mcp-contracts/mcp-contracts/blob/v0.8.3/CHANGELOG.md",
+  "scope": "Published CLI version pair with synthetic local stdio fixture; not production failure rates",
+  "selection": "Historical fix and source were read before constructing the probe",
+  "new_bug_discovery": false,
+  "business_semantic_regression_established": false,
+  "network": "Local stdio; child environment has no provider credentials; Node connect/DNS guards installed",
+  "node": "v24.22.1",
+  "source_sha256": {
+    "discovery_cli_probe.py": "03fc638d613ff9a09ad28391cb18060b8ea2d9f9266e3829dd10bd2c7140581c",
+    "discovery_fixture.cjs": "373779948d96f8f5c63943e5e7439dc19e239955e92296b87c85b3dd4570c98f",
+    "no_network.cjs": "d13a45a9a000569d0574b962bd4fcbc78bd5994878767013a5226e9610b47601"
+  },
+  "observation_count": 13,
+  "matched_expectation_count": 13,
+  "versions": [
+    {
+      "cli_version": "0.8.2",
+      "cli_entry_sha256": "83b25b525f04fd91d46da6e97487f2bbb64842cb6e54e60dc3ec941483c1087d",
+      "resolved_packages": {
+        "@mcp-contracts/cli": {
+          "version": "0.8.2",
+          "package_json_sha256": "253fc4a261c094bab8d673e6d473bdf7b0ee953dacba63ae85107e5683b085fb"
+        },
+        "@mcp-contracts/core": {
+          "version": "0.8.2",
+          "package_json_sha256": "f151d499842dc320ca7f216a190ca70c69bc1761e31cc6d974cc4e54c25a1d19"
+        },
+        "@mcp-contracts/test": {
+          "version": "0.8.2",
+          "package_json_sha256": "9c25cb9c89b8860405793c15104c6672a4554ebfa1a4190a9e97125e3aef82ce"
+        },
+        "@modelcontextprotocol/sdk": {
+          "version": "1.32.2",
+          "package_json_sha256": "7a8d6f79ee52e2bf7cfe23f2d79f7e3c0ab6a3912a340ec345d6ff014534d59d"
+        },
+        "zod": {
+          "version": "4.6.7",
+          "package_json_sha256": "c2d190d9ee4e0bdb60332aaa2130a6a98d65ddb903fe1d29248b15de57832c45"
+        }
+      },
+      "observations": [
+        {
+          "case": "capture_valid_empty",
+          "action": "snapshot",
+          "fixture_mode": "empty",
+          "expected_exit": 0,
+          "observed_exit": 0,
+          "baseline_exists": true,
+          "baseline_content": {
+            "snapshotVersion": "1.0.0",
+            "capturedAt": "2026-10-26T17:22:03.980Z",
+            "contentHash": "sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08",
+            "server": {
+              "name": "shadow-discovery-fixture",
+              "version": "1.0.0",
+              "protocolVersion": "2025-11-25",
+              "capabilities": {
+                "tools": {}
+              }
+            },
+            "capture": {
+              "transport": "stdio",
+              "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/integration-acceptance-20261026/discovery_fixture.cjs empty /tmp/shadow-discovery-probe-4_vjhea3/old/capture_valid_empty.jsonl",
+              "tool": "mcpdiff/0.1.0"
+            },
+            "tools": {},
+            "resources": {},
+            "prompts": {}
+          },
+          "tools_list_request_count": 1,
+          "fixture_error_reply_count": 0,
+          "report_semantics_valid": true,
+          "matched_expectation": true,
+          "stdout": "",
+          "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nSnapshot written to /tmp/shadow-discovery-probe-4_vjhea3/old/empty.mcpc.json\n",
+          "exchanges": [
+            {
+              "direction": "request",
+              "message": {
+                "method": "initialize",
+                "params": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {},
+                  "clientInfo": {
+                    "name": "mcpdiff",
+                    "version": "0.1.0"
+                  }
+                },
+                "jsonrpc": "2.0",
+                "id": 0
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 0,
+                "result": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {
+                    "tools": {}
+                  },
+                  "serverInfo": {
+                    "name": "shadow-discovery-fixture",
+                    "version": "1.0.0"
+                  }
+                }
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "notifications/initialized",
+                "jsonrpc": "2.0"
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "tools/list",
+                "jsonrpc": "2.0",
+                "id": 1
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "result": {
+                  "tools": []
+                }
+              }
+            }
+          ]
+        },
+        {
+          "case": "capture_valid_nonempty",
+          "action": "snapshot",
+          "fixture_mode": "nonempty",
+          "expected_exit": 0,
+          "observed_exit": 0,
+          "baseline_exists": true,
+          "baseline_content": {
+            "snapshotVersion": "1.0.0",
+            "capturedAt": "2026-10-26T17:22:04.785Z",
+            "contentHash": "sha256:73db3fef988c60a99011ad183b2b8232354456cfef1a9750e9088844f8e3b339",
+            "server": {
+              "name": "shadow-discovery-fixture",
+              "version": "1.0.0",
+              "protocolVersion": "2025-11-25",
+              "capabilities": {
+                "tools": {}
+              }
+            },
+            "capture": {
+              "transport": "stdio",
+              "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/integration-acceptance-20261026/discovery_fixture.cjs nonempty /tmp/shadow-discovery-probe-4_vjhea3/old/capture_valid_nonempty.jsonl",
+              "tool": "mcpdiff/0.1.0"
+            },
+            "tools": {
+              "alpha": {
+                "description": "A fixed local fixture tool",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "resources": {},
+            "prompts": {}
+          },
+          "tools_list_request_count": 1,
+          "fixture_error_reply_count": 0,
+          "report_semantics_valid": true,
+          "matched_expectation": true,
+          "stdout": "",
+          "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nSnapshot written to /tmp/shadow-discovery-probe-4_vjhea3/old/nonempty.mcpc.json\n",
+          "exchanges": [
+            {
+              "direction": "request",
+              "message": {
+                "method": "initialize",
+                "params": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {},
+                  "clientInfo": {
+                    "name": "mcpdiff",
+                    "version": "0.1.0"
+                  }
+                },
+                "jsonrpc": "2.0",
+                "id": 0
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 0,
+                "result": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {
+                    "tools": {}
+                  },
+                  "serverInfo": {
+                    "name": "shadow-discovery-fixture",
+                    "version": "1.0.0"
+                  }
+                }
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "notifications/initialized",
+                "jsonrpc": "2.0"
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "tools/list",
+                "jsonrpc": "2.0",
+                "id": 1
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "result": {
+                  "tools": [
+                    {
+                      "name": "alpha",
+                      "description": "A fixed local fixture tool",
+                      "inputSchema": {
+                        "type": "object",
+                        "properties": {}
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "case": "capture_discovery_error",
+          "action": "snapshot",
+          "fixture_mode": "error",
+          "expected_exit": 0,
+          "observed_exit": 0,
+          "baseline_exists": true,
+          "baseline_content": {
+            "snapshotVersion": "1.0.0",
+            "capturedAt": "2026-10-26T17:22:05.287Z",
+            "contentHash": "sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08",
+            "server": {
+              "name": "shadow-discovery-fixture",
+              "version": "1.0.0",
+              "protocolVersion": "2025-11-25",
+              "capabilities": {
+                "tools": {}
+              }
+            },
+            "capture": {
+              "transport": "stdio",
+              "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/integration-acceptance-20261026/discovery_fixture.cjs error /tmp/shadow-discovery-probe-4_vjhea3/old/capture_discovery_error.jsonl",
+              "tool": "mcpdiff/0.1.0"
+            },
+            "tools": {},
+            "resources": {},
+            "prompts": {}
+          },
+          "tools_list_request_count": 1,
+          "fixture_error_reply_count": 1,
+          "report_semantics_valid": true,
+          "matched_expectation": true,
+          "stdout": "",
+          "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nWarning: Failed to list tools: MCP error -32603: fixture discovery failure\nSnapshot written to /tmp/shadow-discovery-probe-4_vjhea3/old/error.mcpc.json\n",
+          "exchanges": [
+            {
+              "direction": "request",
+              "message": {
+                "method": "initialize",
+                "params": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {},
+                  "clientInfo": {
+                    "name": "mcpdiff",
+                    "version": "0.1.0"
+                  }
+                },
+                "jsonrpc": "2.0",
+                "id": 0
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 0,
+                "result": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {
+                    "tools": {}
+                  },
+                  "serverInfo": {
+                    "name": "shadow-discovery-fixture",
+                    "version": "1.0.0"
+                  }
+                }
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "notifications/initialized",
+                "jsonrpc": "2.0"
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "tools/list",
+                "jsonrpc": "2.0",
+                "id": 1
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "error": {
+                  "code": -32603,
+                  "message": "fixture discovery failure"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "case": "check_valid_empty",
+          "action": "check",
+          "fixture_mode": "empty",
+          "expected_exit": 0,
+          "observed_exit": 0,
+          "baseline_exists": true,
+          "baseline_content": {
+            "snapshotVersion": "1.0.0",
+            "capturedAt": "2026-10-26T17:22:03.980Z",
+            "contentHash": "sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08",
+            "server": {
+              "name": "shadow-discovery-fixture",
+              "version": "1.0.0",
+              "protocolVersion": "2025-11-25",
+              "capabilities": {
+                "tools": {}
+              }
+            },
+            "capture": {
+              "transport": "stdio",
+              "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/integration-acceptance-20261026/discovery_fixture.cjs empty /tmp/shadow-discovery-probe-4_vjhea3/old/capture_valid_empty.jsonl",
+              "tool": "mcpdiff/0.1.0"
+            },
+            "tools": {},
+            "resources": {},
+            "prompts": {}
+          },
+          "tools_list_request_count": 1,
+          "fixture_error_reply_count": 0,
+          "report_semantics_valid": true,
+          "matched_expectation": true,
+          "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08\",\n      \"capturedAt\": \"2026-10-26T17:22:03.980Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08\",\n      \"capturedAt\": \"2026-10-26T17:22:05.677Z\"\n    },\n    \"generatedAt\": \"2026-10-26T17:22:05.678Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 0\n  },\n  \"changes\": []\n}\n",
+          "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nContract unchanged\n",
+          "exchanges": [
+            {
+              "direction": "request",
+              "message": {
+                "method": "initialize",
+                "params": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {},
+                  "clientInfo": {
+                    "name": "mcpdiff",
+                    "version": "0.1.0"
+                  }
+                },
+                "jsonrpc": "2.0",
+                "id": 0
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 0,
+                "result": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {
+                    "tools": {}
+                  },
+                  "serverInfo": {
+                    "name": "shadow-discovery-fixture",
+                    "version": "1.0.0"
+                  }
+                }
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "notifications/initialized",
+                "jsonrpc": "2.0"
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "tools/list",
+                "jsonrpc": "2.0",
+                "id": 1
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "result": {
+                  "tools": []
+                }
+              }
+            }
+          ]
+        },
+        {
+          "case": "check_error_against_valid_empty",
+          "action": "check",
+          "fixture_mode": "error",
+          "expected_exit": 0,
+          "observed_exit": 0,
+          "baseline_exists": true,
+          "baseline_content": {
+            "snapshotVersion": "1.0.0",
+            "capturedAt": "2026-10-26T17:22:03.980Z",
+            "contentHash": "sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08",
+            "server": {
+              "name": "shadow-discovery-fixture",
+              "version": "1.0.0",
+              "protocolVersion": "2025-11-25",
+              "capabilities": {
+                "tools": {}
+              }
+            },
+            "capture": {
+              "transport": "stdio",
+              "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/integration-acceptance-20261026/discovery_fixture.cjs empty /tmp/shadow-discovery-probe-4_vjhea3/old/capture_valid_empty.jsonl",
+              "tool": "mcpdiff/0.1.0"
+            },
+            "tools": {},
+            "resources": {},
+            "prompts": {}
+          },
+          "tools_list_request_count": 1,
+          "fixture_error_reply_count": 1,
+          "report_semantics_valid": true,
+          "matched_expectation": true,
+          "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08\",\n      \"capturedAt\": \"2026-10-26T17:22:03.980Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08\",\n      \"capturedAt\": \"2026-10-26T17:22:06.171Z\"\n    },\n    \"generatedAt\": \"2026-10-26T17:22:06.171Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 0\n  },\n  \"changes\": []\n}\n",
+          "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nWarning: Failed to list tools: MCP error -32603: fixture discovery failure\nContract unchanged\n",
+          "exchanges": [
+            {
+              "direction": "request",
+              "message": {
+                "method": "initialize",
+                "params": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {},
+                  "clientInfo": {
+                    "name": "mcpdiff",
+                    "version": "0.1.0"
+                  }
+                },
+                "jsonrpc": "2.0",
+                "id": 0
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 0,
+                "result": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {
+                    "tools": {}
+                  },
+                  "serverInfo": {
+                    "name": "shadow-discovery-fixture",
+                    "version": "1.0.0"
+                  }
+                }
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "notifications/initialized",
+                "jsonrpc": "2.0"
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "tools/list",
+                "jsonrpc": "2.0",
+                "id": 1
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "error": {
+                  "code": -32603,
+                  "message": "fixture discovery failure"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "case": "check_error_against_nonempty",
+          "action": "check",
+          "fixture_mode": "error",
+          "expected_exit": 1,
+          "observed_exit": 1,
+          "baseline_exists": true,
+          "baseline_content": {
+            "snapshotVersion": "1.0.0",
+            "capturedAt": "2026-10-26T17:22:04.785Z",
+            "contentHash": "sha256:73db3fef988c60a99011ad183b2b8232354456cfef1a9750e9088844f8e3b339",
+            "server": {
+              "name": "shadow-discovery-fixture",
+              "version": "1.0.0",
+              "protocolVersion": "2025-11-25",
+              "capabilities": {
+                "tools": {}
+              }
+            },
+            "capture": {
+              "transport": "stdio",
+              "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/integration-acceptance-20261026/discovery_fixture.cjs nonempty /tmp/shadow-discovery-probe-4_vjhea3/old/capture_valid_nonempty.jsonl",
+              "tool": "mcpdiff/0.1.0"
+            },
+            "tools": {
+              "alpha": {
+                "description": "A fixed local fixture tool",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "resources": {},
+            "prompts": {}
+          },
+          "tools_list_request_count": 1,
+          "fixture_error_reply_count": 1,
+          "report_semantics_valid": true,
+          "matched_expectation": true,
+          "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:73db3fef988c60a99011ad183b2b8232354456cfef1a9750e9088844f8e3b339\",\n      \"capturedAt\": \"2026-10-26T17:22:04.785Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08\",\n      \"capturedAt\": \"2026-10-26T17:22:06.611Z\"\n    },\n    \"generatedAt\": \"2026-10-26T17:22:06.613Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 1,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 1\n  },\n  \"changes\": [\n    {\n      \"id\": \"tool.alpha.removed\",\n      \"category\": \"tool\",\n      \"name\": \"alpha\",\n      \"severity\": \"breaking\",\n      \"type\": \"removed\",\n      \"message\": \"Tool \\\"alpha\\\" was removed\"\n    }\n  ]\n}\n",
+          "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nWarning: Failed to list tools: MCP error -32603: fixture discovery failure\n",
+          "exchanges": [
+            {
+              "direction": "request",
+              "message": {
+                "method": "initialize",
+                "params": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {},
+                  "clientInfo": {
+                    "name": "mcpdiff",
+                    "version": "0.1.0"
+                  }
+                },
+                "jsonrpc": "2.0",
+                "id": 0
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 0,
+                "result": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {
+                    "tools": {}
+                  },
+                  "serverInfo": {
+                    "name": "shadow-discovery-fixture",
+                    "version": "1.0.0"
+                  }
+                }
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "notifications/initialized",
+                "jsonrpc": "2.0"
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "tools/list",
+                "jsonrpc": "2.0",
+                "id": 1
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "error": {
+                  "code": -32603,
+                  "message": "fixture discovery failure"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "case": "check_error_against_contaminated_baseline",
+          "action": "check",
+          "fixture_mode": "error",
+          "expected_exit": 0,
+          "observed_exit": 0,
+          "baseline_exists": true,
+          "baseline_content": {
+            "snapshotVersion": "1.0.0",
+            "capturedAt": "2026-10-26T17:22:05.287Z",
+            "contentHash": "sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08",
+            "server": {
+              "name": "shadow-discovery-fixture",
+              "version": "1.0.0",
+              "protocolVersion": "2025-11-25",
+              "capabilities": {
+                "tools": {}
+              }
+            },
+            "capture": {
+              "transport": "stdio",
+              "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/integration-acceptance-20261026/discovery_fixture.cjs error /tmp/shadow-discovery-probe-4_vjhea3/old/capture_discovery_error.jsonl",
+              "tool": "mcpdiff/0.1.0"
+            },
+            "tools": {},
+            "resources": {},
+            "prompts": {}
+          },
+          "tools_list_request_count": 1,
+          "fixture_error_reply_count": 1,
+          "report_semantics_valid": true,
+          "matched_expectation": true,
+          "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08\",\n      \"capturedAt\": \"2026-10-26T17:22:05.287Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08\",\n      \"capturedAt\": \"2026-10-26T17:22:07.087Z\"\n    },\n    \"generatedAt\": \"2026-10-26T17:22:07.088Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 0\n  },\n  \"changes\": []\n}\n",
+          "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nWarning: Failed to list tools: MCP error -32603: fixture discovery failure\nContract unchanged\n",
+          "exchanges": [
+            {
+              "direction": "request",
+              "message": {
+                "method": "initialize",
+                "params": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {},
+                  "clientInfo": {
+                    "name": "mcpdiff",
+                    "version": "0.1.0"
+                  }
+                },
+                "jsonrpc": "2.0",
+                "id": 0
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 0,
+                "result": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {
+                    "tools": {}
+                  },
+                  "serverInfo": {
+                    "name": "shadow-discovery-fixture",
+                    "version": "1.0.0"
+                  }
+                }
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "notifications/initialized",
+                "jsonrpc": "2.0"
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "tools/list",
+                "jsonrpc": "2.0",
+                "id": 1
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "error": {
+                  "code": -32603,
+                  "message": "fixture discovery failure"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "cli_version": "0.8.3",
+      "cli_entry_sha256": "2ec29b1b2dfef2c38865b45dd639ff8e5bf2bad28ce876712609c7298ec4c0d5",
+      "resolved_packages": {
+        "@mcp-contracts/cli": {
+          "version": "0.8.3",
+          "package_json_sha256": "28838e8df4ffe2c6526dea5288a45cc37ba35e17856c7a573df846181e17b716"
+        },
+        "@mcp-contracts/core": {
+          "version": "0.8.3",
+          "package_json_sha256": "f245363ca08e36cb67a4566025870bb48a2451a305a17640436b6d545519b132"
+        },
+        "@mcp-contracts/test": {
+          "version": "0.8.3",
+          "package_json_sha256": "5bf8ccd01706dd362516acb3791e10ccac778d21c1ce3549c916662389864f10"
+        },
+        "@modelcontextprotocol/sdk": {
+          "version": "1.32.2",
+          "package_json_sha256": "7a8d6f79ee52e2bf7cfe23f2d79f7e3c0ab6a3912a340ec345d6ff014534d59d"
+        },
+        "zod": {
+          "version": "4.6.7",
+          "package_json_sha256": "c2d190d9ee4e0bdb60332aaa2130a6a98d65ddb903fe1d29248b15de57832c45"
+        }
+      },
+      "observations": [
+        {
+          "case": "capture_valid_empty",
+          "action": "snapshot",
+          "fixture_mode": "empty",
+          "expected_exit": 0,
+          "observed_exit": 0,
+          "baseline_exists": true,
+          "baseline_content": {
+            "snapshotVersion": "1.0.0",
+            "capturedAt": "2026-10-26T17:22:07.687Z",
+            "contentHash": "sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08",
+            "server": {
+              "name": "shadow-discovery-fixture",
+              "version": "1.0.0",
+              "protocolVersion": "2025-11-25",
+              "capabilities": {
+                "tools": {}
+              }
+            },
+            "capture": {
+              "transport": "stdio",
+              "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/integration-acceptance-20261026/discovery_fixture.cjs empty /tmp/shadow-discovery-probe-4_vjhea3/fixed/capture_valid_empty.jsonl",
+              "tool": "mcpdiff/0.1.0"
+            },
+            "tools": {},
+            "resources": {},
+            "prompts": {}
+          },
+          "tools_list_request_count": 1,
+          "fixture_error_reply_count": 0,
+          "report_semantics_valid": true,
+          "matched_expectation": true,
+          "stdout": "",
+          "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nSnapshot written to /tmp/shadow-discovery-probe-4_vjhea3/fixed/empty.mcpc.json\n",
+          "exchanges": [
+            {
+              "direction": "request",
+              "message": {
+                "method": "initialize",
+                "params": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {},
+                  "clientInfo": {
+                    "name": "mcpdiff",
+                    "version": "0.1.0"
+                  }
+                },
+                "jsonrpc": "2.0",
+                "id": 0
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 0,
+                "result": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {
+                    "tools": {}
+                  },
+                  "serverInfo": {
+                    "name": "shadow-discovery-fixture",
+                    "version": "1.0.0"
+                  }
+                }
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "notifications/initialized",
+                "jsonrpc": "2.0"
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "tools/list",
+                "jsonrpc": "2.0",
+                "id": 1
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "result": {
+                  "tools": []
+                }
+              }
+            }
+          ]
+        },
+        {
+          "case": "capture_valid_nonempty",
+          "action": "snapshot",
+          "fixture_mode": "nonempty",
+          "expected_exit": 0,
+          "observed_exit": 0,
+          "baseline_exists": true,
+          "baseline_content": {
+            "snapshotVersion": "1.0.0",
+            "capturedAt": "2026-10-26T17:22:08.109Z",
+            "contentHash": "sha256:73db3fef988c60a99011ad183b2b8232354456cfef1a9750e9088844f8e3b339",
+            "server": {
+              "name": "shadow-discovery-fixture",
+              "version": "1.0.0",
+              "protocolVersion": "2025-11-25",
+              "capabilities": {
+                "tools": {}
+              }
+            },
+            "capture": {
+              "transport": "stdio",
+              "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/integration-acceptance-20261026/discovery_fixture.cjs nonempty /tmp/shadow-discovery-probe-4_vjhea3/fixed/capture_valid_nonempty.jsonl",
+              "tool": "mcpdiff/0.1.0"
+            },
+            "tools": {
+              "alpha": {
+                "description": "A fixed local fixture tool",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "resources": {},
+            "prompts": {}
+          },
+          "tools_list_request_count": 1,
+          "fixture_error_reply_count": 0,
+          "report_semantics_valid": true,
+          "matched_expectation": true,
+          "stdout": "",
+          "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nSnapshot written to /tmp/shadow-discovery-probe-4_vjhea3/fixed/nonempty.mcpc.json\n",
+          "exchanges": [
+            {
+              "direction": "request",
+              "message": {
+                "method": "initialize",
+                "params": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {},
+                  "clientInfo": {
+                    "name": "mcpdiff",
+                    "version": "0.1.0"
+                  }
+                },
+                "jsonrpc": "2.0",
+                "id": 0
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 0,
+                "result": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {
+                    "tools": {}
+                  },
+                  "serverInfo": {
+                    "name": "shadow-discovery-fixture",
+                    "version": "1.0.0"
+                  }
+                }
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "notifications/initialized",
+                "jsonrpc": "2.0"
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "tools/list",
+                "jsonrpc": "2.0",
+                "id": 1
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "result": {
+                  "tools": [
+                    {
+                      "name": "alpha",
+                      "description": "A fixed local fixture tool",
+                      "inputSchema": {
+                        "type": "object",
+                        "properties": {}
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "case": "capture_discovery_error",
+          "action": "snapshot",
+          "fixture_mode": "error",
+          "expected_exit": 2,
+          "observed_exit": 2,
+          "baseline_exists": false,
+          "baseline_content": null,
+          "tools_list_request_count": 1,
+          "fixture_error_reply_count": 1,
+          "report_semantics_valid": true,
+          "matched_expectation": true,
+          "stdout": "",
+          "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nError: Discovery incomplete — failed to list tools: MCP error -32603: fixture discovery failure\n",
+          "exchanges": [
+            {
+              "direction": "request",
+              "message": {
+                "method": "initialize",
+                "params": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {},
+                  "clientInfo": {
+                    "name": "mcpdiff",
+                    "version": "0.1.0"
+                  }
+                },
+                "jsonrpc": "2.0",
+                "id": 0
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 0,
+                "result": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {
+                    "tools": {}
+                  },
+                  "serverInfo": {
+                    "name": "shadow-discovery-fixture",
+                    "version": "1.0.0"
+                  }
+                }
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "notifications/initialized",
+                "jsonrpc": "2.0"
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "tools/list",
+                "jsonrpc": "2.0",
+                "id": 1
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "error": {
+                  "code": -32603,
+                  "message": "fixture discovery failure"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "case": "check_valid_empty",
+          "action": "check",
+          "fixture_mode": "empty",
+          "expected_exit": 0,
+          "observed_exit": 0,
+          "baseline_exists": true,
+          "baseline_content": {
+            "snapshotVersion": "1.0.0",
+            "capturedAt": "2026-10-26T17:22:07.687Z",
+            "contentHash": "sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08",
+            "server": {
+              "name": "shadow-discovery-fixture",
+              "version": "1.0.0",
+              "protocolVersion": "2025-11-25",
+              "capabilities": {
+                "tools": {}
+              }
+            },
+            "capture": {
+              "transport": "stdio",
+              "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/integration-acceptance-20261026/discovery_fixture.cjs empty /tmp/shadow-discovery-probe-4_vjhea3/fixed/capture_valid_empty.jsonl",
+              "tool": "mcpdiff/0.1.0"
+            },
+            "tools": {},
+            "resources": {},
+            "prompts": {}
+          },
+          "tools_list_request_count": 1,
+          "fixture_error_reply_count": 0,
+          "report_semantics_valid": true,
+          "matched_expectation": true,
+          "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08\",\n      \"capturedAt\": \"2026-10-26T17:22:07.687Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08\",\n      \"capturedAt\": \"2026-10-26T17:22:09.010Z\"\n    },\n    \"generatedAt\": \"2026-10-26T17:22:09.011Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 0\n  },\n  \"changes\": []\n}\n",
+          "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nContract unchanged\n",
+          "exchanges": [
+            {
+              "direction": "request",
+              "message": {
+                "method": "initialize",
+                "params": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {},
+                  "clientInfo": {
+                    "name": "mcpdiff",
+                    "version": "0.1.0"
+                  }
+                },
+                "jsonrpc": "2.0",
+                "id": 0
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 0,
+                "result": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {
+                    "tools": {}
+                  },
+                  "serverInfo": {
+                    "name": "shadow-discovery-fixture",
+                    "version": "1.0.0"
+                  }
+                }
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "notifications/initialized",
+                "jsonrpc": "2.0"
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "tools/list",
+                "jsonrpc": "2.0",
+                "id": 1
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "result": {
+                  "tools": []
+                }
+              }
+            }
+          ]
+        },
+        {
+          "case": "check_error_against_valid_empty",
+          "action": "check",
+          "fixture_mode": "error",
+          "expected_exit": 2,
+          "observed_exit": 2,
+          "baseline_exists": true,
+          "baseline_content": {
+            "snapshotVersion": "1.0.0",
+            "capturedAt": "2026-10-26T17:22:07.687Z",
+            "contentHash": "sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08",
+            "server": {
+              "name": "shadow-discovery-fixture",
+              "version": "1.0.0",
+              "protocolVersion": "2025-11-25",
+              "capabilities": {
+                "tools": {}
+              }
+            },
+            "capture": {
+              "transport": "stdio",
+              "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/integration-acceptance-20261026/discovery_fixture.cjs empty /tmp/shadow-discovery-probe-4_vjhea3/fixed/capture_valid_empty.jsonl",
+              "tool": "mcpdiff/0.1.0"
+            },
+            "tools": {},
+            "resources": {},
+            "prompts": {}
+          },
+          "tools_list_request_count": 1,
+          "fixture_error_reply_count": 1,
+          "report_semantics_valid": true,
+          "matched_expectation": true,
+          "stdout": "",
+          "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nError: Discovery incomplete — failed to list tools: MCP error -32603: fixture discovery failure\n",
+          "exchanges": [
+            {
+              "direction": "request",
+              "message": {
+                "method": "initialize",
+                "params": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {},
+                  "clientInfo": {
+                    "name": "mcpdiff",
+                    "version": "0.1.0"
+                  }
+                },
+                "jsonrpc": "2.0",
+                "id": 0
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 0,
+                "result": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {
+                    "tools": {}
+                  },
+                  "serverInfo": {
+                    "name": "shadow-discovery-fixture",
+                    "version": "1.0.0"
+                  }
+                }
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "notifications/initialized",
+                "jsonrpc": "2.0"
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "tools/list",
+                "jsonrpc": "2.0",
+                "id": 1
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "error": {
+                  "code": -32603,
+                  "message": "fixture discovery failure"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "case": "check_error_against_nonempty",
+          "action": "check",
+          "fixture_mode": "error",
+          "expected_exit": 2,
+          "observed_exit": 2,
+          "baseline_exists": true,
+          "baseline_content": {
+            "snapshotVersion": "1.0.0",
+            "capturedAt": "2026-10-26T17:22:08.109Z",
+            "contentHash": "sha256:73db3fef988c60a99011ad183b2b8232354456cfef1a9750e9088844f8e3b339",
+            "server": {
+              "name": "shadow-discovery-fixture",
+              "version": "1.0.0",
+              "protocolVersion": "2025-11-25",
+              "capabilities": {
+                "tools": {}
+              }
+            },
+            "capture": {
+              "transport": "stdio",
+              "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/integration-acceptance-20261026/discovery_fixture.cjs nonempty /tmp/shadow-discovery-probe-4_vjhea3/fixed/capture_valid_nonempty.jsonl",
+              "tool": "mcpdiff/0.1.0"
+            },
+            "tools": {
+              "alpha": {
+                "description": "A fixed local fixture tool",
+                "inputSchema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "resources": {},
+            "prompts": {}
+          },
+          "tools_list_request_count": 1,
+          "fixture_error_reply_count": 1,
+          "report_semantics_valid": true,
+          "matched_expectation": true,
+          "stdout": "",
+          "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nError: Discovery incomplete — failed to list tools: MCP error -32603: fixture discovery failure\n",
+          "exchanges": [
+            {
+              "direction": "request",
+              "message": {
+                "method": "initialize",
+                "params": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {},
+                  "clientInfo": {
+                    "name": "mcpdiff",
+                    "version": "0.1.0"
+                  }
+                },
+                "jsonrpc": "2.0",
+                "id": 0
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 0,
+                "result": {
+                  "protocolVersion": "2025-11-25",
+                  "capabilities": {
+                    "tools": {}
+                  },
+                  "serverInfo": {
+                    "name": "shadow-discovery-fixture",
+                    "version": "1.0.0"
+                  }
+                }
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "notifications/initialized",
+                "jsonrpc": "2.0"
+              }
+            },
+            {
+              "direction": "request",
+              "message": {
+                "method": "tools/list",
+                "jsonrpc": "2.0",
+                "id": 1
+              }
+            },
+            {
+              "direction": "response",
+              "message": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "error": {
+                  "code": -32603,
+                  "message": "fixture discovery failure"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
