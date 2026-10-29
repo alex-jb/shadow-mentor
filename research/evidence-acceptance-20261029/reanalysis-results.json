@@ -1,0 +1,731 @@
+{
+  "schema": "shadow-evidence-acceptance-development-replay/1",
+  "created_at_utc": "2026-10-29T04:24:48.860454+00:00",
+  "source_file": "discovery-observed-results.json",
+  "source_sha256": "94cf319005afa3d04b24dd7ea94558ed84e8eabc4fcec1be872351d0b5da3088",
+  "interpreter_sha256": "f2d0398617fb2d0f9101ea1b799a65b63e6540c3c9d5d5ee18703b6659e3154c",
+  "driver_sha256": "95c635d956f2f450f52225ea50a5e4ba908888fc1347995cbe43fce2c5a843f8",
+  "obligation": {
+    "required_methods": [
+      "initialize",
+      "tools/list"
+    ],
+    "claim": "MCP tools discovery and a valid native mcpdiff report, not business correctness"
+  },
+  "selection": "Seven check commands from one known historical fix; six snapshot commands excluded",
+  "new_native_tool_executions": 0,
+  "held_out_evaluation": false,
+  "independent_defect_count": 1,
+  "gold_source": "Manually fixed from the already authored local fixture and its recorded replies; no blinded second annotator",
+  "record_count": 7,
+  "metrics": {
+    "exit_only": {
+      "false_accept_count": 2,
+      "valid_accept_withheld_count": 0,
+      "errors_called_product_fail": 1
+    },
+    "strict_output": {
+      "false_accept_count": 0,
+      "valid_accept_withheld_count": 0,
+      "errors_called_product_fail": 0
+    },
+    "receipt_gate": {
+      "false_accept_count": 0,
+      "valid_accept_withheld_count": 0,
+      "errors_called_product_fail": 0
+    }
+  },
+  "observations": [
+    {
+      "record_id": "0.8.2/check_valid_empty",
+      "source_pointer": "/versions/0/observations/3",
+      "process": {
+        "exit_code": 0,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08\",\n      \"capturedAt\": \"2026-10-26T17:22:03.980Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08\",\n      \"capturedAt\": \"2026-10-26T17:22:05.677Z\"\n    },\n    \"generatedAt\": \"2026-10-26T17:22:05.678Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 0\n  },\n  \"changes\": []\n}\n",
+        "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nContract unchanged\n",
+        "exchanges": [
+          {
+            "direction": "request",
+            "message": {
+              "method": "initialize",
+              "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {
+                  "name": "mcpdiff",
+                  "version": "0.1.0"
+                }
+              },
+              "jsonrpc": "2.0",
+              "id": 0
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 0,
+              "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {
+                  "tools": {}
+                },
+                "serverInfo": {
+                  "name": "shadow-discovery-fixture",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "notifications/initialized",
+              "jsonrpc": "2.0"
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "tools/list",
+              "jsonrpc": "2.0",
+              "id": 1
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": []
+              }
+            }
+          }
+        ],
+        "capture_complete": true
+      },
+      "gold_execution_state": "COMPLETE",
+      "gold_acceptance": "ACCEPT",
+      "exit_only": "PASS",
+      "strict_output": {
+        "reported_verdict": "PASS",
+        "execution_state": "COMPLETE",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "VALID_NATIVE_REPORT",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/stderr"
+        ]
+      },
+      "receipt_gate": {
+        "reported_verdict": "PASS",
+        "execution_state": "COMPLETE",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "DECLARED_DISCOVERY_OBLIGATION_OBSERVED",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/exchanges"
+        ]
+      }
+    },
+    {
+      "record_id": "0.8.2/check_error_against_valid_empty",
+      "source_pointer": "/versions/0/observations/4",
+      "process": {
+        "exit_code": 0,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08\",\n      \"capturedAt\": \"2026-10-26T17:22:03.980Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08\",\n      \"capturedAt\": \"2026-10-26T17:22:06.171Z\"\n    },\n    \"generatedAt\": \"2026-10-26T17:22:06.171Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 0\n  },\n  \"changes\": []\n}\n",
+        "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nWarning: Failed to list tools: MCP error -32603: fixture discovery failure\nContract unchanged\n",
+        "exchanges": [
+          {
+            "direction": "request",
+            "message": {
+              "method": "initialize",
+              "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {
+                  "name": "mcpdiff",
+                  "version": "0.1.0"
+                }
+              },
+              "jsonrpc": "2.0",
+              "id": 0
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 0,
+              "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {
+                  "tools": {}
+                },
+                "serverInfo": {
+                  "name": "shadow-discovery-fixture",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "notifications/initialized",
+              "jsonrpc": "2.0"
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "tools/list",
+              "jsonrpc": "2.0",
+              "id": 1
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "error": {
+                "code": -32603,
+                "message": "fixture discovery failure"
+              }
+            }
+          }
+        ],
+        "capture_complete": true
+      },
+      "gold_execution_state": "ERROR",
+      "gold_acceptance": "WITHHOLD",
+      "exit_only": "PASS",
+      "strict_output": {
+        "reported_verdict": "PASS",
+        "execution_state": "ERROR",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "DISCOVERY_ERROR_IN_DIAGNOSTIC",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/stderr"
+        ]
+      },
+      "receipt_gate": {
+        "reported_verdict": "PASS",
+        "execution_state": "ERROR",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "DISCOVERY_ERROR_IN_DIAGNOSTIC",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/stderr"
+        ]
+      }
+    },
+    {
+      "record_id": "0.8.2/check_error_against_nonempty",
+      "source_pointer": "/versions/0/observations/5",
+      "process": {
+        "exit_code": 1,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:73db3fef988c60a99011ad183b2b8232354456cfef1a9750e9088844f8e3b339\",\n      \"capturedAt\": \"2026-10-26T17:22:04.785Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08\",\n      \"capturedAt\": \"2026-10-26T17:22:06.611Z\"\n    },\n    \"generatedAt\": \"2026-10-26T17:22:06.613Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 1,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 1\n  },\n  \"changes\": [\n    {\n      \"id\": \"tool.alpha.removed\",\n      \"category\": \"tool\",\n      \"name\": \"alpha\",\n      \"severity\": \"breaking\",\n      \"type\": \"removed\",\n      \"message\": \"Tool \\\"alpha\\\" was removed\"\n    }\n  ]\n}\n",
+        "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nWarning: Failed to list tools: MCP error -32603: fixture discovery failure\n",
+        "exchanges": [
+          {
+            "direction": "request",
+            "message": {
+              "method": "initialize",
+              "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {
+                  "name": "mcpdiff",
+                  "version": "0.1.0"
+                }
+              },
+              "jsonrpc": "2.0",
+              "id": 0
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 0,
+              "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {
+                  "tools": {}
+                },
+                "serverInfo": {
+                  "name": "shadow-discovery-fixture",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "notifications/initialized",
+              "jsonrpc": "2.0"
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "tools/list",
+              "jsonrpc": "2.0",
+              "id": 1
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "error": {
+                "code": -32603,
+                "message": "fixture discovery failure"
+              }
+            }
+          }
+        ],
+        "capture_complete": true
+      },
+      "gold_execution_state": "ERROR",
+      "gold_acceptance": "WITHHOLD",
+      "exit_only": "FAIL",
+      "strict_output": {
+        "reported_verdict": "FAIL",
+        "execution_state": "ERROR",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "DISCOVERY_ERROR_IN_DIAGNOSTIC",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/stderr"
+        ]
+      },
+      "receipt_gate": {
+        "reported_verdict": "FAIL",
+        "execution_state": "ERROR",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "DISCOVERY_ERROR_IN_DIAGNOSTIC",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/stderr"
+        ]
+      }
+    },
+    {
+      "record_id": "0.8.2/check_error_against_contaminated_baseline",
+      "source_pointer": "/versions/0/observations/6",
+      "process": {
+        "exit_code": 0,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08\",\n      \"capturedAt\": \"2026-10-26T17:22:05.287Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08\",\n      \"capturedAt\": \"2026-10-26T17:22:07.087Z\"\n    },\n    \"generatedAt\": \"2026-10-26T17:22:07.088Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 0\n  },\n  \"changes\": []\n}\n",
+        "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nWarning: Failed to list tools: MCP error -32603: fixture discovery failure\nContract unchanged\n",
+        "exchanges": [
+          {
+            "direction": "request",
+            "message": {
+              "method": "initialize",
+              "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {
+                  "name": "mcpdiff",
+                  "version": "0.1.0"
+                }
+              },
+              "jsonrpc": "2.0",
+              "id": 0
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 0,
+              "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {
+                  "tools": {}
+                },
+                "serverInfo": {
+                  "name": "shadow-discovery-fixture",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "notifications/initialized",
+              "jsonrpc": "2.0"
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "tools/list",
+              "jsonrpc": "2.0",
+              "id": 1
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "error": {
+                "code": -32603,
+                "message": "fixture discovery failure"
+              }
+            }
+          }
+        ],
+        "capture_complete": true
+      },
+      "gold_execution_state": "ERROR",
+      "gold_acceptance": "WITHHOLD",
+      "exit_only": "PASS",
+      "strict_output": {
+        "reported_verdict": "PASS",
+        "execution_state": "ERROR",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "DISCOVERY_ERROR_IN_DIAGNOSTIC",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/stderr"
+        ]
+      },
+      "receipt_gate": {
+        "reported_verdict": "PASS",
+        "execution_state": "ERROR",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "DISCOVERY_ERROR_IN_DIAGNOSTIC",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/stderr"
+        ]
+      }
+    },
+    {
+      "record_id": "0.8.3/check_valid_empty",
+      "source_pointer": "/versions/1/observations/3",
+      "process": {
+        "exit_code": 0,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08\",\n      \"capturedAt\": \"2026-10-26T17:22:07.687Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-discovery-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:65ea79b773902dc21f504354a99fd43410b070d469cfa17b5f5a34e635eaea08\",\n      \"capturedAt\": \"2026-10-26T17:22:09.010Z\"\n    },\n    \"generatedAt\": \"2026-10-26T17:22:09.011Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 0\n  },\n  \"changes\": []\n}\n",
+        "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nContract unchanged\n",
+        "exchanges": [
+          {
+            "direction": "request",
+            "message": {
+              "method": "initialize",
+              "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {
+                  "name": "mcpdiff",
+                  "version": "0.1.0"
+                }
+              },
+              "jsonrpc": "2.0",
+              "id": 0
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 0,
+              "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {
+                  "tools": {}
+                },
+                "serverInfo": {
+                  "name": "shadow-discovery-fixture",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "notifications/initialized",
+              "jsonrpc": "2.0"
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "tools/list",
+              "jsonrpc": "2.0",
+              "id": 1
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": []
+              }
+            }
+          }
+        ],
+        "capture_complete": true
+      },
+      "gold_execution_state": "COMPLETE",
+      "gold_acceptance": "ACCEPT",
+      "exit_only": "PASS",
+      "strict_output": {
+        "reported_verdict": "PASS",
+        "execution_state": "COMPLETE",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "VALID_NATIVE_REPORT",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/stderr"
+        ]
+      },
+      "receipt_gate": {
+        "reported_verdict": "PASS",
+        "execution_state": "COMPLETE",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "DECLARED_DISCOVERY_OBLIGATION_OBSERVED",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/exchanges"
+        ]
+      }
+    },
+    {
+      "record_id": "0.8.3/check_error_against_valid_empty",
+      "source_pointer": "/versions/1/observations/4",
+      "process": {
+        "exit_code": 2,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "",
+        "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nError: Discovery incomplete — failed to list tools: MCP error -32603: fixture discovery failure\n",
+        "exchanges": [
+          {
+            "direction": "request",
+            "message": {
+              "method": "initialize",
+              "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {
+                  "name": "mcpdiff",
+                  "version": "0.1.0"
+                }
+              },
+              "jsonrpc": "2.0",
+              "id": 0
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 0,
+              "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {
+                  "tools": {}
+                },
+                "serverInfo": {
+                  "name": "shadow-discovery-fixture",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "notifications/initialized",
+              "jsonrpc": "2.0"
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "tools/list",
+              "jsonrpc": "2.0",
+              "id": 1
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "error": {
+                "code": -32603,
+                "message": "fixture discovery failure"
+              }
+            }
+          }
+        ],
+        "capture_complete": true
+      },
+      "gold_execution_state": "ERROR",
+      "gold_acceptance": "WITHHOLD",
+      "exit_only": "ERROR",
+      "strict_output": {
+        "reported_verdict": "ABSENT",
+        "execution_state": "ERROR",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "PROCESS_DID_NOT_COMPLETE_CHECK",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/stderr"
+        ]
+      },
+      "receipt_gate": {
+        "reported_verdict": "ABSENT",
+        "execution_state": "ERROR",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "PROCESS_DID_NOT_COMPLETE_CHECK",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/stderr"
+        ]
+      }
+    },
+    {
+      "record_id": "0.8.3/check_error_against_nonempty",
+      "source_pointer": "/versions/1/observations/5",
+      "process": {
+        "exit_code": 2,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "",
+        "stderr": "Connecting to MCP server...\nConnected to shadow-discovery-fixture v1.0.0\nError: Discovery incomplete — failed to list tools: MCP error -32603: fixture discovery failure\n",
+        "exchanges": [
+          {
+            "direction": "request",
+            "message": {
+              "method": "initialize",
+              "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {
+                  "name": "mcpdiff",
+                  "version": "0.1.0"
+                }
+              },
+              "jsonrpc": "2.0",
+              "id": 0
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 0,
+              "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {
+                  "tools": {}
+                },
+                "serverInfo": {
+                  "name": "shadow-discovery-fixture",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "notifications/initialized",
+              "jsonrpc": "2.0"
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "tools/list",
+              "jsonrpc": "2.0",
+              "id": 1
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "error": {
+                "code": -32603,
+                "message": "fixture discovery failure"
+              }
+            }
+          }
+        ],
+        "capture_complete": true
+      },
+      "gold_execution_state": "ERROR",
+      "gold_acceptance": "WITHHOLD",
+      "exit_only": "ERROR",
+      "strict_output": {
+        "reported_verdict": "ABSENT",
+        "execution_state": "ERROR",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "PROCESS_DID_NOT_COMPLETE_CHECK",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/stderr"
+        ]
+      },
+      "receipt_gate": {
+        "reported_verdict": "ABSENT",
+        "execution_state": "ERROR",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "PROCESS_DID_NOT_COMPLETE_CHECK",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/stderr"
+        ]
+      }
+    }
+  ]
+}

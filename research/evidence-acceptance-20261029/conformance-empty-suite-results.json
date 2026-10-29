@@ -1,0 +1,34 @@
+{
+  "schema": "shadow-native-empty-suite-control/1",
+  "created_at_utc": "2026-10-29T04:20:42.674408+00:00",
+  "package": {
+    "name": "@modelcontextprotocol/conformance",
+    "version": "0.1.16"
+  },
+  "arguments": [
+    "client",
+    "--suite",
+    "draft",
+    "--spec-version",
+    "2025-11-25",
+    "--timeout",
+    "100"
+  ],
+  "node": "v24.22.1",
+  "positive_control_valid": true,
+  "client_command_executed_in_suite": false,
+  "observed_exit": 0,
+  "stdout": "Running draft suite (0 scenarios) in parallel...\n\n\n=== SUITE SUMMARY ===\n\n\nTotal: 0 passed, 0 failed, 0 warnings\n",
+  "stderr": "",
+  "zero_count_summary_observed": true,
+  "matched_expectation": true,
+  "interpretation": "Expected empty selection, not a native tool bug or explicit per-scenario SKIP. Zero client scenarios cannot establish a consumer obligation requiring an executed client check.",
+  "new_defect_discovered": false,
+  "included_in_seven_record_reanalysis": false,
+  "source_sha256": {
+    "driver": "27e9b9ccd65bcd33c074cf6f43471d7e61bdb32fff6b866feddcd4e0d4f8278c",
+    "cli_entry": "8af99580e70f26781b379b63c89a90f26c44a9fa82022838d5308ff1a803ef2d",
+    "network_guard": "d13a45a9a000569d0574b962bd4fcbc78bd5994878767013a5226e9610b47601",
+    "sentinel_source": "2049caedec1312f87a4eb3e2a1b8cab534a4eef0c73a2bf0ce67220351ea7b62"
+  }
+}
