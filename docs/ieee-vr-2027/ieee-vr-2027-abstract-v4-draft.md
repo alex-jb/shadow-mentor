@@ -1,8 +1,8 @@
 # IEEE VR 2027 — Abstract v4 (draft)
 
-**Status**: draft. Not submitted. Alex reviews before any submission action.
+**Status**: historical concept draft. Not submitted. Alex reviews before any submission action. The user-study design below is a proposal, not evidence that the study was completed. Claims in this older draft have not been revalidated as part of the current MCP acceptance pilot.
 
-**Track**: Poster / short paper (target). Submission deadline 2026-08-24.
+**Deadline correction, checked 2026-10-29**: August 24 was the main-paper abstract deadline, not the poster deadline. The main-paper deadline was August 31 and has passed. The official [poster CFP](https://ieeevr.org/2027/contribute/posters/) requires title/category/abstract/authors on **December 2, 2026 AoE** and a two-page PDF including references on **December 7, 2026 AoE**. Initial PDF and supplementary materials must be anonymized; at least one accepted-poster author must register and attend in person. See the [current submission preparation notes](../research/2026-10-29-submission-readiness.md). The older schedule at the end of this draft is superseded.
 
 **Change from v3**: pivots away from "AI council in VR" (indefensible novelty) to "spatial forensic replay of cryptographically attested agent trajectories." The core visual is the same walk-the-chain interaction shipped in `demo/xreal.html`; the framing and the related-work anchor set change.
 
@@ -90,6 +90,6 @@ The complete render implementation is open-source under MIT license at `github.c
 
 1. Alex reviews v4 draft; picks one of the two candidate titles.
 2. Confirm co-authorship placement with Lora (Sunday review per 2026-06-19 agreement) and Hieu (2026-06-25 confirmation).
-3. Word-cut the abstract to the venue's strict limit (typically 250 or 300 words for IEEE VR posters — verify against the 2027 CFP when released).
-4. Register the user-study protocol on OSF; wait for approval before submitting.
-5. Submit no earlier than 2026-08-15; deadline 2026-08-24.
+3. Rewrite for the current two-page poster format: the form asks for a 100–120-word abstract; the PDF abstract must be no more than 100 words. Do not present proposed experiments as completed results.
+4. OSF preregistration is an internal research proposal, not a venue requirement or an approval process. If participant research proceeds, obtain any required institutional ethics approval before collecting participant data, as described in the official [paper ethics guidance](https://ieeevr.org/2027/contribute/papers/#ethics-and-responsibility).
+5. If the XR contribution is supported, use the verified December 2 metadata and December 7 PDF deadlines, both AoE. The former August schedule is withdrawn.

@@ -11,9 +11,14 @@
 | [AGENT 2027，ICSE workshop](https://conf.researchr.org/track/icse-2027/agent-2027-papers) | 2026-11-13 AoE；短文最多 5 页含引用，全文 8 页含引用；single-anonymous；官方明确 IEEE 出版 | 接收经验、工具和早期研究，主题含验收、AgentOps、可观察性。近期可规划，但须形成独立问题与充分相关工作比较；这是 workshop，不是 ICSE 主会研究论文 |
 | [IEEE ICST 2027 NIER](https://conf.researchr.org/track/icst-2027/icst-2027-nier) | 2027-01-13 AoE；4 页正文/图表/附录＋最多 2 页仅引用；double-blind，artifact 也须匿名 | 软件测试问题最直接，时间更适合补跨工具案例。可投新想法或 reflection，但不是已有工作的摘要；当前投稿入口仍标为待更新 |
 | [IEEE COMPSAC 2027](https://ieeecompsac.computer.org/2027/information-for-authors/) | 全文截止 2027-01-31；10 页含引用；short 为 6 页，但官方未另列其截止；时区未注明 | 适合后续较完整的软件／Agent 可靠性经验研究。workshop 论文日期为 4/15，具体 workshop 后续再选 |
+| [IEEE VR 2027 Posters](https://ieeevr.org/2027/contribute/posters/) | 2026-12-02 AoE 交题目／类别／摘要／作者信息，12-07 AoE 交两页 PDF，含引用；双盲 | 仅适合旧空间回放方向的真实 XR／3DUI 成果；至少一位作者需注册并线下出席。当前 MCP 验收研究并不因加上空间界面就自然契合 |
 | [AGENTVERIFY 2027](https://agentverify2027.github.io/cfp.html) | 独立 CFP 写 11/13 AoE；但 [ICSE 日期表](https://conf.researchr.org/dates/icse-2027) 写摘要 11/1、全文 11/6。short/demo 4 页、extended abstract 2 页、full 8 页，均含引用；double-blind | 主题非常贴近 harness、弱 oracle 与可重复验收；在日期冲突解决前，内部按较早日期准备，不能认定延期生效。独立 CFP 说明进入 ICSE workshop proceedings；[ICSE 总页](https://conf.researchr.org/track/icse-2027/icse-2027-workshops) 明确 workshop 论文由 IEEE 出版 |
 
 AoE 在这些日期对应：11/13 截止为纽约 11/14 上午 06:59:59；1/13 截止为纽约 1/14 上午 06:59:59。建议内部仍按标注的前一天日期交稿，不依赖最后几个小时。
+
+**旧稿日期更正：** [IEEE VR 2027 主论文 CFP](https://ieeevr.org/2027/contribute/papers/) 的 8/24 是主论文摘要截止，8/31 是全文截止，两者都已过；12/31 是条件接受后的修订，不是新稿窗口。旧 VR v4 草稿把 8/24 写作 poster 截止，现已标注过时。海报的两个当前截止分别为纽约 12/3、12/8 上午 06:59:59。表单摘要要求 100–120 词，PDF 内摘要最多 100 词，不能误用旧稿的 250 词目标。
+
+本日复核与实际准备门槛见 [投稿准备表](./2026-10-29-submission-readiness.md)。第三工具族的 [源码筛选记录](../../research/evidence-study-20261029c/README.md) 未找到合格已修复验收缺陷，未增加执行案例。
 
 排除的误读：ICST 主研究 track 的 11/2 截止只剩数日，当前不适合赶完整稿；1/31 是 major revision，不是新稿第二次机会。SE4AgenticAI 2026 是 BigData 相关 workshop，10/10 已截止，不是 ICSE 2027 workshop。arXiv 写 submitted to IEEE 也不构成接收或发表证据。
 

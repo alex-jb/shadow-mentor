@@ -115,8 +115,17 @@ the paper should remain a limited experience report or not be submitted.
 The [cross-tool follow-up](./2026-10-29-cross-tool-followup.md) contains the raw
 execution boundaries, counterexamples, parser costs and limitations. A third
 tool family, blinded independent annotation and held-out evaluation remain undone.
+The planned recorder family's [source screening](../../research/evidence-study-20261029c/README.md)
+found no eligible documented repaired acceptance defect in its observed official
+issue/PR inventory. It has not been executed or silently replaced with a positive
+case. Its documented stdio lifecycle skip is only a proposed applicability control.
 
 ## Preparation notes
+
+Verified deadlines and a claim-bounded preparation schedule are recorded in the
+[submission readiness review](./2026-10-29-submission-readiness.md). The IEEE VR
+poster window is a separate XR route, not a destination for the current MCP
+case study solely because Shadow also has a spatial interface.
 
 Choose one submission route when the evidence is ready; AGENT's short paper is
 five pages including references, while ICST NIER is four pages plus up to two

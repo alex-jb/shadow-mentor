@@ -1,0 +1,768 @@
+{
+  "schema": "shadow-source-screening/1",
+  "authored_date_local": "2026-10-29",
+  "timezone": "America/New_York",
+  "retrieval_completed_at_utc": "2026-10-29T17:44:17.442Z",
+  "status": "SOURCE_SNAPSHOT_SCREENED_NO_ELIGIBLE_REPAIRED_ACCEPTANCE_DEFECT",
+  "repo": "devhelmhq/mcp-recorder",
+  "window": {
+    "from": "2026-01-01",
+    "planned_through": "2026-10-29",
+    "observed_snapshot_through_utc": "2026-10-29T17:44:17.442Z",
+    "date_filter": "GitHub created-date query requests through 2026-10-29, but this record is only the source snapshot available at retrieval, not the completed October 29 day. Main commit request uses until=2026-10-30T00:00:00Z without an exclusive-boundary claim. All returned commits are from February or March 2026."
+  },
+  "draft_plan": "../evidence-study-20261029b/study-plan.json",
+  "protocol": {
+    "not_preregistered": true,
+    "screening_order": "All issue/PR entries inspected in ascending creation order; relevant PR8, PR9, PR10 source/diffs examined after inventory.",
+    "unit_of_analysis": "Independently documented repaired acceptance/reporting defect; commands and variants do not create cases.",
+    "local_runtime_execution": false,
+    "third_family_in_executed_corpus": false,
+    "independent_gold_labels": false,
+    "code_or_product_changes": false
+  },
+  "initial_search_errors": [
+    {
+      "query": "repo:devhelmhq/mcp-recorder created:2026-01-01..2026-10-29 \"false pass\"",
+      "outcome": "HTTP422",
+      "message": "Query must include 'is:issue' or 'is:pull-request'",
+      "recovery": "Repeated separately with both accepted type qualifiers; results below."
+    },
+    {
+      "query": "repo:devhelmhq/mcp-recorder created:2026-01-01..2026-10-29 \"false positive\"",
+      "outcome": "HTTP422",
+      "message": "Query must include 'is:issue' or 'is:pull-request'",
+      "recovery": "Repeated separately with both accepted type qualifiers; results below."
+    },
+    {
+      "query": "repo:devhelmhq/mcp-recorder created:2026-01-01..2026-10-29 untestable",
+      "outcome": "HTTP422",
+      "message": "Query must include 'is:issue' or 'is:pull-request'",
+      "recovery": "Repeated separately with both accepted type qualifiers; results below."
+    },
+    {
+      "query": "repo:devhelmhq/mcp-recorder created:2026-01-01..2026-10-29 incomplete",
+      "outcome": "HTTP422",
+      "message": "Query must include 'is:issue' or 'is:pull-request'",
+      "recovery": "Repeated separately with both accepted type qualifiers; results below."
+    },
+    {
+      "query": "repo:devhelmhq/mcp-recorder created:2026-01-01..2026-10-29 coverage",
+      "outcome": "HTTP422",
+      "message": "Query must include 'is:issue' or 'is:pull-request'",
+      "recovery": "Repeated separately with both accepted type qualifiers; results below."
+    },
+    {
+      "query": "repo:devhelmhq/mcp-recorder created:2026-01-01..2026-10-29 verify",
+      "outcome": "HTTP422",
+      "message": "Query must include 'is:issue' or 'is:pull-request'",
+      "recovery": "Repeated separately with both accepted type qualifiers; results below."
+    },
+    {
+      "query": "repo:devhelmhq/mcp-recorder created:2026-01-01..2026-10-29 unchanged",
+      "outcome": "HTTP422",
+      "message": "Query must include 'is:issue' or 'is:pull-request'",
+      "recovery": "Repeated separately with both accepted type qualifiers; results below."
+    }
+  ],
+  "searches": [
+    {
+      "query": "repo:devhelmhq/mcp-recorder is:issue created:2026-01-01..2026-10-29 \"false pass\"",
+      "url": "https://api.github.com/search/issues?q=repo%3Adevhelmhq%2Fmcp-recorder%20is%3Aissue%20created%3A2026-01-01..2026-10-29%20%22false%20pass%22&sort=created&order=asc&per_page=100&page=1",
+      "sort": "created",
+      "order": "asc",
+      "per_page": 100,
+      "page": 1,
+      "total_count": 0,
+      "incomplete_results": false,
+      "returned_ids": [],
+      "pagination_complete_for_query": true
+    },
+    {
+      "query": "repo:devhelmhq/mcp-recorder is:pull-request created:2026-01-01..2026-10-29 \"false pass\"",
+      "url": "https://api.github.com/search/issues?q=repo%3Adevhelmhq%2Fmcp-recorder%20is%3Apull-request%20created%3A2026-01-01..2026-10-29%20%22false%20pass%22&sort=created&order=asc&per_page=100&page=1",
+      "sort": "created",
+      "order": "asc",
+      "per_page": 100,
+      "page": 1,
+      "total_count": 0,
+      "incomplete_results": false,
+      "returned_ids": [],
+      "pagination_complete_for_query": true
+    },
+    {
+      "query": "repo:devhelmhq/mcp-recorder is:issue created:2026-01-01..2026-10-29 \"false positive\"",
+      "url": "https://api.github.com/search/issues?q=repo%3Adevhelmhq%2Fmcp-recorder%20is%3Aissue%20created%3A2026-01-01..2026-10-29%20%22false%20positive%22&sort=created&order=asc&per_page=100&page=1",
+      "sort": "created",
+      "order": "asc",
+      "per_page": 100,
+      "page": 1,
+      "total_count": 0,
+      "incomplete_results": false,
+      "returned_ids": [],
+      "pagination_complete_for_query": true
+    },
+    {
+      "query": "repo:devhelmhq/mcp-recorder is:pull-request created:2026-01-01..2026-10-29 \"false positive\"",
+      "url": "https://api.github.com/search/issues?q=repo%3Adevhelmhq%2Fmcp-recorder%20is%3Apull-request%20created%3A2026-01-01..2026-10-29%20%22false%20positive%22&sort=created&order=asc&per_page=100&page=1",
+      "sort": "created",
+      "order": "asc",
+      "per_page": 100,
+      "page": 1,
+      "total_count": 0,
+      "incomplete_results": false,
+      "returned_ids": [],
+      "pagination_complete_for_query": true
+    },
+    {
+      "query": "repo:devhelmhq/mcp-recorder is:issue created:2026-01-01..2026-10-29 untestable",
+      "url": "https://api.github.com/search/issues?q=repo%3Adevhelmhq%2Fmcp-recorder%20is%3Aissue%20created%3A2026-01-01..2026-10-29%20untestable&sort=created&order=asc&per_page=100&page=1",
+      "sort": "created",
+      "order": "asc",
+      "per_page": 100,
+      "page": 1,
+      "total_count": 0,
+      "incomplete_results": false,
+      "returned_ids": [],
+      "pagination_complete_for_query": true
+    },
+    {
+      "query": "repo:devhelmhq/mcp-recorder is:pull-request created:2026-01-01..2026-10-29 untestable",
+      "url": "https://api.github.com/search/issues?q=repo%3Adevhelmhq%2Fmcp-recorder%20is%3Apull-request%20created%3A2026-01-01..2026-10-29%20untestable&sort=created&order=asc&per_page=100&page=1",
+      "sort": "created",
+      "order": "asc",
+      "per_page": 100,
+      "page": 1,
+      "total_count": 0,
+      "incomplete_results": false,
+      "returned_ids": [],
+      "pagination_complete_for_query": true
+    },
+    {
+      "query": "repo:devhelmhq/mcp-recorder is:issue created:2026-01-01..2026-10-29 incomplete",
+      "url": "https://api.github.com/search/issues?q=repo%3Adevhelmhq%2Fmcp-recorder%20is%3Aissue%20created%3A2026-01-01..2026-10-29%20incomplete&sort=created&order=asc&per_page=100&page=1",
+      "sort": "created",
+      "order": "asc",
+      "per_page": 100,
+      "page": 1,
+      "total_count": 0,
+      "incomplete_results": false,
+      "returned_ids": [],
+      "pagination_complete_for_query": true
+    },
+    {
+      "query": "repo:devhelmhq/mcp-recorder is:pull-request created:2026-01-01..2026-10-29 incomplete",
+      "url": "https://api.github.com/search/issues?q=repo%3Adevhelmhq%2Fmcp-recorder%20is%3Apull-request%20created%3A2026-01-01..2026-10-29%20incomplete&sort=created&order=asc&per_page=100&page=1",
+      "sort": "created",
+      "order": "asc",
+      "per_page": 100,
+      "page": 1,
+      "total_count": 0,
+      "incomplete_results": false,
+      "returned_ids": [],
+      "pagination_complete_for_query": true
+    },
+    {
+      "query": "repo:devhelmhq/mcp-recorder is:issue created:2026-01-01..2026-10-29 coverage",
+      "url": "https://api.github.com/search/issues?q=repo%3Adevhelmhq%2Fmcp-recorder%20is%3Aissue%20created%3A2026-01-01..2026-10-29%20coverage&sort=created&order=asc&per_page=100&page=1",
+      "sort": "created",
+      "order": "asc",
+      "per_page": 100,
+      "page": 1,
+      "total_count": 0,
+      "incomplete_results": false,
+      "returned_ids": [],
+      "pagination_complete_for_query": true
+    },
+    {
+      "query": "repo:devhelmhq/mcp-recorder is:pull-request created:2026-01-01..2026-10-29 coverage",
+      "url": "https://api.github.com/search/issues?q=repo%3Adevhelmhq%2Fmcp-recorder%20is%3Apull-request%20created%3A2026-01-01..2026-10-29%20coverage&sort=created&order=asc&per_page=100&page=1",
+      "sort": "created",
+      "order": "asc",
+      "per_page": 100,
+      "page": 1,
+      "total_count": 1,
+      "incomplete_results": false,
+      "returned_ids": [
+        5
+      ],
+      "pagination_complete_for_query": true
+    },
+    {
+      "query": "repo:devhelmhq/mcp-recorder is:issue created:2026-01-01..2026-10-29 verify",
+      "url": "https://api.github.com/search/issues?q=repo%3Adevhelmhq%2Fmcp-recorder%20is%3Aissue%20created%3A2026-01-01..2026-10-29%20verify&sort=created&order=asc&per_page=100&page=1",
+      "sort": "created",
+      "order": "asc",
+      "per_page": 100,
+      "page": 1,
+      "total_count": 0,
+      "incomplete_results": false,
+      "returned_ids": [],
+      "pagination_complete_for_query": true
+    },
+    {
+      "query": "repo:devhelmhq/mcp-recorder is:pull-request created:2026-01-01..2026-10-29 verify",
+      "url": "https://api.github.com/search/issues?q=repo%3Adevhelmhq%2Fmcp-recorder%20is%3Apull-request%20created%3A2026-01-01..2026-10-29%20verify&sort=created&order=asc&per_page=100&page=1",
+      "sort": "created",
+      "order": "asc",
+      "per_page": 100,
+      "page": 1,
+      "total_count": 4,
+      "incomplete_results": false,
+      "returned_ids": [
+        2,
+        7,
+        9,
+        15
+      ],
+      "pagination_complete_for_query": true
+    },
+    {
+      "query": "repo:devhelmhq/mcp-recorder is:issue created:2026-01-01..2026-10-29 unchanged",
+      "url": "https://api.github.com/search/issues?q=repo%3Adevhelmhq%2Fmcp-recorder%20is%3Aissue%20created%3A2026-01-01..2026-10-29%20unchanged&sort=created&order=asc&per_page=100&page=1",
+      "sort": "created",
+      "order": "asc",
+      "per_page": 100,
+      "page": 1,
+      "total_count": 0,
+      "incomplete_results": false,
+      "returned_ids": [],
+      "pagination_complete_for_query": true
+    },
+    {
+      "query": "repo:devhelmhq/mcp-recorder is:pull-request created:2026-01-01..2026-10-29 unchanged",
+      "url": "https://api.github.com/search/issues?q=repo%3Adevhelmhq%2Fmcp-recorder%20is%3Apull-request%20created%3A2026-01-01..2026-10-29%20unchanged&sort=created&order=asc&per_page=100&page=1",
+      "sort": "created",
+      "order": "asc",
+      "per_page": 100,
+      "page": 1,
+      "total_count": 0,
+      "incomplete_results": false,
+      "returned_ids": [],
+      "pagination_complete_for_query": true
+    }
+  ],
+  "collection_pages": [
+    {
+      "kind": "issues_including_PRs",
+      "url": "https://api.github.com/repos/devhelmhq/mcp-recorder/issues?state=all&sort=created&direction=asc&per_page=100&page=1",
+      "count": 15
+    },
+    {
+      "kind": "issues_including_PRs",
+      "url": "https://api.github.com/repos/devhelmhq/mcp-recorder/issues?state=all&sort=created&direction=asc&per_page=100&page=2",
+      "count": 0,
+      "reretrieved_at_utc": "2026-10-29T17:44:17.442Z"
+    },
+    {
+      "kind": "all_PRs",
+      "url": "https://api.github.com/repos/devhelmhq/mcp-recorder/pulls?state=all&sort=created&direction=asc&per_page=100&page=1",
+      "count": 14
+    },
+    {
+      "kind": "all_PRs",
+      "url": "https://api.github.com/repos/devhelmhq/mcp-recorder/pulls?state=all&sort=created&direction=asc&per_page=100&page=2",
+      "count": 0
+    },
+    {
+      "kind": "closed_PRs_secondary_inventory",
+      "url": "https://api.github.com/repos/devhelmhq/mcp-recorder/pulls?state=closed&sort=created&direction=asc&per_page=100&page=1",
+      "count": 11
+    },
+    {
+      "kind": "main_commits",
+      "url": "https://api.github.com/repos/devhelmhq/mcp-recorder/commits?since=2026-01-01T00%3A00%3A00Z&until=2026-10-30T00%3A00%3A00Z&per_page=100&page=1",
+      "count": 31
+    },
+    {
+      "kind": "main_commits",
+      "url": "https://api.github.com/repos/devhelmhq/mcp-recorder/commits?since=2026-01-01T00%3A00%3A00Z&until=2026-10-30T00%3A00%3A00Z&per_page=100&page=2",
+      "count": 0,
+      "reretrieved_at_utc": "2026-10-29T17:44:17.414Z"
+    },
+    {
+      "kind": "releases",
+      "url": "https://api.github.com/repos/devhelmhq/mcp-recorder/releases?per_page=100",
+      "count": 7
+    },
+    {
+      "kind": "releases",
+      "url": "https://api.github.com/repos/devhelmhq/mcp-recorder/releases?per_page=100&page=2",
+      "count": 0
+    }
+  ],
+  "manifest_corrections": [
+    {
+      "error": "Initial record used string replace('page=1', 'page=2'), which changed per_page=100 into per_page=200 in two recorded URLs.",
+      "incorrect_manifest_urls_not_fetched": [
+        "https://api.github.com/repos/devhelmhq/mcp-recorder/issues?state=all&sort=created&direction=asc&per_page=200&page=1",
+        "https://api.github.com/repos/devhelmhq/mcp-recorder/commits?since=2026-01-01T00%3A00%3A00Z&until=2026-10-30T00%3A00%3A00Z&per_page=200&page=1"
+      ],
+      "actual_original_requests": "Stored tool response URLs show both original empty-page requests already used literal per_page=100&page=2. Both correct requests were repeated after audit and again returned empty lists.",
+      "corrected_at_utc": "2026-10-29T17:44:17.442Z"
+    }
+  ],
+  "pagination_complete_for_listed_collections_at_retrieval": true,
+  "scope_limitations": [
+    "Public official GitHub issues/PRs/releases and current main commit collection only; not an exhaustive survey of discussions, deleted records, forks or every unmerged branch. This is a retrieval-time snapshot, not evidence of the completed October 29 day or later changes.",
+    "Keyword searches use GitHub's index; no assertion of search-engine completeness beyond returned incomplete_results=false and complete paginated collections.",
+    "All decisions by one coding agent after reading source/PR descriptions; no independent blinded human annotation.",
+    "No packages installed and no upstream or authored tests/probes executed for this family.",
+    "No absence-of-defects claim: no eligible documented repair found under the stated cohort criterion."
+  ],
+  "inventory": [
+    {
+      "number": 1,
+      "type": "pull_request",
+      "title": "Add CI check action",
+      "url": "https://github.com/devhelmhq/mcp-recorder/pull/1",
+      "created_at": "2026-02-17T20:53:37Z",
+      "state": "closed",
+      "merged_at": "2026-02-17T20:55:27Z",
+      "merge_commit_sha": "ab0d5bd01353d9def8a1c6277eb78a231b31e89b",
+      "decision": "exclude_from_repaired_acceptance_defect_cohort",
+      "exclusion_code": "outside_consumer_obligation",
+      "rationale": "CI check action added; no documented acceptance/reporting repair."
+    },
+    {
+      "number": 2,
+      "type": "pull_request",
+      "title": "Add scrubber, verifier",
+      "url": "https://github.com/devhelmhq/mcp-recorder/pull/2",
+      "created_at": "2026-02-18T20:00:22Z",
+      "state": "closed",
+      "merged_at": "2026-02-18T20:01:01Z",
+      "merge_commit_sha": "c30b0ee770391951970d165b5573d241c8174872",
+      "decision": "exclude_from_repaired_acceptance_defect_cohort",
+      "exclusion_code": "initial_feature_not_repair",
+      "rationale": "Adds initial scrubber/verifier; no earlier verifier defect identified."
+    },
+    {
+      "number": 3,
+      "type": "pull_request",
+      "title": "Add template files, dependabot CI",
+      "url": "https://github.com/devhelmhq/mcp-recorder/pull/3",
+      "created_at": "2026-02-24T09:41:32Z",
+      "state": "closed",
+      "merged_at": "2026-02-24T09:42:57Z",
+      "merge_commit_sha": "38e6b5e079c878a20207190d7cd29032de5485eb",
+      "decision": "exclude_from_repaired_acceptance_defect_cohort",
+      "exclusion_code": "outside_consumer_obligation",
+      "rationale": "Repository templates and dependency CI configuration."
+    },
+    {
+      "number": 4,
+      "type": "pull_request",
+      "title": "ci: bump astral-sh/setup-uv from 5 to 7",
+      "url": "https://github.com/devhelmhq/mcp-recorder/pull/4",
+      "created_at": "2026-02-24T09:43:44Z",
+      "state": "open",
+      "merged_at": null,
+      "merge_commit_sha": "04659a7fd41b0b747802422321b400a7f78810c3",
+      "decision": "exclude_from_repaired_acceptance_defect_cohort",
+      "exclusion_code": "unmerged_dependency_update",
+      "rationale": "Open setup-uv dependency update; not an acceptance/reporting repair."
+    },
+    {
+      "number": 5,
+      "type": "pull_request",
+      "title": "ci: bump actions/checkout from 4 to 6",
+      "url": "https://github.com/devhelmhq/mcp-recorder/pull/5",
+      "created_at": "2026-02-24T09:43:48Z",
+      "state": "open",
+      "merged_at": null,
+      "merge_commit_sha": "965e9b14bff47eb5acf3bf55bcf633332929cd78",
+      "decision": "exclude_from_repaired_acceptance_defect_cohort",
+      "exclusion_code": "unmerged_dependency_update",
+      "rationale": "Open actions/checkout update; coverage search match occurs in dependency release material."
+    },
+    {
+      "number": 6,
+      "type": "pull_request",
+      "title": "deps: update uv-build requirement from <0.9.0,>=0.8.19 to >=0.8.19,<0.11.0",
+      "url": "https://github.com/devhelmhq/mcp-recorder/pull/6",
+      "created_at": "2026-02-24T09:44:18Z",
+      "state": "closed",
+      "merged_at": null,
+      "merge_commit_sha": "340ee421745c01a13e55c574d1b9989599e2c06b",
+      "decision": "exclude_from_repaired_acceptance_defect_cohort",
+      "exclusion_code": "unmerged_dependency_update",
+      "rationale": "Closed without merge; uv-build requirement update, not acceptance/reporting repair."
+    },
+    {
+      "number": 7,
+      "type": "pull_request",
+      "title": "Add record-scenarios command",
+      "url": "https://github.com/devhelmhq/mcp-recorder/pull/7",
+      "created_at": "2026-03-01T20:17:24Z",
+      "state": "closed",
+      "merged_at": "2026-03-01T20:22:58Z",
+      "merge_commit_sha": "c428e9c43dd95882b11b592502ed133cbf6c15af",
+      "decision": "exclude_from_repaired_acceptance_defect_cohort",
+      "exclusion_code": "new_recording_feature_not_repair",
+      "rationale": "Adds scenario recording and client/API utilities; no documented false-acceptance repair."
+    },
+    {
+      "number": 8,
+      "type": "pull_request",
+      "title": "Add deep json comparison",
+      "url": "https://github.com/devhelmhq/mcp-recorder/pull/8",
+      "created_at": "2026-03-01T20:55:04Z",
+      "state": "closed",
+      "merged_at": "2026-03-01T21:00:02Z",
+      "merge_commit_sha": "c0e41676ef640dbb6a150723a3f13ffb3422b563",
+      "decision": "exclude_from_repaired_acceptance_defect_cohort",
+      "exclusion_code": "new_comparison_feature_not_repair",
+      "rationale": "Adds structural comparison of JSON strings and ignore paths. Relevant normalization/false-alarm control candidate, but not a documented missing-coverage or false-pass repair."
+    },
+    {
+      "number": 9,
+      "type": "pull_request",
+      "title": "Add stdio transport support",
+      "url": "https://github.com/devhelmhq/mcp-recorder/pull/9",
+      "created_at": "2026-03-03T20:27:10Z",
+      "state": "closed",
+      "merged_at": "2026-03-03T20:32:12Z",
+      "merge_commit_sha": "f2ba2979bf1e89a8562027148973b97bf6918872",
+      "decision": "exclude_from_repaired_acceptance_defect_cohort",
+      "exclusion_code": "documented_applicability_behavior",
+      "rationale": "Adds stdio transport and intentionally skips HTTP lifecycle interactions for stdio. Source returns passed=True for skipped lifecycle entries; no repaired native defect identified."
+    },
+    {
+      "number": 10,
+      "type": "pull_request",
+      "title": "Increase stdio stream buffer size",
+      "url": "https://github.com/devhelmhq/mcp-recorder/pull/10",
+      "created_at": "2026-03-04T08:53:34Z",
+      "state": "closed",
+      "merged_at": "2026-03-04T08:54:35Z",
+      "merge_commit_sha": "a83d5859d0f1f6aca15bd2ab3131aa1122c69fa1",
+      "decision": "exclude_from_repaired_acceptance_defect_cohort",
+      "exclusion_code": "transport_capacity_outside_acceptance_defect",
+      "rationale": "Fixes stdio stream capacity for responses above default 64KB. Source repair is the subprocess stream-reader limit; no reported silent acceptance or checker omission. Old runtime outcome not executed."
+    },
+    {
+      "number": 11,
+      "type": "pull_request",
+      "title": "Fix httpx logger level",
+      "url": "https://github.com/devhelmhq/mcp-recorder/pull/11",
+      "created_at": "2026-03-05T13:52:08Z",
+      "state": "closed",
+      "merged_at": "2026-03-05T13:52:50Z",
+      "merge_commit_sha": "992e6836e8f9afbbfe9e0ae3d34adbbb1f259e66",
+      "decision": "exclude_from_repaired_acceptance_defect_cohort",
+      "exclusion_code": "logging_outside_acceptance_defect",
+      "rationale": "Changes httpx logger level; no acceptance/reporting result change documented."
+    },
+    {
+      "number": 12,
+      "type": "pull_request",
+      "title": "Add hero gif",
+      "url": "https://github.com/devhelmhq/mcp-recorder/pull/12",
+      "created_at": "2026-03-05T14:10:54Z",
+      "state": "closed",
+      "merged_at": "2026-03-05T14:11:03Z",
+      "merge_commit_sha": "3add6bdb3bad1b9635e06669ed0f297504501405",
+      "decision": "exclude_from_repaired_acceptance_defect_cohort",
+      "exclusion_code": "outside_consumer_obligation",
+      "rationale": "Adds hero animation asset."
+    },
+    {
+      "number": 13,
+      "type": "pull_request",
+      "title": "Add env var interpolation",
+      "url": "https://github.com/devhelmhq/mcp-recorder/pull/13",
+      "created_at": "2026-03-06T10:51:37Z",
+      "state": "closed",
+      "merged_at": "2026-03-06T10:53:42Z",
+      "merge_commit_sha": "44803e1cb47d7d4bb0b8dbd490550a3367eff674",
+      "decision": "exclude_from_repaired_acceptance_defect_cohort",
+      "exclusion_code": "new_configuration_feature_not_repair",
+      "rationale": "Adds environment-variable interpolation with missing-variable errors; no documented historical acceptance/reporting repair."
+    },
+    {
+      "number": 14,
+      "type": "issue",
+      "title": "TS cassette converter between our formats?",
+      "url": "https://github.com/devhelmhq/mcp-recorder/issues/14",
+      "created_at": "2026-03-20T02:13:26Z",
+      "state": "open",
+      "merged_at": null,
+      "merge_commit_sha": null,
+      "decision": "exclude_from_repaired_acceptance_defect_cohort",
+      "exclusion_code": "unimplemented_interoperability_proposal",
+      "rationale": "Open TypeScript cassette-format converter proposal; no usable repaired revision."
+    },
+    {
+      "number": 15,
+      "type": "pull_request",
+      "title": "deps: update uv-build requirement from <0.9.0,>=0.8.19 to >=0.8.19,<0.12.0",
+      "url": "https://github.com/devhelmhq/mcp-recorder/pull/15",
+      "created_at": "2026-03-24T09:35:17Z",
+      "state": "open",
+      "merged_at": null,
+      "merge_commit_sha": "e0bc484ea3b700da845fe53c8dac474f3094203c",
+      "decision": "exclude_from_repaired_acceptance_defect_cohort",
+      "exclusion_code": "unmerged_dependency_update",
+      "rationale": "Open uv-build requirement update; verify search term appears in third-party release notes."
+    }
+  ],
+  "main_commits": [
+    {
+      "sha": "44803e1cb47d7d4bb0b8dbd490550a3367eff674",
+      "date": "2026-03-06T10:53:41Z",
+      "message": "Add env var interpolation (#13)"
+    },
+    {
+      "sha": "22e8ccaff2e05c8154d60498a84071c94c9263be",
+      "date": "2026-03-05T17:28:56Z",
+      "message": "Use long dash"
+    },
+    {
+      "sha": "9258f17b5eb2c5f30461faaf372567274acc7423",
+      "date": "2026-03-05T17:28:29Z",
+      "message": "Fix readme"
+    },
+    {
+      "sha": "fc8e159d161235b886b679f6fd123cee05af28fa",
+      "date": "2026-03-05T14:15:18Z",
+      "message": "Fix readme"
+    },
+    {
+      "sha": "3add6bdb3bad1b9635e06669ed0f297504501405",
+      "date": "2026-03-05T14:11:03Z",
+      "message": "Add hero gif (#12)"
+    },
+    {
+      "sha": "992e6836e8f9afbbfe9e0ae3d34adbbb1f259e66",
+      "date": "2026-03-05T13:52:49Z",
+      "message": "Fix httpx logger level (#11)"
+    },
+    {
+      "sha": "a83d5859d0f1f6aca15bd2ab3131aa1122c69fa1",
+      "date": "2026-03-04T08:54:35Z",
+      "message": "Increase stdio stream buffer size (#10)"
+    },
+    {
+      "sha": "f2ba2979bf1e89a8562027148973b97bf6918872",
+      "date": "2026-03-03T20:32:12Z",
+      "message": "Add stdio transport support (#9)\n\n* Add stdio transport support\n\n* Fix"
+    },
+    {
+      "sha": "c0e41676ef640dbb6a150723a3f13ffb3422b563",
+      "date": "2026-03-01T21:00:02Z",
+      "message": "Add deep json comparison (#8)"
+    },
+    {
+      "sha": "c428e9c43dd95882b11b592502ed133cbf6c15af",
+      "date": "2026-03-01T20:22:57Z",
+      "message": "Add record-scenarios command (#7)\n\n* Add record-scenarios command\n\n* Update readme."
+    },
+    {
+      "sha": "39b3523b26176decbeb8e9aa7cc258ca0356e0c6",
+      "date": "2026-02-26T22:33:03Z",
+      "message": "Fix contributing URL"
+    },
+    {
+      "sha": "8513dd84d772f545e3cdd85961f8817470e1e058",
+      "date": "2026-02-26T21:45:38Z",
+      "message": "Fix CI badge link in README.md\n\nUpdate CI badge link to the correct repository."
+    },
+    {
+      "sha": "38e6b5e079c878a20207190d7cd29032de5485eb",
+      "date": "2026-02-24T09:42:57Z",
+      "message": "Merge pull request #3 from devhelmhq/add-dependabot-ci-md-files\n\nAdd template files, dependabot CI"
+    },
+    {
+      "sha": "982a36202988c6183bf27a2aa288da1716944279",
+      "date": "2026-02-24T09:41:19Z",
+      "message": "Add template files, dependabot CI"
+    },
+    {
+      "sha": "34172328b7a1a3e5e5905e81b28e1b105d1b8ab3",
+      "date": "2026-02-24T08:42:23Z",
+      "message": "Add Pypi publish workflow"
+    },
+    {
+      "sha": "5bf6bb7af3ffe136dd2f2ba10d7ee6672349a957",
+      "date": "2026-02-24T08:35:16Z",
+      "message": "Fix package versioning"
+    },
+    {
+      "sha": "63c048e776e0d98eeb1650cfab620c167fcca088",
+      "date": "2026-02-18T21:10:28Z",
+      "message": "Update readme"
+    },
+    {
+      "sha": "b566c61c72d194350853174d1d80222476a27748",
+      "date": "2026-02-18T20:50:14Z",
+      "message": "Add unit, integration tests"
+    },
+    {
+      "sha": "ef0fd2f017e0f9df3c274f54d7d9d7d54e1f55a7",
+      "date": "2026-02-18T20:36:47Z",
+      "message": "Add pytest plugin"
+    },
+    {
+      "sha": "c30b0ee770391951970d165b5573d241c8174872",
+      "date": "2026-02-18T20:01:01Z",
+      "message": "Merge pull request #2 from devhelmhq/add-scrubber-verifier\n\nAdd scrubber, verifier"
+    },
+    {
+      "sha": "3a68d378fdad923c32c0c8ebf8e205d3da372ea3",
+      "date": "2026-02-18T19:58:27Z",
+      "message": "Add scrubber, verifier"
+    },
+    {
+      "sha": "ab0d5bd01353d9def8a1c6277eb78a231b31e89b",
+      "date": "2026-02-17T20:55:26Z",
+      "message": "Merge pull request #1 from devhelmhq/devhelm/add-github-ci-check-action\n\nAdd CI check action"
+    },
+    {
+      "sha": "db8230bdbe7c31df8dc05f8d10b49ee2d24f10c6",
+      "date": "2026-02-17T20:54:48Z",
+      "message": "Fix StrEnum lint"
+    },
+    {
+      "sha": "22ca2b46c12db25ecf5954dd0001082d5e4dde64",
+      "date": "2026-02-17T20:53:29Z",
+      "message": "Add CI check action"
+    },
+    {
+      "sha": "a83c9c4595376fcb11b0dc153cf27e5c3f6b3d14",
+      "date": "2026-02-17T20:49:33Z",
+      "message": "Add matcher, replayer"
+    },
+    {
+      "sha": "1b5f378cf38cacc4f6294ad745677533b728990e",
+      "date": "2026-02-17T20:33:04Z",
+      "message": "Refactor cassette format"
+    },
+    {
+      "sha": "f5a425fde4057ba400232a66494f08ebe1dd03e9",
+      "date": "2026-02-17T20:03:13Z",
+      "message": "Add test server mock"
+    },
+    {
+      "sha": "8484be2a5ac67ef3dc51d48169ead1640825b655",
+      "date": "2026-02-17T19:17:51Z",
+      "message": "Implement recording approach"
+    },
+    {
+      "sha": "1bd234fa9b5f45c9e860d258613ddfd1b8166c03",
+      "date": "2026-02-16T19:15:20Z",
+      "message": "Update the initial readme"
+    },
+    {
+      "sha": "ce6f9163433e2d081564dc1389b717718faef157",
+      "date": "2026-02-16T18:43:16Z",
+      "message": "Add pre-commit hooks"
+    },
+    {
+      "sha": "ad61af897649c67285a7b17c7e0bcd1e09ded829",
+      "date": "2026-02-16T18:41:50Z",
+      "message": "Init repository"
+    }
+  ],
+  "releases": [
+    {
+      "tag": "v0.5.0",
+      "url": "https://github.com/devhelmhq/mcp-recorder/releases/tag/v0.5.0",
+      "created_at": "2026-03-06T10:53:41Z",
+      "published_at": "2026-03-06T10:55:08Z",
+      "body": "## What's Changed\n* Add hero gif by @caballeto in https://github.com/devhelmhq/mcp-recorder/pull/12\n* Add env var interpolation by @caballeto in https://github.com/devhelmhq/mcp-recorder/pull/13\n\n\n**Full Changelog**: https://github.com/devhelmhq/mcp-recorder/compare/v0.4.2...v0.5.0"
+    },
+    {
+      "tag": "v0.4.2",
+      "url": "https://github.com/devhelmhq/mcp-recorder/releases/tag/v0.4.2",
+      "created_at": "2026-03-05T13:52:49Z",
+      "published_at": "2026-03-05T13:54:13Z",
+      "body": "## What's Changed\n* Fix httpx logger level by @caballeto in https://github.com/devhelmhq/mcp-recorder/pull/11\n\n\n**Full Changelog**: https://github.com/devhelmhq/mcp-recorder/compare/v0.4.1...v0.4.2"
+    },
+    {
+      "tag": "v0.4.1",
+      "url": "https://github.com/devhelmhq/mcp-recorder/releases/tag/v0.4.1",
+      "created_at": "2026-03-04T08:54:35Z",
+      "published_at": "2026-03-04T08:55:51Z",
+      "body": "## What's Changed\n* Increase stdio stream buffer size by @caballeto in https://github.com/devhelmhq/mcp-recorder/pull/10\n\n\n**Full Changelog**: https://github.com/devhelmhq/mcp-recorder/compare/v0.4.0...v0.4.1"
+    },
+    {
+      "tag": "v0.4.0",
+      "url": "https://github.com/devhelmhq/mcp-recorder/releases/tag/v0.4.0",
+      "created_at": "2026-03-03T20:32:12Z",
+      "published_at": "2026-03-03T20:34:06Z",
+      "body": "## What's Changed\n* Add stdio transport support by @caballeto in https://github.com/devhelmhq/mcp-recorder/pull/9\n\n\n**Full Changelog**: https://github.com/devhelmhq/mcp-recorder/compare/v0.3.0...v0.4.0"
+    },
+    {
+      "tag": "v0.3.0",
+      "url": "https://github.com/devhelmhq/mcp-recorder/releases/tag/v0.3.0",
+      "created_at": "2026-03-01T21:00:02Z",
+      "published_at": "2026-03-01T21:01:10Z",
+      "body": "## What's Changed\n* Add deep json comparison by @caballeto in https://github.com/devhelmhq/mcp-recorder/pull/8\n\n\n**Full Changelog**: https://github.com/devhelmhq/mcp-recorder/compare/v0.2.0...v0.3.0"
+    },
+    {
+      "tag": "v0.2.0",
+      "url": "https://github.com/devhelmhq/mcp-recorder/releases/tag/v0.2.0",
+      "created_at": "2026-03-01T20:22:57Z",
+      "published_at": "2026-03-01T20:24:39Z",
+      "body": "## What's Changed\n* Add template files, dependabot CI by @caballeto in https://github.com/devhelmhq/mcp-recorder/pull/3\n* Add record-scenarios command by @caballeto in https://github.com/devhelmhq/mcp-recorder/pull/7\n\n\n**Full Changelog**: https://github.com/devhelmhq/mcp-recorder/compare/v0.1.0...v0.2.0"
+    },
+    {
+      "tag": "v0.1.0",
+      "url": "https://github.com/devhelmhq/mcp-recorder/releases/tag/v0.1.0",
+      "created_at": "2026-02-24T08:42:23Z",
+      "published_at": "2026-02-24T08:51:25Z",
+      "body": "## What's Changed\n* Add CI check action by @caballeto in https://github.com/devhelmhq/mcp-recorder/pull/1\n* Add scrubber, verifier by @caballeto in https://github.com/devhelmhq/mcp-recorder/pull/2\n\n## New Contributors\n* @caballeto made their first contribution in https://github.com/devhelmhq/mcp-recorder/pull/1\n\n**Full Changelog**: https://github.com/devhelmhq/mcp-recorder/commits/v0.1.0"
+    }
+  ],
+  "source_anchors": [
+    {
+      "pr": 8,
+      "url": "https://github.com/devhelmhq/mcp-recorder/pull/8",
+      "created_at": "2026-03-01T20:55:04Z",
+      "merged_at": "2026-03-01T21:00:02Z",
+      "base": "c428e9c43dd95882b11b592502ed133cbf6c15af",
+      "head": "4ee572650a1a5493370b78918d0ec69750856bf9",
+      "merge": "c0e41676ef640dbb6a150723a3f13ffb3422b563"
+    },
+    {
+      "pr": 9,
+      "url": "https://github.com/devhelmhq/mcp-recorder/pull/9",
+      "created_at": "2026-03-03T20:27:10Z",
+      "merged_at": "2026-03-03T20:32:12Z",
+      "base": "c0e41676ef640dbb6a150723a3f13ffb3422b563",
+      "head": "d6d66dc64864961e18bb15450ad91ec29fb481b6",
+      "merge": "f2ba2979bf1e89a8562027148973b97bf6918872"
+    },
+    {
+      "pr": 10,
+      "url": "https://github.com/devhelmhq/mcp-recorder/pull/10",
+      "created_at": "2026-03-04T08:53:34Z",
+      "merged_at": "2026-03-04T08:54:35Z",
+      "base": "f2ba2979bf1e89a8562027148973b97bf6918872",
+      "head": "8886f8e27ab928c4ae6a9446f243fddd4b3225dd",
+      "merge": "a83d5859d0f1f6aca15bd2ab3131aa1122c69fa1"
+    }
+  ],
+  "proposed_applicability_control": {
+    "status": "PROPOSAL_SOURCE_ONLY_NOT_EXECUTED_NOT_NATIVE_DEFECT",
+    "source_revision": "44803e1cb47d7d4bb0b8dbd490550a3367eff674",
+    "source_url": "https://github.com/devhelmhq/mcp-recorder/blob/44803e1cb47d7d4bb0b8dbd490550a3367eff674/src/mcp_recorder/verifier.py#L137-L165",
+    "pr_url": "https://github.com/devhelmhq/mcp-recorder/pull/9",
+    "documented_behavior": "PR9 explicitly says verifier skips HTTP lifecycle interactions for stdio targets.",
+    "source_lines": {
+      "from": 156,
+      "through": 164,
+      "text": "                    results.append(\n                        InteractionResult(\n                            index=idx + 1,\n                            method=f\"{interaction.http_method} {interaction.http_path}\",\n                            passed=True,\n                        )\n                    )\n                    logger.info(\"[%d] %s (lifecycle, skipped)\", idx + 1, method_name)\n                continue"
+    },
+    "planned_pair": "Run one cassette with HTTP lifecycle requirement against fake HTTP-capable and non-HTTP transports; record applicability in consumer obligation before inspecting results.",
+    "expected_boundary": "A stdio target need not implement HTTP lifecycle. Native passed=True for its skipped lifecycle entry cannot by itself prove an HTTP requirement. This is only a proposed applicability control and may be outside the consumer obligation.",
+    "existing_parser_limit": "The prior mcp-contracts parsers are report-format/profile specific and do not support recorder VerifyResult; a separate declared adapter would be needed. No measured cross-tool false acceptance claimed."
+  },
+  "outcome": {
+    "eligible_repaired_acceptance_defects": 0,
+    "executed_cases": 0,
+    "third_family_requirement_met": false,
+    "next_step": "Retain negative screening outcome. If cohort expanded to other tools, record a protocol amendment and candidate set before screening; do not silently replace this family to force another success."
+  }
+}
