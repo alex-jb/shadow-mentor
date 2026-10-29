@@ -1,0 +1,6 @@
+# Only the unchanged _types.py and verifier.py import lane; not a full package lock.
+pydantic==2.14.1
+pydantic-core==2.50.1
+annotated-types==0.8.0
+typing-extensions==4.16.0
+typing-inspection==0.4.4

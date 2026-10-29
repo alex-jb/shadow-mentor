@@ -25,7 +25,7 @@ AGENTVERIFY 的两组官方日期仍冲突：[独立 CFP](https://agentverify202
 | mcp-contracts annotations 漏报 | 发布包 0.8.3／0.9.0；2 次 snapshot＋12 次 check；显式失败阈值与显示过滤 | 发现完整仍可能漏报变化。warning 的合法退出码取决于实际策略；严格解析消除一次错误接受，同时额外暂缓一次策略允许的更改 | 未调用工具，不能推断真实业务动作风险；不能把保守暂缓当成免费收益 |
 | conformance PR442 未触发目标限制 | 两个固定 Git revision 的原始 checker 局部逻辑；7 个人工输入×2 版本 | 未观察到应检查的请求时，旧逻辑报 SUCCESS；修复标记 untestable。未验证必须与已证实违规区分 | 未执行完整 CLI／HTTP／SDK／suite；人工 RPC stub 不代表完整协议合规服务器 |
 
-结果和源码边界见 [跨工具报告](./2026-10-29-cross-tool-followup.md)。原生空 suite 是合法选择对照，不计成第四个缺陷。本日对计划内第三工具族 mcp-recorder 的 [源码筛选](../../research/evidence-study-20261029c/README.md) 没有找到符合条件的已修复验收缺陷，未安装或执行，不增加案例数。已保留查询、项目清单和排除理由，不能只保存成功复现。
+结果和源码边界见 [跨工具报告](./2026-10-29-cross-tool-followup.md)。原生空 suite 是合法选择对照，不计成第四个缺陷。本日对计划内第三工具族 mcp-recorder 的 [源码筛选](../../research/evidence-study-20261029c/README.md) 没有找到符合条件的已修复验收缺陷，已保留查询、项目清单和排除理由。后续已用原始模块和人工 transport 执行适用性对照，但没有增加已修复缺陷数量；见 [本轮升级](./2026-10-29-runner-and-scope-upgrade.md)。
 
 ## 稿件推进安排
 

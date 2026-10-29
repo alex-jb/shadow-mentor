@@ -1,0 +1,56 @@
+{
+  "repository": "devhelmhq/mcp-recorder",
+  "revision": "44803e1cb47d7d4bb0b8dbd490550a3367eff674",
+  "project_version_at_revision": "0.5.0",
+  "source_retrieved_at_utc": "2026-10-29T18:09:49.278257+00:00",
+  "files": [
+    {
+      "path": "src/mcp_recorder/verifier.py",
+      "local_path": "sources/src/mcp_recorder/verifier.py",
+      "size": 10194,
+      "git_blob_sha1": "d39d406f325efd86a5306a940ad4768d53689043",
+      "sha256": "0d4a37ce690a6a3d0e366056de3ab8514f5a5afe79839bfd0a12711e668c8f4e",
+      "source_url": "https://raw.githubusercontent.com/devhelmhq/mcp-recorder/44803e1cb47d7d4bb0b8dbd490550a3367eff674/src/mcp_recorder/verifier.py"
+    },
+    {
+      "path": "src/mcp_recorder/_types.py",
+      "local_path": "sources/src/mcp_recorder/_types.py",
+      "size": 3850,
+      "git_blob_sha1": "125c1f0492adeb0444e28caaf2b24dd856f1033d",
+      "sha256": "145ebb6272cfb655ec48cb223282024fd0a5f7aedd479a0d56d99410b15f360d",
+      "source_url": "https://raw.githubusercontent.com/devhelmhq/mcp-recorder/44803e1cb47d7d4bb0b8dbd490550a3367eff674/src/mcp_recorder/_types.py"
+    },
+    {
+      "path": "src/mcp_recorder/transport.py",
+      "local_path": "sources/src/mcp_recorder/transport.py",
+      "size": 12462,
+      "git_blob_sha1": "0e22557a022a0c3d03ee6b468dae9812f2a6ebc8",
+      "sha256": "e74454582f2c6b4f7e7892ffb06f19cdec89ce963d2651bab8c46c84503a947f",
+      "source_url": "https://raw.githubusercontent.com/devhelmhq/mcp-recorder/44803e1cb47d7d4bb0b8dbd490550a3367eff674/src/mcp_recorder/transport.py"
+    },
+    {
+      "path": "src/mcp_recorder/__init__.py",
+      "local_path": "sources/src/mcp_recorder/__init__.py",
+      "size": 286,
+      "git_blob_sha1": "0be1a6cd84bcffb4e6a59ca64e61ebb51ed40394",
+      "sha256": "26ee902e43955156804af05827a8cf9d6897eb6274b7320855bde58724248d1f",
+      "source_url": "https://raw.githubusercontent.com/devhelmhq/mcp-recorder/44803e1cb47d7d4bb0b8dbd490550a3367eff674/src/mcp_recorder/__init__.py"
+    },
+    {
+      "path": "pyproject.toml",
+      "local_path": "sources/pyproject.toml",
+      "size": 1940,
+      "git_blob_sha1": "35d1c3f500d962e3e1e42ccca4970d30793e6959",
+      "sha256": "3ac78df5e5bc840f0608d25ae04fa8247684c5716cb2f5ec6bbac0515fdda455",
+      "source_url": "https://raw.githubusercontent.com/devhelmhq/mcp-recorder/44803e1cb47d7d4bb0b8dbd490550a3367eff674/pyproject.toml"
+    },
+    {
+      "path": "LICENSE",
+      "local_path": "sources/LICENSE",
+      "size": 1064,
+      "git_blob_sha1": "4d199ae29e4c2064fa3bc1356b754523ca007ccb",
+      "sha256": "a781a30d3018d1b9ba98d1dadc9d411e7c0cd5b37866f48676e253671c13ff56",
+      "source_url": "https://raw.githubusercontent.com/devhelmhq/mcp-recorder/44803e1cb47d7d4bb0b8dbd490550a3367eff674/LICENSE"
+    }
+  ]
+}

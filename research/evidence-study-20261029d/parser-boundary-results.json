@@ -1,0 +1,378 @@
+{
+  "schema": "shadow-authored-parser-boundary-analysis/1",
+  "created_at_utc": "2026-10-29T18:12:58.859002+00:00",
+  "bindings": {
+    "source_native_results_sha256": "d13d7cf0263d4442573209fdbe02535a788a45e8715e105dbbaf52b4d3382bc7",
+    "frozen_parser_sha256": "7412c6cf1005f4f55d9f5a198997bdd169129a358f7d9abd23390462d697c1e3",
+    "v2_parser_sha256": "698b9cbc1a2b3d2a6b1661e62442e830cfdb68d48954b7bb58d6eb675ad462f8",
+    "driver_sha256": "fb29041ac148a0c1dd6dc169d727ffe2c94fb7a2496ebf803d11ea50c2f4a813"
+  },
+  "execution_boundary": "Re-analysis of twelve saved native check outputs and seven authored report/process controls; no new native CLI executions.",
+  "new_native_or_repaired_defects": 0,
+  "held_out": false,
+  "known_costs": [
+    "One allowed warning-only change remains withheld in the original twelve-record cohort.",
+    "Quoted discovery-error wording still triggers the inherited stderr regex and withholds a healthy authored control.",
+    "Optional absent runner_state cannot authenticate that stdout belongs to the current run."
+  ],
+  "counts": {
+    "authored_controls": 7,
+    "saved_native_outputs": 12,
+    "saved_native_output_decisions_changed": 0
+  },
+  "authored_controls": [
+    {
+      "authored_case": "retained_output_after_runner_skip",
+      "input_origin": "authored mutation of a saved healthy report; not a native command execution",
+      "process": {
+        "exit_code": 0,
+        "timed_out": false,
+        "runner_state": "SKIPPED"
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:55.280Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:55.509Z\"\n    },\n    \"generatedAt\": \"2026-10-29T05:05:55.510Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 0\n  },\n  \"changes\": []\n}\n",
+        "stderr": "Connecting to MCP server...\nConnected to shadow-contract-fixture v1.0.0\nContract unchanged\n"
+      },
+      "policy": {
+        "fail_on": "warning",
+        "display_severity": "safe"
+      },
+      "authored_expected_acceptance": "WITHHOLD",
+      "frozen_v1": {
+        "process_state": "COMPLETE",
+        "report_state": "VALID",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "NATIVE_REPORT_CONSISTENT_WITH_POLICY"
+      },
+      "revision_v2": {
+        "process_state": "SKIPPED",
+        "report_state": "UNINTERPRETED",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "RUNNER_RECORDED_SKIPPED"
+      }
+    },
+    {
+      "authored_case": "retained_output_after_runner_error",
+      "input_origin": "authored mutation of a saved healthy report; not a native command execution",
+      "process": {
+        "exit_code": 0,
+        "timed_out": false,
+        "runner_state": "ERROR"
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:55.280Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:55.509Z\"\n    },\n    \"generatedAt\": \"2026-10-29T05:05:55.510Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 0\n  },\n  \"changes\": []\n}\n",
+        "stderr": "Connecting to MCP server...\nConnected to shadow-contract-fixture v1.0.0\nContract unchanged\n"
+      },
+      "policy": {
+        "fail_on": "warning",
+        "display_severity": "safe"
+      },
+      "authored_expected_acceptance": "WITHHOLD",
+      "frozen_v1": {
+        "process_state": "COMPLETE",
+        "report_state": "VALID",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "NATIVE_REPORT_CONSISTENT_WITH_POLICY"
+      },
+      "revision_v2": {
+        "process_state": "ERROR",
+        "report_state": "UNINTERPRETED",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "RUNNER_RECORDED_ERROR"
+      }
+    },
+    {
+      "authored_case": "duplicate_summary_key",
+      "input_origin": "authored mutation of a saved healthy report; not a native command execution",
+      "process": {
+        "exit_code": 0,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\"summary\":{\"total\":1},\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:55.280Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:55.509Z\"\n    },\n    \"generatedAt\": \"2026-10-29T05:05:55.510Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 0\n  },\n  \"changes\": []\n}\n",
+        "stderr": "Connecting to MCP server...\nConnected to shadow-contract-fixture v1.0.0\nContract unchanged\n"
+      },
+      "policy": {
+        "fail_on": "warning",
+        "display_severity": "safe"
+      },
+      "authored_expected_acceptance": "WITHHOLD",
+      "frozen_v1": {
+        "process_state": "COMPLETE",
+        "report_state": "VALID",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "NATIVE_REPORT_CONSISTENT_WITH_POLICY"
+      },
+      "revision_v2": {
+        "process_state": "COMPLETE",
+        "report_state": "INVALID",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "AMBIGUOUS_OR_INVALID_JSON_REPORT"
+      }
+    },
+    {
+      "authored_case": "nonfinite_unused_value",
+      "input_origin": "authored mutation of a saved healthy report; not a native command execution",
+      "process": {
+        "exit_code": 0,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\"extra\":NaN,\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:55.280Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:55.509Z\"\n    },\n    \"generatedAt\": \"2026-10-29T05:05:55.510Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 0\n  },\n  \"changes\": []\n}\n",
+        "stderr": "Connecting to MCP server...\nConnected to shadow-contract-fixture v1.0.0\nContract unchanged\n"
+      },
+      "policy": {
+        "fail_on": "warning",
+        "display_severity": "safe"
+      },
+      "authored_expected_acceptance": "WITHHOLD",
+      "frozen_v1": {
+        "process_state": "COMPLETE",
+        "report_state": "VALID",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "NATIVE_REPORT_CONSISTENT_WITH_POLICY"
+      },
+      "revision_v2": {
+        "process_state": "COMPLETE",
+        "report_state": "INVALID",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "AMBIGUOUS_OR_INVALID_JSON_REPORT"
+      }
+    },
+    {
+      "authored_case": "same_hash_with_warning",
+      "input_origin": "authored mutation of a saved healthy report; not a native command execution",
+      "process": {
+        "exit_code": 0,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\"meta\": {\"before\": {\"serverName\": \"shadow-contract-fixture\", \"serverVersion\": \"1.0.0\", \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\", \"capturedAt\": \"2026-10-29T05:05:55.280Z\"}, \"after\": {\"serverName\": \"shadow-contract-fixture\", \"serverVersion\": \"1.0.0\", \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\", \"capturedAt\": \"2026-10-29T05:05:55.509Z\"}, \"generatedAt\": \"2026-10-29T05:05:55.510Z\", \"tool\": \"mcpdiff\"}, \"summary\": {\"total\": 1, \"breaking\": 0, \"warning\": 1, \"safe\": 0}, \"changes\": [{\"severity\": \"warning\", \"path\": \"tool.alpha.annotations\"}]}",
+        "stderr": "Connecting to MCP server...\nConnected to shadow-contract-fixture v1.0.0\nContract unchanged\n"
+      },
+      "policy": {
+        "fail_on": "breaking",
+        "display_severity": "safe"
+      },
+      "authored_expected_acceptance": "WITHHOLD",
+      "frozen_v1": {
+        "process_state": "COMPLETE",
+        "report_state": "VALID",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "NATIVE_REPORT_CONSISTENT_WITH_POLICY"
+      },
+      "revision_v2": {
+        "process_state": "COMPLETE",
+        "report_state": "INCONSISTENT",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "UNCHANGED_HASH_WITH_CLASSIFIED_CHANGE"
+      }
+    },
+    {
+      "authored_case": "quoted_discovery_error_text",
+      "input_origin": "authored mutation of a saved healthy report; not a native command execution",
+      "process": {
+        "exit_code": 0,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:55.280Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:55.509Z\"\n    },\n    \"generatedAt\": \"2026-10-29T05:05:55.510Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 0\n  },\n  \"changes\": []\n}\n",
+        "stderr": "note: fixture text contains \"Failed to list tools\"; no command failed\n"
+      },
+      "policy": {
+        "fail_on": "warning",
+        "display_severity": "safe"
+      },
+      "authored_expected_acceptance": "ACCEPT",
+      "frozen_v1": {
+        "process_state": "ERROR",
+        "report_state": "VALID",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "DISCOVERY_ERROR_IN_DIAGNOSTIC"
+      },
+      "revision_v2": {
+        "process_state": "ERROR",
+        "report_state": "VALID",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "DISCOVERY_ERROR_IN_DIAGNOSTIC"
+      }
+    },
+    {
+      "authored_case": "healthy_capture_unchanged",
+      "input_origin": "authored mutation of a saved healthy report; not a native command execution",
+      "process": {
+        "exit_code": 0,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:55.280Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:55.509Z\"\n    },\n    \"generatedAt\": \"2026-10-29T05:05:55.510Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 0\n  },\n  \"changes\": []\n}\n",
+        "stderr": "Connecting to MCP server...\nConnected to shadow-contract-fixture v1.0.0\nContract unchanged\n"
+      },
+      "policy": {
+        "fail_on": "warning",
+        "display_severity": "safe"
+      },
+      "authored_expected_acceptance": "ACCEPT",
+      "frozen_v1": {
+        "process_state": "COMPLETE",
+        "report_state": "VALID",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "NATIVE_REPORT_CONSISTENT_WITH_POLICY"
+      },
+      "revision_v2": {
+        "process_state": "COMPLETE",
+        "report_state": "VALID",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "NATIVE_REPORT_CONSISTENT_WITH_POLICY"
+      }
+    }
+  ],
+  "saved_native_reanalysis": [
+    {
+      "record_id": "0.8.3/unchanged_warning_policy",
+      "identical_output": true,
+      "v2": {
+        "process_state": "COMPLETE",
+        "report_state": "VALID",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "NATIVE_REPORT_CONSISTENT_WITH_POLICY"
+      }
+    },
+    {
+      "record_id": "0.8.3/annotation_warning_policy",
+      "identical_output": true,
+      "v2": {
+        "process_state": "COMPLETE",
+        "report_state": "INCONSISTENT",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "CHANGED_HASH_WITHOUT_CLASSIFIED_CHANGE"
+      }
+    },
+    {
+      "record_id": "0.8.3/annotation_breaking_policy",
+      "identical_output": true,
+      "v2": {
+        "process_state": "COMPLETE",
+        "report_state": "INCONSISTENT",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "CHANGED_HASH_WITHOUT_CLASSIFIED_CHANGE"
+      }
+    },
+    {
+      "record_id": "0.8.3/description_warning_policy",
+      "identical_output": true,
+      "v2": {
+        "process_state": "COMPLETE",
+        "report_state": "VALID",
+        "supported_verdict": "FAIL",
+        "acceptance": "WITHHOLD",
+        "reason": "NATIVE_REPORT_CONSISTENT_WITH_POLICY"
+      }
+    },
+    {
+      "record_id": "0.8.3/description_breaking_policy",
+      "identical_output": true,
+      "v2": {
+        "process_state": "COMPLETE",
+        "report_state": "VALID",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "NATIVE_REPORT_CONSISTENT_WITH_POLICY"
+      }
+    },
+    {
+      "record_id": "0.8.3/required_schema_warning_policy",
+      "identical_output": true,
+      "v2": {
+        "process_state": "COMPLETE",
+        "report_state": "VALID",
+        "supported_verdict": "FAIL",
+        "acceptance": "WITHHOLD",
+        "reason": "NATIVE_REPORT_CONSISTENT_WITH_POLICY"
+      }
+    },
+    {
+      "record_id": "0.9.0/unchanged_warning_policy",
+      "identical_output": true,
+      "v2": {
+        "process_state": "COMPLETE",
+        "report_state": "VALID",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "NATIVE_REPORT_CONSISTENT_WITH_POLICY"
+      }
+    },
+    {
+      "record_id": "0.9.0/annotation_warning_policy",
+      "identical_output": true,
+      "v2": {
+        "process_state": "COMPLETE",
+        "report_state": "VALID",
+        "supported_verdict": "FAIL",
+        "acceptance": "WITHHOLD",
+        "reason": "NATIVE_REPORT_CONSISTENT_WITH_POLICY"
+      }
+    },
+    {
+      "record_id": "0.9.0/annotation_breaking_policy",
+      "identical_output": true,
+      "v2": {
+        "process_state": "COMPLETE",
+        "report_state": "VALID",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "NATIVE_REPORT_CONSISTENT_WITH_POLICY"
+      }
+    },
+    {
+      "record_id": "0.9.0/description_warning_policy",
+      "identical_output": true,
+      "v2": {
+        "process_state": "COMPLETE",
+        "report_state": "VALID",
+        "supported_verdict": "FAIL",
+        "acceptance": "WITHHOLD",
+        "reason": "NATIVE_REPORT_CONSISTENT_WITH_POLICY"
+      }
+    },
+    {
+      "record_id": "0.9.0/description_breaking_policy",
+      "identical_output": true,
+      "v2": {
+        "process_state": "COMPLETE",
+        "report_state": "VALID",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "NATIVE_REPORT_CONSISTENT_WITH_POLICY"
+      }
+    },
+    {
+      "record_id": "0.9.0/required_schema_warning_policy",
+      "identical_output": true,
+      "v2": {
+        "process_state": "COMPLETE",
+        "report_state": "VALID",
+        "supported_verdict": "FAIL",
+        "acceptance": "WITHHOLD",
+        "reason": "NATIVE_REPORT_CONSISTENT_WITH_POLICY"
+      }
+    }
+  ]
+}

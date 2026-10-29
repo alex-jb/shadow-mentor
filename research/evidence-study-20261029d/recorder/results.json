@@ -1,0 +1,821 @@
+{
+  "schema": "shadow-recorder-original-module-probe/1",
+  "executed_at_utc": "2026-10-29T18:12:58.018486+00:00",
+  "upstream": {
+    "repository": "devhelmhq/mcp-recorder",
+    "revision": "44803e1cb47d7d4bb0b8dbd490550a3367eff674",
+    "project_version": "0.5.0"
+  },
+  "execution_boundary": "Unmodified _types.py and verifier.py imported through an authored namespace package; API-supplied fake transports. No package __init__, CLI, real transport, HTTP/subprocess server, SDK or MCP conformance suite execution.",
+  "python": "3.12.14",
+  "dependencies": {
+    "pydantic": "2.14.1",
+    "pydantic-core": "2.50.1",
+    "annotated-types": "0.8.0",
+    "typing-extensions": "4.16.0",
+    "typing-inspection": "0.4.4"
+  },
+  "bindings": {
+    "driver_sha256": "8fa891b7a4cb18a9f681cabebb1a542c690d8f1ae02d3a66e90834e60fe0ea23",
+    "manifest_sha256": "82272ffb10fbdb199eba6ceac822cfde7cf0a38123c9f429ee2fa1ec3bad4045",
+    "dependency_pins_sha256": "2f32009d3929efe448277738b9af5c18857d02894521c10a6aa3f14630410809"
+  },
+  "guard": {
+    "network_and_subprocess_patches": [
+      "socket.connect",
+      "socket.connect_ex",
+      "socket.bind",
+      "socket.getaddrinfo",
+      "socket.create_connection",
+      "subprocess.Popen"
+    ],
+    "dns_block_positive_control": true,
+    "general_sandbox": false
+  },
+  "counts": {
+    "authored_cases": 11,
+    "native_verifier_invocations": 10,
+    "cassette_validation_rejections": 1,
+    "matched_authored_expectations": 11,
+    "new_or_repaired_defects": 0
+  },
+  "observed_controls": {
+    "identical_native_reports_for_200_skip_500": true,
+    "positive_lifecycle_observed_200": true,
+    "unsupported_lifecycle_not_invoked": true,
+    "mixed_rpc_invoked_but_lifecycle_not_invoked": true,
+    "500_observed_without_native_failure": true,
+    "empty_cassette_performs_no_operations": true,
+    "invalid_cassette_does_not_enter_transport": true
+  },
+  "rows": [
+    {
+      "case_id": "lifecycle_observed_200",
+      "input": {
+        "cassette": {
+          "version": "1.0",
+          "metadata": {
+            "recorded_at": "2026-10-29T00:00:00+00:00",
+            "transport_type": "http"
+          },
+          "interactions": [
+            {
+              "type": "lifecycle",
+              "http_method": "DELETE",
+              "http_path": "/mcp",
+              "response_status": 200
+            }
+          ]
+        },
+        "transport_class": "LifecycleTransport",
+        "transport_options": {}
+      },
+      "native_result": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "results": [
+          {
+            "index": 1,
+            "method": "DELETE /mcp",
+            "passed": true,
+            "expected": null,
+            "actual": null,
+            "diff": []
+          }
+        ]
+      },
+      "exception": null,
+      "transport_events": [
+        {
+          "kind": "context_enter"
+        },
+        {
+          "kind": "lifecycle",
+          "http_method": "DELETE",
+          "http_path": "/mcp",
+          "response_status": 200
+        },
+        {
+          "kind": "context_exit",
+          "exception_type": null
+        }
+      ],
+      "native_log": "[1] DELETE -> 200 (lifecycle)\n",
+      "expected_native": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0
+      },
+      "expected_exception": null,
+      "matched_authored_expectation": true
+    },
+    {
+      "case_id": "lifecycle_unsupported_skip",
+      "input": {
+        "cassette": {
+          "version": "1.0",
+          "metadata": {
+            "recorded_at": "2026-10-29T00:00:00+00:00",
+            "transport_type": "stdio"
+          },
+          "interactions": [
+            {
+              "type": "lifecycle",
+              "http_method": "DELETE",
+              "http_path": "/mcp",
+              "response_status": 200
+            }
+          ]
+        },
+        "transport_class": "MemoryTransport",
+        "transport_options": {}
+      },
+      "native_result": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "results": [
+          {
+            "index": 1,
+            "method": "DELETE /mcp",
+            "passed": true,
+            "expected": null,
+            "actual": null,
+            "diff": []
+          }
+        ]
+      },
+      "exception": null,
+      "transport_events": [
+        {
+          "kind": "context_enter"
+        },
+        {
+          "kind": "context_exit",
+          "exception_type": null
+        }
+      ],
+      "native_log": "[1] DELETE (lifecycle, skipped)\n",
+      "expected_native": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0
+      },
+      "expected_exception": null,
+      "matched_authored_expectation": true
+    },
+    {
+      "case_id": "rpc_pass_plus_lifecycle_skip",
+      "input": {
+        "cassette": {
+          "version": "1.0",
+          "metadata": {
+            "recorded_at": "2026-10-29T00:00:00+00:00",
+            "transport_type": "stdio"
+          },
+          "interactions": [
+            {
+              "type": "jsonrpc_request",
+              "request": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "tools/list"
+              },
+              "response": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "result": {
+                  "tools": []
+                }
+              }
+            },
+            {
+              "type": "lifecycle",
+              "http_method": "DELETE",
+              "http_path": "/mcp",
+              "response_status": 200
+            }
+          ]
+        },
+        "transport_class": "MemoryTransport",
+        "transport_options": {
+          "response": {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "result": {
+              "tools": []
+            }
+          }
+        }
+      },
+      "native_result": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0,
+        "results": [
+          {
+            "index": 1,
+            "method": "tools/list",
+            "passed": true,
+            "expected": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": []
+              }
+            },
+            "actual": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": []
+              }
+            },
+            "diff": []
+          },
+          {
+            "index": 2,
+            "method": "DELETE /mcp",
+            "passed": true,
+            "expected": null,
+            "actual": null,
+            "diff": []
+          }
+        ]
+      },
+      "exception": null,
+      "transport_events": [
+        {
+          "kind": "context_enter"
+        },
+        {
+          "kind": "request",
+          "request": {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "tools/list"
+          },
+          "response": {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "result": {
+              "tools": []
+            }
+          }
+        },
+        {
+          "kind": "context_exit",
+          "exception_type": null
+        }
+      ],
+      "native_log": "[1] tools/list -> pass\n[2] DELETE (lifecycle, skipped)\n",
+      "expected_native": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0
+      },
+      "expected_exception": null,
+      "matched_authored_expectation": true
+    },
+    {
+      "case_id": "lifecycle_observed_500",
+      "input": {
+        "cassette": {
+          "version": "1.0",
+          "metadata": {
+            "recorded_at": "2026-10-29T00:00:00+00:00",
+            "transport_type": "http"
+          },
+          "interactions": [
+            {
+              "type": "lifecycle",
+              "http_method": "DELETE",
+              "http_path": "/mcp",
+              "response_status": 200
+            }
+          ]
+        },
+        "transport_class": "LifecycleTransport",
+        "transport_options": {
+          "lifecycle_status": 500
+        }
+      },
+      "native_result": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "results": [
+          {
+            "index": 1,
+            "method": "DELETE /mcp",
+            "passed": true,
+            "expected": null,
+            "actual": null,
+            "diff": []
+          }
+        ]
+      },
+      "exception": null,
+      "transport_events": [
+        {
+          "kind": "context_enter"
+        },
+        {
+          "kind": "lifecycle",
+          "http_method": "DELETE",
+          "http_path": "/mcp",
+          "response_status": 500
+        },
+        {
+          "kind": "context_exit",
+          "exception_type": null
+        }
+      ],
+      "native_log": "[1] DELETE -> 500 (lifecycle)\n",
+      "expected_native": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0
+      },
+      "expected_exception": null,
+      "matched_authored_expectation": true
+    },
+    {
+      "case_id": "lifecycle_transport_error",
+      "input": {
+        "cassette": {
+          "version": "1.0",
+          "metadata": {
+            "recorded_at": "2026-10-29T00:00:00+00:00",
+            "transport_type": "http"
+          },
+          "interactions": [
+            {
+              "type": "lifecycle",
+              "http_method": "DELETE",
+              "http_path": "/mcp",
+              "response_status": 200
+            }
+          ]
+        },
+        "transport_class": "LifecycleTransport",
+        "transport_options": {
+          "lifecycle_error": true
+        }
+      },
+      "native_result": null,
+      "exception": {
+        "type": "ConnectionError",
+        "message": "authored lifecycle transport error",
+        "stage": "native_verify"
+      },
+      "transport_events": [
+        {
+          "kind": "context_enter"
+        },
+        {
+          "kind": "lifecycle",
+          "http_method": "DELETE",
+          "http_path": "/mcp",
+          "exception": {
+            "type": "ConnectionError",
+            "message": "authored lifecycle transport error"
+          }
+        },
+        {
+          "kind": "context_exit",
+          "exception_type": "ConnectionError"
+        }
+      ],
+      "native_log": "",
+      "expected_native": null,
+      "expected_exception": "ConnectionError",
+      "matched_authored_expectation": true
+    },
+    {
+      "case_id": "rpc_matching",
+      "input": {
+        "cassette": {
+          "version": "1.0",
+          "metadata": {
+            "recorded_at": "2026-10-29T00:00:00+00:00",
+            "transport_type": "stdio"
+          },
+          "interactions": [
+            {
+              "type": "jsonrpc_request",
+              "request": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "tools/list"
+              },
+              "response": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "result": {
+                  "tools": []
+                }
+              }
+            }
+          ]
+        },
+        "transport_class": "MemoryTransport",
+        "transport_options": {
+          "response": {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "result": {
+              "tools": []
+            }
+          }
+        }
+      },
+      "native_result": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0,
+        "results": [
+          {
+            "index": 1,
+            "method": "tools/list",
+            "passed": true,
+            "expected": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": []
+              }
+            },
+            "actual": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": []
+              }
+            },
+            "diff": []
+          }
+        ]
+      },
+      "exception": null,
+      "transport_events": [
+        {
+          "kind": "context_enter"
+        },
+        {
+          "kind": "request",
+          "request": {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "tools/list"
+          },
+          "response": {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "result": {
+              "tools": []
+            }
+          }
+        },
+        {
+          "kind": "context_exit",
+          "exception_type": null
+        }
+      ],
+      "native_log": "[1] tools/list -> pass\n",
+      "expected_native": {
+        "total": 1,
+        "passed": 1,
+        "failed": 0
+      },
+      "expected_exception": null,
+      "matched_authored_expectation": true
+    },
+    {
+      "case_id": "rpc_mismatch",
+      "input": {
+        "cassette": {
+          "version": "1.0",
+          "metadata": {
+            "recorded_at": "2026-10-29T00:00:00+00:00",
+            "transport_type": "stdio"
+          },
+          "interactions": [
+            {
+              "type": "jsonrpc_request",
+              "request": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "tools/list"
+              },
+              "response": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "result": {
+                  "tools": []
+                }
+              }
+            }
+          ]
+        },
+        "transport_class": "MemoryTransport",
+        "transport_options": {
+          "response": {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "result": {
+              "tools": [
+                {
+                  "name": "unexpected"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "native_result": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1,
+        "results": [
+          {
+            "index": 1,
+            "method": "tools/list",
+            "passed": false,
+            "expected": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": []
+              }
+            },
+            "actual": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": [
+                  {
+                    "name": "unexpected"
+                  }
+                ]
+              }
+            },
+            "diff": [
+              "  $.result.tools: list length 0 != 1"
+            ]
+          }
+        ]
+      },
+      "exception": null,
+      "transport_events": [
+        {
+          "kind": "context_enter"
+        },
+        {
+          "kind": "request",
+          "request": {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "tools/list"
+          },
+          "response": {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "result": {
+              "tools": [
+                {
+                  "name": "unexpected"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "kind": "context_exit",
+          "exception_type": null
+        }
+      ],
+      "native_log": "[1] tools/list -> FAIL\n    $.result.tools: list length 0 != 1\n",
+      "expected_native": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1
+      },
+      "expected_exception": null,
+      "matched_authored_expectation": true
+    },
+    {
+      "case_id": "rpc_transport_error",
+      "input": {
+        "cassette": {
+          "version": "1.0",
+          "metadata": {
+            "recorded_at": "2026-10-29T00:00:00+00:00",
+            "transport_type": "stdio"
+          },
+          "interactions": [
+            {
+              "type": "jsonrpc_request",
+              "request": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "tools/list"
+              },
+              "response": {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "result": {
+                  "tools": []
+                }
+              }
+            }
+          ]
+        },
+        "transport_class": "MemoryTransport",
+        "transport_options": {
+          "request_error": true
+        }
+      },
+      "native_result": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1,
+        "results": [
+          {
+            "index": 1,
+            "method": "tools/list",
+            "passed": false,
+            "expected": null,
+            "actual": null,
+            "diff": [
+              "  transport error: authored request transport error"
+            ]
+          }
+        ]
+      },
+      "exception": null,
+      "transport_events": [
+        {
+          "kind": "context_enter"
+        },
+        {
+          "kind": "request",
+          "request": {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "tools/list"
+          },
+          "exception": {
+            "type": "ConnectionError",
+            "message": "authored request transport error"
+          }
+        },
+        {
+          "kind": "context_exit",
+          "exception_type": null
+        }
+      ],
+      "native_log": "[1] tools/list -> FAIL (transport error)\n",
+      "expected_native": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1
+      },
+      "expected_exception": null,
+      "matched_authored_expectation": true
+    },
+    {
+      "case_id": "notification_transport_error",
+      "input": {
+        "cassette": {
+          "version": "1.0",
+          "metadata": {
+            "recorded_at": "2026-10-29T00:00:00+00:00",
+            "transport_type": "stdio"
+          },
+          "interactions": [
+            {
+              "type": "notification",
+              "request": {
+                "jsonrpc": "2.0",
+                "method": "notifications/initialized"
+              }
+            }
+          ]
+        },
+        "transport_class": "MemoryTransport",
+        "transport_options": {
+          "notification_error": true
+        }
+      },
+      "native_result": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1,
+        "results": [
+          {
+            "index": 1,
+            "method": "notifications/initialized",
+            "passed": false,
+            "expected": null,
+            "actual": null,
+            "diff": [
+              "  transport error: authored notification transport error"
+            ]
+          }
+        ]
+      },
+      "exception": null,
+      "transport_events": [
+        {
+          "kind": "context_enter"
+        },
+        {
+          "kind": "notification",
+          "request": {
+            "jsonrpc": "2.0",
+            "method": "notifications/initialized"
+          },
+          "exception": {
+            "type": "ConnectionError",
+            "message": "authored notification transport error"
+          }
+        },
+        {
+          "kind": "context_exit",
+          "exception_type": null
+        }
+      ],
+      "native_log": "[1] notifications/initialized -> FAIL (transport error)\n",
+      "expected_native": {
+        "total": 1,
+        "passed": 0,
+        "failed": 1
+      },
+      "expected_exception": null,
+      "matched_authored_expectation": true
+    },
+    {
+      "case_id": "empty_cassette",
+      "input": {
+        "cassette": {
+          "version": "1.0",
+          "metadata": {
+            "recorded_at": "2026-10-29T00:00:00+00:00",
+            "transport_type": "stdio"
+          },
+          "interactions": []
+        },
+        "transport_class": "MemoryTransport",
+        "transport_options": {}
+      },
+      "native_result": {
+        "total": 0,
+        "passed": 0,
+        "failed": 0,
+        "results": []
+      },
+      "exception": null,
+      "transport_events": [
+        {
+          "kind": "context_enter"
+        },
+        {
+          "kind": "context_exit",
+          "exception_type": null
+        }
+      ],
+      "native_log": "",
+      "expected_native": {
+        "total": 0,
+        "passed": 0,
+        "failed": 0
+      },
+      "expected_exception": null,
+      "matched_authored_expectation": true
+    },
+    {
+      "case_id": "invalid_cassette_major",
+      "input": {
+        "cassette": {
+          "version": "2.0",
+          "interactions": []
+        },
+        "transport_class": "MemoryTransport",
+        "transport_options": {}
+      },
+      "native_result": null,
+      "exception": {
+        "type": "ValidationError",
+        "message": "1 validation error for Cassette\n  Value error, Incompatible cassette format version '2.0' (expected 1.x). Re-record the cassette with the current version of mcp-recorder. [type=value_error, input_value={'version': '2.0', 'interactions': []}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/value_error",
+        "stage": "cassette_validation"
+      },
+      "transport_events": [],
+      "native_log": "",
+      "expected_native": null,
+      "expected_exception": "ValidationError",
+      "matched_authored_expectation": true
+    }
+  ]
+}

@@ -15,7 +15,10 @@ present a development pilot of three documented historical defects across two
 MCP tool families: incomplete discovery, omitted metadata changes, and an
 unexercised capability restriction. The first two use published CLI packages
 with controlled local fixtures; the third executes extracted original checker
-logic with RPC stubs. These execution levels are analyzed separately. A frozen
+logic with RPC stubs. Separately, original recorder modules supplied with authored
+transports emit identical result objects for an exercised lifecycle operation,
+a legitimate skip and a different returned status. These applicability controls
+are not additional defects. Execution levels are analyzed separately. A frozen
 discovery-receipt interpreter accepts a complete trace whose native report
 omits a policy-relevant annotation change. Recording actual failure thresholds
 distinguishes permitted warning exits from policy failures. An ordinary
@@ -23,8 +26,9 @@ policy-aware parser exposes inconsistent reports, but conservatively withholds
 one authored change permitted by its policy when the old report cannot classify
 it. Separately, an upstream checker repair marks unexercised evidence as
 untestable rather than claiming a protocol violation. We retain controls for
-healthy behavior, authored forbidden-request controls and legitimate empty selection. All cases
-were developed after reading fixes. The pilot supports a bounded experience
+healthy behavior, authored forbidden-request controls and legitimate empty selection.
+Historical cases were developed after reading fixes; applicability controls were
+authored after source inspection. The pilot supports a bounded experience
 study, not production failure rates, held-out generalization, or superiority
 of a new verification algorithm.
 
@@ -70,6 +74,15 @@ tool-family example of successful evaluation without exercising its target.
   it is not a new verification algorithm or a matched-budget superiority result.
 - The broader expected-versus-emitted coverage question is already stated in
   [upstream issue451](https://github.com/modelcontextprotocol/conformance/issues/451).
+- Original recorder-module applicability controls for a third tool family, showing
+  identical full native result objects for distinct exercise/status observations.
+  These are ten verifier calls and one cassette-model rejection, not an end-to-end
+  server replay, historical repair pair or fourth defect.
+- A separate ordinary parser revision that honors explicit noncomplete runner
+  state and withholds ambiguous/inconsistent authored reports. Eight regression
+  methods pass; all twelve saved native outputs keep their prior decisions.
+  Earlier sources/results remain frozen. This is engineering hardening rather
+  than a new algorithm or an improvement measured on held-out defects.
 
 ## Contributions to establish, not claim yet
 
@@ -112,13 +125,15 @@ the paper should remain a limited experience report or not be submitted.
   and [issue451](https://github.com/modelcontextprotocol/conformance/issues/451),
   unexercised prerequisites and expected-versus-emitted coverage.
 
-The [cross-tool follow-up](./2026-10-29-cross-tool-followup.md) contains the raw
-execution boundaries, counterexamples, parser costs and limitations. A third
-tool family, blinded independent annotation and held-out evaluation remain undone.
+The [cross-tool follow-up](./2026-10-29-cross-tool-followup.md) contains the historical
+repair boundaries and parser costs. The [runner/scope revision](./2026-10-29-runner-and-scope-upgrade.md)
+adds third-family applicability controls and ordinary parser regressions. Blinded
+independent human annotation and held-out evaluation remain undone.
 The planned recorder family's [source screening](../../research/evidence-study-20261029c/README.md)
 found no eligible documented repaired acceptance defect in its observed official
-issue/PR inventory. It has not been executed or silently replaced with a positive
-case. Its documented stdio lifecycle skip is only a proposed applicability control.
+issue/PR inventory. That negative screening has not been silently replaced by a
+positive defect. Its documented stdio lifecycle skip has now been executed as
+a bounded applicability control using original modules and authored transports.
 
 ## Preparation notes
 
