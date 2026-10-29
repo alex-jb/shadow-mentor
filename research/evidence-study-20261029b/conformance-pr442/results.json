@@ -1,0 +1,890 @@
+{
+  "schema": "shadow-conformance-pr442-mechanism-replay/1",
+  "created_at_utc": "2026-10-29T05:09:15.503Z",
+  "node": "v24.22.1",
+  "scope": "Unmodified upstream scenario statements and actual type guards; TypeScript syntax removed; sendRpc and reporting constants injected. No upstream CLI, HTTP, SDK, provider, or real service execution.",
+  "selection": "Cases authored after reading a known merged fix; development replay, not held-out discovery or production rates.",
+  "source_manifest_sha256": "7aba17680e3d87e808205fea3df29e347df29caf01d1e601fd47b6892f351796",
+  "driver_sha256": "5a54bb7612efa413f41249cbd23c1fe70e85250515bf9737cd8b37387a558b56",
+  "complete_harness_reproduction": false,
+  "new_bug_discovery": false,
+  "fixtures": [
+    {
+      "id": "allowed_sampling",
+      "expected_support": "EXERCISED_SUCCESS",
+      "response": {
+        "result": {
+          "resultType": "input_required",
+          "requestState": "fixture-state",
+          "inputRequests": {
+            "sample": {
+              "method": "sampling/createMessage",
+              "params": {}
+            }
+          }
+        }
+      },
+      "expected_base": "SUCCESS",
+      "expected_fixed": "SUCCESS",
+      "expected_untestable_fixed": false
+    },
+    {
+      "id": "forbidden_elicitation",
+      "expected_support": "CAPABILITY_VIOLATION",
+      "response": {
+        "result": {
+          "resultType": "input_required",
+          "requestState": "fixture-state",
+          "inputRequests": {
+            "ask": {
+              "method": "elicitation/create",
+              "params": {}
+            }
+          }
+        }
+      },
+      "expected_base": "FAILURE",
+      "expected_fixed": "FAILURE",
+      "expected_untestable_fixed": false
+    },
+    {
+      "id": "request_state_only",
+      "expected_support": "UNTESTABLE_NOT_PROTOCOL_VIOLATION",
+      "response": {
+        "result": {
+          "resultType": "input_required",
+          "requestState": "fixture-state"
+        }
+      },
+      "expected_base": "SUCCESS",
+      "expected_fixed": "FAILURE",
+      "expected_untestable_fixed": true
+    },
+    {
+      "id": "empty_input_requests",
+      "expected_support": "UNTESTABLE_NOT_PROTOCOL_VIOLATION",
+      "response": {
+        "result": {
+          "resultType": "input_required",
+          "requestState": "fixture-state",
+          "inputRequests": {}
+        }
+      },
+      "expected_base": "SUCCESS",
+      "expected_fixed": "FAILURE",
+      "expected_untestable_fixed": true
+    },
+    {
+      "id": "complete_instead_of_requested_fixture",
+      "expected_support": "FIXTURE_CONTRACT_MISMATCH",
+      "response": {
+        "result": {
+          "resultType": "complete",
+          "content": [
+            {
+              "type": "text",
+              "text": "done"
+            }
+          ]
+        }
+      },
+      "expected_base": "FAILURE",
+      "expected_fixed": "FAILURE",
+      "expected_untestable_fixed": false
+    },
+    {
+      "id": "json_rpc_error_control",
+      "expected_support": "EXECUTION_ERROR",
+      "response": {
+        "error": {
+          "code": -32603,
+          "message": "controlled execution error"
+        }
+      },
+      "expected_base": "FAILURE",
+      "expected_fixed": "FAILURE",
+      "expected_untestable_fixed": false
+    },
+    {
+      "id": "no_result_control",
+      "expected_support": "MISSING_EVIDENCE",
+      "response": {},
+      "expected_base": "FAILURE",
+      "expected_fixed": "FAILURE",
+      "expected_untestable_fixed": false
+    }
+  ],
+  "observations": [
+    {
+      "fixture_id": "allowed_sampling",
+      "version": "base",
+      "input": {
+        "result": {
+          "resultType": "input_required",
+          "requestState": "fixture-state",
+          "inputRequests": {
+            "sample": {
+              "method": "sampling/createMessage",
+              "params": {}
+            }
+          }
+        }
+      },
+      "authored_expected_support": "EXERCISED_SUCCESS",
+      "authored_expected_native_status": "SUCCESS",
+      "authored_expected_untestable": false,
+      "rpc_stub_calls": [
+        {
+          "url": "stub://local-only",
+          "method": "tools/call",
+          "parameters": {
+            "name": "test_input_required_result_capabilities",
+            "arguments": {},
+            "_meta": {
+              "io.modelcontextprotocol/clientCapabilities": {
+                "sampling": {}
+              }
+            }
+          }
+        }
+      ],
+      "raw_checks": [
+        {
+          "id": "sep-2322-respect-client-capabilities",
+          "name": "RespectClientCapabilities",
+          "description": "Server only includes inputRequests for declared client capabilities",
+          "status": "SUCCESS",
+          "timestamp": "2026-10-29T05:09:15.491Z",
+          "specReferences": [],
+          "details": {
+            "result": {
+              "resultType": "input_required",
+              "requestState": "fixture-state",
+              "inputRequests": {
+                "sample": {
+                  "method": "sampling/createMessage",
+                  "params": {}
+                }
+              }
+            }
+          }
+        }
+      ],
+      "consumer_interpretation": "NATIVE_SUCCESS",
+      "matched_expectation": true
+    },
+    {
+      "fixture_id": "forbidden_elicitation",
+      "version": "base",
+      "input": {
+        "result": {
+          "resultType": "input_required",
+          "requestState": "fixture-state",
+          "inputRequests": {
+            "ask": {
+              "method": "elicitation/create",
+              "params": {}
+            }
+          }
+        }
+      },
+      "authored_expected_support": "CAPABILITY_VIOLATION",
+      "authored_expected_native_status": "FAILURE",
+      "authored_expected_untestable": false,
+      "rpc_stub_calls": [
+        {
+          "url": "stub://local-only",
+          "method": "tools/call",
+          "parameters": {
+            "name": "test_input_required_result_capabilities",
+            "arguments": {},
+            "_meta": {
+              "io.modelcontextprotocol/clientCapabilities": {
+                "sampling": {}
+              }
+            }
+          }
+        }
+      ],
+      "raw_checks": [
+        {
+          "id": "sep-2322-respect-client-capabilities",
+          "name": "RespectClientCapabilities",
+          "description": "Server only includes inputRequests for declared client capabilities",
+          "status": "FAILURE",
+          "timestamp": "2026-10-29T05:09:15.493Z",
+          "errorMessage": "Server included elicitation/create inputRequest (key: \"ask\") but client did not declare elicitation capability",
+          "specReferences": [],
+          "details": {
+            "result": {
+              "resultType": "input_required",
+              "requestState": "fixture-state",
+              "inputRequests": {
+                "ask": {
+                  "method": "elicitation/create",
+                  "params": {}
+                }
+              }
+            }
+          }
+        }
+      ],
+      "consumer_interpretation": "NATIVE_FAILURE_WITH_REASON_REVIEW",
+      "matched_expectation": true
+    },
+    {
+      "fixture_id": "request_state_only",
+      "version": "base",
+      "input": {
+        "result": {
+          "resultType": "input_required",
+          "requestState": "fixture-state"
+        }
+      },
+      "authored_expected_support": "UNTESTABLE_NOT_PROTOCOL_VIOLATION",
+      "authored_expected_native_status": "SUCCESS",
+      "authored_expected_untestable": false,
+      "rpc_stub_calls": [
+        {
+          "url": "stub://local-only",
+          "method": "tools/call",
+          "parameters": {
+            "name": "test_input_required_result_capabilities",
+            "arguments": {},
+            "_meta": {
+              "io.modelcontextprotocol/clientCapabilities": {
+                "sampling": {}
+              }
+            }
+          }
+        }
+      ],
+      "raw_checks": [
+        {
+          "id": "sep-2322-respect-client-capabilities",
+          "name": "RespectClientCapabilities",
+          "description": "Server only includes inputRequests for declared client capabilities",
+          "status": "SUCCESS",
+          "timestamp": "2026-10-29T05:09:15.494Z",
+          "specReferences": [],
+          "details": {
+            "result": {
+              "resultType": "input_required",
+              "requestState": "fixture-state"
+            }
+          }
+        }
+      ],
+      "consumer_interpretation": "NATIVE_SUCCESS",
+      "matched_expectation": true
+    },
+    {
+      "fixture_id": "empty_input_requests",
+      "version": "base",
+      "input": {
+        "result": {
+          "resultType": "input_required",
+          "requestState": "fixture-state",
+          "inputRequests": {}
+        }
+      },
+      "authored_expected_support": "UNTESTABLE_NOT_PROTOCOL_VIOLATION",
+      "authored_expected_native_status": "SUCCESS",
+      "authored_expected_untestable": false,
+      "rpc_stub_calls": [
+        {
+          "url": "stub://local-only",
+          "method": "tools/call",
+          "parameters": {
+            "name": "test_input_required_result_capabilities",
+            "arguments": {},
+            "_meta": {
+              "io.modelcontextprotocol/clientCapabilities": {
+                "sampling": {}
+              }
+            }
+          }
+        }
+      ],
+      "raw_checks": [
+        {
+          "id": "sep-2322-respect-client-capabilities",
+          "name": "RespectClientCapabilities",
+          "description": "Server only includes inputRequests for declared client capabilities",
+          "status": "SUCCESS",
+          "timestamp": "2026-10-29T05:09:15.494Z",
+          "specReferences": [],
+          "details": {
+            "result": {
+              "resultType": "input_required",
+              "requestState": "fixture-state",
+              "inputRequests": {}
+            }
+          }
+        }
+      ],
+      "consumer_interpretation": "NATIVE_SUCCESS",
+      "matched_expectation": true
+    },
+    {
+      "fixture_id": "complete_instead_of_requested_fixture",
+      "version": "base",
+      "input": {
+        "result": {
+          "resultType": "complete",
+          "content": [
+            {
+              "type": "text",
+              "text": "done"
+            }
+          ]
+        }
+      },
+      "authored_expected_support": "FIXTURE_CONTRACT_MISMATCH",
+      "authored_expected_native_status": "FAILURE",
+      "authored_expected_untestable": false,
+      "rpc_stub_calls": [
+        {
+          "url": "stub://local-only",
+          "method": "tools/call",
+          "parameters": {
+            "name": "test_input_required_result_capabilities",
+            "arguments": {},
+            "_meta": {
+              "io.modelcontextprotocol/clientCapabilities": {
+                "sampling": {}
+              }
+            }
+          }
+        }
+      ],
+      "raw_checks": [
+        {
+          "id": "sep-2322-respect-client-capabilities",
+          "name": "RespectClientCapabilities",
+          "description": "Server only includes inputRequests for declared client capabilities",
+          "status": "FAILURE",
+          "timestamp": "2026-10-29T05:09:15.495Z",
+          "errorMessage": "Server returned complete result; expected InputRequiredResult with sampling-only inputRequests",
+          "specReferences": [],
+          "details": {
+            "result": {
+              "resultType": "complete",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "done"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "consumer_interpretation": "NATIVE_FAILURE_WITH_REASON_REVIEW",
+      "matched_expectation": true
+    },
+    {
+      "fixture_id": "json_rpc_error_control",
+      "version": "base",
+      "input": {
+        "error": {
+          "code": -32603,
+          "message": "controlled execution error"
+        }
+      },
+      "authored_expected_support": "EXECUTION_ERROR",
+      "authored_expected_native_status": "FAILURE",
+      "authored_expected_untestable": false,
+      "rpc_stub_calls": [
+        {
+          "url": "stub://local-only",
+          "method": "tools/call",
+          "parameters": {
+            "name": "test_input_required_result_capabilities",
+            "arguments": {},
+            "_meta": {
+              "io.modelcontextprotocol/clientCapabilities": {
+                "sampling": {}
+              }
+            }
+          }
+        }
+      ],
+      "raw_checks": [
+        {
+          "id": "sep-2322-respect-client-capabilities",
+          "name": "RespectClientCapabilities",
+          "description": "Server only includes inputRequests for declared client capabilities",
+          "status": "FAILURE",
+          "timestamp": "2026-10-29T05:09:15.496Z",
+          "errorMessage": "JSON-RPC error: controlled execution error",
+          "specReferences": [],
+          "details": {}
+        }
+      ],
+      "consumer_interpretation": "NATIVE_FAILURE_WITH_REASON_REVIEW",
+      "matched_expectation": true
+    },
+    {
+      "fixture_id": "no_result_control",
+      "version": "base",
+      "input": {},
+      "authored_expected_support": "MISSING_EVIDENCE",
+      "authored_expected_native_status": "FAILURE",
+      "authored_expected_untestable": false,
+      "rpc_stub_calls": [
+        {
+          "url": "stub://local-only",
+          "method": "tools/call",
+          "parameters": {
+            "name": "test_input_required_result_capabilities",
+            "arguments": {},
+            "_meta": {
+              "io.modelcontextprotocol/clientCapabilities": {
+                "sampling": {}
+              }
+            }
+          }
+        }
+      ],
+      "raw_checks": [
+        {
+          "id": "sep-2322-respect-client-capabilities",
+          "name": "RespectClientCapabilities",
+          "description": "Server only includes inputRequests for declared client capabilities",
+          "status": "FAILURE",
+          "timestamp": "2026-10-29T05:09:15.496Z",
+          "errorMessage": "No result in response",
+          "specReferences": [],
+          "details": {}
+        }
+      ],
+      "consumer_interpretation": "NATIVE_FAILURE_WITH_REASON_REVIEW",
+      "matched_expectation": true
+    },
+    {
+      "fixture_id": "allowed_sampling",
+      "version": "fixed",
+      "input": {
+        "result": {
+          "resultType": "input_required",
+          "requestState": "fixture-state",
+          "inputRequests": {
+            "sample": {
+              "method": "sampling/createMessage",
+              "params": {}
+            }
+          }
+        }
+      },
+      "authored_expected_support": "EXERCISED_SUCCESS",
+      "authored_expected_native_status": "SUCCESS",
+      "authored_expected_untestable": false,
+      "rpc_stub_calls": [
+        {
+          "url": "stub://local-only",
+          "method": "tools/call",
+          "parameters": {
+            "name": "test_input_required_result_capabilities",
+            "arguments": {},
+            "_meta": {
+              "io.modelcontextprotocol/clientCapabilities": {
+                "sampling": {}
+              }
+            }
+          }
+        }
+      ],
+      "raw_checks": [
+        {
+          "id": "sep-2322-respect-client-capabilities",
+          "name": "RespectClientCapabilities",
+          "description": "Server only includes inputRequests for declared client capabilities",
+          "status": "SUCCESS",
+          "timestamp": "2026-10-29T05:09:15.499Z",
+          "specReferences": [],
+          "details": {
+            "result": {
+              "resultType": "input_required",
+              "requestState": "fixture-state",
+              "inputRequests": {
+                "sample": {
+                  "method": "sampling/createMessage",
+                  "params": {}
+                }
+              }
+            }
+          }
+        }
+      ],
+      "consumer_interpretation": "NATIVE_SUCCESS",
+      "matched_expectation": true
+    },
+    {
+      "fixture_id": "forbidden_elicitation",
+      "version": "fixed",
+      "input": {
+        "result": {
+          "resultType": "input_required",
+          "requestState": "fixture-state",
+          "inputRequests": {
+            "ask": {
+              "method": "elicitation/create",
+              "params": {}
+            }
+          }
+        }
+      },
+      "authored_expected_support": "CAPABILITY_VIOLATION",
+      "authored_expected_native_status": "FAILURE",
+      "authored_expected_untestable": false,
+      "rpc_stub_calls": [
+        {
+          "url": "stub://local-only",
+          "method": "tools/call",
+          "parameters": {
+            "name": "test_input_required_result_capabilities",
+            "arguments": {},
+            "_meta": {
+              "io.modelcontextprotocol/clientCapabilities": {
+                "sampling": {}
+              }
+            }
+          }
+        }
+      ],
+      "raw_checks": [
+        {
+          "id": "sep-2322-respect-client-capabilities",
+          "name": "RespectClientCapabilities",
+          "description": "Server only includes inputRequests for declared client capabilities",
+          "status": "FAILURE",
+          "timestamp": "2026-10-29T05:09:15.499Z",
+          "errorMessage": "Server included elicitation/create inputRequest (key: \"ask\") but client did not declare elicitation capability",
+          "specReferences": [],
+          "details": {
+            "result": {
+              "resultType": "input_required",
+              "requestState": "fixture-state",
+              "inputRequests": {
+                "ask": {
+                  "method": "elicitation/create",
+                  "params": {}
+                }
+              }
+            }
+          }
+        }
+      ],
+      "consumer_interpretation": "NATIVE_FAILURE_WITH_REASON_REVIEW",
+      "matched_expectation": true
+    },
+    {
+      "fixture_id": "request_state_only",
+      "version": "fixed",
+      "input": {
+        "result": {
+          "resultType": "input_required",
+          "requestState": "fixture-state"
+        }
+      },
+      "authored_expected_support": "UNTESTABLE_NOT_PROTOCOL_VIOLATION",
+      "authored_expected_native_status": "FAILURE",
+      "authored_expected_untestable": true,
+      "rpc_stub_calls": [
+        {
+          "url": "stub://local-only",
+          "method": "tools/call",
+          "parameters": {
+            "name": "test_input_required_result_capabilities",
+            "arguments": {},
+            "_meta": {
+              "io.modelcontextprotocol/clientCapabilities": {
+                "sampling": {}
+              }
+            }
+          }
+        }
+      ],
+      "raw_checks": [
+        {
+          "id": "sep-2322-respect-client-capabilities",
+          "name": "RespectClientCapabilities",
+          "description": "Server only includes inputRequests for declared client capabilities",
+          "status": "FAILURE",
+          "timestamp": "2026-10-29T05:09:15.500Z",
+          "errorMessage": "Not testable: server returned no inputRequests, so the capability restriction was never exercised",
+          "specReferences": [],
+          "details": {
+            "result": {
+              "resultType": "input_required",
+              "requestState": "fixture-state"
+            },
+            "untestable": true
+          }
+        }
+      ],
+      "consumer_interpretation": "UNVERIFIED_WITHHOLD",
+      "matched_expectation": true
+    },
+    {
+      "fixture_id": "empty_input_requests",
+      "version": "fixed",
+      "input": {
+        "result": {
+          "resultType": "input_required",
+          "requestState": "fixture-state",
+          "inputRequests": {}
+        }
+      },
+      "authored_expected_support": "UNTESTABLE_NOT_PROTOCOL_VIOLATION",
+      "authored_expected_native_status": "FAILURE",
+      "authored_expected_untestable": true,
+      "rpc_stub_calls": [
+        {
+          "url": "stub://local-only",
+          "method": "tools/call",
+          "parameters": {
+            "name": "test_input_required_result_capabilities",
+            "arguments": {},
+            "_meta": {
+              "io.modelcontextprotocol/clientCapabilities": {
+                "sampling": {}
+              }
+            }
+          }
+        }
+      ],
+      "raw_checks": [
+        {
+          "id": "sep-2322-respect-client-capabilities",
+          "name": "RespectClientCapabilities",
+          "description": "Server only includes inputRequests for declared client capabilities",
+          "status": "FAILURE",
+          "timestamp": "2026-10-29T05:09:15.501Z",
+          "errorMessage": "Not testable: server returned no inputRequests, so the capability restriction was never exercised",
+          "specReferences": [],
+          "details": {
+            "result": {
+              "resultType": "input_required",
+              "requestState": "fixture-state",
+              "inputRequests": {}
+            },
+            "untestable": true
+          }
+        }
+      ],
+      "consumer_interpretation": "UNVERIFIED_WITHHOLD",
+      "matched_expectation": true
+    },
+    {
+      "fixture_id": "complete_instead_of_requested_fixture",
+      "version": "fixed",
+      "input": {
+        "result": {
+          "resultType": "complete",
+          "content": [
+            {
+              "type": "text",
+              "text": "done"
+            }
+          ]
+        }
+      },
+      "authored_expected_support": "FIXTURE_CONTRACT_MISMATCH",
+      "authored_expected_native_status": "FAILURE",
+      "authored_expected_untestable": false,
+      "rpc_stub_calls": [
+        {
+          "url": "stub://local-only",
+          "method": "tools/call",
+          "parameters": {
+            "name": "test_input_required_result_capabilities",
+            "arguments": {},
+            "_meta": {
+              "io.modelcontextprotocol/clientCapabilities": {
+                "sampling": {}
+              }
+            }
+          }
+        }
+      ],
+      "raw_checks": [
+        {
+          "id": "sep-2322-respect-client-capabilities",
+          "name": "RespectClientCapabilities",
+          "description": "Server only includes inputRequests for declared client capabilities",
+          "status": "FAILURE",
+          "timestamp": "2026-10-29T05:09:15.501Z",
+          "errorMessage": "Server returned complete result; expected InputRequiredResult with sampling-only inputRequests",
+          "specReferences": [],
+          "details": {
+            "result": {
+              "resultType": "complete",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "done"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "consumer_interpretation": "NATIVE_FAILURE_WITH_REASON_REVIEW",
+      "matched_expectation": true
+    },
+    {
+      "fixture_id": "json_rpc_error_control",
+      "version": "fixed",
+      "input": {
+        "error": {
+          "code": -32603,
+          "message": "controlled execution error"
+        }
+      },
+      "authored_expected_support": "EXECUTION_ERROR",
+      "authored_expected_native_status": "FAILURE",
+      "authored_expected_untestable": false,
+      "rpc_stub_calls": [
+        {
+          "url": "stub://local-only",
+          "method": "tools/call",
+          "parameters": {
+            "name": "test_input_required_result_capabilities",
+            "arguments": {},
+            "_meta": {
+              "io.modelcontextprotocol/clientCapabilities": {
+                "sampling": {}
+              }
+            }
+          }
+        }
+      ],
+      "raw_checks": [
+        {
+          "id": "sep-2322-respect-client-capabilities",
+          "name": "RespectClientCapabilities",
+          "description": "Server only includes inputRequests for declared client capabilities",
+          "status": "FAILURE",
+          "timestamp": "2026-10-29T05:09:15.502Z",
+          "errorMessage": "JSON-RPC error: controlled execution error",
+          "specReferences": [],
+          "details": {}
+        }
+      ],
+      "consumer_interpretation": "NATIVE_FAILURE_WITH_REASON_REVIEW",
+      "matched_expectation": true
+    },
+    {
+      "fixture_id": "no_result_control",
+      "version": "fixed",
+      "input": {},
+      "authored_expected_support": "MISSING_EVIDENCE",
+      "authored_expected_native_status": "FAILURE",
+      "authored_expected_untestable": false,
+      "rpc_stub_calls": [
+        {
+          "url": "stub://local-only",
+          "method": "tools/call",
+          "parameters": {
+            "name": "test_input_required_result_capabilities",
+            "arguments": {},
+            "_meta": {
+              "io.modelcontextprotocol/clientCapabilities": {
+                "sampling": {}
+              }
+            }
+          }
+        }
+      ],
+      "raw_checks": [
+        {
+          "id": "sep-2322-respect-client-capabilities",
+          "name": "RespectClientCapabilities",
+          "description": "Server only includes inputRequests for declared client capabilities",
+          "status": "FAILURE",
+          "timestamp": "2026-10-29T05:09:15.502Z",
+          "errorMessage": "No result in response",
+          "specReferences": [],
+          "details": {}
+        }
+      ],
+      "consumer_interpretation": "NATIVE_FAILURE_WITH_REASON_REVIEW",
+      "matched_expectation": true
+    }
+  ],
+  "summary": {
+    "base_statuses": [
+      [
+        "allowed_sampling",
+        "SUCCESS"
+      ],
+      [
+        "forbidden_elicitation",
+        "FAILURE"
+      ],
+      [
+        "request_state_only",
+        "SUCCESS"
+      ],
+      [
+        "empty_input_requests",
+        "SUCCESS"
+      ],
+      [
+        "complete_instead_of_requested_fixture",
+        "FAILURE"
+      ],
+      [
+        "json_rpc_error_control",
+        "FAILURE"
+      ],
+      [
+        "no_result_control",
+        "FAILURE"
+      ]
+    ],
+    "fixed_statuses": [
+      [
+        "allowed_sampling",
+        "SUCCESS",
+        false
+      ],
+      [
+        "forbidden_elicitation",
+        "FAILURE",
+        false
+      ],
+      [
+        "request_state_only",
+        "FAILURE",
+        true
+      ],
+      [
+        "empty_input_requests",
+        "FAILURE",
+        true
+      ],
+      [
+        "complete_instead_of_requested_fixture",
+        "FAILURE",
+        false
+      ],
+      [
+        "json_rpc_error_control",
+        "FAILURE",
+        false
+      ],
+      [
+        "no_result_control",
+        "FAILURE",
+        false
+      ]
+    ],
+    "expectation_match_count": 14,
+    "checker_invocations": 14,
+    "independent_historical_defects": 1,
+    "previously_known_non_exercised_success_inputs": 2
+  }
+}

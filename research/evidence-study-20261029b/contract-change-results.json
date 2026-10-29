@@ -1,0 +1,2105 @@
+{
+  "schema": "shadow-known-contract-change-probe/1",
+  "created_at_utc": "2026-10-29T05:05:58.269455+00:00",
+  "source": "https://github.com/mcp-contracts/mcp-contracts/blob/v0.9.0/CHANGELOG.md",
+  "scope": "Published CLI pair; authored local metadata fixture; tools/call never executed",
+  "selection": "Fix and source read before constructing cases; development reproduction only",
+  "independent_historical_defects": 1,
+  "new_bug_discovery": false,
+  "native_snapshot_commands": 2,
+  "native_check_commands": 12,
+  "node": "v24.22.1",
+  "resolved_packages": {
+    "0.8.3": {
+      "@mcp-contracts/cli": {
+        "version": "0.8.3",
+        "package_json_sha256": "28838e8df4ffe2c6526dea5288a45cc37ba35e17856c7a573df846181e17b716"
+      },
+      "@mcp-contracts/core": {
+        "version": "0.8.3",
+        "package_json_sha256": "f245363ca08e36cb67a4566025870bb48a2451a305a17640436b6d545519b132"
+      },
+      "@mcp-contracts/test": {
+        "version": "0.8.3",
+        "package_json_sha256": "5bf8ccd01706dd362516acb3791e10ccac778d21c1ce3549c916662389864f10"
+      },
+      "@modelcontextprotocol/sdk": {
+        "version": "1.32.2",
+        "package_json_sha256": "7a8d6f79ee52e2bf7cfe23f2d79f7e3c0ab6a3912a340ec345d6ff014534d59d"
+      },
+      "zod": {
+        "version": "4.6.7",
+        "package_json_sha256": "c2d190d9ee4e0bdb60332aaa2130a6a98d65ddb903fe1d29248b15de57832c45"
+      }
+    },
+    "0.9.0": {
+      "@mcp-contracts/cli": {
+        "version": "0.9.0",
+        "package_json_sha256": "434aafd1c065a0e1085ecfedd9f496db1dff765d1a7713e9d60ce0e131be618b"
+      },
+      "@mcp-contracts/core": {
+        "version": "0.9.0",
+        "package_json_sha256": "694f1e6dadefa3a30b9140c30650789c724e72e1d99ebfddb85fcec38b8391da"
+      },
+      "@mcp-contracts/test": {
+        "version": "0.9.0",
+        "package_json_sha256": "68dd6b06c98cc12cd7ab95c29689505ed94d75ea7882e457b44c7d04531cecf7"
+      },
+      "@modelcontextprotocol/sdk": {
+        "version": "1.32.2",
+        "package_json_sha256": "7a8d6f79ee52e2bf7cfe23f2d79f7e3c0ab6a3912a340ec345d6ff014534d59d"
+      },
+      "zod": {
+        "version": "4.6.7",
+        "package_json_sha256": "c2d190d9ee4e0bdb60332aaa2130a6a98d65ddb903fe1d29248b15de57832c45"
+      }
+    }
+  },
+  "source_sha256": {
+    "contract_change_probe.py": "d3b6f399d3d50c8498685b956acdf0d8c702eb1338049dd8560ebc26a7c56d73",
+    "contract_fixture.cjs": "077cccc14f05a980c8cc423a564ca83974547d9bcdb0e6eaed3cfcb9ba441976"
+  },
+  "frozen_interpreter_sha256": "f2d0398617fb2d0f9101ea1b799a65b63e6540c3c9d5d5ee18703b6659e3154c",
+  "observations": [
+    {
+      "process": {
+        "exit_code": 0,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:55.280Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:55.509Z\"\n    },\n    \"generatedAt\": \"2026-10-29T05:05:55.510Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 0\n  },\n  \"changes\": []\n}\n",
+        "stderr": "Connecting to MCP server...\nConnected to shadow-contract-fixture v1.0.0\nContract unchanged\n",
+        "exchanges": [
+          {
+            "direction": "request",
+            "message": {
+              "method": "initialize",
+              "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {
+                  "name": "mcpdiff",
+                  "version": "0.1.0"
+                }
+              },
+              "jsonrpc": "2.0",
+              "id": 0
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 0,
+              "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {
+                  "tools": {}
+                },
+                "serverInfo": {
+                  "name": "shadow-contract-fixture",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "notifications/initialized",
+              "jsonrpc": "2.0"
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "tools/list",
+              "jsonrpc": "2.0",
+              "id": 1
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": [
+                  {
+                    "name": "alpha",
+                    "description": "Fixed local fixture",
+                    "inputSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "annotations": {
+                      "readOnlyHint": true
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "capture_complete": true
+      },
+      "report": {
+        "meta": {
+          "before": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+            "capturedAt": "2026-10-29T05:05:55.280Z"
+          },
+          "after": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+            "capturedAt": "2026-10-29T05:05:55.509Z"
+          },
+          "generatedAt": "2026-10-29T05:05:55.510Z",
+          "tool": "mcpdiff"
+        },
+        "summary": {
+          "breaking": 0,
+          "warning": 0,
+          "safe": 0,
+          "total": 0
+        },
+        "changes": []
+      },
+      "case": "unchanged_warning_policy",
+      "cli_version": "0.8.3",
+      "policy": {
+        "fail_on": "warning",
+        "display_severity": "safe"
+      },
+      "expected_native_exit": 0,
+      "hashes_equal": true,
+      "baseline": {
+        "snapshotVersion": "1.0.0",
+        "capturedAt": "2026-10-29T05:05:55.280Z",
+        "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+        "server": {
+          "name": "shadow-contract-fixture",
+          "version": "1.0.0",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {}
+          }
+        },
+        "capture": {
+          "transport": "stdio",
+          "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/evidence-study-20261029b/contract_fixture.cjs before /tmp/shadow-contract-change-hudb1n9b/0.8.3/capture_before.jsonl",
+          "tool": "mcpdiff/0.1.0"
+        },
+        "tools": {
+          "alpha": {
+            "description": "Fixed local fixture",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            },
+            "annotations": {
+              "readOnlyHint": true
+            }
+          }
+        },
+        "resources": {},
+        "prompts": {}
+      },
+      "legacy_receipt_interpretation": {
+        "reported_verdict": "PASS",
+        "execution_state": "COMPLETE",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "DECLARED_DISCOVERY_OBLIGATION_OBSERVED",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/exchanges"
+        ]
+      },
+      "matched_reproduction_expectation": true
+    },
+    {
+      "process": {
+        "exit_code": 0,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:55.280Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:95aa596a5b99810419322d66ad93f870dfc5743827e5ddd5ef1747828887d4f4\",\n      \"capturedAt\": \"2026-10-29T05:05:55.720Z\"\n    },\n    \"generatedAt\": \"2026-10-29T05:05:55.721Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 0\n  },\n  \"changes\": []\n}\n",
+        "stderr": "Connecting to MCP server...\nConnected to shadow-contract-fixture v1.0.0\n",
+        "exchanges": [
+          {
+            "direction": "request",
+            "message": {
+              "method": "initialize",
+              "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {
+                  "name": "mcpdiff",
+                  "version": "0.1.0"
+                }
+              },
+              "jsonrpc": "2.0",
+              "id": 0
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 0,
+              "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {
+                  "tools": {}
+                },
+                "serverInfo": {
+                  "name": "shadow-contract-fixture",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "notifications/initialized",
+              "jsonrpc": "2.0"
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "tools/list",
+              "jsonrpc": "2.0",
+              "id": 1
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": [
+                  {
+                    "name": "alpha",
+                    "description": "Fixed local fixture",
+                    "inputSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "annotations": {
+                      "readOnlyHint": false
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "capture_complete": true
+      },
+      "report": {
+        "meta": {
+          "before": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+            "capturedAt": "2026-10-29T05:05:55.280Z"
+          },
+          "after": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:95aa596a5b99810419322d66ad93f870dfc5743827e5ddd5ef1747828887d4f4",
+            "capturedAt": "2026-10-29T05:05:55.720Z"
+          },
+          "generatedAt": "2026-10-29T05:05:55.721Z",
+          "tool": "mcpdiff"
+        },
+        "summary": {
+          "breaking": 0,
+          "warning": 0,
+          "safe": 0,
+          "total": 0
+        },
+        "changes": []
+      },
+      "case": "annotation_warning_policy",
+      "cli_version": "0.8.3",
+      "policy": {
+        "fail_on": "warning",
+        "display_severity": "safe"
+      },
+      "expected_native_exit": 0,
+      "hashes_equal": false,
+      "baseline": {
+        "snapshotVersion": "1.0.0",
+        "capturedAt": "2026-10-29T05:05:55.280Z",
+        "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+        "server": {
+          "name": "shadow-contract-fixture",
+          "version": "1.0.0",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {}
+          }
+        },
+        "capture": {
+          "transport": "stdio",
+          "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/evidence-study-20261029b/contract_fixture.cjs before /tmp/shadow-contract-change-hudb1n9b/0.8.3/capture_before.jsonl",
+          "tool": "mcpdiff/0.1.0"
+        },
+        "tools": {
+          "alpha": {
+            "description": "Fixed local fixture",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            },
+            "annotations": {
+              "readOnlyHint": true
+            }
+          }
+        },
+        "resources": {},
+        "prompts": {}
+      },
+      "legacy_receipt_interpretation": {
+        "reported_verdict": "PASS",
+        "execution_state": "COMPLETE",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "DECLARED_DISCOVERY_OBLIGATION_OBSERVED",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/exchanges"
+        ]
+      },
+      "matched_reproduction_expectation": true
+    },
+    {
+      "process": {
+        "exit_code": 0,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:55.280Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:95aa596a5b99810419322d66ad93f870dfc5743827e5ddd5ef1747828887d4f4\",\n      \"capturedAt\": \"2026-10-29T05:05:55.937Z\"\n    },\n    \"generatedAt\": \"2026-10-29T05:05:55.938Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 0\n  },\n  \"changes\": []\n}\n",
+        "stderr": "Connecting to MCP server...\nConnected to shadow-contract-fixture v1.0.0\n",
+        "exchanges": [
+          {
+            "direction": "request",
+            "message": {
+              "method": "initialize",
+              "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {
+                  "name": "mcpdiff",
+                  "version": "0.1.0"
+                }
+              },
+              "jsonrpc": "2.0",
+              "id": 0
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 0,
+              "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {
+                  "tools": {}
+                },
+                "serverInfo": {
+                  "name": "shadow-contract-fixture",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "notifications/initialized",
+              "jsonrpc": "2.0"
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "tools/list",
+              "jsonrpc": "2.0",
+              "id": 1
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": [
+                  {
+                    "name": "alpha",
+                    "description": "Fixed local fixture",
+                    "inputSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "annotations": {
+                      "readOnlyHint": false
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "capture_complete": true
+      },
+      "report": {
+        "meta": {
+          "before": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+            "capturedAt": "2026-10-29T05:05:55.280Z"
+          },
+          "after": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:95aa596a5b99810419322d66ad93f870dfc5743827e5ddd5ef1747828887d4f4",
+            "capturedAt": "2026-10-29T05:05:55.937Z"
+          },
+          "generatedAt": "2026-10-29T05:05:55.938Z",
+          "tool": "mcpdiff"
+        },
+        "summary": {
+          "breaking": 0,
+          "warning": 0,
+          "safe": 0,
+          "total": 0
+        },
+        "changes": []
+      },
+      "case": "annotation_breaking_policy",
+      "cli_version": "0.8.3",
+      "policy": {
+        "fail_on": "breaking",
+        "display_severity": "safe"
+      },
+      "expected_native_exit": 0,
+      "hashes_equal": false,
+      "baseline": {
+        "snapshotVersion": "1.0.0",
+        "capturedAt": "2026-10-29T05:05:55.280Z",
+        "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+        "server": {
+          "name": "shadow-contract-fixture",
+          "version": "1.0.0",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {}
+          }
+        },
+        "capture": {
+          "transport": "stdio",
+          "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/evidence-study-20261029b/contract_fixture.cjs before /tmp/shadow-contract-change-hudb1n9b/0.8.3/capture_before.jsonl",
+          "tool": "mcpdiff/0.1.0"
+        },
+        "tools": {
+          "alpha": {
+            "description": "Fixed local fixture",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            },
+            "annotations": {
+              "readOnlyHint": true
+            }
+          }
+        },
+        "resources": {},
+        "prompts": {}
+      },
+      "legacy_receipt_interpretation": {
+        "reported_verdict": "PASS",
+        "execution_state": "COMPLETE",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "DECLARED_DISCOVERY_OBLIGATION_OBSERVED",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/exchanges"
+        ]
+      },
+      "matched_reproduction_expectation": true
+    },
+    {
+      "process": {
+        "exit_code": 1,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:55.280Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:b4b592dc8c92a91029429d1966ae4067ddbb7281d80578ce399181d96ad7f560\",\n      \"capturedAt\": \"2026-10-29T05:05:56.153Z\"\n    },\n    \"generatedAt\": \"2026-10-29T05:05:56.154Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 1,\n    \"safe\": 0,\n    \"total\": 1\n  },\n  \"changes\": [\n    {\n      \"id\": \"tool.alpha.description\",\n      \"category\": \"tool\",\n      \"name\": \"alpha\",\n      \"severity\": \"warning\",\n      \"type\": \"modified\",\n      \"message\": \"Tool \\\"alpha\\\" description changed\",\n      \"path\": \"description\",\n      \"before\": \"Fixed local fixture\",\n      \"after\": \"Revised local fixture description\"\n    }\n  ]\n}\n",
+        "stderr": "Connecting to MCP server...\nConnected to shadow-contract-fixture v1.0.0\n",
+        "exchanges": [
+          {
+            "direction": "request",
+            "message": {
+              "method": "initialize",
+              "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {
+                  "name": "mcpdiff",
+                  "version": "0.1.0"
+                }
+              },
+              "jsonrpc": "2.0",
+              "id": 0
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 0,
+              "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {
+                  "tools": {}
+                },
+                "serverInfo": {
+                  "name": "shadow-contract-fixture",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "notifications/initialized",
+              "jsonrpc": "2.0"
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "tools/list",
+              "jsonrpc": "2.0",
+              "id": 1
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": [
+                  {
+                    "name": "alpha",
+                    "description": "Revised local fixture description",
+                    "inputSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "annotations": {
+                      "readOnlyHint": true
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "capture_complete": true
+      },
+      "report": {
+        "meta": {
+          "before": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+            "capturedAt": "2026-10-29T05:05:55.280Z"
+          },
+          "after": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:b4b592dc8c92a91029429d1966ae4067ddbb7281d80578ce399181d96ad7f560",
+            "capturedAt": "2026-10-29T05:05:56.153Z"
+          },
+          "generatedAt": "2026-10-29T05:05:56.154Z",
+          "tool": "mcpdiff"
+        },
+        "summary": {
+          "breaking": 0,
+          "warning": 1,
+          "safe": 0,
+          "total": 1
+        },
+        "changes": [
+          {
+            "id": "tool.alpha.description",
+            "category": "tool",
+            "name": "alpha",
+            "severity": "warning",
+            "type": "modified",
+            "message": "Tool \"alpha\" description changed",
+            "path": "description",
+            "before": "Fixed local fixture",
+            "after": "Revised local fixture description"
+          }
+        ]
+      },
+      "case": "description_warning_policy",
+      "cli_version": "0.8.3",
+      "policy": {
+        "fail_on": "warning",
+        "display_severity": "safe"
+      },
+      "expected_native_exit": 1,
+      "hashes_equal": false,
+      "baseline": {
+        "snapshotVersion": "1.0.0",
+        "capturedAt": "2026-10-29T05:05:55.280Z",
+        "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+        "server": {
+          "name": "shadow-contract-fixture",
+          "version": "1.0.0",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {}
+          }
+        },
+        "capture": {
+          "transport": "stdio",
+          "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/evidence-study-20261029b/contract_fixture.cjs before /tmp/shadow-contract-change-hudb1n9b/0.8.3/capture_before.jsonl",
+          "tool": "mcpdiff/0.1.0"
+        },
+        "tools": {
+          "alpha": {
+            "description": "Fixed local fixture",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            },
+            "annotations": {
+              "readOnlyHint": true
+            }
+          }
+        },
+        "resources": {},
+        "prompts": {}
+      },
+      "legacy_receipt_interpretation": {
+        "reported_verdict": "PASS",
+        "execution_state": "UNKNOWN",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "EXIT_REPORT_CONFLICT",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/stderr"
+        ]
+      },
+      "matched_reproduction_expectation": true
+    },
+    {
+      "process": {
+        "exit_code": 0,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:55.280Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:b4b592dc8c92a91029429d1966ae4067ddbb7281d80578ce399181d96ad7f560\",\n      \"capturedAt\": \"2026-10-29T05:05:56.391Z\"\n    },\n    \"generatedAt\": \"2026-10-29T05:05:56.392Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 1,\n    \"safe\": 0,\n    \"total\": 1\n  },\n  \"changes\": [\n    {\n      \"id\": \"tool.alpha.description\",\n      \"category\": \"tool\",\n      \"name\": \"alpha\",\n      \"severity\": \"warning\",\n      \"type\": \"modified\",\n      \"message\": \"Tool \\\"alpha\\\" description changed\",\n      \"path\": \"description\",\n      \"before\": \"Fixed local fixture\",\n      \"after\": \"Revised local fixture description\"\n    }\n  ]\n}\n",
+        "stderr": "Connecting to MCP server...\nConnected to shadow-contract-fixture v1.0.0\n",
+        "exchanges": [
+          {
+            "direction": "request",
+            "message": {
+              "method": "initialize",
+              "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {
+                  "name": "mcpdiff",
+                  "version": "0.1.0"
+                }
+              },
+              "jsonrpc": "2.0",
+              "id": 0
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 0,
+              "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {
+                  "tools": {}
+                },
+                "serverInfo": {
+                  "name": "shadow-contract-fixture",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "notifications/initialized",
+              "jsonrpc": "2.0"
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "tools/list",
+              "jsonrpc": "2.0",
+              "id": 1
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": [
+                  {
+                    "name": "alpha",
+                    "description": "Revised local fixture description",
+                    "inputSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "annotations": {
+                      "readOnlyHint": true
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "capture_complete": true
+      },
+      "report": {
+        "meta": {
+          "before": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+            "capturedAt": "2026-10-29T05:05:55.280Z"
+          },
+          "after": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:b4b592dc8c92a91029429d1966ae4067ddbb7281d80578ce399181d96ad7f560",
+            "capturedAt": "2026-10-29T05:05:56.391Z"
+          },
+          "generatedAt": "2026-10-29T05:05:56.392Z",
+          "tool": "mcpdiff"
+        },
+        "summary": {
+          "breaking": 0,
+          "warning": 1,
+          "safe": 0,
+          "total": 1
+        },
+        "changes": [
+          {
+            "id": "tool.alpha.description",
+            "category": "tool",
+            "name": "alpha",
+            "severity": "warning",
+            "type": "modified",
+            "message": "Tool \"alpha\" description changed",
+            "path": "description",
+            "before": "Fixed local fixture",
+            "after": "Revised local fixture description"
+          }
+        ]
+      },
+      "case": "description_breaking_policy",
+      "cli_version": "0.8.3",
+      "policy": {
+        "fail_on": "breaking",
+        "display_severity": "safe"
+      },
+      "expected_native_exit": 0,
+      "hashes_equal": false,
+      "baseline": {
+        "snapshotVersion": "1.0.0",
+        "capturedAt": "2026-10-29T05:05:55.280Z",
+        "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+        "server": {
+          "name": "shadow-contract-fixture",
+          "version": "1.0.0",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {}
+          }
+        },
+        "capture": {
+          "transport": "stdio",
+          "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/evidence-study-20261029b/contract_fixture.cjs before /tmp/shadow-contract-change-hudb1n9b/0.8.3/capture_before.jsonl",
+          "tool": "mcpdiff/0.1.0"
+        },
+        "tools": {
+          "alpha": {
+            "description": "Fixed local fixture",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            },
+            "annotations": {
+              "readOnlyHint": true
+            }
+          }
+        },
+        "resources": {},
+        "prompts": {}
+      },
+      "legacy_receipt_interpretation": {
+        "reported_verdict": "PASS",
+        "execution_state": "COMPLETE",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "DECLARED_DISCOVERY_OBLIGATION_OBSERVED",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/exchanges"
+        ]
+      },
+      "matched_reproduction_expectation": true
+    },
+    {
+      "process": {
+        "exit_code": 1,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:55.280Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:0eab2e6b867d472c3d622dff59d917f3346f6efaed6d064dddcbbefe194fbb05\",\n      \"capturedAt\": \"2026-10-29T05:05:56.602Z\"\n    },\n    \"generatedAt\": \"2026-10-29T05:05:56.602Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 1,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 1\n  },\n  \"changes\": [\n    {\n      \"id\": \"tool.alpha.inputSchema.requiredField.added\",\n      \"category\": \"tool\",\n      \"name\": \"alpha\",\n      \"severity\": \"breaking\",\n      \"type\": \"added\",\n      \"message\": \"Required parameter \\\"requiredField\\\" was added to alpha\",\n      \"path\": \"inputSchema.properties.requiredField\",\n      \"after\": {\n        \"type\": \"string\"\n      }\n    }\n  ]\n}\n",
+        "stderr": "Connecting to MCP server...\nConnected to shadow-contract-fixture v1.0.0\n",
+        "exchanges": [
+          {
+            "direction": "request",
+            "message": {
+              "method": "initialize",
+              "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {
+                  "name": "mcpdiff",
+                  "version": "0.1.0"
+                }
+              },
+              "jsonrpc": "2.0",
+              "id": 0
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 0,
+              "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {
+                  "tools": {}
+                },
+                "serverInfo": {
+                  "name": "shadow-contract-fixture",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "notifications/initialized",
+              "jsonrpc": "2.0"
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "tools/list",
+              "jsonrpc": "2.0",
+              "id": 1
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": [
+                  {
+                    "name": "alpha",
+                    "description": "Fixed local fixture",
+                    "inputSchema": {
+                      "type": "object",
+                      "properties": {
+                        "requiredField": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "requiredField"
+                      ]
+                    },
+                    "annotations": {
+                      "readOnlyHint": true
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "capture_complete": true
+      },
+      "report": {
+        "meta": {
+          "before": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+            "capturedAt": "2026-10-29T05:05:55.280Z"
+          },
+          "after": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:0eab2e6b867d472c3d622dff59d917f3346f6efaed6d064dddcbbefe194fbb05",
+            "capturedAt": "2026-10-29T05:05:56.602Z"
+          },
+          "generatedAt": "2026-10-29T05:05:56.602Z",
+          "tool": "mcpdiff"
+        },
+        "summary": {
+          "breaking": 1,
+          "warning": 0,
+          "safe": 0,
+          "total": 1
+        },
+        "changes": [
+          {
+            "id": "tool.alpha.inputSchema.requiredField.added",
+            "category": "tool",
+            "name": "alpha",
+            "severity": "breaking",
+            "type": "added",
+            "message": "Required parameter \"requiredField\" was added to alpha",
+            "path": "inputSchema.properties.requiredField",
+            "after": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "case": "required_schema_warning_policy",
+      "cli_version": "0.8.3",
+      "policy": {
+        "fail_on": "warning",
+        "display_severity": "safe"
+      },
+      "expected_native_exit": 1,
+      "hashes_equal": false,
+      "baseline": {
+        "snapshotVersion": "1.0.0",
+        "capturedAt": "2026-10-29T05:05:55.280Z",
+        "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+        "server": {
+          "name": "shadow-contract-fixture",
+          "version": "1.0.0",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {}
+          }
+        },
+        "capture": {
+          "transport": "stdio",
+          "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/evidence-study-20261029b/contract_fixture.cjs before /tmp/shadow-contract-change-hudb1n9b/0.8.3/capture_before.jsonl",
+          "tool": "mcpdiff/0.1.0"
+        },
+        "tools": {
+          "alpha": {
+            "description": "Fixed local fixture",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            },
+            "annotations": {
+              "readOnlyHint": true
+            }
+          }
+        },
+        "resources": {},
+        "prompts": {}
+      },
+      "legacy_receipt_interpretation": {
+        "reported_verdict": "FAIL",
+        "execution_state": "COMPLETE",
+        "supported_verdict": "FAIL",
+        "acceptance": "WITHHOLD",
+        "reason": "DECLARED_DISCOVERY_OBLIGATION_OBSERVED",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/exchanges"
+        ]
+      },
+      "matched_reproduction_expectation": true
+    },
+    {
+      "process": {
+        "exit_code": 0,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:56.878Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:57.099Z\"\n    },\n    \"generatedAt\": \"2026-10-29T05:05:57.099Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 0\n  },\n  \"changes\": []\n}\n",
+        "stderr": "Connecting to MCP server (/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/evidence-study-20261029b/contract_fixture.cjs before /tmp/shadow-contract-change-hudb1n9b/0.9.0/unchanged_warning_policy.jsonl)...\nConnected to shadow-contract-fixture v1.0.0\nContract unchanged\n",
+        "exchanges": [
+          {
+            "direction": "request",
+            "message": {
+              "method": "initialize",
+              "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {
+                  "name": "mcpdiff",
+                  "version": "0.1.0"
+                }
+              },
+              "jsonrpc": "2.0",
+              "id": 0
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 0,
+              "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {
+                  "tools": {}
+                },
+                "serverInfo": {
+                  "name": "shadow-contract-fixture",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "notifications/initialized",
+              "jsonrpc": "2.0"
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "tools/list",
+              "jsonrpc": "2.0",
+              "id": 1
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": [
+                  {
+                    "name": "alpha",
+                    "description": "Fixed local fixture",
+                    "inputSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "annotations": {
+                      "readOnlyHint": true
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "capture_complete": true
+      },
+      "report": {
+        "meta": {
+          "before": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+            "capturedAt": "2026-10-29T05:05:56.878Z"
+          },
+          "after": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+            "capturedAt": "2026-10-29T05:05:57.099Z"
+          },
+          "generatedAt": "2026-10-29T05:05:57.099Z",
+          "tool": "mcpdiff"
+        },
+        "summary": {
+          "breaking": 0,
+          "warning": 0,
+          "safe": 0,
+          "total": 0
+        },
+        "changes": []
+      },
+      "case": "unchanged_warning_policy",
+      "cli_version": "0.9.0",
+      "policy": {
+        "fail_on": "warning",
+        "display_severity": "safe"
+      },
+      "expected_native_exit": 0,
+      "hashes_equal": true,
+      "baseline": {
+        "snapshotVersion": "1.0.0",
+        "capturedAt": "2026-10-29T05:05:56.878Z",
+        "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+        "server": {
+          "name": "shadow-contract-fixture",
+          "version": "1.0.0",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {}
+          }
+        },
+        "capture": {
+          "transport": "stdio",
+          "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/evidence-study-20261029b/contract_fixture.cjs before /tmp/shadow-contract-change-hudb1n9b/0.9.0/capture_before.jsonl",
+          "tool": "mcpdiff/0.1.0"
+        },
+        "tools": {
+          "alpha": {
+            "description": "Fixed local fixture",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            },
+            "annotations": {
+              "readOnlyHint": true
+            }
+          }
+        },
+        "resources": {},
+        "prompts": {}
+      },
+      "legacy_receipt_interpretation": {
+        "reported_verdict": "PASS",
+        "execution_state": "COMPLETE",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "DECLARED_DISCOVERY_OBLIGATION_OBSERVED",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/exchanges"
+        ]
+      },
+      "matched_reproduction_expectation": true
+    },
+    {
+      "process": {
+        "exit_code": 1,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:56.878Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:95aa596a5b99810419322d66ad93f870dfc5743827e5ddd5ef1747828887d4f4\",\n      \"capturedAt\": \"2026-10-29T05:05:57.339Z\"\n    },\n    \"generatedAt\": \"2026-10-29T05:05:57.340Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 1,\n    \"safe\": 0,\n    \"total\": 1\n  },\n  \"changes\": [\n    {\n      \"id\": \"tool.alpha.annotations\",\n      \"category\": \"tool\",\n      \"name\": \"alpha\",\n      \"severity\": \"warning\",\n      \"type\": \"modified\",\n      \"message\": \"Tool \\\"alpha\\\" annotations changed\",\n      \"path\": \"annotations\",\n      \"before\": {\n        \"readOnlyHint\": true\n      },\n      \"after\": {\n        \"readOnlyHint\": false\n      }\n    }\n  ]\n}\n",
+        "stderr": "Connecting to MCP server (/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/evidence-study-20261029b/contract_fixture.cjs annotation /tmp/shadow-contract-change-hudb1n9b/0.9.0/annotation_warning_policy.jsonl)...\nConnected to shadow-contract-fixture v1.0.0\n",
+        "exchanges": [
+          {
+            "direction": "request",
+            "message": {
+              "method": "initialize",
+              "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {
+                  "name": "mcpdiff",
+                  "version": "0.1.0"
+                }
+              },
+              "jsonrpc": "2.0",
+              "id": 0
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 0,
+              "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {
+                  "tools": {}
+                },
+                "serverInfo": {
+                  "name": "shadow-contract-fixture",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "notifications/initialized",
+              "jsonrpc": "2.0"
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "tools/list",
+              "jsonrpc": "2.0",
+              "id": 1
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": [
+                  {
+                    "name": "alpha",
+                    "description": "Fixed local fixture",
+                    "inputSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "annotations": {
+                      "readOnlyHint": false
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "capture_complete": true
+      },
+      "report": {
+        "meta": {
+          "before": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+            "capturedAt": "2026-10-29T05:05:56.878Z"
+          },
+          "after": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:95aa596a5b99810419322d66ad93f870dfc5743827e5ddd5ef1747828887d4f4",
+            "capturedAt": "2026-10-29T05:05:57.339Z"
+          },
+          "generatedAt": "2026-10-29T05:05:57.340Z",
+          "tool": "mcpdiff"
+        },
+        "summary": {
+          "breaking": 0,
+          "warning": 1,
+          "safe": 0,
+          "total": 1
+        },
+        "changes": [
+          {
+            "id": "tool.alpha.annotations",
+            "category": "tool",
+            "name": "alpha",
+            "severity": "warning",
+            "type": "modified",
+            "message": "Tool \"alpha\" annotations changed",
+            "path": "annotations",
+            "before": {
+              "readOnlyHint": true
+            },
+            "after": {
+              "readOnlyHint": false
+            }
+          }
+        ]
+      },
+      "case": "annotation_warning_policy",
+      "cli_version": "0.9.0",
+      "policy": {
+        "fail_on": "warning",
+        "display_severity": "safe"
+      },
+      "expected_native_exit": 1,
+      "hashes_equal": false,
+      "baseline": {
+        "snapshotVersion": "1.0.0",
+        "capturedAt": "2026-10-29T05:05:56.878Z",
+        "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+        "server": {
+          "name": "shadow-contract-fixture",
+          "version": "1.0.0",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {}
+          }
+        },
+        "capture": {
+          "transport": "stdio",
+          "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/evidence-study-20261029b/contract_fixture.cjs before /tmp/shadow-contract-change-hudb1n9b/0.9.0/capture_before.jsonl",
+          "tool": "mcpdiff/0.1.0"
+        },
+        "tools": {
+          "alpha": {
+            "description": "Fixed local fixture",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            },
+            "annotations": {
+              "readOnlyHint": true
+            }
+          }
+        },
+        "resources": {},
+        "prompts": {}
+      },
+      "legacy_receipt_interpretation": {
+        "reported_verdict": "PASS",
+        "execution_state": "UNKNOWN",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "EXIT_REPORT_CONFLICT",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/stderr"
+        ]
+      },
+      "matched_reproduction_expectation": true
+    },
+    {
+      "process": {
+        "exit_code": 0,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:56.878Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:95aa596a5b99810419322d66ad93f870dfc5743827e5ddd5ef1747828887d4f4\",\n      \"capturedAt\": \"2026-10-29T05:05:57.572Z\"\n    },\n    \"generatedAt\": \"2026-10-29T05:05:57.573Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 1,\n    \"safe\": 0,\n    \"total\": 1\n  },\n  \"changes\": [\n    {\n      \"id\": \"tool.alpha.annotations\",\n      \"category\": \"tool\",\n      \"name\": \"alpha\",\n      \"severity\": \"warning\",\n      \"type\": \"modified\",\n      \"message\": \"Tool \\\"alpha\\\" annotations changed\",\n      \"path\": \"annotations\",\n      \"before\": {\n        \"readOnlyHint\": true\n      },\n      \"after\": {\n        \"readOnlyHint\": false\n      }\n    }\n  ]\n}\n",
+        "stderr": "Connecting to MCP server (/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/evidence-study-20261029b/contract_fixture.cjs annotation /tmp/shadow-contract-change-hudb1n9b/0.9.0/annotation_breaking_policy.jsonl)...\nConnected to shadow-contract-fixture v1.0.0\n",
+        "exchanges": [
+          {
+            "direction": "request",
+            "message": {
+              "method": "initialize",
+              "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {
+                  "name": "mcpdiff",
+                  "version": "0.1.0"
+                }
+              },
+              "jsonrpc": "2.0",
+              "id": 0
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 0,
+              "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {
+                  "tools": {}
+                },
+                "serverInfo": {
+                  "name": "shadow-contract-fixture",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "notifications/initialized",
+              "jsonrpc": "2.0"
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "tools/list",
+              "jsonrpc": "2.0",
+              "id": 1
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": [
+                  {
+                    "name": "alpha",
+                    "description": "Fixed local fixture",
+                    "inputSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "annotations": {
+                      "readOnlyHint": false
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "capture_complete": true
+      },
+      "report": {
+        "meta": {
+          "before": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+            "capturedAt": "2026-10-29T05:05:56.878Z"
+          },
+          "after": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:95aa596a5b99810419322d66ad93f870dfc5743827e5ddd5ef1747828887d4f4",
+            "capturedAt": "2026-10-29T05:05:57.572Z"
+          },
+          "generatedAt": "2026-10-29T05:05:57.573Z",
+          "tool": "mcpdiff"
+        },
+        "summary": {
+          "breaking": 0,
+          "warning": 1,
+          "safe": 0,
+          "total": 1
+        },
+        "changes": [
+          {
+            "id": "tool.alpha.annotations",
+            "category": "tool",
+            "name": "alpha",
+            "severity": "warning",
+            "type": "modified",
+            "message": "Tool \"alpha\" annotations changed",
+            "path": "annotations",
+            "before": {
+              "readOnlyHint": true
+            },
+            "after": {
+              "readOnlyHint": false
+            }
+          }
+        ]
+      },
+      "case": "annotation_breaking_policy",
+      "cli_version": "0.9.0",
+      "policy": {
+        "fail_on": "breaking",
+        "display_severity": "safe"
+      },
+      "expected_native_exit": 0,
+      "hashes_equal": false,
+      "baseline": {
+        "snapshotVersion": "1.0.0",
+        "capturedAt": "2026-10-29T05:05:56.878Z",
+        "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+        "server": {
+          "name": "shadow-contract-fixture",
+          "version": "1.0.0",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {}
+          }
+        },
+        "capture": {
+          "transport": "stdio",
+          "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/evidence-study-20261029b/contract_fixture.cjs before /tmp/shadow-contract-change-hudb1n9b/0.9.0/capture_before.jsonl",
+          "tool": "mcpdiff/0.1.0"
+        },
+        "tools": {
+          "alpha": {
+            "description": "Fixed local fixture",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            },
+            "annotations": {
+              "readOnlyHint": true
+            }
+          }
+        },
+        "resources": {},
+        "prompts": {}
+      },
+      "legacy_receipt_interpretation": {
+        "reported_verdict": "PASS",
+        "execution_state": "COMPLETE",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "DECLARED_DISCOVERY_OBLIGATION_OBSERVED",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/exchanges"
+        ]
+      },
+      "matched_reproduction_expectation": true
+    },
+    {
+      "process": {
+        "exit_code": 1,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:56.878Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:b4b592dc8c92a91029429d1966ae4067ddbb7281d80578ce399181d96ad7f560\",\n      \"capturedAt\": \"2026-10-29T05:05:57.826Z\"\n    },\n    \"generatedAt\": \"2026-10-29T05:05:57.826Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 1,\n    \"safe\": 0,\n    \"total\": 1\n  },\n  \"changes\": [\n    {\n      \"id\": \"tool.alpha.description\",\n      \"category\": \"tool\",\n      \"name\": \"alpha\",\n      \"severity\": \"warning\",\n      \"type\": \"modified\",\n      \"message\": \"Tool \\\"alpha\\\" description changed\",\n      \"path\": \"description\",\n      \"before\": \"Fixed local fixture\",\n      \"after\": \"Revised local fixture description\"\n    }\n  ]\n}\n",
+        "stderr": "Connecting to MCP server (/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/evidence-study-20261029b/contract_fixture.cjs description /tmp/shadow-contract-change-hudb1n9b/0.9.0/description_warning_policy.jsonl)...\nConnected to shadow-contract-fixture v1.0.0\n",
+        "exchanges": [
+          {
+            "direction": "request",
+            "message": {
+              "method": "initialize",
+              "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {
+                  "name": "mcpdiff",
+                  "version": "0.1.0"
+                }
+              },
+              "jsonrpc": "2.0",
+              "id": 0
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 0,
+              "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {
+                  "tools": {}
+                },
+                "serverInfo": {
+                  "name": "shadow-contract-fixture",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "notifications/initialized",
+              "jsonrpc": "2.0"
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "tools/list",
+              "jsonrpc": "2.0",
+              "id": 1
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": [
+                  {
+                    "name": "alpha",
+                    "description": "Revised local fixture description",
+                    "inputSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "annotations": {
+                      "readOnlyHint": true
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "capture_complete": true
+      },
+      "report": {
+        "meta": {
+          "before": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+            "capturedAt": "2026-10-29T05:05:56.878Z"
+          },
+          "after": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:b4b592dc8c92a91029429d1966ae4067ddbb7281d80578ce399181d96ad7f560",
+            "capturedAt": "2026-10-29T05:05:57.826Z"
+          },
+          "generatedAt": "2026-10-29T05:05:57.826Z",
+          "tool": "mcpdiff"
+        },
+        "summary": {
+          "breaking": 0,
+          "warning": 1,
+          "safe": 0,
+          "total": 1
+        },
+        "changes": [
+          {
+            "id": "tool.alpha.description",
+            "category": "tool",
+            "name": "alpha",
+            "severity": "warning",
+            "type": "modified",
+            "message": "Tool \"alpha\" description changed",
+            "path": "description",
+            "before": "Fixed local fixture",
+            "after": "Revised local fixture description"
+          }
+        ]
+      },
+      "case": "description_warning_policy",
+      "cli_version": "0.9.0",
+      "policy": {
+        "fail_on": "warning",
+        "display_severity": "safe"
+      },
+      "expected_native_exit": 1,
+      "hashes_equal": false,
+      "baseline": {
+        "snapshotVersion": "1.0.0",
+        "capturedAt": "2026-10-29T05:05:56.878Z",
+        "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+        "server": {
+          "name": "shadow-contract-fixture",
+          "version": "1.0.0",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {}
+          }
+        },
+        "capture": {
+          "transport": "stdio",
+          "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/evidence-study-20261029b/contract_fixture.cjs before /tmp/shadow-contract-change-hudb1n9b/0.9.0/capture_before.jsonl",
+          "tool": "mcpdiff/0.1.0"
+        },
+        "tools": {
+          "alpha": {
+            "description": "Fixed local fixture",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            },
+            "annotations": {
+              "readOnlyHint": true
+            }
+          }
+        },
+        "resources": {},
+        "prompts": {}
+      },
+      "legacy_receipt_interpretation": {
+        "reported_verdict": "PASS",
+        "execution_state": "UNKNOWN",
+        "supported_verdict": "UNKNOWN",
+        "acceptance": "WITHHOLD",
+        "reason": "EXIT_REPORT_CONFLICT",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/stderr"
+        ]
+      },
+      "matched_reproduction_expectation": true
+    },
+    {
+      "process": {
+        "exit_code": 0,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:56.878Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:b4b592dc8c92a91029429d1966ae4067ddbb7281d80578ce399181d96ad7f560\",\n      \"capturedAt\": \"2026-10-29T05:05:58.049Z\"\n    },\n    \"generatedAt\": \"2026-10-29T05:05:58.049Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 0,\n    \"warning\": 1,\n    \"safe\": 0,\n    \"total\": 1\n  },\n  \"changes\": [\n    {\n      \"id\": \"tool.alpha.description\",\n      \"category\": \"tool\",\n      \"name\": \"alpha\",\n      \"severity\": \"warning\",\n      \"type\": \"modified\",\n      \"message\": \"Tool \\\"alpha\\\" description changed\",\n      \"path\": \"description\",\n      \"before\": \"Fixed local fixture\",\n      \"after\": \"Revised local fixture description\"\n    }\n  ]\n}\n",
+        "stderr": "Connecting to MCP server (/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/evidence-study-20261029b/contract_fixture.cjs description /tmp/shadow-contract-change-hudb1n9b/0.9.0/description_breaking_policy.jsonl)...\nConnected to shadow-contract-fixture v1.0.0\n",
+        "exchanges": [
+          {
+            "direction": "request",
+            "message": {
+              "method": "initialize",
+              "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {
+                  "name": "mcpdiff",
+                  "version": "0.1.0"
+                }
+              },
+              "jsonrpc": "2.0",
+              "id": 0
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 0,
+              "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {
+                  "tools": {}
+                },
+                "serverInfo": {
+                  "name": "shadow-contract-fixture",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "notifications/initialized",
+              "jsonrpc": "2.0"
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "tools/list",
+              "jsonrpc": "2.0",
+              "id": 1
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": [
+                  {
+                    "name": "alpha",
+                    "description": "Revised local fixture description",
+                    "inputSchema": {
+                      "type": "object",
+                      "properties": {}
+                    },
+                    "annotations": {
+                      "readOnlyHint": true
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "capture_complete": true
+      },
+      "report": {
+        "meta": {
+          "before": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+            "capturedAt": "2026-10-29T05:05:56.878Z"
+          },
+          "after": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:b4b592dc8c92a91029429d1966ae4067ddbb7281d80578ce399181d96ad7f560",
+            "capturedAt": "2026-10-29T05:05:58.049Z"
+          },
+          "generatedAt": "2026-10-29T05:05:58.049Z",
+          "tool": "mcpdiff"
+        },
+        "summary": {
+          "breaking": 0,
+          "warning": 1,
+          "safe": 0,
+          "total": 1
+        },
+        "changes": [
+          {
+            "id": "tool.alpha.description",
+            "category": "tool",
+            "name": "alpha",
+            "severity": "warning",
+            "type": "modified",
+            "message": "Tool \"alpha\" description changed",
+            "path": "description",
+            "before": "Fixed local fixture",
+            "after": "Revised local fixture description"
+          }
+        ]
+      },
+      "case": "description_breaking_policy",
+      "cli_version": "0.9.0",
+      "policy": {
+        "fail_on": "breaking",
+        "display_severity": "safe"
+      },
+      "expected_native_exit": 0,
+      "hashes_equal": false,
+      "baseline": {
+        "snapshotVersion": "1.0.0",
+        "capturedAt": "2026-10-29T05:05:56.878Z",
+        "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+        "server": {
+          "name": "shadow-contract-fixture",
+          "version": "1.0.0",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {}
+          }
+        },
+        "capture": {
+          "transport": "stdio",
+          "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/evidence-study-20261029b/contract_fixture.cjs before /tmp/shadow-contract-change-hudb1n9b/0.9.0/capture_before.jsonl",
+          "tool": "mcpdiff/0.1.0"
+        },
+        "tools": {
+          "alpha": {
+            "description": "Fixed local fixture",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            },
+            "annotations": {
+              "readOnlyHint": true
+            }
+          }
+        },
+        "resources": {},
+        "prompts": {}
+      },
+      "legacy_receipt_interpretation": {
+        "reported_verdict": "PASS",
+        "execution_state": "COMPLETE",
+        "supported_verdict": "PASS",
+        "acceptance": "ACCEPT",
+        "reason": "DECLARED_DISCOVERY_OBLIGATION_OBSERVED",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/exchanges"
+        ]
+      },
+      "matched_reproduction_expectation": true
+    },
+    {
+      "process": {
+        "exit_code": 1,
+        "timed_out": false
+      },
+      "raw": {
+        "stdout": "{\n  \"meta\": {\n    \"before\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65\",\n      \"capturedAt\": \"2026-10-29T05:05:56.878Z\"\n    },\n    \"after\": {\n      \"serverName\": \"shadow-contract-fixture\",\n      \"serverVersion\": \"1.0.0\",\n      \"contentHash\": \"sha256:0eab2e6b867d472c3d622dff59d917f3346f6efaed6d064dddcbbefe194fbb05\",\n      \"capturedAt\": \"2026-10-29T05:05:58.263Z\"\n    },\n    \"generatedAt\": \"2026-10-29T05:05:58.264Z\",\n    \"tool\": \"mcpdiff\"\n  },\n  \"summary\": {\n    \"breaking\": 1,\n    \"warning\": 0,\n    \"safe\": 0,\n    \"total\": 1\n  },\n  \"changes\": [\n    {\n      \"id\": \"tool.alpha.inputSchema.requiredField.added\",\n      \"category\": \"tool\",\n      \"name\": \"alpha\",\n      \"severity\": \"breaking\",\n      \"type\": \"added\",\n      \"message\": \"Required parameter \\\"requiredField\\\" was added to alpha\",\n      \"path\": \"inputSchema.properties.requiredField\",\n      \"after\": {\n        \"type\": \"string\"\n      }\n    }\n  ]\n}\n",
+        "stderr": "Connecting to MCP server (/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/evidence-study-20261029b/contract_fixture.cjs schema /tmp/shadow-contract-change-hudb1n9b/0.9.0/required_schema_warning_policy.jsonl)...\nConnected to shadow-contract-fixture v1.0.0\n",
+        "exchanges": [
+          {
+            "direction": "request",
+            "message": {
+              "method": "initialize",
+              "params": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {},
+                "clientInfo": {
+                  "name": "mcpdiff",
+                  "version": "0.1.0"
+                }
+              },
+              "jsonrpc": "2.0",
+              "id": 0
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 0,
+              "result": {
+                "protocolVersion": "2025-11-25",
+                "capabilities": {
+                  "tools": {}
+                },
+                "serverInfo": {
+                  "name": "shadow-contract-fixture",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "notifications/initialized",
+              "jsonrpc": "2.0"
+            }
+          },
+          {
+            "direction": "request",
+            "message": {
+              "method": "tools/list",
+              "jsonrpc": "2.0",
+              "id": 1
+            }
+          },
+          {
+            "direction": "response",
+            "message": {
+              "jsonrpc": "2.0",
+              "id": 1,
+              "result": {
+                "tools": [
+                  {
+                    "name": "alpha",
+                    "description": "Fixed local fixture",
+                    "inputSchema": {
+                      "type": "object",
+                      "properties": {
+                        "requiredField": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "requiredField"
+                      ]
+                    },
+                    "annotations": {
+                      "readOnlyHint": true
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "capture_complete": true
+      },
+      "report": {
+        "meta": {
+          "before": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+            "capturedAt": "2026-10-29T05:05:56.878Z"
+          },
+          "after": {
+            "serverName": "shadow-contract-fixture",
+            "serverVersion": "1.0.0",
+            "contentHash": "sha256:0eab2e6b867d472c3d622dff59d917f3346f6efaed6d064dddcbbefe194fbb05",
+            "capturedAt": "2026-10-29T05:05:58.263Z"
+          },
+          "generatedAt": "2026-10-29T05:05:58.264Z",
+          "tool": "mcpdiff"
+        },
+        "summary": {
+          "breaking": 1,
+          "warning": 0,
+          "safe": 0,
+          "total": 1
+        },
+        "changes": [
+          {
+            "id": "tool.alpha.inputSchema.requiredField.added",
+            "category": "tool",
+            "name": "alpha",
+            "severity": "breaking",
+            "type": "added",
+            "message": "Required parameter \"requiredField\" was added to alpha",
+            "path": "inputSchema.properties.requiredField",
+            "after": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "case": "required_schema_warning_policy",
+      "cli_version": "0.9.0",
+      "policy": {
+        "fail_on": "warning",
+        "display_severity": "safe"
+      },
+      "expected_native_exit": 1,
+      "hashes_equal": false,
+      "baseline": {
+        "snapshotVersion": "1.0.0",
+        "capturedAt": "2026-10-29T05:05:56.878Z",
+        "contentHash": "sha256:055202201935bbed078718b29c920d204ebf17967078c3aeffb1751977ef7d65",
+        "server": {
+          "name": "shadow-contract-fixture",
+          "version": "1.0.0",
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {}
+          }
+        },
+        "capture": {
+          "transport": "stdio",
+          "source": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node /workspace/scratch/acac31873bfd/shadow-mentor/research/evidence-study-20261029b/contract_fixture.cjs before /tmp/shadow-contract-change-hudb1n9b/0.9.0/capture_before.jsonl",
+          "tool": "mcpdiff/0.1.0"
+        },
+        "tools": {
+          "alpha": {
+            "description": "Fixed local fixture",
+            "inputSchema": {
+              "type": "object",
+              "properties": {}
+            },
+            "annotations": {
+              "readOnlyHint": true
+            }
+          }
+        },
+        "resources": {},
+        "prompts": {}
+      },
+      "legacy_receipt_interpretation": {
+        "reported_verdict": "FAIL",
+        "execution_state": "COMPLETE",
+        "supported_verdict": "FAIL",
+        "acceptance": "WITHHOLD",
+        "reason": "DECLARED_DISCOVERY_OBLIGATION_OBSERVED",
+        "evidence_refs": [
+          "/raw/stdout",
+          "/raw/exchanges"
+        ]
+      },
+      "matched_reproduction_expectation": true
+    }
+  ]
+}

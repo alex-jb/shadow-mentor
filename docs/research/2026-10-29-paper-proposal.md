@@ -2,29 +2,31 @@
 
 ## Working title
 
-**Beyond Exit Code Zero: Evidence Gaps in MCP Acceptance Pipelines**
+**Beyond Exit Code Zero: Case Studies of Evidence Gaps in MCP Acceptance Pipelines**
 
 中文：**退出码为零之后：MCP 验收流程中的证据缺口**。
 
 ## Draft abstract
 
-Agent development pipelines consume test and conformance reports to decide
-whether an integration is ready for subsequent execution. A successful process
-exit, however, need not establish that the consumer's required checks ran or
-that their observations were complete. We investigate the boundary between a
-tool's native report and the acceptance claim made by a downstream consumer.
-Our preliminary development replay examines seven controlled check observations
-from a documented, repaired MCP contract-tool defect. An exit-code-only rule
-incorrectly accepts two discovery-error observations and labels another as a
-product failure. Both an ordinary strict output parser and a receipt-aware
-interpreter avoid these errors; the latter provides no additional accuracy on
-this development set. A separate native conformance control returns exit zero
-after version filtering selects no scenarios, illustrating legitimate empty
-selection rather than a tool defect. We preserve reported verdicts separately
-from execution completeness and make acceptance obligations explicit. These
-results motivate a cross-tool empirical study with matched-information
-baselines, independent labeling, and held-out cases. We do not establish
-production failure rates, generalization, or a new oracle algorithm.
+Agent development pipelines promote native test reports into acceptance
+decisions, although successful execution alone does not establish that every
+required assertion was exercised or every contract change was classified. We
+present a development pilot of three documented historical defects across two
+MCP tool families: incomplete discovery, omitted metadata changes, and an
+unexercised capability restriction. The first two use published CLI packages
+with controlled local fixtures; the third executes extracted original checker
+logic with RPC stubs. These execution levels are analyzed separately. A frozen
+discovery-receipt interpreter accepts a complete trace whose native report
+omits a policy-relevant annotation change. Recording actual failure thresholds
+distinguishes permitted warning exits from policy failures. An ordinary
+policy-aware parser exposes inconsistent reports, but conservatively withholds
+one authored change permitted by its policy when the old report cannot classify
+it. Separately, an upstream checker repair marks unexercised evidence as
+untestable rather than claiming a protocol violation. We retain controls for
+healthy behavior, authored forbidden-request controls and legitimate empty selection. All cases
+were developed after reading fixes. The pilot supports a bounded experience
+study, not production failure rates, held-out generalization, or superiority
+of a new verification algorithm.
 
 ## Problem and example
 
@@ -34,7 +36,10 @@ baseline can compare unchanged. This is different from a conformance selector
 correctly choosing no applicable scenarios. It is also different from a local
 health check being valid locally but insufficient to accept a proxy deployment.
 Each example needs an independently specified acceptance obligation before its
-downstream conclusion can be judged.
+downstream conclusion can be judged. The follow-up annotation case additionally
+shows that complete discovery receipts cannot establish the adequacy of the
+native diff engine. A documented capability-check repair provides a second
+tool-family example of successful evaluation without exercising its target.
 
 ## Research questions
 
@@ -47,9 +52,12 @@ downstream conclusion can be judged.
 
 ## What exists now
 
-- One known historical defect, previously exercised with real published CLI
-  versions and controlled local fixtures. Seven check records are re-analyzed;
-  snapshot creation commands are not counted as acceptance checks.
+- Three known historical defects across two tool families. Published CLI replay
+  covers discovery-error and annotation-omission repairs; a pinned Git revision
+  pair covers extracted capability-checker logic. The latter is not a full suite
+  execution. Commands and variants do not increase the independent defect count.
+- The earlier seven-record re-analysis remains a development comparison; snapshot
+  creation commands are not counted as acceptance checks.
 - A research interpreter preserving reported verdict, execution state, supported
   verdict, acceptance and evidence references. It supports only a narrow
   initialize/tools-list discovery profile.
@@ -57,6 +65,11 @@ downstream conclusion can be judged.
 - One native empty-suite control with a working sentinel positive control.
 - A negative result for method superiority: the strict parser already handles
   every error in the seven-record development replay.
+- A counterexample to the frozen discovery gate and a policy-aware ordinary
+  parser with explicit abstention cost. The latter fixes scope assumptions;
+  it is not a new verification algorithm or a matched-budget superiority result.
+- The broader expected-versus-emitted coverage question is already stated in
+  [upstream issue451](https://github.com/modelcontextprotocol/conformance/issues/451).
 
 ## Contributions to establish, not claim yet
 
@@ -95,6 +108,13 @@ the paper should remain a limited experience report or not be submitted.
   report-isolated trace checking; model experiments not reproduced here.
 - [Post-wire MCP semantic changes, arXiv:2610.00182v1](https://arxiv.org/html/2610.00182v1),
   consumer-relative information preservation and oracle challenges.
+- [Official conformance PR442](https://github.com/modelcontextprotocol/conformance/pull/442)
+  and [issue451](https://github.com/modelcontextprotocol/conformance/issues/451),
+  unexercised prerequisites and expected-versus-emitted coverage.
+
+The [cross-tool follow-up](./2026-10-29-cross-tool-followup.md) contains the raw
+execution boundaries, counterexamples, parser costs and limitations. A third
+tool family, blinded independent annotation and held-out evaluation remain undone.
 
 ## Preparation notes
 

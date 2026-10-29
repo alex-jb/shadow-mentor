@@ -1,0 +1,31 @@
+{
+  "schema": "shadow-future-acceptance-study-plan/1",
+  "authored_date": "2026-10-29",
+  "status": "DRAFT_FOR_FUTURE_COHORT_NOT_PREREGISTERED",
+  "known_development_cases": ["mcp-contracts-discovery-error", "mcp-contracts-annotation-omission", "conformance-pr442-unexercised-capability"],
+  "planned_tool_families": ["mcp-contracts/mcp-contracts", "modelcontextprotocol/conformance", "devhelmhq/mcp-recorder"],
+  "third_family_executed": false,
+  "prospective_screening": {
+    "sources": ["official issues", "merged pull requests", "release notes", "fixed source revisions"],
+    "historical_window": {"from": "2026-01-01", "through": "2026-10-29"},
+    "search_terms": ["false pass", "false positive", "untestable", "incomplete", "coverage", "verify", "unchanged"],
+    "order": "Record all query results and pagination limits; screen in source creation-time order rather than choosing only successful reproductions.",
+    "inclusion": "A documented acceptance/reporting defect with immutable source anchors and a replayable local input, or an explicitly marked non-defect applicability control.",
+    "exclusions_to_retain": ["unconfirmed cause", "not reproducible", "install failure", "no usable revision", "provider access required", "duplicate of same repair", "outside consumer obligation"]
+  },
+  "unit_of_analysis": "Independent repaired defect; variant inputs and repeated commands remain nested within it.",
+  "execution_lanes": ["published CLI integration replay", "extracted original-checker mechanism replay"],
+  "pooling_rule": "Do not pool different execution lanes into a single end-to-end accuracy rate.",
+  "obligations": "Freeze policy thresholds, report filters, required checks and applicability before each future evaluation. Label native semantics separately from consumer acceptance.",
+  "labels": {
+    "native": ["success", "failure", "error", "skip", "unavailable"],
+    "support": ["exercised", "unexercised", "incomplete", "unknown"],
+    "consumer": ["accept", "withhold", "outside_scope"],
+    "requirement": "Two annotators blinded to method outputs; disagreement retained. This has not yet been performed."
+  },
+  "baselines": ["current fixed native tool with actual policy", "exit code only", "ordinary strict output parser", "ordinary script with the same receipts/configuration and debugging budget as the candidate"],
+  "holdout": "Group by repaired defect and tool family. Do not split variants of one repair across development and held-out sets. No held-out set is selected or executed yet.",
+  "outcomes": ["false acceptance", "unnecessary withholding", "unknown support", "setup/adaptation effort", "maintenance effort"],
+  "cost_measurement_done": false,
+  "stop_rules": ["If ordinary strict scripts match the candidate, retain engineering value without a new-algorithm claim.", "If only known authored cases support the claim, report a development pilot or experience study rather than generalization.", "Do not count legal skips, empty selections or policy-permitted warnings as native defects."]
+}

@@ -1,0 +1,70 @@
+{
+  "schema": "shadow-upstream-source-pair/1",
+  "retrieved_on": "2026-10-29",
+  "repository": "modelcontextprotocol/conformance",
+  "pull_request": 442,
+  "pull_request_url": "https://github.com/modelcontextprotocol/conformance/pull/442",
+  "source_issue_url": "https://github.com/modelcontextprotocol/conformance/issues/439",
+  "merged_at": "2026-09-06T18:29:22Z",
+  "base_revision": "c321dd32035556e6769d3724a8ee97d87c3faaac",
+  "fixed_revision": "48561a1aeccd943f84da545d2cd29e940835f6b2",
+  "declared_package_version_both_revisions": "0.2.0-alpha.11",
+  "version_boundary": "Git source revision pair, not a comparison of published npm 0.1.16 releases.",
+  "license_boundary": "Upstream LICENSE declares an MIT-to-Apache-2.0 transition; complete returned LICENSE retained. No blanket all-MIT claim. Root tree lists LICENSE and no NOTICE.",
+  "sources": [
+    {
+      "local_path": "sources/base-input-required-result.ts",
+      "revision": "c321dd32035556e6769d3724a8ee97d87c3faaac",
+      "path": "src/scenarios/server/input-required-result.ts",
+      "git_blob_sha": "66efb3f5c4338637c4dafe78f39150867937aa05",
+      "upstream_size_bytes": 61369,
+      "url": "https://github.com/modelcontextprotocol/conformance/blob/c321dd32035556e6769d3724a8ee97d87c3faaac/src/scenarios/server/input-required-result.ts",
+      "sha256": "19934830e9933d41cc1988ad4bdda12c4fde2c9045356bfdb6f947b137395eef"
+    },
+    {
+      "local_path": "sources/fixed-input-required-result.ts",
+      "revision": "48561a1aeccd943f84da545d2cd29e940835f6b2",
+      "path": "src/scenarios/server/input-required-result.ts",
+      "git_blob_sha": "64ad4ba9e5f054259095ba38860164926296a930",
+      "upstream_size_bytes": 62095,
+      "url": "https://github.com/modelcontextprotocol/conformance/blob/48561a1aeccd943f84da545d2cd29e940835f6b2/src/scenarios/server/input-required-result.ts",
+      "sha256": "86efaae3434c2be284a2e0ea7f17068b4c9714554e4b5aefca1cab9226ccd737"
+    },
+    {
+      "local_path": "sources/base-helpers.ts",
+      "revision": "c321dd32035556e6769d3724a8ee97d87c3faaac",
+      "path": "src/scenarios/server/input-required-result-helpers.ts",
+      "git_blob_sha": "a845a8f4ad8a27b183c039c0e06e0a968cfdc918",
+      "upstream_size_bytes": 4451,
+      "url": "https://github.com/modelcontextprotocol/conformance/blob/c321dd32035556e6769d3724a8ee97d87c3faaac/src/scenarios/server/input-required-result-helpers.ts",
+      "sha256": "5bcc31e9756fab972b7e69dd9cd9dd524857d8e42a0d8e9adf20ffdfac42a1a6"
+    },
+    {
+      "local_path": "sources/fixed-helpers.ts",
+      "revision": "48561a1aeccd943f84da545d2cd29e940835f6b2",
+      "path": "src/scenarios/server/input-required-result-helpers.ts",
+      "git_blob_sha": "a845a8f4ad8a27b183c039c0e06e0a968cfdc918",
+      "upstream_size_bytes": 4451,
+      "url": "https://github.com/modelcontextprotocol/conformance/blob/48561a1aeccd943f84da545d2cd29e940835f6b2/src/scenarios/server/input-required-result-helpers.ts",
+      "sha256": "5bcc31e9756fab972b7e69dd9cd9dd524857d8e42a0d8e9adf20ffdfac42a1a6"
+    },
+    {
+      "local_path": "sources/fixed-untestable.ts",
+      "revision": "48561a1aeccd943f84da545d2cd29e940835f6b2",
+      "path": "src/scenarios/untestable.ts",
+      "git_blob_sha": "5ebd8220e52a3999fca13542e66ead28d6dc7337",
+      "upstream_size_bytes": 2105,
+      "url": "https://github.com/modelcontextprotocol/conformance/blob/48561a1aeccd943f84da545d2cd29e940835f6b2/src/scenarios/untestable.ts",
+      "sha256": "c956033b267611a26d95e5c20d92c95b4f6ac5a6dc31bf5800b7bd3af882be02"
+    },
+    {
+      "local_path": "sources/LICENSE",
+      "revision": "48561a1aeccd943f84da545d2cd29e940835f6b2",
+      "path": "LICENSE",
+      "git_blob_sha": "4a93985763241755401a10678395303de4e720ba",
+      "upstream_size_bytes": 12227,
+      "url": "https://github.com/modelcontextprotocol/conformance/blob/48561a1aeccd943f84da545d2cd29e940835f6b2/LICENSE",
+      "sha256": "0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a"
+    }
+  ]
+}
