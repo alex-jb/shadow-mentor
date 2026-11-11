@@ -48,3 +48,5 @@ Oracle 已有模拟客户回读、未决事项、来源追踪和分离式工作�
 另一条更贴近测试工作流的后备是 [ICST 附属 ASTA 2027](https://conf.researchr.org/track/icst-2027/asta-2027-papers)，**2027 年 2 月 4 日 AoE**，短文最多 4 页含引用、IEEE 格式、单匿名。适合在补充独立测试流程后再考虑。 [Registered Reports](https://conf.researchr.org/track/icst-2027/icst-2027-registered-reports) 可用于另起一项尚未看结果的研究，不能让本轮对照变成预注册实验。
 
 下一轮用[独立评估方案草案](../../research/acceptance-contract-20261111/next-study.md)，先确定问题和审核方式，再打开保留结果。当前哈希与 ID 是一致性检查，不能证明日志真实、时间正确或用户已确认。
+
+真实接入的第一候选是 [GitHub Actions 只读观察设计](../../research/acceptance-contract-20261111/ci-observation-design.md)。官方文档明确，同一个 workflow run 重跑时 ID 不变、attempt 会递增；部分重跑还可以沿用没有重跑的 job 输出。因此不能用 run ID 或绿色结论证明本次实际执行。已写好六种待执行对照；本轮没有修改或启动 CI。
