@@ -1,0 +1,461 @@
+{
+  "schema": "shadow.sqlite-transfer-control.v1",
+  "counts": {
+    "fresh_sql_attempts": 7,
+    "post_run_substitutions": 2
+  },
+  "python_version": "3.12.14",
+  "sqlite_version": "3.53.1",
+  "code_sha256": {
+    "sqlite_control.py": "3df4fd57e1857002c4f44e8c2c32005295623820480b3235b9e275c0ee2ec405",
+    "contract.py": "676da2bf3d04825968de59d007435cc80435580389438b49310c9c3c206edf08"
+  },
+  "seed_sql": "CREATE TABLE accounts (id INTEGER PRIMARY KEY, paid INTEGER, canceled INTEGER);\nINSERT INTO accounts VALUES (1, 1, 0), (2, 1, 1), (3, 0, 0);",
+  "fixed_selects": {
+    "paid_active": "SELECT COUNT(*) FROM accounts WHERE paid = 1 AND canceled = 0",
+    "all_accounts": "SELECT COUNT(*) FROM accounts",
+    "missing_column": "SELECT COUNT(missing_column) FROM accounts",
+    "paid_canceled": "SELECT COUNT(*) FROM accounts WHERE paid = 1 AND canceled = 1",
+    "paid_active_ids": "SELECT id FROM accounts WHERE paid = 1 AND canceled = 0 ORDER BY id",
+    "paid_canceled_ids": "SELECT id FROM accounts WHERE paid = 1 AND canceled = 1 ORDER BY id"
+  },
+  "limits": [
+    "Authored SQLite fixtures and local subprocess stdio only; no real customer or server.",
+    "Plans are frozen before their fresh SQL attempts; post-run substitutions execute no SQL.",
+    "The adapter and echoed bindings are trusted local inputs, not authenticated evidence.",
+    "Equal counts from different row sets correctly pass the count-only criterion; this is not a false accept at that scope.",
+    "The row-identity criterion compares a canonical JSON string of sorted IDs; matching it says nothing about uncaptured fields or query correctness beyond this check.",
+    "This is not an Oracle study replication.",
+    "This is a transfer control, not a new historical defect or generalization result."
+  ],
+  "rows": [
+    {
+      "id": "paid_active_matches",
+      "kind": "fresh_sql_attempt",
+      "frozen_plan": "{\"checks\":[{\"applies_to\":[\"stdio\"],\"expected\":1,\"id\":\"paid_not_canceled_count\"}],\"open_questions\":[],\"run_id\":\"sqlite:paid_active_matches\",\"schema\":\"shadow.acceptance-plan.v1\",\"scope\":{\"lane\":\"sqlite-in-memory\",\"transport\":\"stdio\"}}",
+      "request": {
+        "schema": "shadow.sqlite-control-request.v1",
+        "run_id": "sqlite:paid_active_matches",
+        "plan_sha256": "b23a238eaac695c02bed35556e30de7a74be8379f6728da3a90a9270972c2260",
+        "query_id": "paid_active"
+      },
+      "response": {
+        "plan_sha256": "b23a238eaac695c02bed35556e30de7a74be8379f6728da3a90a9270972c2260",
+        "query_id": "paid_active",
+        "run_id": "sqlite:paid_active_matches",
+        "schema": "shadow.sqlite-control-response.v1",
+        "status": "SQL_COMPLETED",
+        "value": 1
+      },
+      "process": {
+        "returncode": 0,
+        "stdout": "{\"plan_sha256\": \"b23a238eaac695c02bed35556e30de7a74be8379f6728da3a90a9270972c2260\", \"query_id\": \"paid_active\", \"run_id\": \"sqlite:paid_active_matches\", \"schema\": \"shadow.sqlite-control-response.v1\", \"status\": \"SQL_COMPLETED\", \"value\": 1}\n",
+        "stderr": ""
+      },
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "sqlite:paid_active_matches",
+        "plan_sha256": "b23a238eaac695c02bed35556e30de7a74be8379f6728da3a90a9270972c2260",
+        "scope": {
+          "lane": "sqlite-in-memory",
+          "transport": "stdio"
+        },
+        "observations": [
+          {
+            "id": "paid_not_canceled_count",
+            "state": "OBSERVED",
+            "value": 1,
+            "ref": "sqlite-results.json#row=paid_active_matches/response"
+          }
+        ]
+      },
+      "verdict": {
+        "decision": "ACCEPT",
+        "reason": "APPLICABLE_CHECKS_PASSED",
+        "checks": [
+          {
+            "id": "paid_not_canceled_count",
+            "state": "PASS",
+            "reason": "VALUE_MATCH",
+            "ref": "sqlite-results.json#row=paid_active_matches/response"
+          }
+        ]
+      }
+    },
+    {
+      "id": "broad_query_mismatches",
+      "kind": "fresh_sql_attempt",
+      "frozen_plan": "{\"checks\":[{\"applies_to\":[\"stdio\"],\"expected\":1,\"id\":\"paid_not_canceled_count\"}],\"open_questions\":[],\"run_id\":\"sqlite:broad_query_mismatches\",\"schema\":\"shadow.acceptance-plan.v1\",\"scope\":{\"lane\":\"sqlite-in-memory\",\"transport\":\"stdio\"}}",
+      "request": {
+        "schema": "shadow.sqlite-control-request.v1",
+        "run_id": "sqlite:broad_query_mismatches",
+        "plan_sha256": "fca57b06e9291b86bc5c225501f49883b0b489f48127dce84ab174cbf340b7f4",
+        "query_id": "all_accounts"
+      },
+      "response": {
+        "plan_sha256": "fca57b06e9291b86bc5c225501f49883b0b489f48127dce84ab174cbf340b7f4",
+        "query_id": "all_accounts",
+        "run_id": "sqlite:broad_query_mismatches",
+        "schema": "shadow.sqlite-control-response.v1",
+        "status": "SQL_COMPLETED",
+        "value": 3
+      },
+      "process": {
+        "returncode": 0,
+        "stdout": "{\"plan_sha256\": \"fca57b06e9291b86bc5c225501f49883b0b489f48127dce84ab174cbf340b7f4\", \"query_id\": \"all_accounts\", \"run_id\": \"sqlite:broad_query_mismatches\", \"schema\": \"shadow.sqlite-control-response.v1\", \"status\": \"SQL_COMPLETED\", \"value\": 3}\n",
+        "stderr": ""
+      },
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "sqlite:broad_query_mismatches",
+        "plan_sha256": "fca57b06e9291b86bc5c225501f49883b0b489f48127dce84ab174cbf340b7f4",
+        "scope": {
+          "lane": "sqlite-in-memory",
+          "transport": "stdio"
+        },
+        "observations": [
+          {
+            "id": "paid_not_canceled_count",
+            "state": "OBSERVED",
+            "value": 3,
+            "ref": "sqlite-results.json#row=broad_query_mismatches/response"
+          }
+        ]
+      },
+      "verdict": {
+        "decision": "REJECT",
+        "reason": "REQUIRED_CHECK_FAILED",
+        "checks": [
+          {
+            "id": "paid_not_canceled_count",
+            "state": "FAIL",
+            "reason": "VALUE_MISMATCH",
+            "ref": "sqlite-results.json#row=broad_query_mismatches/response"
+          }
+        ]
+      }
+    },
+    {
+      "id": "broad_query_matches_alternate",
+      "kind": "fresh_sql_attempt",
+      "frozen_plan": "{\"checks\":[{\"applies_to\":[\"stdio\"],\"expected\":3,\"id\":\"all_accounts_count\"}],\"open_questions\":[],\"run_id\":\"sqlite:broad_query_matches_alternate\",\"schema\":\"shadow.acceptance-plan.v1\",\"scope\":{\"lane\":\"sqlite-in-memory\",\"transport\":\"stdio\"}}",
+      "request": {
+        "schema": "shadow.sqlite-control-request.v1",
+        "run_id": "sqlite:broad_query_matches_alternate",
+        "plan_sha256": "b22ed37a67990cf4ee32ce71bc5c430bc05bebe5c5bade1e239b64b37e21e620",
+        "query_id": "all_accounts"
+      },
+      "response": {
+        "plan_sha256": "b22ed37a67990cf4ee32ce71bc5c430bc05bebe5c5bade1e239b64b37e21e620",
+        "query_id": "all_accounts",
+        "run_id": "sqlite:broad_query_matches_alternate",
+        "schema": "shadow.sqlite-control-response.v1",
+        "status": "SQL_COMPLETED",
+        "value": 3
+      },
+      "process": {
+        "returncode": 0,
+        "stdout": "{\"plan_sha256\": \"b22ed37a67990cf4ee32ce71bc5c430bc05bebe5c5bade1e239b64b37e21e620\", \"query_id\": \"all_accounts\", \"run_id\": \"sqlite:broad_query_matches_alternate\", \"schema\": \"shadow.sqlite-control-response.v1\", \"status\": \"SQL_COMPLETED\", \"value\": 3}\n",
+        "stderr": ""
+      },
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "sqlite:broad_query_matches_alternate",
+        "plan_sha256": "b22ed37a67990cf4ee32ce71bc5c430bc05bebe5c5bade1e239b64b37e21e620",
+        "scope": {
+          "lane": "sqlite-in-memory",
+          "transport": "stdio"
+        },
+        "observations": [
+          {
+            "id": "all_accounts_count",
+            "state": "OBSERVED",
+            "value": 3,
+            "ref": "sqlite-results.json#row=broad_query_matches_alternate/response"
+          }
+        ]
+      },
+      "verdict": {
+        "decision": "ACCEPT",
+        "reason": "APPLICABLE_CHECKS_PASSED",
+        "checks": [
+          {
+            "id": "all_accounts_count",
+            "state": "PASS",
+            "reason": "VALUE_MATCH",
+            "ref": "sqlite-results.json#row=broad_query_matches_alternate/response"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sql_error",
+      "kind": "fresh_sql_attempt",
+      "frozen_plan": "{\"checks\":[{\"applies_to\":[\"stdio\"],\"expected\":1,\"id\":\"paid_not_canceled_count\"}],\"open_questions\":[],\"run_id\":\"sqlite:sql_error\",\"schema\":\"shadow.acceptance-plan.v1\",\"scope\":{\"lane\":\"sqlite-in-memory\",\"transport\":\"stdio\"}}",
+      "request": {
+        "schema": "shadow.sqlite-control-request.v1",
+        "run_id": "sqlite:sql_error",
+        "plan_sha256": "0a37f23b499e2dfd301c2c0bddd9d0235a4fb4475994dbfbb0f9278073113a1d",
+        "query_id": "missing_column"
+      },
+      "response": {
+        "error": {
+          "message": "no such column: missing_column",
+          "type": "OperationalError"
+        },
+        "plan_sha256": "0a37f23b499e2dfd301c2c0bddd9d0235a4fb4475994dbfbb0f9278073113a1d",
+        "query_id": "missing_column",
+        "run_id": "sqlite:sql_error",
+        "schema": "shadow.sqlite-control-response.v1",
+        "status": "SQL_ERROR"
+      },
+      "process": {
+        "returncode": 1,
+        "stdout": "{\"error\": {\"message\": \"no such column: missing_column\", \"type\": \"OperationalError\"}, \"plan_sha256\": \"0a37f23b499e2dfd301c2c0bddd9d0235a4fb4475994dbfbb0f9278073113a1d\", \"query_id\": \"missing_column\", \"run_id\": \"sqlite:sql_error\", \"schema\": \"shadow.sqlite-control-response.v1\", \"status\": \"SQL_ERROR\"}\n",
+        "stderr": ""
+      },
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "sqlite:sql_error",
+        "plan_sha256": "0a37f23b499e2dfd301c2c0bddd9d0235a4fb4475994dbfbb0f9278073113a1d",
+        "scope": {
+          "lane": "sqlite-in-memory",
+          "transport": "stdio"
+        },
+        "observations": [
+          {
+            "id": "paid_not_canceled_count",
+            "state": "ERROR",
+            "ref": "sqlite-results.json#row=sql_error/response"
+          }
+        ]
+      },
+      "verdict": {
+        "decision": "WITHHOLD",
+        "reason": "REQUIRED_CHECK_NOT_OBSERVED",
+        "checks": [
+          {
+            "id": "paid_not_canceled_count",
+            "state": "NOT_OBSERVED",
+            "reason": "ERROR",
+            "ref": "sqlite-results.json#row=sql_error/response"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canceled_subset_same_count",
+      "kind": "fresh_sql_attempt",
+      "frozen_plan": "{\"checks\":[{\"applies_to\":[\"stdio\"],\"expected\":1,\"id\":\"paid_not_canceled_count\"}],\"open_questions\":[],\"run_id\":\"sqlite:canceled_subset_same_count\",\"schema\":\"shadow.acceptance-plan.v1\",\"scope\":{\"lane\":\"sqlite-in-memory\",\"transport\":\"stdio\"}}",
+      "request": {
+        "schema": "shadow.sqlite-control-request.v1",
+        "run_id": "sqlite:canceled_subset_same_count",
+        "plan_sha256": "4a3d9787c31e49cecd3e20d2d1ee23edaa9b6ed4c0697f086d1a2441a73fbfd7",
+        "query_id": "paid_canceled"
+      },
+      "response": {
+        "plan_sha256": "4a3d9787c31e49cecd3e20d2d1ee23edaa9b6ed4c0697f086d1a2441a73fbfd7",
+        "query_id": "paid_canceled",
+        "run_id": "sqlite:canceled_subset_same_count",
+        "schema": "shadow.sqlite-control-response.v1",
+        "status": "SQL_COMPLETED",
+        "value": 1
+      },
+      "process": {
+        "returncode": 0,
+        "stdout": "{\"plan_sha256\": \"4a3d9787c31e49cecd3e20d2d1ee23edaa9b6ed4c0697f086d1a2441a73fbfd7\", \"query_id\": \"paid_canceled\", \"run_id\": \"sqlite:canceled_subset_same_count\", \"schema\": \"shadow.sqlite-control-response.v1\", \"status\": \"SQL_COMPLETED\", \"value\": 1}\n",
+        "stderr": ""
+      },
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "sqlite:canceled_subset_same_count",
+        "plan_sha256": "4a3d9787c31e49cecd3e20d2d1ee23edaa9b6ed4c0697f086d1a2441a73fbfd7",
+        "scope": {
+          "lane": "sqlite-in-memory",
+          "transport": "stdio"
+        },
+        "observations": [
+          {
+            "id": "paid_not_canceled_count",
+            "state": "OBSERVED",
+            "value": 1,
+            "ref": "sqlite-results.json#row=canceled_subset_same_count/response"
+          }
+        ]
+      },
+      "verdict": {
+        "decision": "ACCEPT",
+        "reason": "APPLICABLE_CHECKS_PASSED",
+        "checks": [
+          {
+            "id": "paid_not_canceled_count",
+            "state": "PASS",
+            "reason": "VALUE_MATCH",
+            "ref": "sqlite-results.json#row=canceled_subset_same_count/response"
+          }
+        ]
+      }
+    },
+    {
+      "id": "active_subset_matches_ids",
+      "kind": "fresh_sql_attempt",
+      "frozen_plan": "{\"checks\":[{\"applies_to\":[\"stdio\"],\"expected\":\"[1]\",\"id\":\"paid_not_canceled_ids\"}],\"open_questions\":[],\"run_id\":\"sqlite:active_subset_matches_ids\",\"schema\":\"shadow.acceptance-plan.v1\",\"scope\":{\"lane\":\"sqlite-in-memory\",\"transport\":\"stdio\"}}",
+      "request": {
+        "schema": "shadow.sqlite-control-request.v1",
+        "run_id": "sqlite:active_subset_matches_ids",
+        "plan_sha256": "8fea997e64ef0baa3fb147bac9838492b5ea2cea3d502f326ed4d83377c54ea3",
+        "query_id": "paid_active_ids"
+      },
+      "response": {
+        "plan_sha256": "8fea997e64ef0baa3fb147bac9838492b5ea2cea3d502f326ed4d83377c54ea3",
+        "query_id": "paid_active_ids",
+        "run_id": "sqlite:active_subset_matches_ids",
+        "schema": "shadow.sqlite-control-response.v1",
+        "status": "SQL_COMPLETED",
+        "value": "[1]"
+      },
+      "process": {
+        "returncode": 0,
+        "stdout": "{\"plan_sha256\": \"8fea997e64ef0baa3fb147bac9838492b5ea2cea3d502f326ed4d83377c54ea3\", \"query_id\": \"paid_active_ids\", \"run_id\": \"sqlite:active_subset_matches_ids\", \"schema\": \"shadow.sqlite-control-response.v1\", \"status\": \"SQL_COMPLETED\", \"value\": \"[1]\"}\n",
+        "stderr": ""
+      },
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "sqlite:active_subset_matches_ids",
+        "plan_sha256": "8fea997e64ef0baa3fb147bac9838492b5ea2cea3d502f326ed4d83377c54ea3",
+        "scope": {
+          "lane": "sqlite-in-memory",
+          "transport": "stdio"
+        },
+        "observations": [
+          {
+            "id": "paid_not_canceled_ids",
+            "state": "OBSERVED",
+            "value": "[1]",
+            "ref": "sqlite-results.json#row=active_subset_matches_ids/response"
+          }
+        ]
+      },
+      "verdict": {
+        "decision": "ACCEPT",
+        "reason": "APPLICABLE_CHECKS_PASSED",
+        "checks": [
+          {
+            "id": "paid_not_canceled_ids",
+            "state": "PASS",
+            "reason": "VALUE_MATCH",
+            "ref": "sqlite-results.json#row=active_subset_matches_ids/response"
+          }
+        ]
+      }
+    },
+    {
+      "id": "canceled_subset_mismatches_ids",
+      "kind": "fresh_sql_attempt",
+      "frozen_plan": "{\"checks\":[{\"applies_to\":[\"stdio\"],\"expected\":\"[1]\",\"id\":\"paid_not_canceled_ids\"}],\"open_questions\":[],\"run_id\":\"sqlite:canceled_subset_mismatches_ids\",\"schema\":\"shadow.acceptance-plan.v1\",\"scope\":{\"lane\":\"sqlite-in-memory\",\"transport\":\"stdio\"}}",
+      "request": {
+        "schema": "shadow.sqlite-control-request.v1",
+        "run_id": "sqlite:canceled_subset_mismatches_ids",
+        "plan_sha256": "937f333d02a2b33125572406f39e8d7357aec1496792700968ba6472d6f4d565",
+        "query_id": "paid_canceled_ids"
+      },
+      "response": {
+        "plan_sha256": "937f333d02a2b33125572406f39e8d7357aec1496792700968ba6472d6f4d565",
+        "query_id": "paid_canceled_ids",
+        "run_id": "sqlite:canceled_subset_mismatches_ids",
+        "schema": "shadow.sqlite-control-response.v1",
+        "status": "SQL_COMPLETED",
+        "value": "[2]"
+      },
+      "process": {
+        "returncode": 0,
+        "stdout": "{\"plan_sha256\": \"937f333d02a2b33125572406f39e8d7357aec1496792700968ba6472d6f4d565\", \"query_id\": \"paid_canceled_ids\", \"run_id\": \"sqlite:canceled_subset_mismatches_ids\", \"schema\": \"shadow.sqlite-control-response.v1\", \"status\": \"SQL_COMPLETED\", \"value\": \"[2]\"}\n",
+        "stderr": ""
+      },
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "sqlite:canceled_subset_mismatches_ids",
+        "plan_sha256": "937f333d02a2b33125572406f39e8d7357aec1496792700968ba6472d6f4d565",
+        "scope": {
+          "lane": "sqlite-in-memory",
+          "transport": "stdio"
+        },
+        "observations": [
+          {
+            "id": "paid_not_canceled_ids",
+            "state": "OBSERVED",
+            "value": "[2]",
+            "ref": "sqlite-results.json#row=canceled_subset_mismatches_ids/response"
+          }
+        ]
+      },
+      "verdict": {
+        "decision": "REJECT",
+        "reason": "REQUIRED_CHECK_FAILED",
+        "checks": [
+          {
+            "id": "paid_not_canceled_ids",
+            "state": "FAIL",
+            "reason": "VALUE_MISMATCH",
+            "ref": "sqlite-results.json#row=canceled_subset_mismatches_ids/response"
+          }
+        ]
+      }
+    },
+    {
+      "id": "old_run_under_changed_plan",
+      "kind": "post_run_evidence_substitution",
+      "frozen_plan": "{\"checks\":[{\"applies_to\":[\"stdio\"],\"expected\":3,\"id\":\"all_accounts_count\"}],\"open_questions\":[],\"run_id\":\"sqlite:broad_query_matches_alternate\",\"schema\":\"shadow.acceptance-plan.v1\",\"scope\":{\"lane\":\"sqlite-in-memory\",\"transport\":\"stdio\"}}",
+      "source_response_row": "broad_query_mismatches",
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "sqlite:broad_query_mismatches",
+        "plan_sha256": "fca57b06e9291b86bc5c225501f49883b0b489f48127dce84ab174cbf340b7f4",
+        "scope": {
+          "lane": "sqlite-in-memory",
+          "transport": "stdio"
+        },
+        "observations": [
+          {
+            "id": "paid_not_canceled_count",
+            "state": "OBSERVED",
+            "value": 3,
+            "ref": "sqlite-results.json#row=broad_query_mismatches/response"
+          }
+        ]
+      },
+      "verdict": {
+        "decision": "WITHHOLD",
+        "reason": "PLAN_DIGEST_MISMATCH",
+        "checks": []
+      }
+    },
+    {
+      "id": "observation_omitted_after_run",
+      "kind": "post_run_evidence_substitution",
+      "frozen_plan": "{\"checks\":[{\"applies_to\":[\"stdio\"],\"expected\":1,\"id\":\"paid_not_canceled_count\"}],\"open_questions\":[],\"run_id\":\"sqlite:paid_active_matches\",\"schema\":\"shadow.acceptance-plan.v1\",\"scope\":{\"lane\":\"sqlite-in-memory\",\"transport\":\"stdio\"}}",
+      "source_response_row": "paid_active_matches",
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "sqlite:paid_active_matches",
+        "plan_sha256": "b23a238eaac695c02bed35556e30de7a74be8379f6728da3a90a9270972c2260",
+        "scope": {
+          "lane": "sqlite-in-memory",
+          "transport": "stdio"
+        },
+        "observations": []
+      },
+      "verdict": {
+        "decision": "WITHHOLD",
+        "reason": "REQUIRED_CHECK_NOT_OBSERVED",
+        "checks": [
+          {
+            "id": "paid_not_canceled_count",
+            "state": "NOT_OBSERVED",
+            "reason": "MISSING_OBSERVATION"
+          }
+        ]
+      }
+    }
+  ]
+}

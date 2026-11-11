@@ -1,0 +1,23 @@
+{
+  "schema": "shadow.acceptance-replay.v1",
+  "boundary": "Development replay over archived authored recorder controls; labels and consumer rules were written after inspecting the archive. Run identifiers, plan versions and envelope substitutions are synthetic. No new upstream invocation or holdout.",
+  "source": "../evidence-study-20261029d/recorder/results.json",
+  "cases": [
+    {"id":"http_200","source_case":"lifecycle_observed_200","profile":"http_status","expected":"ACCEPT"},
+    {"id":"http_500_expected_200","source_case":"lifecycle_observed_500","profile":"http_status","expected":"REJECT"},
+    {"id":"http_500_expected_500","source_case":"lifecycle_observed_500","profile":"http_status","status":500,"expected":"ACCEPT"},
+    {"id":"skipped_required","source_case":"lifecycle_unsupported_skip","profile":"status_required","expected":"WITHHOLD"},
+    {"id":"wrong_run","source_case":"lifecycle_observed_200","profile":"http_status","change":"old_run","expected":"WITHHOLD"},
+    {"id":"other_plan","source_case":"lifecycle_observed_200","profile":"http_status","change":"other_plan","expected":"WITHHOLD"},
+    {"id":"wrong_lane","source_case":"lifecycle_observed_200","profile":"http_status","change":"other_lane","expected":"WITHHOLD"},
+    {"id":"missing_observation","source_case":"lifecycle_observed_200","profile":"http_status","change":"missing","expected":"WITHHOLD"},
+    {"id":"status_as_text","source_case":"lifecycle_observed_200","profile":"http_status","change":"string_status","expected":"WITHHOLD"},
+    {"id":"lifecycle_transport_error","source_case":"lifecycle_transport_error","profile":"http_status","expected":"WITHHOLD"},
+    {"id":"unresolved_requirement","source_case":"lifecycle_observed_200","profile":"http_status","open_questions":["Is 200 or 204 the intended success status?"],"expected":"WITHHOLD"},
+    {"id":"zero_applicable","source_case":"lifecycle_unsupported_skip","profile":"http_status","expected":"WITHHOLD"},
+    {"id":"stdio_rpc_with_legitimate_exclusion","source_case":"rpc_pass_plus_lifecycle_skip","profile":"rpc_and_http_status","expected":"ACCEPT"},
+    {"id":"rpc_mismatch","source_case":"rpc_mismatch","profile":"rpc_and_http_status","expected":"REJECT"},
+    {"id":"rpc_transport_error","source_case":"rpc_transport_error","profile":"rpc_and_http_status","expected":"WITHHOLD"},
+    {"id":"duplicate_observation","source_case":"lifecycle_observed_200","profile":"http_status","change":"duplicate","expected":"WITHHOLD"}
+  ]
+}

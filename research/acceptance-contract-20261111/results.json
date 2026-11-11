@@ -1,0 +1,987 @@
+{
+  "schema": "shadow.acceptance-replay-results.v1",
+  "boundary": "Development replay over archived authored recorder controls; labels and consumer rules were written after inspecting the archive. Run identifiers, plan versions and envelope substitutions are synthetic. No new upstream invocation or holdout.",
+  "bindings": {
+    "study_plan_sha256": "0f6e62ad527f9bbdd50d3d83bcba1ab5d0778db4e6eb5c4711d1bd8ab7cfba28",
+    "source_archive_sha256": "429ae9154ae3befa985e3fd843051e9a3a3895e7341c035ff479874f75cad8cd",
+    "evaluator_sha256": "676da2bf3d04825968de59d007435cc80435580389438b49310c9c3c206edf08",
+    "driver_sha256": "28b26ab014b6e5dc4b9c85874237d2e20c3915df91d8e7bd299c90a4fc3fd5e9"
+  },
+  "counts": {
+    "authored_replay_rows": 16,
+    "distinct_archived_fixture_rows_used": 7,
+    "new_native_invocations": 0,
+    "new_historical_defects": 0
+  },
+  "identical_native_reports_for": [
+    "lifecycle_observed_200",
+    "lifecycle_unsupported_skip",
+    "lifecycle_observed_500"
+  ],
+  "metrics": {
+    "native_only": {
+      "matches_authored_expectation": 5,
+      "unsupported_accepts": 10,
+      "unsupported_rejects": 1,
+      "expected_accepts_withheld": 0
+    },
+    "unbound_rule": {
+      "matches_authored_expectation": 14,
+      "unsupported_accepts": 2,
+      "unsupported_rejects": 0,
+      "expected_accepts_withheld": 0
+    },
+    "same_information_rule": {
+      "matches_authored_expectation": 16,
+      "unsupported_accepts": 0,
+      "unsupported_rejects": 0,
+      "expected_accepts_withheld": 0
+    },
+    "frozen_evaluator": {
+      "matches_authored_expectation": 16,
+      "unsupported_accepts": 0,
+      "unsupported_rejects": 0,
+      "expected_accepts_withheld": 0
+    }
+  },
+  "results": [
+    {
+      "id": "http_200",
+      "source_case": "lifecycle_observed_200",
+      "source_row": 0,
+      "native_result_sha256": "c4190abda9b2439a54db4f7947f11ad89ace2bcfb325bbe9b7055cd737320dfe",
+      "frozen_plan": {
+        "checks": [
+          {
+            "applies_to": [
+              "http"
+            ],
+            "expected": 200,
+            "id": "lifecycle_status"
+          }
+        ],
+        "open_questions": [],
+        "run_id": "study-run:http_200",
+        "schema": "shadow.acceptance-plan.v1",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        }
+      },
+      "frozen_plan_sha256": "9645008c4d46ac10487d4220401317de9525838d48a1e834f8a094d61dc995d9",
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "study-run:http_200",
+        "plan_sha256": "9645008c4d46ac10487d4220401317de9525838d48a1e834f8a094d61dc995d9",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        },
+        "observations": [
+          {
+            "id": "lifecycle_status",
+            "ref": "#/rows/0/transport_events/1",
+            "state": "OBSERVED",
+            "value": 200
+          }
+        ]
+      },
+      "authored_expected": "ACCEPT",
+      "native_only": "ACCEPT",
+      "unbound_rule": "ACCEPT",
+      "same_information_rule": "ACCEPT",
+      "frozen_evaluator": "ACCEPT",
+      "detail": {
+        "decision": "ACCEPT",
+        "reason": "APPLICABLE_CHECKS_PASSED",
+        "checks": [
+          {
+            "id": "lifecycle_status",
+            "state": "PASS",
+            "reason": "VALUE_MATCH",
+            "ref": "#/rows/0/transport_events/1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "http_500_expected_200",
+      "source_case": "lifecycle_observed_500",
+      "source_row": 3,
+      "native_result_sha256": "c4190abda9b2439a54db4f7947f11ad89ace2bcfb325bbe9b7055cd737320dfe",
+      "frozen_plan": {
+        "checks": [
+          {
+            "applies_to": [
+              "http"
+            ],
+            "expected": 200,
+            "id": "lifecycle_status"
+          }
+        ],
+        "open_questions": [],
+        "run_id": "study-run:http_500_expected_200",
+        "schema": "shadow.acceptance-plan.v1",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        }
+      },
+      "frozen_plan_sha256": "2d074ad864f147a17313f1b69321493538e9cb7e5a23ec4ac093f8510c7a3ad2",
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "study-run:http_500_expected_200",
+        "plan_sha256": "2d074ad864f147a17313f1b69321493538e9cb7e5a23ec4ac093f8510c7a3ad2",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        },
+        "observations": [
+          {
+            "id": "lifecycle_status",
+            "ref": "#/rows/3/transport_events/1",
+            "state": "OBSERVED",
+            "value": 500
+          }
+        ]
+      },
+      "authored_expected": "REJECT",
+      "native_only": "ACCEPT",
+      "unbound_rule": "REJECT",
+      "same_information_rule": "REJECT",
+      "frozen_evaluator": "REJECT",
+      "detail": {
+        "decision": "REJECT",
+        "reason": "REQUIRED_CHECK_FAILED",
+        "checks": [
+          {
+            "id": "lifecycle_status",
+            "state": "FAIL",
+            "reason": "VALUE_MISMATCH",
+            "ref": "#/rows/3/transport_events/1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "http_500_expected_500",
+      "source_case": "lifecycle_observed_500",
+      "source_row": 3,
+      "native_result_sha256": "c4190abda9b2439a54db4f7947f11ad89ace2bcfb325bbe9b7055cd737320dfe",
+      "frozen_plan": {
+        "checks": [
+          {
+            "applies_to": [
+              "http"
+            ],
+            "expected": 500,
+            "id": "lifecycle_status"
+          }
+        ],
+        "open_questions": [],
+        "run_id": "study-run:http_500_expected_500",
+        "schema": "shadow.acceptance-plan.v1",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        }
+      },
+      "frozen_plan_sha256": "1590951b0f22ef9c8387678a7c4a3f23c7e4230ee2da7839f7df3674ff73a809",
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "study-run:http_500_expected_500",
+        "plan_sha256": "1590951b0f22ef9c8387678a7c4a3f23c7e4230ee2da7839f7df3674ff73a809",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        },
+        "observations": [
+          {
+            "id": "lifecycle_status",
+            "ref": "#/rows/3/transport_events/1",
+            "state": "OBSERVED",
+            "value": 500
+          }
+        ]
+      },
+      "authored_expected": "ACCEPT",
+      "native_only": "ACCEPT",
+      "unbound_rule": "ACCEPT",
+      "same_information_rule": "ACCEPT",
+      "frozen_evaluator": "ACCEPT",
+      "detail": {
+        "decision": "ACCEPT",
+        "reason": "APPLICABLE_CHECKS_PASSED",
+        "checks": [
+          {
+            "id": "lifecycle_status",
+            "state": "PASS",
+            "reason": "VALUE_MATCH",
+            "ref": "#/rows/3/transport_events/1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "skipped_required",
+      "source_case": "lifecycle_unsupported_skip",
+      "source_row": 1,
+      "native_result_sha256": "c4190abda9b2439a54db4f7947f11ad89ace2bcfb325bbe9b7055cd737320dfe",
+      "frozen_plan": {
+        "checks": [
+          {
+            "applies_to": [
+              "http",
+              "stdio"
+            ],
+            "expected": 200,
+            "id": "lifecycle_status"
+          }
+        ],
+        "open_questions": [],
+        "run_id": "study-run:skipped_required",
+        "schema": "shadow.acceptance-plan.v1",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "stdio"
+        }
+      },
+      "frozen_plan_sha256": "07030b62f34678ccfb0afafda8b443a45d0e61604f9740f5feb8e07d2182ba0e",
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "study-run:skipped_required",
+        "plan_sha256": "07030b62f34678ccfb0afafda8b443a45d0e61604f9740f5feb8e07d2182ba0e",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "stdio"
+        },
+        "observations": [
+          {
+            "id": "lifecycle_status",
+            "state": "SKIPPED",
+            "ref": "#/rows/1/native_log"
+          }
+        ]
+      },
+      "authored_expected": "WITHHOLD",
+      "native_only": "ACCEPT",
+      "unbound_rule": "WITHHOLD",
+      "same_information_rule": "WITHHOLD",
+      "frozen_evaluator": "WITHHOLD",
+      "detail": {
+        "decision": "WITHHOLD",
+        "reason": "REQUIRED_CHECK_NOT_OBSERVED",
+        "checks": [
+          {
+            "id": "lifecycle_status",
+            "state": "NOT_OBSERVED",
+            "reason": "SKIPPED",
+            "ref": "#/rows/1/native_log"
+          }
+        ]
+      }
+    },
+    {
+      "id": "wrong_run",
+      "source_case": "lifecycle_observed_200",
+      "source_row": 0,
+      "native_result_sha256": "c4190abda9b2439a54db4f7947f11ad89ace2bcfb325bbe9b7055cd737320dfe",
+      "frozen_plan": {
+        "checks": [
+          {
+            "applies_to": [
+              "http"
+            ],
+            "expected": 200,
+            "id": "lifecycle_status"
+          }
+        ],
+        "open_questions": [],
+        "run_id": "study-run:wrong_run",
+        "schema": "shadow.acceptance-plan.v1",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        }
+      },
+      "frozen_plan_sha256": "94d8129bbaadd68e1f1b6255209b9be494f543d169a18ec60221d1053b922db9",
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "previous-study-run",
+        "plan_sha256": "94d8129bbaadd68e1f1b6255209b9be494f543d169a18ec60221d1053b922db9",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        },
+        "observations": [
+          {
+            "id": "lifecycle_status",
+            "ref": "#/rows/0/transport_events/1",
+            "state": "OBSERVED",
+            "value": 200
+          }
+        ]
+      },
+      "authored_expected": "WITHHOLD",
+      "native_only": "ACCEPT",
+      "unbound_rule": "ACCEPT",
+      "same_information_rule": "WITHHOLD",
+      "frozen_evaluator": "WITHHOLD",
+      "detail": {
+        "decision": "WITHHOLD",
+        "reason": "RUN_ID_MISMATCH",
+        "checks": []
+      }
+    },
+    {
+      "id": "other_plan",
+      "source_case": "lifecycle_observed_200",
+      "source_row": 0,
+      "native_result_sha256": "c4190abda9b2439a54db4f7947f11ad89ace2bcfb325bbe9b7055cd737320dfe",
+      "frozen_plan": {
+        "checks": [
+          {
+            "applies_to": [
+              "http"
+            ],
+            "expected": 200,
+            "id": "lifecycle_status"
+          }
+        ],
+        "open_questions": [],
+        "run_id": "study-run:other_plan",
+        "schema": "shadow.acceptance-plan.v1",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        }
+      },
+      "frozen_plan_sha256": "784e536aef3c12e40947a409a9021a72676b0e06c77c64d6ab22494813d1f611",
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "study-run:other_plan",
+        "plan_sha256": "83efcbdd062113afc6bbef1eb64e3ea5dfe4292248131511f6485ab3496d72bf",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        },
+        "observations": [
+          {
+            "id": "lifecycle_status",
+            "ref": "#/rows/0/transport_events/1",
+            "state": "OBSERVED",
+            "value": 200
+          }
+        ]
+      },
+      "authored_expected": "WITHHOLD",
+      "native_only": "ACCEPT",
+      "unbound_rule": "ACCEPT",
+      "same_information_rule": "WITHHOLD",
+      "frozen_evaluator": "WITHHOLD",
+      "detail": {
+        "decision": "WITHHOLD",
+        "reason": "PLAN_DIGEST_MISMATCH",
+        "checks": []
+      }
+    },
+    {
+      "id": "wrong_lane",
+      "source_case": "lifecycle_observed_200",
+      "source_row": 0,
+      "native_result_sha256": "c4190abda9b2439a54db4f7947f11ad89ace2bcfb325bbe9b7055cd737320dfe",
+      "frozen_plan": {
+        "checks": [
+          {
+            "applies_to": [
+              "http"
+            ],
+            "expected": 200,
+            "id": "lifecycle_status"
+          }
+        ],
+        "open_questions": [],
+        "run_id": "study-run:wrong_lane",
+        "schema": "shadow.acceptance-plan.v1",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        }
+      },
+      "frozen_plan_sha256": "97011da3fa6a9997810b9b7d78b373d7770002cd6c38c317521e4fb350ddf79a",
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "study-run:wrong_lane",
+        "plan_sha256": "97011da3fa6a9997810b9b7d78b373d7770002cd6c38c317521e4fb350ddf79a",
+        "scope": {
+          "lane": "different-authored-lane",
+          "transport": "http"
+        },
+        "observations": [
+          {
+            "id": "lifecycle_status",
+            "ref": "#/rows/0/transport_events/1",
+            "state": "OBSERVED",
+            "value": 200
+          }
+        ]
+      },
+      "authored_expected": "WITHHOLD",
+      "native_only": "ACCEPT",
+      "unbound_rule": "WITHHOLD",
+      "same_information_rule": "WITHHOLD",
+      "frozen_evaluator": "WITHHOLD",
+      "detail": {
+        "decision": "WITHHOLD",
+        "reason": "SCOPE_MISMATCH",
+        "checks": []
+      }
+    },
+    {
+      "id": "missing_observation",
+      "source_case": "lifecycle_observed_200",
+      "source_row": 0,
+      "native_result_sha256": "c4190abda9b2439a54db4f7947f11ad89ace2bcfb325bbe9b7055cd737320dfe",
+      "frozen_plan": {
+        "checks": [
+          {
+            "applies_to": [
+              "http"
+            ],
+            "expected": 200,
+            "id": "lifecycle_status"
+          }
+        ],
+        "open_questions": [],
+        "run_id": "study-run:missing_observation",
+        "schema": "shadow.acceptance-plan.v1",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        }
+      },
+      "frozen_plan_sha256": "7e164fe2c0a3fa53f9fa119a89e796648c1f39928af7a914c0af4a0f5bff4ce1",
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "study-run:missing_observation",
+        "plan_sha256": "7e164fe2c0a3fa53f9fa119a89e796648c1f39928af7a914c0af4a0f5bff4ce1",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        },
+        "observations": []
+      },
+      "authored_expected": "WITHHOLD",
+      "native_only": "ACCEPT",
+      "unbound_rule": "WITHHOLD",
+      "same_information_rule": "WITHHOLD",
+      "frozen_evaluator": "WITHHOLD",
+      "detail": {
+        "decision": "WITHHOLD",
+        "reason": "REQUIRED_CHECK_NOT_OBSERVED",
+        "checks": [
+          {
+            "id": "lifecycle_status",
+            "state": "NOT_OBSERVED",
+            "reason": "MISSING_OBSERVATION"
+          }
+        ]
+      }
+    },
+    {
+      "id": "status_as_text",
+      "source_case": "lifecycle_observed_200",
+      "source_row": 0,
+      "native_result_sha256": "c4190abda9b2439a54db4f7947f11ad89ace2bcfb325bbe9b7055cd737320dfe",
+      "frozen_plan": {
+        "checks": [
+          {
+            "applies_to": [
+              "http"
+            ],
+            "expected": 200,
+            "id": "lifecycle_status"
+          }
+        ],
+        "open_questions": [],
+        "run_id": "study-run:status_as_text",
+        "schema": "shadow.acceptance-plan.v1",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        }
+      },
+      "frozen_plan_sha256": "6da52c2323e25b32084db0dd775419b8eb11211a981e6a042906f25255b0b914",
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "study-run:status_as_text",
+        "plan_sha256": "6da52c2323e25b32084db0dd775419b8eb11211a981e6a042906f25255b0b914",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        },
+        "observations": [
+          {
+            "id": "lifecycle_status",
+            "ref": "#/rows/0/transport_events/1",
+            "state": "OBSERVED",
+            "value": "200"
+          }
+        ]
+      },
+      "authored_expected": "WITHHOLD",
+      "native_only": "ACCEPT",
+      "unbound_rule": "WITHHOLD",
+      "same_information_rule": "WITHHOLD",
+      "frozen_evaluator": "WITHHOLD",
+      "detail": {
+        "decision": "WITHHOLD",
+        "reason": "REQUIRED_CHECK_NOT_OBSERVED",
+        "checks": [
+          {
+            "id": "lifecycle_status",
+            "state": "NOT_OBSERVED",
+            "reason": "VALUE_TYPE_MISMATCH",
+            "ref": "#/rows/0/transport_events/1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "lifecycle_transport_error",
+      "source_case": "lifecycle_transport_error",
+      "source_row": 4,
+      "native_result_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "frozen_plan": {
+        "checks": [
+          {
+            "applies_to": [
+              "http"
+            ],
+            "expected": 200,
+            "id": "lifecycle_status"
+          }
+        ],
+        "open_questions": [],
+        "run_id": "study-run:lifecycle_transport_error",
+        "schema": "shadow.acceptance-plan.v1",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        }
+      },
+      "frozen_plan_sha256": "ccd9b667a6134e55d9f43eeb59754a12d4fc7caf8f4d4ad8381dcba6b86bf745",
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "study-run:lifecycle_transport_error",
+        "plan_sha256": "ccd9b667a6134e55d9f43eeb59754a12d4fc7caf8f4d4ad8381dcba6b86bf745",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        },
+        "observations": [
+          {
+            "id": "lifecycle_status",
+            "ref": "#/rows/4/transport_events/1",
+            "state": "ERROR"
+          }
+        ]
+      },
+      "authored_expected": "WITHHOLD",
+      "native_only": "WITHHOLD",
+      "unbound_rule": "WITHHOLD",
+      "same_information_rule": "WITHHOLD",
+      "frozen_evaluator": "WITHHOLD",
+      "detail": {
+        "decision": "WITHHOLD",
+        "reason": "REQUIRED_CHECK_NOT_OBSERVED",
+        "checks": [
+          {
+            "id": "lifecycle_status",
+            "state": "NOT_OBSERVED",
+            "reason": "ERROR",
+            "ref": "#/rows/4/transport_events/1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "unresolved_requirement",
+      "source_case": "lifecycle_observed_200",
+      "source_row": 0,
+      "native_result_sha256": "c4190abda9b2439a54db4f7947f11ad89ace2bcfb325bbe9b7055cd737320dfe",
+      "frozen_plan": {
+        "checks": [
+          {
+            "applies_to": [
+              "http"
+            ],
+            "expected": 200,
+            "id": "lifecycle_status"
+          }
+        ],
+        "open_questions": [
+          "Is 200 or 204 the intended success status?"
+        ],
+        "run_id": "study-run:unresolved_requirement",
+        "schema": "shadow.acceptance-plan.v1",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        }
+      },
+      "frozen_plan_sha256": "7e522c0a385f5eb5dcf9e99e79ab844a58754c60deafa51166e5533d52dd40ce",
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "study-run:unresolved_requirement",
+        "plan_sha256": "7e522c0a385f5eb5dcf9e99e79ab844a58754c60deafa51166e5533d52dd40ce",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        },
+        "observations": [
+          {
+            "id": "lifecycle_status",
+            "ref": "#/rows/0/transport_events/1",
+            "state": "OBSERVED",
+            "value": 200
+          }
+        ]
+      },
+      "authored_expected": "WITHHOLD",
+      "native_only": "ACCEPT",
+      "unbound_rule": "WITHHOLD",
+      "same_information_rule": "WITHHOLD",
+      "frozen_evaluator": "WITHHOLD",
+      "detail": {
+        "decision": "WITHHOLD",
+        "reason": "OPEN_QUESTIONS",
+        "checks": []
+      }
+    },
+    {
+      "id": "zero_applicable",
+      "source_case": "lifecycle_unsupported_skip",
+      "source_row": 1,
+      "native_result_sha256": "c4190abda9b2439a54db4f7947f11ad89ace2bcfb325bbe9b7055cd737320dfe",
+      "frozen_plan": {
+        "checks": [
+          {
+            "applies_to": [
+              "http"
+            ],
+            "expected": 200,
+            "id": "lifecycle_status"
+          }
+        ],
+        "open_questions": [],
+        "run_id": "study-run:zero_applicable",
+        "schema": "shadow.acceptance-plan.v1",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "stdio"
+        }
+      },
+      "frozen_plan_sha256": "b64e0ec551703646656e885e5c8ea0d2dad4199fb64e0dc2e99c895ac5a9225a",
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "study-run:zero_applicable",
+        "plan_sha256": "b64e0ec551703646656e885e5c8ea0d2dad4199fb64e0dc2e99c895ac5a9225a",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "stdio"
+        },
+        "observations": []
+      },
+      "authored_expected": "WITHHOLD",
+      "native_only": "ACCEPT",
+      "unbound_rule": "WITHHOLD",
+      "same_information_rule": "WITHHOLD",
+      "frozen_evaluator": "WITHHOLD",
+      "detail": {
+        "decision": "WITHHOLD",
+        "reason": "NO_APPLICABLE_CHECKS",
+        "checks": [
+          {
+            "id": "lifecycle_status",
+            "state": "NOT_APPLICABLE",
+            "reason": "OUTSIDE_PLANNED_TRANSPORT"
+          }
+        ]
+      }
+    },
+    {
+      "id": "stdio_rpc_with_legitimate_exclusion",
+      "source_case": "rpc_pass_plus_lifecycle_skip",
+      "source_row": 2,
+      "native_result_sha256": "74aab0f41367ed649266a6c506bb2228fba7af104ec65bbcc52626d57694c7e7",
+      "frozen_plan": {
+        "checks": [
+          {
+            "applies_to": [
+              "http"
+            ],
+            "expected": 200,
+            "id": "lifecycle_status"
+          },
+          {
+            "applies_to": [
+              "http",
+              "stdio"
+            ],
+            "expected": true,
+            "id": "rpc_response_equals"
+          }
+        ],
+        "open_questions": [],
+        "run_id": "study-run:stdio_rpc_with_legitimate_exclusion",
+        "schema": "shadow.acceptance-plan.v1",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "stdio"
+        }
+      },
+      "frozen_plan_sha256": "d491d2db39263fb0990de45b0d9abd0cf0e9bc79f99120a2ab13573641b99b44",
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "study-run:stdio_rpc_with_legitimate_exclusion",
+        "plan_sha256": "d491d2db39263fb0990de45b0d9abd0cf0e9bc79f99120a2ab13573641b99b44",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "stdio"
+        },
+        "observations": [
+          {
+            "id": "rpc_response_equals",
+            "ref": "#/rows/2/transport_events/1",
+            "state": "OBSERVED",
+            "value": true
+          }
+        ]
+      },
+      "authored_expected": "ACCEPT",
+      "native_only": "ACCEPT",
+      "unbound_rule": "ACCEPT",
+      "same_information_rule": "ACCEPT",
+      "frozen_evaluator": "ACCEPT",
+      "detail": {
+        "decision": "ACCEPT",
+        "reason": "APPLICABLE_CHECKS_PASSED",
+        "checks": [
+          {
+            "id": "lifecycle_status",
+            "state": "NOT_APPLICABLE",
+            "reason": "OUTSIDE_PLANNED_TRANSPORT"
+          },
+          {
+            "id": "rpc_response_equals",
+            "state": "PASS",
+            "reason": "VALUE_MATCH",
+            "ref": "#/rows/2/transport_events/1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rpc_mismatch",
+      "source_case": "rpc_mismatch",
+      "source_row": 6,
+      "native_result_sha256": "06054c7e6ea1193257410644cd1052fc8cdbb0a460c086f7e89b80c4eea9d225",
+      "frozen_plan": {
+        "checks": [
+          {
+            "applies_to": [
+              "http"
+            ],
+            "expected": 200,
+            "id": "lifecycle_status"
+          },
+          {
+            "applies_to": [
+              "http",
+              "stdio"
+            ],
+            "expected": true,
+            "id": "rpc_response_equals"
+          }
+        ],
+        "open_questions": [],
+        "run_id": "study-run:rpc_mismatch",
+        "schema": "shadow.acceptance-plan.v1",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "stdio"
+        }
+      },
+      "frozen_plan_sha256": "a75867d12cdd1ddcf6d3e08c0a4637b92ca7504c870f22312100becf303857bc",
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "study-run:rpc_mismatch",
+        "plan_sha256": "a75867d12cdd1ddcf6d3e08c0a4637b92ca7504c870f22312100becf303857bc",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "stdio"
+        },
+        "observations": [
+          {
+            "id": "rpc_response_equals",
+            "ref": "#/rows/6/transport_events/1",
+            "state": "OBSERVED",
+            "value": false
+          }
+        ]
+      },
+      "authored_expected": "REJECT",
+      "native_only": "REJECT",
+      "unbound_rule": "REJECT",
+      "same_information_rule": "REJECT",
+      "frozen_evaluator": "REJECT",
+      "detail": {
+        "decision": "REJECT",
+        "reason": "REQUIRED_CHECK_FAILED",
+        "checks": [
+          {
+            "id": "lifecycle_status",
+            "state": "NOT_APPLICABLE",
+            "reason": "OUTSIDE_PLANNED_TRANSPORT"
+          },
+          {
+            "id": "rpc_response_equals",
+            "state": "FAIL",
+            "reason": "VALUE_MISMATCH",
+            "ref": "#/rows/6/transport_events/1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rpc_transport_error",
+      "source_case": "rpc_transport_error",
+      "source_row": 7,
+      "native_result_sha256": "e02c166ea2d2823a531d3b2cd9c9b2278a18a25ca250610858f77518dcea3438",
+      "frozen_plan": {
+        "checks": [
+          {
+            "applies_to": [
+              "http"
+            ],
+            "expected": 200,
+            "id": "lifecycle_status"
+          },
+          {
+            "applies_to": [
+              "http",
+              "stdio"
+            ],
+            "expected": true,
+            "id": "rpc_response_equals"
+          }
+        ],
+        "open_questions": [],
+        "run_id": "study-run:rpc_transport_error",
+        "schema": "shadow.acceptance-plan.v1",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "stdio"
+        }
+      },
+      "frozen_plan_sha256": "1da87bcefe8ae3c51de0eed5c9b7f45044f4a533bc474de9c57e32f467fc89bb",
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "study-run:rpc_transport_error",
+        "plan_sha256": "1da87bcefe8ae3c51de0eed5c9b7f45044f4a533bc474de9c57e32f467fc89bb",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "stdio"
+        },
+        "observations": [
+          {
+            "id": "rpc_response_equals",
+            "ref": "#/rows/7/transport_events/1",
+            "state": "ERROR"
+          }
+        ]
+      },
+      "authored_expected": "WITHHOLD",
+      "native_only": "REJECT",
+      "unbound_rule": "WITHHOLD",
+      "same_information_rule": "WITHHOLD",
+      "frozen_evaluator": "WITHHOLD",
+      "detail": {
+        "decision": "WITHHOLD",
+        "reason": "REQUIRED_CHECK_NOT_OBSERVED",
+        "checks": [
+          {
+            "id": "lifecycle_status",
+            "state": "NOT_APPLICABLE",
+            "reason": "OUTSIDE_PLANNED_TRANSPORT"
+          },
+          {
+            "id": "rpc_response_equals",
+            "state": "NOT_OBSERVED",
+            "reason": "ERROR",
+            "ref": "#/rows/7/transport_events/1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "duplicate_observation",
+      "source_case": "lifecycle_observed_200",
+      "source_row": 0,
+      "native_result_sha256": "c4190abda9b2439a54db4f7947f11ad89ace2bcfb325bbe9b7055cd737320dfe",
+      "frozen_plan": {
+        "checks": [
+          {
+            "applies_to": [
+              "http"
+            ],
+            "expected": 200,
+            "id": "lifecycle_status"
+          }
+        ],
+        "open_questions": [],
+        "run_id": "study-run:duplicate_observation",
+        "schema": "shadow.acceptance-plan.v1",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        }
+      },
+      "frozen_plan_sha256": "10f33a3a39280036dfd2e9c735c3b490b76cbdffb9dded62942998e8d6f840ab",
+      "evidence": {
+        "schema": "shadow.acceptance-evidence.v1",
+        "run_id": "study-run:duplicate_observation",
+        "plan_sha256": "10f33a3a39280036dfd2e9c735c3b490b76cbdffb9dded62942998e8d6f840ab",
+        "scope": {
+          "lane": "archived-authored-transport",
+          "transport": "http"
+        },
+        "observations": [
+          {
+            "id": "lifecycle_status",
+            "ref": "#/rows/0/transport_events/1",
+            "state": "OBSERVED",
+            "value": 200
+          },
+          {
+            "id": "lifecycle_status",
+            "ref": "#/rows/0/transport_events/1",
+            "state": "OBSERVED",
+            "value": 200
+          }
+        ]
+      },
+      "authored_expected": "WITHHOLD",
+      "native_only": "ACCEPT",
+      "unbound_rule": "WITHHOLD",
+      "same_information_rule": "WITHHOLD",
+      "frozen_evaluator": "WITHHOLD",
+      "detail": {
+        "decision": "WITHHOLD",
+        "reason": "DUPLICATE_OBSERVATION",
+        "checks": []
+      }
+    }
+  ]
+}

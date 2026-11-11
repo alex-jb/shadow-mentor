@@ -1,5 +1,7 @@
 # Paper proposal — development draft, not submission ready
 
+**2026-11-11 follow-up:** [The acceptance-plan study](./2026-11-11-acceptance-contract-study.md) adds an offline replay and a matched-information comparator. The ordinary rule and the structured prototype agree on all 16 authored conditions over seven archived fixtures. This does not change the historical defect count or establish method superiority.
+
 ## Working title
 
 **Beyond Exit Code Zero: Case Studies of Evidence Gaps in MCP Acceptance Pipelines**
