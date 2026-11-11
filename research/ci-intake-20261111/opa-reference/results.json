@@ -1,0 +1,479 @@
+{
+  "schema": "shadow.opa-reference-results.v1",
+  "boundary": "Only the application policy is independent of the Python evaluator. The common admission gate and authored case construction are shared. No live CI run or general equivalence claim.",
+  "numeric_limit": "Rego sees a number after JSON decoding; integral numeric spellings such as 1 and 1.0 compare equal there, unlike this Python contract's lexical integer/float type distinction. The 22-case corpus excludes float spellings. The three numeric controls are reported separately.",
+  "opa": {
+    "version": "1.22.3",
+    "binary_sha256": "26f04bc50983ac67db9dea2fd28c1670c74ac22639a2f4408a7e16d488898e5f"
+  },
+  "source_sha256": {
+    "ci-intake-20261111/opa-reference/policy.rego": "f74bda2e1fc95cc80e29883134b108505edb4629504a71d013fca9c5fe4354f5",
+    "ci-intake-20261111/opa-reference/compare.py": "bc0dcb8a3b4831ec044da97f9cc01cfccbc573131f2af8d587be88c3d851bcfe",
+    "ci-intake-20261111/case-catalog.json": "913870f5ca327d3a583e1eb28aa826a03ccd0762f3f6f9e5d437d46c5207607b",
+    "ci-intake-20261111/intake.py": "0c81d41195d6a5bc5bae4e4255fd3dd224eec746b7e690888b86b3e1ae0c1e6a",
+    "ci-intake-20261111/experiment.py": "a3a132c79f221c8256b40aeb1422bfcce60d27ce7e9bebea2ca3aca2a6c50248",
+    "acceptance-contract-20261111/contract.py": "676da2bf3d04825968de59d007435cc80435580389438b49310c9c3c206edf08"
+  },
+  "authored_cases": 22,
+  "common_gate_withheld": 13,
+  "actual_opa_evaluations": 9,
+  "opa_decision_agreement_with_python_on_admitted": 9,
+  "opa_full_result_agreement_with_python_on_admitted": 9,
+  "opa_agreement_with_authored_on_admitted": 9,
+  "common_gate_plus_opa_agreement_with_authored": 22,
+  "separate_numeric_controls": [
+    {
+      "literal": "1",
+      "source_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc",
+      "python_application_result": {
+        "decision": "ACCEPT",
+        "reason": "APPLICABLE_CHECKS_PASSED",
+        "checks": [
+          {
+            "id": "active-count",
+            "state": "PASS",
+            "reason": "VALUE_MATCH",
+            "ref": "authored fixture: typed application result"
+          }
+        ]
+      },
+      "opa_application_result": {
+        "checks": [
+          {
+            "id": "active-count",
+            "reason": "VALUE_MATCH",
+            "ref": "authored fixture: typed application result",
+            "state": "PASS"
+          }
+        ],
+        "decision": "ACCEPT",
+        "reason": "APPLICABLE_CHECKS_PASSED"
+      }
+    },
+    {
+      "literal": "1.0",
+      "source_report_sha256": "3bd2c5da253a84e6b6fd07003be207b9720b9599cadc4c23697541bc3e713904",
+      "python_application_result": {
+        "decision": "WITHHOLD",
+        "reason": "INVALID_OBSERVATION",
+        "checks": []
+      },
+      "opa_application_result": {
+        "checks": [
+          {
+            "id": "active-count",
+            "reason": "VALUE_MATCH",
+            "ref": "authored fixture: typed application result",
+            "state": "PASS"
+          }
+        ],
+        "decision": "ACCEPT",
+        "reason": "APPLICABLE_CHECKS_PASSED"
+      }
+    },
+    {
+      "literal": "1.25",
+      "source_report_sha256": "b146df777716f645d191596f3ca7f1e84a5779bad88b57d778e180802333a56d",
+      "python_application_result": {
+        "decision": "WITHHOLD",
+        "reason": "INVALID_OBSERVATION",
+        "checks": []
+      },
+      "opa_application_result": {
+        "checks": [],
+        "decision": "WITHHOLD",
+        "reason": "INVALID_OBSERVATION"
+      }
+    }
+  ],
+  "rows": [
+    {
+      "case": "fresh_match",
+      "admission": "ADMITTED",
+      "admission_reason": "REPORT_ADMITTED",
+      "opa_application_result": {
+        "checks": [
+          {
+            "id": "active-count",
+            "reason": "VALUE_MATCH",
+            "ref": "authored fixture: typed application result",
+            "state": "PASS"
+          }
+        ],
+        "decision": "ACCEPT",
+        "reason": "APPLICABLE_CHECKS_PASSED"
+      },
+      "python_application_result": {
+        "decision": "ACCEPT",
+        "reason": "APPLICABLE_CHECKS_PASSED",
+        "checks": [
+          {
+            "id": "active-count",
+            "state": "PASS",
+            "reason": "VALUE_MATCH",
+            "ref": "authored fixture: typed application result"
+          }
+        ]
+      },
+      "pipeline_decision": "ACCEPT",
+      "authored_expected": "ACCEPT"
+    },
+    {
+      "case": "fresh_mismatch",
+      "admission": "ADMITTED",
+      "admission_reason": "REPORT_ADMITTED",
+      "opa_application_result": {
+        "checks": [
+          {
+            "id": "active-count",
+            "reason": "VALUE_MISMATCH",
+            "ref": "authored fixture: typed application result",
+            "state": "FAIL"
+          }
+        ],
+        "decision": "REJECT",
+        "reason": "REQUIRED_CHECK_FAILED"
+      },
+      "python_application_result": {
+        "decision": "REJECT",
+        "reason": "REQUIRED_CHECK_FAILED",
+        "checks": [
+          {
+            "id": "active-count",
+            "state": "FAIL",
+            "reason": "VALUE_MISMATCH",
+            "ref": "authored fixture: typed application result"
+          }
+        ]
+      },
+      "pipeline_decision": "REJECT",
+      "authored_expected": "REJECT"
+    },
+    {
+      "case": "trigger_is_not_checkout",
+      "admission": "ADMITTED",
+      "admission_reason": "REPORT_ADMITTED",
+      "opa_application_result": {
+        "checks": [
+          {
+            "id": "active-count",
+            "reason": "VALUE_MATCH",
+            "ref": "authored fixture: typed application result",
+            "state": "PASS"
+          }
+        ],
+        "decision": "ACCEPT",
+        "reason": "APPLICABLE_CHECKS_PASSED"
+      },
+      "python_application_result": {
+        "decision": "ACCEPT",
+        "reason": "APPLICABLE_CHECKS_PASSED",
+        "checks": [
+          {
+            "id": "active-count",
+            "state": "PASS",
+            "reason": "VALUE_MATCH",
+            "ref": "authored fixture: typed application result"
+          }
+        ]
+      },
+      "pipeline_decision": "ACCEPT",
+      "authored_expected": "ACCEPT"
+    },
+    {
+      "case": "unrelated_failure",
+      "admission": "ADMITTED",
+      "admission_reason": "REPORT_ADMITTED",
+      "opa_application_result": {
+        "checks": [
+          {
+            "id": "active-count",
+            "reason": "VALUE_MATCH",
+            "ref": "authored fixture: typed application result",
+            "state": "PASS"
+          }
+        ],
+        "decision": "ACCEPT",
+        "reason": "APPLICABLE_CHECKS_PASSED"
+      },
+      "python_application_result": {
+        "decision": "ACCEPT",
+        "reason": "APPLICABLE_CHECKS_PASSED",
+        "checks": [
+          {
+            "id": "active-count",
+            "state": "PASS",
+            "reason": "VALUE_MATCH",
+            "ref": "authored fixture: typed application result"
+          }
+        ]
+      },
+      "pipeline_decision": "ACCEPT",
+      "authored_expected": "ACCEPT"
+    },
+    {
+      "case": "old_snapshot_attempt",
+      "admission": "WITHHOLD",
+      "admission_reason": "JOBS_SCOPE_MISMATCH",
+      "opa_application_result": null,
+      "python_application_result": null,
+      "pipeline_decision": "WITHHOLD",
+      "authored_expected": "WITHHOLD"
+    },
+    {
+      "case": "old_receipt_attempt",
+      "admission": "WITHHOLD",
+      "admission_reason": "RECEIPT_SCOPE_MISMATCH",
+      "opa_application_result": null,
+      "python_application_result": null,
+      "pipeline_decision": "WITHHOLD",
+      "authored_expected": "WITHHOLD"
+    },
+    {
+      "case": "other_job_receipt",
+      "admission": "WITHHOLD",
+      "admission_reason": "RECEIPT_SCOPE_MISMATCH",
+      "opa_application_result": null,
+      "python_application_result": null,
+      "pipeline_decision": "WITHHOLD",
+      "authored_expected": "WITHHOLD"
+    },
+    {
+      "case": "provider_job_attempt_conflict",
+      "admission": "WITHHOLD",
+      "admission_reason": "JOB_ATTEMPT_MISMATCH",
+      "opa_application_result": null,
+      "python_application_result": null,
+      "pipeline_decision": "WITHHOLD",
+      "authored_expected": "WITHHOLD"
+    },
+    {
+      "case": "partial_job_page",
+      "admission": "WITHHOLD",
+      "admission_reason": "INVALID_JOBS_SNAPSHOT",
+      "opa_application_result": null,
+      "python_application_result": null,
+      "pipeline_decision": "WITHHOLD",
+      "authored_expected": "WITHHOLD"
+    },
+    {
+      "case": "wrong_tested_checkout",
+      "admission": "WITHHOLD",
+      "admission_reason": "RECEIPT_SCOPE_MISMATCH",
+      "opa_application_result": null,
+      "python_application_result": null,
+      "pipeline_decision": "WITHHOLD",
+      "authored_expected": "WITHHOLD"
+    },
+    {
+      "case": "wrong_plan_digest",
+      "admission": "WITHHOLD",
+      "admission_reason": "RECEIPT_PLAN_MISMATCH",
+      "opa_application_result": null,
+      "python_application_result": null,
+      "pipeline_decision": "WITHHOLD",
+      "authored_expected": "WITHHOLD"
+    },
+    {
+      "case": "changed_step_mapping",
+      "admission": "WITHHOLD",
+      "admission_reason": "RECEIPT_EXPECTATION_MISMATCH",
+      "opa_application_result": null,
+      "python_application_result": null,
+      "pipeline_decision": "WITHHOLD",
+      "authored_expected": "WITHHOLD"
+    },
+    {
+      "case": "tolerated_step_failure",
+      "admission": "WITHHOLD",
+      "admission_reason": "REQUIRED_STEP_NOT_OBSERVED",
+      "opa_application_result": null,
+      "python_application_result": null,
+      "pipeline_decision": "WITHHOLD",
+      "authored_expected": "WITHHOLD"
+    },
+    {
+      "case": "skipped_required_step",
+      "admission": "WITHHOLD",
+      "admission_reason": "REQUIRED_STEP_NOT_OBSERVED",
+      "opa_application_result": null,
+      "python_application_result": null,
+      "pipeline_decision": "WITHHOLD",
+      "authored_expected": "WITHHOLD"
+    },
+    {
+      "case": "changed_report_bytes",
+      "admission": "WITHHOLD",
+      "admission_reason": "REPORT_DIGEST_MISMATCH",
+      "opa_application_result": null,
+      "python_application_result": null,
+      "pipeline_decision": "WITHHOLD",
+      "authored_expected": "WITHHOLD"
+    },
+    {
+      "case": "missing_required_value",
+      "admission": "ADMITTED",
+      "admission_reason": "REPORT_ADMITTED",
+      "opa_application_result": {
+        "checks": [
+          {
+            "id": "active-count",
+            "reason": "MISSING_OBSERVATION",
+            "state": "NOT_OBSERVED"
+          }
+        ],
+        "decision": "WITHHOLD",
+        "reason": "REQUIRED_CHECK_NOT_OBSERVED"
+      },
+      "python_application_result": {
+        "decision": "WITHHOLD",
+        "reason": "REQUIRED_CHECK_NOT_OBSERVED",
+        "checks": [
+          {
+            "id": "active-count",
+            "state": "NOT_OBSERVED",
+            "reason": "MISSING_OBSERVATION"
+          }
+        ]
+      },
+      "pipeline_decision": "WITHHOLD",
+      "authored_expected": "WITHHOLD"
+    },
+    {
+      "case": "wrong_report_run",
+      "admission": "ADMITTED",
+      "admission_reason": "REPORT_ADMITTED",
+      "opa_application_result": {
+        "checks": [],
+        "decision": "WITHHOLD",
+        "reason": "RUN_ID_MISMATCH"
+      },
+      "python_application_result": {
+        "decision": "WITHHOLD",
+        "reason": "RUN_ID_MISMATCH",
+        "checks": []
+      },
+      "pipeline_decision": "WITHHOLD",
+      "authored_expected": "WITHHOLD"
+    },
+    {
+      "case": "wrong_value_type",
+      "admission": "ADMITTED",
+      "admission_reason": "REPORT_ADMITTED",
+      "opa_application_result": {
+        "checks": [
+          {
+            "id": "active-count",
+            "reason": "VALUE_TYPE_MISMATCH",
+            "ref": "authored fixture: typed application result",
+            "state": "NOT_OBSERVED"
+          }
+        ],
+        "decision": "WITHHOLD",
+        "reason": "REQUIRED_CHECK_NOT_OBSERVED"
+      },
+      "python_application_result": {
+        "decision": "WITHHOLD",
+        "reason": "REQUIRED_CHECK_NOT_OBSERVED",
+        "checks": [
+          {
+            "id": "active-count",
+            "state": "NOT_OBSERVED",
+            "reason": "VALUE_TYPE_MISMATCH",
+            "ref": "authored fixture: typed application result"
+          }
+        ]
+      },
+      "pipeline_decision": "WITHHOLD",
+      "authored_expected": "WITHHOLD"
+    },
+    {
+      "case": "duplicate_json_member",
+      "admission": "WITHHOLD",
+      "admission_reason": "INVALID_REPORT_JSON",
+      "opa_application_result": null,
+      "python_application_result": null,
+      "pipeline_decision": "WITHHOLD",
+      "authored_expected": "WITHHOLD"
+    },
+    {
+      "case": "incomplete_job",
+      "admission": "WITHHOLD",
+      "admission_reason": "JOB_NOT_COMPLETED",
+      "opa_application_result": null,
+      "python_application_result": null,
+      "pipeline_decision": "WITHHOLD",
+      "authored_expected": "WITHHOLD"
+    },
+    {
+      "case": "declared_scope_exclusion",
+      "admission": "ADMITTED",
+      "admission_reason": "REPORT_ADMITTED",
+      "opa_application_result": {
+        "checks": [
+          {
+            "id": "active-count",
+            "reason": "VALUE_MATCH",
+            "ref": "authored fixture: typed application result",
+            "state": "PASS"
+          },
+          {
+            "id": "http-status",
+            "reason": "OUTSIDE_PLANNED_TRANSPORT",
+            "state": "NOT_APPLICABLE"
+          }
+        ],
+        "decision": "ACCEPT",
+        "reason": "APPLICABLE_CHECKS_PASSED"
+      },
+      "python_application_result": {
+        "decision": "ACCEPT",
+        "reason": "APPLICABLE_CHECKS_PASSED",
+        "checks": [
+          {
+            "id": "active-count",
+            "state": "PASS",
+            "reason": "VALUE_MATCH",
+            "ref": "authored fixture: typed application result"
+          },
+          {
+            "id": "http-status",
+            "state": "NOT_APPLICABLE",
+            "reason": "OUTSIDE_PLANNED_TRANSPORT"
+          }
+        ]
+      },
+      "pipeline_decision": "ACCEPT",
+      "authored_expected": "ACCEPT"
+    },
+    {
+      "case": "zero_applicable_checks",
+      "admission": "ADMITTED",
+      "admission_reason": "REPORT_ADMITTED",
+      "opa_application_result": {
+        "checks": [
+          {
+            "id": "http-status",
+            "reason": "OUTSIDE_PLANNED_TRANSPORT",
+            "state": "NOT_APPLICABLE"
+          }
+        ],
+        "decision": "WITHHOLD",
+        "reason": "NO_APPLICABLE_CHECKS"
+      },
+      "python_application_result": {
+        "decision": "WITHHOLD",
+        "reason": "NO_APPLICABLE_CHECKS",
+        "checks": [
+          {
+            "id": "http-status",
+            "state": "NOT_APPLICABLE",
+            "reason": "OUTSIDE_PLANNED_TRANSPORT"
+          }
+        ]
+      },
+      "pipeline_decision": "WITHHOLD",
+      "authored_expected": "WITHHOLD"
+    }
+  ]
+}

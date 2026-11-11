@@ -1,0 +1,53 @@
+{
+  "boundary": "Local fixtures and ephemeral test keys; no CI producer authentication, external anchors or new samples.",
+  "cases": [
+    {
+      "case": "fresh_match",
+      "signature_valid": true,
+      "files_match_manifest": true,
+      "review": {
+        "decision": "ACCEPT",
+        "reason": "APPLICABLE_CHECKS_PASSED"
+      }
+    },
+    {
+      "case": "fresh_mismatch",
+      "signature_valid": true,
+      "files_match_manifest": true,
+      "review": {
+        "decision": "REJECT",
+        "reason": "REQUIRED_CHECK_FAILED"
+      }
+    },
+    {
+      "case": "old_receipt_attempt",
+      "signature_valid": true,
+      "files_match_manifest": true,
+      "review": {
+        "decision": "WITHHOLD",
+        "reason": "RECEIPT_SCOPE_MISMATCH"
+      }
+    },
+    {
+      "case": "tolerated_step_failure",
+      "signature_valid": true,
+      "files_match_manifest": true,
+      "review": {
+        "decision": "WITHHOLD",
+        "reason": "REQUIRED_STEP_NOT_OBSERVED"
+      }
+    }
+  ],
+  "wrong_verification_key": {
+    "signature_valid": false,
+    "reason": "signature_verification_failed"
+  },
+  "report_changed_after_signing": {
+    "signature_valid": true,
+    "files_match_manifest": false,
+    "review": {
+      "decision": "WITHHOLD",
+      "reason": "REPORT_DIGEST_MISMATCH"
+    }
+  }
+}

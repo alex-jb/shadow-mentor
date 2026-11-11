@@ -1,0 +1,513 @@
+{
+  "schema": "shadow.ci-intake-results.v1",
+  "boundary": "Authored local fixtures. No actual CI runs, labeled customer data, provider credentials, or claims of statistical generalization.",
+  "source_sha256": {
+    "case-catalog.json": "913870f5ca327d3a583e1eb28aa826a03ccd0762f3f6f9e5d437d46c5207607b",
+    "public-metadata.json": "0aa9bd641567e4d0fb04a690964313f7df37e3710d24511f70d708e5ecfa8c01",
+    "experiment.py": "a3a132c79f221c8256b40aeb1422bfcce60d27ce7e9bebea2ca3aca2a6c50248",
+    "intake.py": "0c81d41195d6a5bc5bae4e4255fd3dd224eec746b7e690888b86b3e1ae0c1e6a",
+    "contract.py": "676da2bf3d04825968de59d007435cc80435580389438b49310c9c3c206edf08"
+  },
+  "authored_case_count": 22,
+  "metrics": {
+    "green_job_only": {
+      "agreement": 4,
+      "unsupported_accepts": 17,
+      "unsupported_rejects": 1,
+      "expected_accepts_withheld": 0
+    },
+    "typed_report_only": {
+      "agreement": 10,
+      "unsupported_accepts": 12,
+      "unsupported_rejects": 0,
+      "expected_accepts_withheld": 0
+    },
+    "admitted": {
+      "agreement": 22,
+      "unsupported_accepts": 0,
+      "unsupported_rejects": 0,
+      "expected_accepts_withheld": 0
+    }
+  },
+  "rows": [
+    {
+      "case": "fresh_match",
+      "authored_expected": "ACCEPT",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "ACCEPT",
+      "admitted": "ACCEPT",
+      "reason": "APPLICABLE_CHECKS_PASSED",
+      "checks": [
+        {
+          "id": "active-count",
+          "state": "PASS",
+          "reason": "VALUE_MATCH",
+          "ref": "authored fixture: typed application result"
+        }
+      ],
+      "native_steps": [
+        {
+          "step_number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "outcome": "success"
+        }
+      ],
+      "observed_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc",
+      "receipt_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc"
+    },
+    {
+      "case": "fresh_mismatch",
+      "authored_expected": "REJECT",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "REJECT",
+      "admitted": "REJECT",
+      "reason": "REQUIRED_CHECK_FAILED",
+      "checks": [
+        {
+          "id": "active-count",
+          "state": "FAIL",
+          "reason": "VALUE_MISMATCH",
+          "ref": "authored fixture: typed application result"
+        }
+      ],
+      "native_steps": [
+        {
+          "step_number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "outcome": "success"
+        }
+      ],
+      "observed_report_sha256": "66b895e6e29c7a2b9f849622afbe55cfcbfe728b4773052e23f98da64515c66b",
+      "receipt_report_sha256": "66b895e6e29c7a2b9f849622afbe55cfcbfe728b4773052e23f98da64515c66b"
+    },
+    {
+      "case": "trigger_is_not_checkout",
+      "authored_expected": "ACCEPT",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "ACCEPT",
+      "admitted": "ACCEPT",
+      "reason": "APPLICABLE_CHECKS_PASSED",
+      "checks": [
+        {
+          "id": "active-count",
+          "state": "PASS",
+          "reason": "VALUE_MATCH",
+          "ref": "authored fixture: typed application result"
+        }
+      ],
+      "native_steps": [
+        {
+          "step_number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "outcome": "success"
+        }
+      ],
+      "observed_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc",
+      "receipt_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc"
+    },
+    {
+      "case": "unrelated_failure",
+      "authored_expected": "ACCEPT",
+      "green_job_only": "REJECT",
+      "typed_report_only": "ACCEPT",
+      "admitted": "ACCEPT",
+      "reason": "APPLICABLE_CHECKS_PASSED",
+      "checks": [
+        {
+          "id": "active-count",
+          "state": "PASS",
+          "reason": "VALUE_MATCH",
+          "ref": "authored fixture: typed application result"
+        }
+      ],
+      "native_steps": [
+        {
+          "step_number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "outcome": "success"
+        }
+      ],
+      "observed_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc",
+      "receipt_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc"
+    },
+    {
+      "case": "old_snapshot_attempt",
+      "authored_expected": "WITHHOLD",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "ACCEPT",
+      "admitted": "WITHHOLD",
+      "reason": "JOBS_SCOPE_MISMATCH",
+      "checks": [],
+      "native_steps": [],
+      "observed_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc",
+      "receipt_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc"
+    },
+    {
+      "case": "old_receipt_attempt",
+      "authored_expected": "WITHHOLD",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "ACCEPT",
+      "admitted": "WITHHOLD",
+      "reason": "RECEIPT_SCOPE_MISMATCH",
+      "checks": [],
+      "native_steps": [
+        {
+          "step_number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "outcome": null
+        }
+      ],
+      "observed_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc",
+      "receipt_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc"
+    },
+    {
+      "case": "other_job_receipt",
+      "authored_expected": "WITHHOLD",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "ACCEPT",
+      "admitted": "WITHHOLD",
+      "reason": "RECEIPT_SCOPE_MISMATCH",
+      "checks": [],
+      "native_steps": [
+        {
+          "step_number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "outcome": null
+        }
+      ],
+      "observed_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc",
+      "receipt_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc"
+    },
+    {
+      "case": "provider_job_attempt_conflict",
+      "authored_expected": "WITHHOLD",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "ACCEPT",
+      "admitted": "WITHHOLD",
+      "reason": "JOB_ATTEMPT_MISMATCH",
+      "checks": [],
+      "native_steps": [],
+      "observed_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc",
+      "receipt_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc"
+    },
+    {
+      "case": "partial_job_page",
+      "authored_expected": "WITHHOLD",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "ACCEPT",
+      "admitted": "WITHHOLD",
+      "reason": "INVALID_JOBS_SNAPSHOT",
+      "checks": [],
+      "native_steps": [],
+      "observed_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc",
+      "receipt_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc"
+    },
+    {
+      "case": "wrong_tested_checkout",
+      "authored_expected": "WITHHOLD",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "ACCEPT",
+      "admitted": "WITHHOLD",
+      "reason": "RECEIPT_SCOPE_MISMATCH",
+      "checks": [],
+      "native_steps": [
+        {
+          "step_number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "outcome": null
+        }
+      ],
+      "observed_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc",
+      "receipt_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc"
+    },
+    {
+      "case": "wrong_plan_digest",
+      "authored_expected": "WITHHOLD",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "ACCEPT",
+      "admitted": "WITHHOLD",
+      "reason": "RECEIPT_PLAN_MISMATCH",
+      "checks": [],
+      "native_steps": [
+        {
+          "step_number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "outcome": null
+        }
+      ],
+      "observed_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc",
+      "receipt_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc"
+    },
+    {
+      "case": "changed_step_mapping",
+      "authored_expected": "WITHHOLD",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "ACCEPT",
+      "admitted": "WITHHOLD",
+      "reason": "RECEIPT_EXPECTATION_MISMATCH",
+      "checks": [],
+      "native_steps": [
+        {
+          "step_number": 8,
+          "status": "completed",
+          "conclusion": "success",
+          "outcome": null
+        }
+      ],
+      "observed_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc",
+      "receipt_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc"
+    },
+    {
+      "case": "tolerated_step_failure",
+      "authored_expected": "WITHHOLD",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "ACCEPT",
+      "admitted": "WITHHOLD",
+      "reason": "REQUIRED_STEP_NOT_OBSERVED",
+      "checks": [],
+      "native_steps": [
+        {
+          "step_number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "outcome": "failure"
+        }
+      ],
+      "observed_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc",
+      "receipt_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc"
+    },
+    {
+      "case": "skipped_required_step",
+      "authored_expected": "WITHHOLD",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "ACCEPT",
+      "admitted": "WITHHOLD",
+      "reason": "REQUIRED_STEP_NOT_OBSERVED",
+      "checks": [],
+      "native_steps": [
+        {
+          "step_number": 7,
+          "status": "completed",
+          "conclusion": "skipped",
+          "outcome": "skipped"
+        }
+      ],
+      "observed_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc",
+      "receipt_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc"
+    },
+    {
+      "case": "changed_report_bytes",
+      "authored_expected": "WITHHOLD",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "ACCEPT",
+      "admitted": "WITHHOLD",
+      "reason": "REPORT_DIGEST_MISMATCH",
+      "checks": [],
+      "native_steps": [
+        {
+          "step_number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "outcome": "success"
+        }
+      ],
+      "observed_report_sha256": "312069d6368252db0f483635f6562030ee1b9c6e96996af30edb6c9e4f3b83a0",
+      "receipt_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc"
+    },
+    {
+      "case": "missing_required_value",
+      "authored_expected": "WITHHOLD",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "WITHHOLD",
+      "admitted": "WITHHOLD",
+      "reason": "REQUIRED_CHECK_NOT_OBSERVED",
+      "checks": [
+        {
+          "id": "active-count",
+          "state": "NOT_OBSERVED",
+          "reason": "MISSING_OBSERVATION"
+        }
+      ],
+      "native_steps": [
+        {
+          "step_number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "outcome": "success"
+        }
+      ],
+      "observed_report_sha256": "5484e75b155fb8841c0ebc9b19fd41a17a7e36ea51353465d1f55ee36987116e",
+      "receipt_report_sha256": "5484e75b155fb8841c0ebc9b19fd41a17a7e36ea51353465d1f55ee36987116e"
+    },
+    {
+      "case": "wrong_report_run",
+      "authored_expected": "WITHHOLD",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "WITHHOLD",
+      "admitted": "WITHHOLD",
+      "reason": "RUN_ID_MISMATCH",
+      "checks": [],
+      "native_steps": [
+        {
+          "step_number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "outcome": "success"
+        }
+      ],
+      "observed_report_sha256": "ed8facd59c48010fcaa3054101f3653f3c79a35f15eb207f395553d19ed96da6",
+      "receipt_report_sha256": "ed8facd59c48010fcaa3054101f3653f3c79a35f15eb207f395553d19ed96da6"
+    },
+    {
+      "case": "wrong_value_type",
+      "authored_expected": "WITHHOLD",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "WITHHOLD",
+      "admitted": "WITHHOLD",
+      "reason": "REQUIRED_CHECK_NOT_OBSERVED",
+      "checks": [
+        {
+          "id": "active-count",
+          "state": "NOT_OBSERVED",
+          "reason": "VALUE_TYPE_MISMATCH",
+          "ref": "authored fixture: typed application result"
+        }
+      ],
+      "native_steps": [
+        {
+          "step_number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "outcome": "success"
+        }
+      ],
+      "observed_report_sha256": "5df4ee1a9efce05bab18385f76845518b5e6ee93e2c445a48039bf07a69d949f",
+      "receipt_report_sha256": "5df4ee1a9efce05bab18385f76845518b5e6ee93e2c445a48039bf07a69d949f"
+    },
+    {
+      "case": "duplicate_json_member",
+      "authored_expected": "WITHHOLD",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "WITHHOLD",
+      "admitted": "WITHHOLD",
+      "reason": "INVALID_REPORT_JSON",
+      "checks": [],
+      "native_steps": [
+        {
+          "step_number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "outcome": "success"
+        }
+      ],
+      "observed_report_sha256": "06dcd21543bcca4b084c923a4d0ec3137d74b4cb635b56ea6fc9c5ddecc89514",
+      "receipt_report_sha256": "06dcd21543bcca4b084c923a4d0ec3137d74b4cb635b56ea6fc9c5ddecc89514"
+    },
+    {
+      "case": "incomplete_job",
+      "authored_expected": "WITHHOLD",
+      "green_job_only": "WITHHOLD",
+      "typed_report_only": "ACCEPT",
+      "admitted": "WITHHOLD",
+      "reason": "JOB_NOT_COMPLETED",
+      "checks": [],
+      "native_steps": [
+        {
+          "step_number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "outcome": null
+        }
+      ],
+      "observed_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc",
+      "receipt_report_sha256": "6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc"
+    },
+    {
+      "case": "declared_scope_exclusion",
+      "authored_expected": "ACCEPT",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "ACCEPT",
+      "admitted": "ACCEPT",
+      "reason": "APPLICABLE_CHECKS_PASSED",
+      "checks": [
+        {
+          "id": "active-count",
+          "state": "PASS",
+          "reason": "VALUE_MATCH",
+          "ref": "authored fixture: typed application result"
+        },
+        {
+          "id": "http-status",
+          "state": "NOT_APPLICABLE",
+          "reason": "OUTSIDE_PLANNED_TRANSPORT"
+        }
+      ],
+      "native_steps": [
+        {
+          "step_number": 7,
+          "status": "completed",
+          "conclusion": "success",
+          "outcome": "success"
+        }
+      ],
+      "observed_report_sha256": "13b704cfd60c8e225736a91b0bf5e4fae0bd166c1d18b195a63ea14548e6bc8b",
+      "receipt_report_sha256": "13b704cfd60c8e225736a91b0bf5e4fae0bd166c1d18b195a63ea14548e6bc8b"
+    },
+    {
+      "case": "zero_applicable_checks",
+      "authored_expected": "WITHHOLD",
+      "green_job_only": "ACCEPT",
+      "typed_report_only": "WITHHOLD",
+      "admitted": "WITHHOLD",
+      "reason": "NO_APPLICABLE_CHECKS",
+      "checks": [
+        {
+          "id": "http-status",
+          "state": "NOT_APPLICABLE",
+          "reason": "OUTSIDE_PLANNED_TRANSPORT"
+        }
+      ],
+      "native_steps": [],
+      "observed_report_sha256": "a9257ecc323caef97d34cee78986f4129386caa353a157ac9758513a33ea5d72",
+      "receipt_report_sha256": "a9257ecc323caef97d34cee78986f4129386caa353a157ac9758513a33ea5d72"
+    }
+  ],
+  "separate_public_metadata_check": {
+    "boundary": "Illustrative local plan written after the run. Desired SHA uses the trigger SHA as a test input, not an assertion of the tested checkout. No receipt or application report exists here.",
+    "source": {
+      "repository": "open-policy-agent/conftest",
+      "observed_date_utc": "2026-11-11",
+      "run_url": "https://github.com/open-policy-agent/conftest/actions/runs/43092281393",
+      "endpoint": "https://api.github.com/repos/open-policy-agent/conftest/actions/runs/43092281393/attempts/1/jobs?per_page=100",
+      "run_created_at": "2026-11-11T19:59:34Z"
+    },
+    "job_count": 5,
+    "step": {
+      "number": 4,
+      "name": "validate conventional commit prefix",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "result": {
+      "decision": "WITHHOLD",
+      "reason": "INVALID_RECEIPT",
+      "checks": [],
+      "native_steps": [
+        {
+          "step_number": 4,
+          "status": "completed",
+          "conclusion": "success",
+          "outcome": null
+        }
+      ]
+    }
+  }
+}

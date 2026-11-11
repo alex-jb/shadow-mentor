@@ -1,0 +1,28 @@
+{
+  "schema": "shadow.ci-intake-controls.v1",
+  "boundary": "Authored local fixtures. No actual CI runs, labeled customer data, provider credentials, or claims of statistical generalization.",
+  "cases": [
+    {"id": "fresh_match", "decision": "ACCEPT", "why": "All bindings match and the typed observation satisfies the scoped criterion."},
+    {"id": "fresh_mismatch", "decision": "REJECT", "why": "The admitted value is an integer with the wrong value."},
+    {"id": "trigger_is_not_checkout", "decision": "ACCEPT", "why": "The receipt matches the planned tested checkout; trigger SHA is not the checkout."},
+    {"id": "unrelated_failure", "decision": "ACCEPT", "why": "Only the declared step is required, and its native result and typed observation satisfy that scope."},
+    {"id": "old_snapshot_attempt", "decision": "WITHHOLD", "why": "A rerun reuses the run ID but an older attempt cannot satisfy a current attempt."},
+    {"id": "old_receipt_attempt", "decision": "WITHHOLD", "why": "The collector receipt binds the wrong attempt."},
+    {"id": "other_job_receipt", "decision": "WITHHOLD", "why": "The report receipt binds a different job in the same attempt."},
+    {"id": "provider_job_attempt_conflict", "decision": "WITHHOLD", "why": "The selected job row contradicts the attempt stated by the export."},
+    {"id": "partial_job_page", "decision": "WITHHOLD", "why": "A partial job export is not enough under this profile."},
+    {"id": "wrong_tested_checkout", "decision": "WITHHOLD", "why": "The tested checkout in the receipt is not the expected one."},
+    {"id": "wrong_plan_digest", "decision": "WITHHOLD", "why": "The receipt does not identify the frozen plan."},
+    {"id": "changed_step_mapping", "decision": "WITHHOLD", "why": "Both steps succeeded, but the mapping differs from the one bound into the receipt."},
+    {"id": "tolerated_step_failure", "decision": "WITHHOLD", "why": "Final conclusion says success while original required step outcome is failure."},
+    {"id": "skipped_required_step", "decision": "WITHHOLD", "why": "The strict profile needs an executed required step."},
+    {"id": "changed_report_bytes", "decision": "WITHHOLD", "why": "Equivalent JSON content was written with different bytes after the receipt."},
+    {"id": "missing_required_value", "decision": "WITHHOLD", "why": "The bound report has no required observation."},
+    {"id": "wrong_report_run", "decision": "WITHHOLD", "why": "The report itself names a different run."},
+    {"id": "wrong_value_type", "decision": "WITHHOLD", "why": "The value is a boolean rather than the expected integer."},
+    {"id": "duplicate_json_member", "decision": "WITHHOLD", "why": "A digest match does not remove JSON ambiguity."},
+    {"id": "incomplete_job", "decision": "WITHHOLD", "why": "The job is still running."},
+    {"id": "declared_scope_exclusion", "decision": "ACCEPT", "why": "The frozen plan excludes an HTTP check for stdio; the applicable check passes."},
+    {"id": "zero_applicable_checks", "decision": "WITHHOLD", "why": "Having no applicable checks cannot prove acceptance."}
+  ]
+}

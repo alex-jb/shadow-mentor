@@ -1,0 +1,51 @@
+{
+  "schema": "shadow.public-jobs-pagination-check.v1",
+  "boundary": "Read-only observation of one public run. No true application acceptance was evaluated. Input without page 3 is an authored omission.",
+  "source": {
+    "repository": "open-policy-agent/conftest",
+    "observed_date_utc": "2026-11-11",
+    "run_url": "https://github.com/open-policy-agent/conftest/actions/runs/43092281393",
+    "endpoint": "https://api.github.com/repos/open-policy-agent/conftest/actions/runs/43092281393/attempts/1/jobs?per_page=100",
+    "run_created_at": "2026-11-11T19:59:34Z"
+  },
+  "raw_pages_export_sha256": "20e748eb260df83ccde048e8601ac7a444dbcd949291db37570c08a79e0b123c",
+  "source_sha256": {
+    "project_jobs.py": "ce1f662d8242ba6a99e9fa7562128931fd0f090d9adbec779bb49456bfea2430",
+    "public-metadata.json": "0aa9bd641567e4d0fb04a690964313f7df37e3710d24511f70d708e5ecfa8c01",
+    "experiment.py": "a3a132c79f221c8256b40aeb1422bfcce60d27ce7e9bebea2ca3aca2a6c50248",
+    "intake.py": "0c81d41195d6a5bc5bae4e4255fd3dd224eec746b7e690888b86b3e1ae0c1e6a"
+  },
+  "pages": [
+    {
+      "url": "https://api.github.com/repos/open-policy-agent/conftest/actions/runs/43092281393/attempts/1/jobs?per_page=2&page=1",
+      "declared_total": 5,
+      "returned_job_ids": [
+        130772155106,
+        130772155453
+      ]
+    },
+    {
+      "url": "https://api.github.com/repos/open-policy-agent/conftest/actions/runs/43092281393/attempts/1/jobs?per_page=2&page=2",
+      "declared_total": 5,
+      "returned_job_ids": [
+        130772155561,
+        130772155569
+      ]
+    },
+    {
+      "url": "https://api.github.com/repos/open-policy-agent/conftest/actions/runs/43092281393/attempts/1/jobs?per_page=2&page=3",
+      "declared_total": 5,
+      "returned_job_ids": [
+        130772155713
+      ]
+    }
+  ],
+  "complete_projection_matches_saved_single_page": true,
+  "partial_projection": {
+    "reported_total": 5,
+    "returned_rows": 4,
+    "complete": false,
+    "decision": "WITHHOLD",
+    "reason": "INVALID_JOBS_SNAPSHOT"
+  }
+}

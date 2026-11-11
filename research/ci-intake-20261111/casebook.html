@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+  <title>Shadow | CI 证据案例册</title>
+  <style>
+    :root{color-scheme:light;--bg:#f2f5fa;--surface:#fff;--ink:#14263d;--muted:#506279;--line:#dae2ef;--accent:#1e4f88;--navy:#0a2038}
+    *{box-sizing:border-box}
+    body{margin:0;color:var(--ink);background:var(--bg);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+    header{color:white;background:linear-gradient(115deg,#0a2038,#123861);padding:42px 24px 35px;border-bottom:4px solid #5c9fe5}
+    .shell{max-width:1130px;margin:auto}
+    .eyebrow{font-size:.78rem;font-weight:750;letter-spacing:.15em;color:#9fd2ff}
+    h1{font-size:clamp(2rem,5vw,3.2rem);margin:.3rem 0 .55rem;line-height:1.12;letter-spacing:-.035em}
+    h2{margin:0 0 .6rem;font-size:1.22rem;letter-spacing:-.015em}
+    h3{margin:1.2rem 0 .5rem;font-size:.96rem}
+    p{margin:0 0 .75rem}
+    .lead{color:#d7e7f8;max-width:720px;font-size:1.03rem}
+    .tag{display:inline-block;font-size:.8rem;font-weight:650;border:1px solid #6796bf;border-radius:999px;color:#e3f1ff;padding:3px 10px}
+    main{padding:22px 20px 32px}
+    .metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-bottom:18px}
+    .metric,.panel{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:17px 18px}
+    .metric{border-top:3px solid #8ca7c8}
+    .metric:last-child{border-top-color:#3d8568}
+    .metric-name{font-size:.86rem;color:var(--muted);font-weight:650}
+    .metric-num{font-weight:780;font-size:1.9rem;line-height:1.25;font-variant-numeric:tabular-nums}
+    .metric-note,.small{font-size:.84rem;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:15px;align-items:start}
+    .stack{display:grid;gap:15px}
+    label{display:block;font-weight:650;margin-bottom:5px}
+    .picker{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px;margin-bottom:12px}
+    button,select{border:1px solid #9cafc7;border-radius:8px;background:#fff;color:var(--ink);min-height:42px;font:inherit}
+    button{padding:0 10px;cursor:pointer}
+    button:hover:not(:disabled){background:#ebf3ff}
+    button:disabled{cursor:default;opacity:.5}
+    select{padding:0 7px;width:100%}
+    :focus-visible{outline:3px solid #447ebc;outline-offset:2px}
+    .caption{font-size:.9rem;color:var(--muted);min-height:2.8rem}
+    .verdicts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+    .vcard{background:#f6f8fc;border:1px solid var(--line);border-radius:10px;padding:9px 10px}
+    .vcard .small{display:block;margin-bottom:5px;font-weight:620}
+    .pill{display:inline-block;border-radius:999px;padding:3px 8px;font-size:.76rem;font-weight:750;white-space:nowrap}
+    .accept{color:#13563d;background:#def3e7}
+    .reject{color:#87302c;background:#fde7e5}
+    .withhold{color:#6d4400;background:#fff0cc}
+    .neutral{color:#364f6a;background:#e9eff6}
+    .details{margin-top:12px;border-left:3px solid #6796bf;padding-left:10px}
+    .details p{margin:.24rem 0}
+    code{font: .82em ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}
+    .table-wrap{overflow-x:auto}
+    table{border-collapse:collapse;width:100%;font-size:.84rem}
+    th,td{text-align:left;border-bottom:1px solid var(--line);padding:6px 7px;vertical-align:top}
+    th{background:#f5f8fc;color:var(--muted);font-weight:680;white-space:nowrap}
+    .digest{margin:.35rem 0;color:var(--muted);font-size:.79rem}
+    .digest code{display:block;color:var(--ink)}
+    footer{margin:15px 0 0;font-size:.82rem;color:var(--muted)}
+    @media(max-width:770px){.grid{grid-template-columns:minmax(0,1fr)}}
+    @media(max-width:520px){main{padding:14px 10px 23px}header{padding:30px 14px 24px}.metrics{gap:6px}.metric,.panel{padding:12px}.metric-name,.metric-note{font-size:.75rem}.metric-num{font-size:1.55rem}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="shell">
+      <div class="eyebrow">SHADOW / RESEARCH CASEBOOK</div>
+      <h1>CI 证据案例册</h1>
+      <p class="lead">选择一个案例，比较作业汇总、类型化报告与证据绑定后的判定，看看同一个绿灯为什么有时应当暂缓。</p>
+      <span class="tag">离线 · 只读 · 不运行 CI</span>
+    </div>
+  </header>
+  <main class="shell">
+    <noscript><p>此离线案例册需要启用 JavaScript 以查看保存的结果。</p></noscript>
+    <section class="metrics" id="metrics" aria-label="人工对照汇总"></section>
+    <p class="small" id="denominator"></p>
+    <div class="grid">
+      <section class="panel" aria-labelledby="cases-title">
+        <h2 id="cases-title">人工构造的对照案例</h2>
+        <label for="case">选择案例</label>
+        <div class="picker">
+          <select id="case"></select>
+          <button id="prev" type="button" aria-label="上一个案例">←</button>
+          <button id="next" type="button" aria-label="下一个案例">→</button>
+        </div>
+        <p class="caption" id="why"></p>
+        <div class="verdicts" id="verdicts" aria-live="polite"></div>
+        <div class="details" id="reasons"></div>
+        <h3>步骤记录</h3>
+        <div id="native" class="table-wrap"></div>
+        <h3>应用检查</h3>
+        <div id="checks" class="table-wrap"></div>
+        <h3>报告摘要（SHA-256）</h3>
+        <div id="digests"></div>
+      </section>
+      <aside class="stack" aria-label="单独报告的对照">
+        <section class="panel" aria-labelledby="public-title">
+          <h2 id="public-title">公开 CI 元数据示例</h2>
+          <div id="public"></div>
+        </section>
+        <section class="panel" aria-labelledby="opa-title">
+          <h2 id="opa-title">OPA 参考规则</h2>
+          <div id="opa"></div>
+          <h3 id="numeric-title"></h3>
+          <div id="numeric" class="table-wrap"></div>
+        </section>
+      </aside>
+    </div>
+    <footer>数据来自仓库保存的 results.json、case-catalog.json 和 opa-reference/results.json。人工构造对照不代表生产错误率；摘要一致也不证明证据来源真实。</footer>
+  </main>
+  <script type="application/json" id="data">{"cases":[{"case":"fresh_match","authored_expected":"ACCEPT","green_job_only":"ACCEPT","typed_report_only":"ACCEPT","admitted":"ACCEPT","reason":"APPLICABLE_CHECKS_PASSED","checks":[{"id":"active-count","state":"PASS","reason":"VALUE_MATCH","ref":"authored fixture: typed application result"}],"native_steps":[{"step_number":7,"status":"completed","conclusion":"success","outcome":"success"}],"observed_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","receipt_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","why":"All bindings match and the typed observation satisfies the scoped criterion.","opa_policy":{"checks":[{"id":"active-count","reason":"VALUE_MATCH","ref":"authored fixture: typed application result","state":"PASS"}],"decision":"ACCEPT","reason":"APPLICABLE_CHECKS_PASSED"}},{"case":"fresh_mismatch","authored_expected":"REJECT","green_job_only":"ACCEPT","typed_report_only":"REJECT","admitted":"REJECT","reason":"REQUIRED_CHECK_FAILED","checks":[{"id":"active-count","state":"FAIL","reason":"VALUE_MISMATCH","ref":"authored fixture: typed application result"}],"native_steps":[{"step_number":7,"status":"completed","conclusion":"success","outcome":"success"}],"observed_report_sha256":"66b895e6e29c7a2b9f849622afbe55cfcbfe728b4773052e23f98da64515c66b","receipt_report_sha256":"66b895e6e29c7a2b9f849622afbe55cfcbfe728b4773052e23f98da64515c66b","why":"The admitted value is an integer with the wrong value.","opa_policy":{"checks":[{"id":"active-count","reason":"VALUE_MISMATCH","ref":"authored fixture: typed application result","state":"FAIL"}],"decision":"REJECT","reason":"REQUIRED_CHECK_FAILED"}},{"case":"trigger_is_not_checkout","authored_expected":"ACCEPT","green_job_only":"ACCEPT","typed_report_only":"ACCEPT","admitted":"ACCEPT","reason":"APPLICABLE_CHECKS_PASSED","checks":[{"id":"active-count","state":"PASS","reason":"VALUE_MATCH","ref":"authored fixture: typed application result"}],"native_steps":[{"step_number":7,"status":"completed","conclusion":"success","outcome":"success"}],"observed_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","receipt_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","why":"The receipt matches the planned tested checkout; trigger SHA is not the checkout.","opa_policy":{"checks":[{"id":"active-count","reason":"VALUE_MATCH","ref":"authored fixture: typed application result","state":"PASS"}],"decision":"ACCEPT","reason":"APPLICABLE_CHECKS_PASSED"}},{"case":"unrelated_failure","authored_expected":"ACCEPT","green_job_only":"REJECT","typed_report_only":"ACCEPT","admitted":"ACCEPT","reason":"APPLICABLE_CHECKS_PASSED","checks":[{"id":"active-count","state":"PASS","reason":"VALUE_MATCH","ref":"authored fixture: typed application result"}],"native_steps":[{"step_number":7,"status":"completed","conclusion":"success","outcome":"success"}],"observed_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","receipt_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","why":"Only the declared step is required, and its native result and typed observation satisfy that scope.","opa_policy":{"checks":[{"id":"active-count","reason":"VALUE_MATCH","ref":"authored fixture: typed application result","state":"PASS"}],"decision":"ACCEPT","reason":"APPLICABLE_CHECKS_PASSED"}},{"case":"old_snapshot_attempt","authored_expected":"WITHHOLD","green_job_only":"ACCEPT","typed_report_only":"ACCEPT","admitted":"WITHHOLD","reason":"JOBS_SCOPE_MISMATCH","checks":[],"native_steps":[],"observed_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","receipt_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","why":"A rerun reuses the run ID but an older attempt cannot satisfy a current attempt.","opa_policy":null},{"case":"old_receipt_attempt","authored_expected":"WITHHOLD","green_job_only":"ACCEPT","typed_report_only":"ACCEPT","admitted":"WITHHOLD","reason":"RECEIPT_SCOPE_MISMATCH","checks":[],"native_steps":[{"step_number":7,"status":"completed","conclusion":"success","outcome":null}],"observed_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","receipt_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","why":"The collector receipt binds the wrong attempt.","opa_policy":null},{"case":"other_job_receipt","authored_expected":"WITHHOLD","green_job_only":"ACCEPT","typed_report_only":"ACCEPT","admitted":"WITHHOLD","reason":"RECEIPT_SCOPE_MISMATCH","checks":[],"native_steps":[{"step_number":7,"status":"completed","conclusion":"success","outcome":null}],"observed_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","receipt_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","why":"The report receipt binds a different job in the same attempt.","opa_policy":null},{"case":"provider_job_attempt_conflict","authored_expected":"WITHHOLD","green_job_only":"ACCEPT","typed_report_only":"ACCEPT","admitted":"WITHHOLD","reason":"JOB_ATTEMPT_MISMATCH","checks":[],"native_steps":[],"observed_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","receipt_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","why":"The selected job row contradicts the attempt stated by the export.","opa_policy":null},{"case":"partial_job_page","authored_expected":"WITHHOLD","green_job_only":"ACCEPT","typed_report_only":"ACCEPT","admitted":"WITHHOLD","reason":"INVALID_JOBS_SNAPSHOT","checks":[],"native_steps":[],"observed_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","receipt_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","why":"A partial job export is not enough under this profile.","opa_policy":null},{"case":"wrong_tested_checkout","authored_expected":"WITHHOLD","green_job_only":"ACCEPT","typed_report_only":"ACCEPT","admitted":"WITHHOLD","reason":"RECEIPT_SCOPE_MISMATCH","checks":[],"native_steps":[{"step_number":7,"status":"completed","conclusion":"success","outcome":null}],"observed_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","receipt_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","why":"The tested checkout in the receipt is not the expected one.","opa_policy":null},{"case":"wrong_plan_digest","authored_expected":"WITHHOLD","green_job_only":"ACCEPT","typed_report_only":"ACCEPT","admitted":"WITHHOLD","reason":"RECEIPT_PLAN_MISMATCH","checks":[],"native_steps":[{"step_number":7,"status":"completed","conclusion":"success","outcome":null}],"observed_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","receipt_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","why":"The receipt does not identify the frozen plan.","opa_policy":null},{"case":"changed_step_mapping","authored_expected":"WITHHOLD","green_job_only":"ACCEPT","typed_report_only":"ACCEPT","admitted":"WITHHOLD","reason":"RECEIPT_EXPECTATION_MISMATCH","checks":[],"native_steps":[{"step_number":8,"status":"completed","conclusion":"success","outcome":null}],"observed_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","receipt_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","why":"Both steps succeeded, but the mapping differs from the one bound into the receipt.","opa_policy":null},{"case":"tolerated_step_failure","authored_expected":"WITHHOLD","green_job_only":"ACCEPT","typed_report_only":"ACCEPT","admitted":"WITHHOLD","reason":"REQUIRED_STEP_NOT_OBSERVED","checks":[],"native_steps":[{"step_number":7,"status":"completed","conclusion":"success","outcome":"failure"}],"observed_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","receipt_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","why":"Final conclusion says success while original required step outcome is failure.","opa_policy":null},{"case":"skipped_required_step","authored_expected":"WITHHOLD","green_job_only":"ACCEPT","typed_report_only":"ACCEPT","admitted":"WITHHOLD","reason":"REQUIRED_STEP_NOT_OBSERVED","checks":[],"native_steps":[{"step_number":7,"status":"completed","conclusion":"skipped","outcome":"skipped"}],"observed_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","receipt_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","why":"The strict profile needs an executed required step.","opa_policy":null},{"case":"changed_report_bytes","authored_expected":"WITHHOLD","green_job_only":"ACCEPT","typed_report_only":"ACCEPT","admitted":"WITHHOLD","reason":"REPORT_DIGEST_MISMATCH","checks":[],"native_steps":[{"step_number":7,"status":"completed","conclusion":"success","outcome":"success"}],"observed_report_sha256":"312069d6368252db0f483635f6562030ee1b9c6e96996af30edb6c9e4f3b83a0","receipt_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","why":"Equivalent JSON content was written with different bytes after the receipt.","opa_policy":null},{"case":"missing_required_value","authored_expected":"WITHHOLD","green_job_only":"ACCEPT","typed_report_only":"WITHHOLD","admitted":"WITHHOLD","reason":"REQUIRED_CHECK_NOT_OBSERVED","checks":[{"id":"active-count","state":"NOT_OBSERVED","reason":"MISSING_OBSERVATION"}],"native_steps":[{"step_number":7,"status":"completed","conclusion":"success","outcome":"success"}],"observed_report_sha256":"5484e75b155fb8841c0ebc9b19fd41a17a7e36ea51353465d1f55ee36987116e","receipt_report_sha256":"5484e75b155fb8841c0ebc9b19fd41a17a7e36ea51353465d1f55ee36987116e","why":"The bound report has no required observation.","opa_policy":{"checks":[{"id":"active-count","reason":"MISSING_OBSERVATION","state":"NOT_OBSERVED"}],"decision":"WITHHOLD","reason":"REQUIRED_CHECK_NOT_OBSERVED"}},{"case":"wrong_report_run","authored_expected":"WITHHOLD","green_job_only":"ACCEPT","typed_report_only":"WITHHOLD","admitted":"WITHHOLD","reason":"RUN_ID_MISMATCH","checks":[],"native_steps":[{"step_number":7,"status":"completed","conclusion":"success","outcome":"success"}],"observed_report_sha256":"ed8facd59c48010fcaa3054101f3653f3c79a35f15eb207f395553d19ed96da6","receipt_report_sha256":"ed8facd59c48010fcaa3054101f3653f3c79a35f15eb207f395553d19ed96da6","why":"The report itself names a different run.","opa_policy":{"checks":[],"decision":"WITHHOLD","reason":"RUN_ID_MISMATCH"}},{"case":"wrong_value_type","authored_expected":"WITHHOLD","green_job_only":"ACCEPT","typed_report_only":"WITHHOLD","admitted":"WITHHOLD","reason":"REQUIRED_CHECK_NOT_OBSERVED","checks":[{"id":"active-count","state":"NOT_OBSERVED","reason":"VALUE_TYPE_MISMATCH","ref":"authored fixture: typed application result"}],"native_steps":[{"step_number":7,"status":"completed","conclusion":"success","outcome":"success"}],"observed_report_sha256":"5df4ee1a9efce05bab18385f76845518b5e6ee93e2c445a48039bf07a69d949f","receipt_report_sha256":"5df4ee1a9efce05bab18385f76845518b5e6ee93e2c445a48039bf07a69d949f","why":"The value is a boolean rather than the expected integer.","opa_policy":{"checks":[{"id":"active-count","reason":"VALUE_TYPE_MISMATCH","ref":"authored fixture: typed application result","state":"NOT_OBSERVED"}],"decision":"WITHHOLD","reason":"REQUIRED_CHECK_NOT_OBSERVED"}},{"case":"duplicate_json_member","authored_expected":"WITHHOLD","green_job_only":"ACCEPT","typed_report_only":"WITHHOLD","admitted":"WITHHOLD","reason":"INVALID_REPORT_JSON","checks":[],"native_steps":[{"step_number":7,"status":"completed","conclusion":"success","outcome":"success"}],"observed_report_sha256":"06dcd21543bcca4b084c923a4d0ec3137d74b4cb635b56ea6fc9c5ddecc89514","receipt_report_sha256":"06dcd21543bcca4b084c923a4d0ec3137d74b4cb635b56ea6fc9c5ddecc89514","why":"A digest match does not remove JSON ambiguity.","opa_policy":null},{"case":"incomplete_job","authored_expected":"WITHHOLD","green_job_only":"WITHHOLD","typed_report_only":"ACCEPT","admitted":"WITHHOLD","reason":"JOB_NOT_COMPLETED","checks":[],"native_steps":[{"step_number":7,"status":"completed","conclusion":"success","outcome":null}],"observed_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","receipt_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","why":"The job is still running.","opa_policy":null},{"case":"declared_scope_exclusion","authored_expected":"ACCEPT","green_job_only":"ACCEPT","typed_report_only":"ACCEPT","admitted":"ACCEPT","reason":"APPLICABLE_CHECKS_PASSED","checks":[{"id":"active-count","state":"PASS","reason":"VALUE_MATCH","ref":"authored fixture: typed application result"},{"id":"http-status","state":"NOT_APPLICABLE","reason":"OUTSIDE_PLANNED_TRANSPORT"}],"native_steps":[{"step_number":7,"status":"completed","conclusion":"success","outcome":"success"}],"observed_report_sha256":"13b704cfd60c8e225736a91b0bf5e4fae0bd166c1d18b195a63ea14548e6bc8b","receipt_report_sha256":"13b704cfd60c8e225736a91b0bf5e4fae0bd166c1d18b195a63ea14548e6bc8b","why":"The frozen plan excludes an HTTP check for stdio; the applicable check passes.","opa_policy":{"checks":[{"id":"active-count","reason":"VALUE_MATCH","ref":"authored fixture: typed application result","state":"PASS"},{"id":"http-status","reason":"OUTSIDE_PLANNED_TRANSPORT","state":"NOT_APPLICABLE"}],"decision":"ACCEPT","reason":"APPLICABLE_CHECKS_PASSED"}},{"case":"zero_applicable_checks","authored_expected":"WITHHOLD","green_job_only":"ACCEPT","typed_report_only":"WITHHOLD","admitted":"WITHHOLD","reason":"NO_APPLICABLE_CHECKS","checks":[{"id":"http-status","state":"NOT_APPLICABLE","reason":"OUTSIDE_PLANNED_TRANSPORT"}],"native_steps":[],"observed_report_sha256":"a9257ecc323caef97d34cee78986f4129386caa353a157ac9758513a33ea5d72","receipt_report_sha256":"a9257ecc323caef97d34cee78986f4129386caa353a157ac9758513a33ea5d72","why":"Having no applicable checks cannot prove acceptance.","opa_policy":{"checks":[{"id":"http-status","reason":"OUTSIDE_PLANNED_TRANSPORT","state":"NOT_APPLICABLE"}],"decision":"WITHHOLD","reason":"NO_APPLICABLE_CHECKS"}}],"metrics":{"green_job_only":{"agreement":4,"unsupported_accepts":17,"unsupported_rejects":1,"expected_accepts_withheld":0},"typed_report_only":{"agreement":10,"unsupported_accepts":12,"unsupported_rejects":0,"expected_accepts_withheld":0},"admitted":{"agreement":22,"unsupported_accepts":0,"unsupported_rejects":0,"expected_accepts_withheld":0}},"public":{"boundary":"Illustrative local plan written after the run. Desired SHA uses the trigger SHA as a test input, not an assertion of the tested checkout. No receipt or application report exists here.","source":{"repository":"open-policy-agent/conftest","observed_date_utc":"2026-11-11","run_url":"https://github.com/open-policy-agent/conftest/actions/runs/43092281393","endpoint":"https://api.github.com/repos/open-policy-agent/conftest/actions/runs/43092281393/attempts/1/jobs?per_page=100","run_created_at":"2026-11-11T19:59:34Z"},"job_count":5,"step":{"number":4,"name":"validate conventional commit prefix","status":"completed","conclusion":"success"},"result":{"decision":"WITHHOLD","reason":"INVALID_RECEIPT","checks":[],"native_steps":[{"step_number":4,"status":"completed","conclusion":"success","outcome":null}]}},"opa":{"version":"1.22.3","common_gate_withheld":13,"actual_evaluations":9,"policy_agreement":9,"combined_agreement":22,"numeric":[{"literal":"1","source_report_sha256":"6545f34bd8394b8362a21027f2a3e58691805ba484eac15088e90432c45899bc","python_application_result":{"decision":"ACCEPT","reason":"APPLICABLE_CHECKS_PASSED","checks":[{"id":"active-count","state":"PASS","reason":"VALUE_MATCH","ref":"authored fixture: typed application result"}]},"opa_application_result":{"checks":[{"id":"active-count","reason":"VALUE_MATCH","ref":"authored fixture: typed application result","state":"PASS"}],"decision":"ACCEPT","reason":"APPLICABLE_CHECKS_PASSED"}},{"literal":"1.0","source_report_sha256":"3bd2c5da253a84e6b6fd07003be207b9720b9599cadc4c23697541bc3e713904","python_application_result":{"decision":"WITHHOLD","reason":"INVALID_OBSERVATION","checks":[]},"opa_application_result":{"checks":[{"id":"active-count","reason":"VALUE_MATCH","ref":"authored fixture: typed application result","state":"PASS"}],"decision":"ACCEPT","reason":"APPLICABLE_CHECKS_PASSED"}},{"literal":"1.25","source_report_sha256":"b146df777716f645d191596f3ca7f1e84a5779bad88b57d778e180802333a56d","python_application_result":{"decision":"WITHHOLD","reason":"INVALID_OBSERVATION","checks":[]},"opa_application_result":{"checks":[],"decision":"WITHHOLD","reason":"INVALID_OBSERVATION"}}]}}</script>
+  <script>
+  "use strict";
+  const data = JSON.parse(document.getElementById("data").textContent);
+  const byId = id => document.getElementById(id);
+  function node(tag, text, className) {
+    const element = document.createElement(tag);
+    if (text !== undefined) element.textContent = text;
+    if (className) element.className = className;
+    return element;
+  }
+  const verdictLabels = {ACCEPT:"通过 / ACCEPT",REJECT:"拒绝 / REJECT",WITHHOLD:"暂缓 / WITHHOLD"};
+  const verdictStyles = {ACCEPT:"accept",REJECT:"reject",WITHHOLD:"withhold"};
+  function badge(verdict) {
+    return node("span", verdictLabels[verdict] || verdict || "未记录", "pill " + (verdictStyles[verdict] || "neutral"));
+  }
+  function line(title, content) {
+    const p = node("p");
+    p.append(node("strong", title + " "), content);
+    return p;
+  }
+  function cell(value) {
+    return value instanceof Node ? value : document.createTextNode(value == null ? "未提供" : String(value));
+  }
+  function table(headings, rows) {
+    const t = node("table");
+    const heading = t.createTHead().insertRow();
+    for (const title of headings) {
+      const th = node("th", title);
+      th.scope = "col";
+      heading.append(th);
+    }
+    const body = t.createTBody();
+    for (const row of rows) {
+      const tr = body.insertRow();
+      for (const value of row) tr.insertCell().append(cell(value));
+    }
+    return t;
+  }
+  const names = [
+    ["green_job_only","只读作业汇总"],
+    ["typed_report_only","只读类型化报告"],
+    ["admitted","先绑定再判定"]
+  ];
+  for (const [key, name] of names) {
+    const stats = data.metrics[key];
+    const m = node("div", undefined, "metric");
+    m.append(
+      node("div", name, "metric-name"),
+      node("div", stats.agreement + "/" + data.cases.length, "metric-num"),
+      node("div", "缺乏支持的通过 " + stats.unsupported_accepts + " · 缺乏支持的拒绝 " + stats.unsupported_rejects, "metric-note")
+    );
+    byId("metrics").append(m);
+  }
+  byId("denominator").textContent = "分母是 " + data.cases.length + " 个预设判定的人工对照；公开元数据和数值对照单独报告。";
+
+  const select = byId("case");
+  for (const [index, row] of data.cases.entries()) {
+    const option = node("option", String(index + 1).padStart(2, "0") + " · " + row.case);
+    option.value = String(index);
+    select.append(option);
+  }
+  const initial = data.cases.findIndex(row => row.case === "tolerated_step_failure");
+  select.selectedIndex = Math.max(initial, 0);
+  function render() {
+    const row = data.cases[select.selectedIndex];
+    byId("prev").disabled = select.selectedIndex === 0;
+    byId("next").disabled = select.selectedIndex === data.cases.length - 1;
+    byId("why").textContent = row.why;
+    byId("verdicts").replaceChildren();
+    for (const [key, title] of [...names, ["authored_expected","构造时的预期判定"]]) {
+      const card = node("div", undefined, "vcard");
+      card.append(node("span", title, "small"), badge(row[key]));
+      byId("verdicts").append(card);
+    }
+    byId("reasons").replaceChildren(
+      line("绑定后的理由", node("code", row.reason)),
+      line("OPA 应用层", row.opa_policy ? badge(row.opa_policy.decision) : node("span", "共同准入步骤暂缓，未调用 OPA。", "small"))
+    );
+    const native = row.native_steps.length
+      ? table(["步骤","状态","原始 outcome","平台 conclusion"], row.native_steps.map(s => [s.step_number,s.status,s.outcome,s.conclusion]))
+      : node("p", "该案例未记录已匹配的步骤。", "small");
+    byId("native").replaceChildren(native);
+    const checks = row.checks.length
+      ? table(["检查","状态","理由"], row.checks.map(c => [node("code", c.id),c.state,node("code", c.reason)]))
+      : node("p", "该案例未产生应用检查记录。", "small");
+    byId("checks").replaceChildren(checks);
+    const match = row.observed_report_sha256 === row.receipt_report_sha256;
+    const receipt = node("p", "收据中的摘要", "digest");
+    receipt.append(node("code", row.receipt_report_sha256));
+    const observed = node("p", "实际报告字节的摘要", "digest");
+    observed.append(node("code", row.observed_report_sha256));
+    byId("digests").replaceChildren(node("span", match ? "一致" : "不一致", "pill " + (match ? "accept" : "withhold")), receipt, observed);
+  }
+  select.addEventListener("change", render);
+  byId("prev").addEventListener("click", () => {select.selectedIndex -= 1; render();});
+  byId("next").addEventListener("click", () => {select.selectedIndex += 1; render();});
+  render();
+
+  const sample = data.public;
+  byId("public").append(
+    line("仓库", node("code", sample.source.repository)),
+    line("导出中的作业", node("span", String(sample.job_count))),
+    line("步骤", node("span", sample.step.name)),
+    line("平台 conclusion", node("code", sample.step.conclusion)),
+    line("本地判定", badge(sample.result.decision)),
+    line("理由", node("code", sample.result.reason)),
+    node("p", sample.boundary, "small"),
+    line("来源", node("code", sample.source.run_url))
+  );
+  const opa = data.opa;
+  byId("opa").append(
+    line("版本", node("code", opa.version)),
+    line("进入 OPA 的案例", node("span", String(opa.actual_evaluations))),
+    line("实际判定与 Python 一致", node("strong", opa.policy_agreement + "/" + opa.actual_evaluations)),
+    node("p", "另有 " + opa.common_gate_withheld + " 个案例被共同准入步骤暂缓。合起来与预期一致 " + opa.combined_agreement + "/" + data.cases.length + "；这不是独立的全流程复现。", "small")
+  );
+  byId("numeric-title").textContent = opa.numeric.length + " 个单独的数值对照";
+  byId("numeric").append(table(["JSON 数值","Python","OPA"], opa.numeric.map(r => [
+    node("code", r.literal),r.python_application_result.decision,r.opa_application_result.decision
+  ])));
+  byId("numeric").append(node("p", "两种规则对 1.0 的处理不同；数值对照不计入上面的 " + data.cases.length + " 个案例。", "small"));
+  </script>
+</body>
+</html>

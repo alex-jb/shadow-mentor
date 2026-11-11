@@ -1,0 +1,487 @@
+{
+  "schema": "shadow.public-ci-metadata-sample.v1",
+  "source": {
+    "repository": "open-policy-agent/conftest",
+    "observed_date_utc": "2026-11-11",
+    "run_url": "https://github.com/open-policy-agent/conftest/actions/runs/43092281393",
+    "endpoint": "https://api.github.com/repos/open-policy-agent/conftest/actions/runs/43092281393/attempts/1/jobs?per_page=100",
+    "run_created_at": "2026-11-11T19:59:34Z"
+  },
+  "limits": [
+    "Projection of one read-only public response, not authenticated provenance or a new run.",
+    "Completeness marker derived from reported total matching the returned rows on this page.",
+    "No step outcome before continue-on-error, capture receipt, tested checkout assertion, or application report was supplied."
+  ],
+  "snapshot": {
+    "repository_id": 178249461,
+    "run_id": 43092281393,
+    "attempt": 1,
+    "complete": true,
+    "total_count": 5,
+    "jobs": [
+      {
+        "id": 130772155106,
+        "run_id": 43092281393,
+        "run_attempt": 1,
+        "head_sha": "0f06f6bd8afcdddacc1123969a57cded2edfa30b",
+        "name": "lint",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": [
+          {
+            "number": 1,
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 2,
+            "name": "checkout all PR branch and commits",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 3,
+            "name": "setup go",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 4,
+            "name": "validate conventional commit prefix",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 5,
+            "name": "golangci-lint",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 6,
+            "name": "setup regal",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 7,
+            "name": "lint examples - warnings",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 8,
+            "name": "lint examples - blocking",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 9,
+            "name": "ratchet",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 16,
+            "name": "Post golangci-lint",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 17,
+            "name": "Post setup go",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 18,
+            "name": "Post checkout all PR branch and commits",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 19,
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "id": 130772155453,
+        "run_id": 43092281393,
+        "run_attempt": 1,
+        "head_sha": "0f06f6bd8afcdddacc1123969a57cded2edfa30b",
+        "name": "validate (macos-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": [
+          {
+            "number": 1,
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 2,
+            "name": "checkout source",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 3,
+            "name": "setup go",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 4,
+            "name": "build",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 5,
+            "name": "unit test",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 6,
+            "name": "setup python",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 7,
+            "name": "setup bats",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 8,
+            "name": "test examples (nix)",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 9,
+            "name": "test examples (windows)",
+            "status": "completed",
+            "conclusion": "skipped"
+          },
+          {
+            "number": 10,
+            "name": "acceptance (*nix)",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 11,
+            "name": "test oci push/pull",
+            "status": "completed",
+            "conclusion": "skipped"
+          },
+          {
+            "number": 19,
+            "name": "Post setup bats",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 20,
+            "name": "Post setup python",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 21,
+            "name": "Post setup go",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 22,
+            "name": "Post checkout source",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 23,
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "id": 130772155561,
+        "run_id": 43092281393,
+        "run_attempt": 1,
+        "head_sha": "0f06f6bd8afcdddacc1123969a57cded2edfa30b",
+        "name": "validate (windows-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": [
+          {
+            "number": 1,
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 2,
+            "name": "checkout source",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 3,
+            "name": "setup go",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 4,
+            "name": "build",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 5,
+            "name": "unit test",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 6,
+            "name": "setup python",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 7,
+            "name": "setup bats",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 8,
+            "name": "test examples (nix)",
+            "status": "completed",
+            "conclusion": "skipped"
+          },
+          {
+            "number": 9,
+            "name": "test examples (windows)",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 10,
+            "name": "acceptance (*nix)",
+            "status": "completed",
+            "conclusion": "skipped"
+          },
+          {
+            "number": 11,
+            "name": "test oci push/pull",
+            "status": "completed",
+            "conclusion": "skipped"
+          },
+          {
+            "number": 19,
+            "name": "Post setup bats",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 20,
+            "name": "Post setup python",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 21,
+            "name": "Post setup go",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 22,
+            "name": "Post checkout source",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 23,
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "id": 130772155569,
+        "run_id": 43092281393,
+        "run_attempt": 1,
+        "head_sha": "0f06f6bd8afcdddacc1123969a57cded2edfa30b",
+        "name": "nix",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": [
+          {
+            "number": 1,
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 2,
+            "name": "checkout source",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 3,
+            "name": "install nix",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 4,
+            "name": "check flake",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 5,
+            "name": "verify dev shell tools",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 10,
+            "name": "Post checkout source",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 11,
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "id": 130772155713,
+        "run_id": 43092281393,
+        "run_attempt": 1,
+        "head_sha": "0f06f6bd8afcdddacc1123969a57cded2edfa30b",
+        "name": "validate (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": [
+          {
+            "number": 1,
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 2,
+            "name": "checkout source",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 3,
+            "name": "setup go",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 4,
+            "name": "build",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 5,
+            "name": "unit test",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 6,
+            "name": "setup python",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 7,
+            "name": "setup bats",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 8,
+            "name": "test examples (nix)",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 9,
+            "name": "test examples (windows)",
+            "status": "completed",
+            "conclusion": "skipped"
+          },
+          {
+            "number": 10,
+            "name": "acceptance (*nix)",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 11,
+            "name": "test oci push/pull",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 19,
+            "name": "Post setup bats",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 20,
+            "name": "Post setup python",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 21,
+            "name": "Post setup go",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 22,
+            "name": "Post checkout source",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "number": 23,
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      }
+    ]
+  }
+}
